@@ -1,0 +1,61 @@
+﻿@inherits LayoutComponentBase
+@using WMS.Frontend.Components.Pages
+@inject NavigationManager navigationManager
+
+<NavMenu />
+<div class="container">
+  <Breadcrumbs Links="breadcrumbLinks" />
+  @Body
+</div>
+
+@* <AuthorizeView>
+  <Authorized>
+    <NavMenu />
+    <div class="container">
+      <Breadcrumbs Links="breadcrumbLinks" />
+      @Body
+    </div>
+  </Authorized>
+  <NotAuthorized>
+      <p>You're not Authorized.</p>
+  </NotAuthorized>
+</AuthorizeView> *@
+
+@code {
+  private string? currentUrl;
+  private List<BreadcrumbLink>? breadcrumbLinks;
+
+  protected override void OnParametersSet()
+  {
+    breadcrumbLinks = new List<BreadcrumbLink>();
+    currentUrl = navigationManager.Uri;
+    var myUrl = currentUrl.Replace(navigationManager.BaseUri, "");
+
+    breadcrumbLinks.Add(new BreadcrumbLink
+    {
+      Address = navigationManager.BaseUri,
+      IsActive = navigationManager.Uri == navigationManager.BaseUri,
+      OrderIndex = 1,
+      Title = "Home".ToLower()
+    });
+
+    var path = myUrl.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).Where(s => !Int32.TryParse(s, out int t));
+    var count = 1;
+
+    foreach (var link in path)
+    {
+      if (link == "") continue;
+      count++;
+      var lastLink = breadcrumbLinks.Last();
+      breadcrumbLinks.Add(new BreadcrumbLink
+      {
+        Address = lastLink.Address == navigationManager.BaseUri ? $"{lastLink.Address}{link}" : $"{lastLink.Address}/{link}",
+        IsActive = link == path.Last(),
+        OrderIndex = count,
+        Title = link
+      });
+    }
+
+    base.OnParametersSet();
+  }
+}

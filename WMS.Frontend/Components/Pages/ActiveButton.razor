@@ -1,0 +1,12 @@
+﻿<button class="btn btn-outline-secondary btn-sm @buttonCss" type="button" data-bs-toggle="collapse" data-bs-target="#@(Id)" aria-expanded="false" aria-controls="@(Id)" @onclick="ChangeButtonClass"><span class="bi bi-eye-fill"></span></button>
+
+@code {
+    [Parameter]
+    public string? Id {get; set;}
+
+    private string buttonCss = "";
+    private void ChangeButtonClass()
+    {
+        buttonCss = buttonCss.Equals("") ? "active" : "";
+    }
+}

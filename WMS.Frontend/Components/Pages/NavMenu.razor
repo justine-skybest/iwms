@@ -1,0 +1,124 @@
+﻿<nav class="navbar navbar-expand-xl bg-body-tertiary">
+  <div class="container-fluid">    
+    <img src="/images/Skybest.svg" alt="Bootstrap" width="30" height="24">
+    <a class="navbar-brand" href="#">WMS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="@HomeUrl()">Dashboard</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            data-bs-auto-close="outside">
+            Receiving
+          </a>
+          <ul class="dropdown-menu dropend">
+            <li>
+              <a href="@ReceivingUrl()"  class="dropdown-item">Receive P.O.</a>
+              @* <a href="#" class="dropdown-item dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false" data-bs-offset="10,20">Receive P.O.</a>
+              <ul class="dropdown-menu dropdown-submenu">
+                <li class="nav-item"><a href="@ReceivingUrl()" class="dropdown-item">By Individual Items</a></li>
+                <li class="nav-item"><a href="#" class="dropdown-item">Pallet-Single Item</a></li>
+                <li class="nav-item"><a href="#" class="dropdown-item">Pallet-Mixed</a></li>
+              </ul> *@
+            </li>
+            @* <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a href="#" class="dropdown-item">Item Receipt</a></li>
+            <li><a href="#" class="dropdown-item">Transfer Order</a></li> *@
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Check in
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="@CheckInUrl("ByPallet")">Check in Pallet</a></li>
+            <li><a class="dropdown-item" href="@CheckInUrl("ByItem")">Check in Item</a></li>            
+            @* <li><a class="dropdown-item" href="@CheckInUrl()">Check In</a></li *@
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Pick Order
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Creation of Pick Order </a></li>
+            <li><a class="dropdown-item" href="#">List of Pick Order</a></li>
+            <li><a class="dropdown-item" href="@ManualPickingUrl()">Manual Picking</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Transfer
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Transfer Item</a></li>
+            <li><a class="dropdown-item" href="#">Transfer Pallet</a></li>
+            <li><a class="dropdown-item" href="#">Repleshishment</a></li>
+            <li><a class="dropdown-item" href="#">Reverse Repleshishment</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Cycle Count</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Ship</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Returns</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Check Inventory</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="#">Print Label</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Master List
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item"  href="@ProductUrl()">Product</a></li>
+            <li><a class="dropdown-item"  href="@WarehouseUrl()">Warehouse</a></li>
+            @* <li><a class="dropdown-item" href="@RackUrl()">Rack</a></li>
+            <li><a class="dropdown-item" href="@BinUrl()">Bin</a></li> *@
+            @* <li><a class="dropdown-item" href="#">Cross Docking</a></li> *@
+            <li><a class="dropdown-item" href="@PalletUrl()">Pallet</a></li>
+            <li><a class="dropdown-item" href="#">Supplier</a></li>
+            <li><a class="dropdown-item" href="#">Customer</a></li>
+            <li><a class="dropdown-item" href="#">System Users</a></li>
+          </ul>
+        </li>
+        @* <li class="nav-item">
+        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li> *@
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+@code {
+  private static string HomeUrl() => "/";
+  private static string ProductUrl() => "/product";
+  private static string WarehouseUrl() => "/warehouse";
+  @* private static string RackUrl() => "/rack";
+  private static string BinUrl() => "/bin";   *@
+  private static string ReceivingUrl() => "/receiving";  
+  private static string PalletUrl() => "/pallet";  
+
+  private static string CheckInUrl(string type) => $"/checkin/{type}";  
+
+  private static string ManualPickingUrl() => "/manualpicking";    
+}

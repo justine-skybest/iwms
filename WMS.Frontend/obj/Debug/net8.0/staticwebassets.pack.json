@@ -1,0 +1,61 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\WMS.Frontend.bundle.scp.css",
+      "PackagePath": "staticwebassets\\WMS.Frontend.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\Document.js",
+      "PackagePath": "staticwebassets\\Document.js"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\canvas.js",
+      "PackagePath": "staticwebassets\\canvas.js"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\choices.min.css",
+      "PackagePath": "staticwebassets\\choices.min.css"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\choices.min.js",
+      "PackagePath": "staticwebassets\\choices.min.js"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\custom-select.js",
+      "PackagePath": "staticwebassets\\custom-select.js"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\images\\Skybest.png",
+      "PackagePath": "staticwebassets\\images\\Skybest.png"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\images\\Skybest.svg",
+      "PackagePath": "staticwebassets\\images\\Skybest.svg"
+    },
+    {
+      "Id": "C:\\Users\\JOSHUA\\Desktop\\WMS-Dev\\WMS.Frontend\\wwwroot\\print.js",
+      "PackagePath": "staticwebassets\\print.js"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.WMS.Frontend.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.WMS.Frontend.props",
+      "PackagePath": "build\\WMS.Frontend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.WMS.Frontend.props",
+      "PackagePath": "buildMultiTargeting\\WMS.Frontend.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.WMS.Frontend.props",
+      "PackagePath": "buildTransitive\\WMS.Frontend.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

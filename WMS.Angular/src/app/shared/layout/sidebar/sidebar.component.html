@@ -1,0 +1,58 @@
+<aside class="w-[228px] bg-sidebar-bg flex flex-col flex-shrink-0 h-full border-r border-sidebar-border">
+  
+  <!-- Logo -->
+  <div class="px-5 pt-5 pb-4 border-b border-sidebar-border">
+    <div class="flex items-center gap-2">
+      <div class="w-[30px] h-[30px] bg-accent rounded-md flex items-center justify-center">
+        <app-icon name="warehouses" [size]="16" stroke="#fff"></app-icon>
+      </div>
+      <div>
+        <div class="font-display font-bold text-[15px] text-sidebar-text-active leading-none">Skybest WMS</div>
+        <div class="text-[10px] text-sidebar-text mt-0.5">v3.4.1</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-2.5 py-3 overflow-y-auto flex flex-col gap-1">
+    
+    <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-1 pb-2">
+      Main Menu
+    </div>
+    
+    <!-- Utilizing the globally defined .sidebar-link class from styles.scss -->
+    <a *ngFor="let item of navItems" 
+       [routerLink]="item.path" 
+       routerLinkActive="active" 
+       class="sidebar-link">
+      <app-icon [name]="item.icon" [size]="15"></app-icon>
+      <span>{{ item.label }}</span>
+    </a>
+
+    <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-4 pb-2">
+      Operations
+    </div>
+    
+    <a routerLink="/mobile" target="_blank" routerLinkActive="active" class="sidebar-link">
+      <app-icon name="mobile" [size]="15"></app-icon>
+      <span>Mobile Operations</span>
+      <span class="ml-auto text-[9px] bg-accent text-white px-1.5 py-0.5 rounded-sm font-bold">APP</span>
+    </a>
+  </nav>
+
+  <!-- User Info Footer -->
+  <div class="px-3.5 py-3 border-t border-sidebar-border">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 bg-sidebar-active rounded-full flex items-center justify-center shrink-0 border-2 border-accent">
+        <span class="font-display font-bold text-[13px] text-accent-light">AJ</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[13px] font-semibold text-sidebar-text-active truncate">Admin User</div>
+        <div class="text-[11px] text-sidebar-text truncate">admin&#64;skybest.com</div>
+      </div>
+      <button (click)="logout()" class="bg-transparent border-none cursor-pointer text-sidebar-text p-1 rounded hover:text-white transition-colors" title="Sign out">
+        <app-icon name="logout" [size]="15"></app-icon>
+      </button>
+    </div>
+  </div>
+</aside>

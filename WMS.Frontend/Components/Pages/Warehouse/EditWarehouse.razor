@@ -1,0 +1,159 @@
+﻿@page "/warehouse/add"
+@page "/warehouse/edit/{id:int}"
+@rendermode InteractiveServer
+
+@inject NavigationManager navigationManager
+@inject WarehouseClient warehouseClient
+
+<PageTitle>@title</PageTitle>
+<h3>@title</h3>
+
+@if(warehouse is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@warehouse" FormName="AddEditWarehouse" OnValidSubmit="HandleSubmitAsync" Enhance>
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="warehouse.Name" class="form-control"/>
+                    <ValidationMessage For="() => warehouse.Name"/>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address:</label>
+                    <InputText id="address" @bind-Value="warehouse.Address" class="form-control"/>
+                    <ValidationMessage For="() => warehouse.Address"/>
+                </div>
+                <div class="mb-3">
+                    <InputFile class="form-control border" OnChange="@SingleUpload" Accept="image/*"/>           
+                    @if (!string.IsNullOrEmpty(imageDataUrl))
+                    {
+                        <div class="mt-2 align-middle text-center border">
+                            <img src="@imageDataUrl" alt="Uploaded Image" style="max-width: 300px; max-height: 300px;" class = ""/>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div>
+                            <p style="color: red;">@errorMessage</p>
+                        </div>
+                    }    
+                    <ValidationMessage For="() => warehouse.FloorPlanImage"/>     
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a role="button" class="btn btn-secondary" href="/warehouse">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public int? Id {get; set;}
+
+    [SupplyParameterFromForm]
+    private WarehouseDetails? warehouse {get; set;}
+
+    private string title = string.Empty;
+
+    private string? imageDataUrl;
+    private string? errorMessage;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(warehouse is not null)
+        {
+            return;
+        }
+
+        if(Id is not null)
+        {
+            warehouse = await warehouseClient.GetWarehouseAsync(Id.Value);
+            if(warehouse is not null)
+            {
+                title = $"Edit {warehouse.Name}";
+                if(warehouse.FloorPlanImage is not null && warehouse.FloorPlanImage.Length > 0)
+                {
+                    imageDataUrl = $"data:image/png;base64,{Convert.ToBase64String(warehouse.FloorPlanImage)}"; 
+                }                
+            }           
+        }
+        else{
+            warehouse = new()
+            {
+                Name = string.Empty,
+                Address = string.Empty
+            };
+
+            title = "New Warehouse";
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(warehouse);
+        if(Id is null)
+        {
+            warehouse.DateAdded = DateTime.Now;
+            await warehouseClient.AddWarehouseAsync(warehouse);
+        }
+        else
+        {
+            warehouse.Id = Id.Value;
+            warehouse.DateAdded = DateTime.Now;
+            await warehouseClient.UpdateWarehouseAsync(warehouse);
+        }
+
+        navigationManager.NavigateTo("warehouse");
+    }    
+
+    private async Task SingleUpload(InputFileChangeEventArgs e)
+    {
+        errorMessage = null;
+
+        if (warehouse is null)
+        {
+            errorMessage = "Warehouse data is not available.";
+            return;
+        }
+
+        if (e.FileCount == 0)
+        {
+            errorMessage = "No file uploaded.";
+            return;
+        }
+
+        var file = e.File; // get the first selected file
+
+        const long maxFileSize = 10 * 1024 * 1024; // 10 MB limit
+
+        if (file.Size > maxFileSize)
+        {
+            errorMessage = "The uploaded file size exceeds the maximum limit of 10 MB.";
+            return;
+        }
+
+        try
+        {
+            using var ms = new MemoryStream();
+            await file.OpenReadStream(maxFileSize).CopyToAsync(ms);
+
+            warehouse.FloorPlanImage = ms.ToArray();
+            imageDataUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(warehouse.FloorPlanImage)}";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to upload image: {ex.Message}";
+        }
+    }
+}

@@ -1,0 +1,260 @@
+//Warehouse
+###
+GET http://127.0.0.1:8800/warehouse/
+
+###
+GET http://127.0.0.1:8800/warehouse/12
+
+###
+POST http://127.0.0.1:8800/warehouse/
+Content-Type: application/json
+
+{
+    "Name" : "Warehouse 9",
+    "Address" : "Cavite",
+    "DateAdded" : "2024-08-20"
+}
+
+###
+PUT http://127.0.0.1:8800/warehouse/4
+Content-Type: application/json
+
+{
+    "Name" : "Warehouse 4",
+    "DateAdded" : "2024-08-27"
+}
+
+###
+DELETE http://127.0.0.1:8800/warehouse/2
+
+//Rack
+###
+GET http://127.0.0.1:8800/rack/
+
+###
+GET http://127.0.0.1:8800/rack/warehouse/1
+
+###
+GET http://127.0.0.1:8800/rack/12
+
+###
+POST http://127.0.0.1:8800/rack/
+Content-Type: application/json
+
+{
+    "Name" : "Rack 1",
+    "WarehouseId" : 13
+}
+
+###
+PUT http://127.0.0.1:8800/rack/6
+Content-Type: application/json
+
+{
+    "Name" : "Rack 2",
+    "WarehouseId" : 3,
+    "DateAdded" : "2024-08-27"
+}
+###
+DELETE http://127.0.0.1:8800/rack/14
+
+
+//Bin
+###
+GET http://127.0.0.1:8800/bin/
+
+###
+GET http://127.0.0.1:8800/bin/1
+
+###
+GET http://127.0.0.1:8800/bin/rack/1
+
+###
+POST http://127.0.0.1:8800/bin/
+Content-Type: application/json
+
+{
+    "Name" : "Bin 2",
+    "RackId" : 6,
+    "BayId" : 1,
+    "LevelId" : 1,
+    "DateAdded": "2024-08-27"
+}
+###
+PUT http://127.0.0.1:8800/warehouse/7
+Content-Type: application/json
+
+{
+    "Name" : "Warehouse 7",
+    "DateAdded" : "2024-08-27"
+}
+###
+DELETE http://127.0.0.1:8800/rack/14
+
+###
+DELETE http://127.0.0.1:8800/receiving/1
+
+###
+GET http://127.0.0.1:8800/binnames/rack/6/bay/1/level/2/
+
+
+//Products
+###
+GET http://127.0.0.1:8800/product/
+###
+GET http://127.0.0.1:8800/product/2
+###
+POST http://127.0.0.1:8800/product/
+Content-Type: application/json
+
+{
+    "Name" : "FISH CRACKERS L-24gX100",
+    "TypeOfPackage": "SCK",
+    "Measurement": " 58 X 46 X 22",
+    "Weight" : 30.7,
+    "DateAdded" : "2024-08-21"
+}
+###
+POST http://127.0.0.1:8800/product/
+Content-Type: application/json
+
+{
+    "Name" : "OISHI SUNDAYS MANGO JUICE 35gX6X20",
+    "TypeOfPackage": "CTN",
+    "Measurement": "28 X 23 X 21",
+    "Weight" : 5.5,
+    "DateAdded" : "2024-08-21"
+}
+###
+POST http://127.0.0.1:8800/product/
+Content-Type: application/json
+
+{
+    "Name" : "OISHI SUNDAYS MANGO ORANGE 35gX6X20",
+    "TypeOfPackage": "CTN",
+    "Measurement": "28 X 23 X 21",
+    "Weight" : 60.17,
+    "DateAdded" : "2024-08-21"
+}
+###
+POST http://127.0.0.1:8800/product/
+Content-Type: application/json
+
+{
+    "Name" : "OISHI SUNDAYS ORANGE MANGO BLENDS 35gX6X20",
+    "TypeOfPackage": "CTN",
+    "Measurement": "28 X 23 X 21",
+    "Weight" : 15.1,
+    "DateAdded" : "2024-08-21"
+}
+
+
+###
+PUT http://127.0.0.1:8800/product/2
+Content-Type: application/json
+
+{
+    "Name" : "Oishi Sundays Mango Juice",
+    "DateAdded" : "2024-08-21"
+}
+###
+GET http://127.0.0.1:8800/receiving/
+###
+GET http://127.0.0.1:8800/receiving/1
+###
+POST http://127.0.0.1:8800/receiving/
+Content-Type: application/json
+
+{
+    "series" : "SLCWH-000001-24",
+    "TransportCompany": "LIWAYWAY",
+    "Shipper" : "EAST RIZAL",
+    "Consignee": " Q",    
+    "DateReceived": "2024-08-21",
+    "Reference": "PO2024-0001",    
+    "ProductId": 3,
+    "Quantity": 220,
+    "Weight": 12.91,
+    "Remarks": "GOOD CONDITION",
+    "PlateNumber": "NBT8360",
+    "DriverName": "GERMAN HALILING",
+    "DateTime": "2024-03-05",
+    "ClientRepresentative": " Q",
+    "CheckerName": "JAN MICHAEL LARDIZABAL",
+    "TimeStart": "2024-03-05",
+    "TimeEnd": "2024-03-05",
+    "DateAdded": "2024-08-20"
+}
+###
+GET http://127.0.0.1:8800/receiving/3
+###
+POST http://127.0.0.1:8800/receiving/
+Content-Type: application/json
+
+{
+    "Series" : "SLCWH-000002-24",
+    "TransportCompany": "LIWAYWAY",
+    "Shipper" : "EAST RIZAL",
+    "Consignee": " Q",    
+    "DateReceived": "2024-08-21",
+    "Reference": "PO2024-0001",    
+    "Products" : [
+        {
+            "ProductId": 1,
+            "Quantity": 5.2,
+            "Weight": "5.2",            
+            "Remarks": "Good Product"
+        }
+        # {
+        #     "ProductId": 2,
+        #     "Quantity": 1.0,
+        #     "Weight": "2.2",
+        #     "Remarks": "Bad Product"
+        # },
+        # {
+        #     "ProductId": 3,
+        #     "Quantity": 2.0,
+        #     "Weight": "3.5",
+        #     "Remarks": "Ok Product"
+        # }
+        # ,
+        # {
+        #     "ProductId": 4,
+        #     "Quantity": 6.12,
+        #     "Weight": "5X2X232",
+        #     "Remarks": "Okay Product"
+        # }
+    ],
+    "PlateNumber": "NBT8360",
+    "DriverName": "GERMAN HALILING",
+    "DateTime": "2024-03-05",
+    "ClientRepresentative": " Q",
+    "CheckerName": "JAN MICHAEL LARDIZABAL",
+    "TimeStart": "2024-03-05",
+    "TimeEnd": "2024-03-05"
+}
+//Manual Picking
+###
+POST http://127.0.0.1:8805/manualpicking/
+Content-Type: application/json
+
+{
+    "WarehouseId" : 1,
+    "BinId": 3,
+    "PickedProducts" : [
+        {
+            "ReceivedProductId" : 1,
+            "QuantityPicked" : 55,
+            "DatePicked" : "2025-05-06"
+        },
+        {
+            "ReceivedProductId" : 2,
+            "QuantityPicked" : 155,
+            "DatePicked" : "2025-05-06"
+        }
+    ],
+    "PickingDate": "2025-05-06",
+    "Notes": "Test test"
+}
+###
+GET http://127.0.0.1:8805/manualpicking/

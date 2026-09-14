@@ -1,0 +1,12 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace WMS.Api.Dtos.Product;
+
+public record class UpdateProductDto(
+    [Required][StringLength(150)] string Name,
+    [Required][StringLength(50)] string TypeOfPackage,
+    [Required][StringLength(50)] string Measurement,
+    [Required] decimal Weight,
+    DateTime DateAdded
+);

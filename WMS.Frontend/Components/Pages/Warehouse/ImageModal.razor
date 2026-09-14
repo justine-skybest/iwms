@@ -1,0 +1,140 @@
+﻿@using SixLabors.ImageSharp.PixelFormats
+@inject IJSRuntime JS
+@inject WarehouseClient Client
+@inject RackClient RackClient
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="modal fade overflow-auto" id="@GetModalId(warehouse.Id)" tabindex="-1" aria-labelledby="exampleModalLabel">  
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">@title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @* <img src="@ImageSrc" style="width: @(@Width)px; height: @(@Height)px;"/> *@
+        <canvas id="@GetCanvasId(warehouse.Id)" class="border"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  [Parameter]
+  public string? ImageSrc { get; set; }
+
+  [Parameter]
+  public required WarehouseSummary warehouse { get; set; }
+
+  [Parameter]
+
+  public byte[]? imageBytes { get; set; }
+
+  private string title = string.Empty;
+
+  double Width { get; set; }
+
+  double Height { get; set; }
+
+  public RackSummary[]? rackSummary;
+
+  protected override async Task OnParametersSetAsync()
+  {
+    title = warehouse.Name;
+    rackSummary = await RackClient.GetRacksAsync(warehouse.Id);
+
+    List<RackFloorMapObjectDetails> rackFloorMapObjects = new List<RackFloorMapObjectDetails>();
+      
+    if (rackSummary is not null && rackSummary.Count() > 0)
+    {
+      foreach (var rack in rackSummary)
+      {
+        if (rack.RackFloorMapObject is not null && rack.RackFloorMapObject.Count() > 0)
+        {
+          foreach (var obj in rack.RackFloorMapObject)
+          {            
+            if (rack.RackFloorMapObject is not null && rack.RackFloorMapObject.Count() > 0)
+            {
+              rackFloorMapObjects.Add(new RackFloorMapObjectDetails
+                {
+                  Type = obj.Type,
+                  Left = obj.Left,
+                  Top = obj.Top,
+                  Width = obj.Width,
+                  Height = obj.Height,
+                  Text = obj.Text,
+                  Fill = obj.Fill,
+                  Stroke = obj.Stroke,
+                  StrokeWidth = obj.StrokeWidth,
+                  FontSize = obj.FontSize,
+                  ScaleX = obj.ScaleX,
+                  ScaleY = obj.ScaleY,
+                  Angle = obj.Angle
+                });
+            }            
+          }
+        }
+      }
+    }
+
+    if (warehouse is not null && ImageSrc is not null)
+    {
+      await JS.InvokeVoidAsync("InitializeWarehouseCanvas", GetCanvasId(warehouse.Id), ImageSrc, rackFloorMapObjects, @GetModalId(warehouse.Id));     
+    }    
+  }
+
+  public static string GetModalId(int WarehouseId)
+  {
+    return $"FloorPlanModal-{WarehouseId}";
+  }
+
+  public static string GetCanvasId(int WarehouseId)
+  {
+    return $"Canvas-{WarehouseId}";
+  }
+
+  protected override void OnInitialized()
+  {
+    if (imageBytes != null && imageBytes.Length != 0)
+    {
+      // Call GetIdealImageDimensions when the component initializes
+      GetIdealImageDimensions(imageBytes);
+    }
+  }
+
+  private void GetIdealImageDimensions(byte[] imageBytes)
+  {
+    using (var ms = new System.IO.MemoryStream(imageBytes))    
+    {
+      var image = SixLabors.ImageSharp.Image.Load<Rgba32>(ms);
+
+      double imgWidth = image.Width;
+      double imgHeight = image.Height;
+
+      // Calculate the initial canvas size as half of the image's original dimensions
+      double canvasWidth = imgWidth * 0.5;
+      double canvasHeight = imgHeight * 0.5;
+
+      // Check if either dimension is smaller than 300px
+      if (imgWidth < 300 || imgHeight < 300)
+      {
+        // If image is too small, use the original size
+        Width = imgWidth;
+        Height = imgHeight;
+      }
+      else
+      {
+        // Continuously reduce dimensions until both are <= 1000px
+        while (canvasWidth > 1000 || canvasHeight > 1000)
+        {
+          canvasWidth *= 0.95;
+          canvasHeight *= 0.95;
+        }
+
+        Width = canvasWidth;
+        Height = canvasHeight;
+      }
+    }
+  }
+}

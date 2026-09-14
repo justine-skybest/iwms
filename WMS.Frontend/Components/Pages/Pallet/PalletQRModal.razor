@@ -1,0 +1,73 @@
+﻿@using QRCoder
+@using System.Drawing
+
+@if (pallet is not null)
+{
+  <div class="modal fade" id="@GetModalId(pallet.PalletHashCode.ToString())" tabindex="-1" style="overflow:auto;">
+    <div class="modal-dialog" style="min-width:350px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 text-start" id="exampleModalLabel">Pallet #@pallet.PalletNumber
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <br>
+        </div>
+        <div class="modal-body">
+          <div class="flex flex-column QR-container print-section">
+            <div class="flex-child" style="border:5px solid black">
+              <img src=@("data:image/png;base64," +
+                System.Convert.ToBase64String(PngByteQRCodeHelper.GetQRCode(pallet.PalletHashCode.ToString(),
+                QRCodeGenerator.ECCLevel.Q, 10))) />              
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>     
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@code {
+
+  [Parameter]
+  public PalletSummary? pallet { get; set; }
+
+  private string[] Colors = { "", "yellow", "violet", "blue", "green", "red" };
+  private Random rnd = new Random();
+
+  private string GenerateRandomBGColor()
+  {
+    string randomColor = $"rgb({rnd.Next(0, 256)}, {rnd.Next(0, 256)}, {rnd.Next(0, 256)})";
+    return randomColor;
+  }
+
+  private string GenerateColorByLevel(string level, string FontColor)
+  {
+    if (int.TryParse(level, out int value))
+    {
+      string FColor = "";
+      if (!String.IsNullOrWhiteSpace(FontColor))
+      {
+        FColor = Colors[value].Equals("yellow") ? "" : "f-white";
+      }
+      return $"{Colors[value]} {FColor}";
+    }
+    else
+    {
+      return "";
+    }
+  }
+  
+  public static string GetModalId(string QRHashCode)
+  {
+    ArgumentNullException.ThrowIfNull(QRHashCode);
+    return $"Modal-{QRHashCode}";
+  }
+
+  private string GetLastIndexOf(string text)
+  {
+    return text.Split(' ').Last();
+  }
+}

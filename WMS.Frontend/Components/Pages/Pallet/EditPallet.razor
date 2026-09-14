@@ -1,0 +1,122 @@
+﻿@page "/pallet/add"
+@page "/pallet/edit/{id:int}"
+@rendermode InteractiveServer
+
+@inject NavigationManager navigationManager
+@inject WarehouseClient WarehouseClient
+@inject PalletClient PalletClient
+
+<PageTitle>@title</PageTitle>
+<h3>@title</h3>
+
+@if(pallet is null || warehouses is null)
+{
+     <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@pallet" FormName="AddEditWarehouse" OnValidSubmit="HandleSubmitAsync" Enhance>
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+                <div class="mb-3">
+                    <label for="warehouse" class="form-label">Warehouse:</label>
+                    <InputSelect id="warehouse" @bind-Value="pallet.WarehouseId" class="form-select">
+                        <option value="">Select a warehouse</option>
+                        @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => pallet.WarehouseId"/>
+                </div>
+                <div class="mb-3">
+                    <label for="PalletDimension" class="form-label">Pallet Dimension:</label>
+                    <InputText id="PalletDimension" @bind-Value="pallet.PalletDimension" class="form-control"/>
+                    <ValidationMessage For="() => pallet.PalletDimension"/>
+                </div>
+                <div class="mb-3">
+                    <label for="CapacityInKG" class="form-label">Capacity In KG:</label>
+                    <InputNumber id="CapacityInKG" @bind-Value="pallet.CapacityInKG" class="form-control"/>
+                    <ValidationMessage For="() => pallet.CapacityInKG"/>
+                </div>
+                 <div class="mb-3">
+                    <label for="CapacityInCBM" class="form-label">Capacity In CBM:</label>
+                    <InputNumber id="CapacityInCBM" @bind-Value="pallet.CapacityInCBM" class="form-control"/>
+                    <ValidationMessage For="() => pallet.CapacityInCBM"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a role="button" class="btn btn-secondary" href="/pallet">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int? Id {get;set;}
+    
+    [SupplyParameterFromForm]
+    private PalletDetails? pallet {get;set;}
+
+    private WarehouseSummary[]? warehouses;
+    private string title = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await WarehouseClient.GetWarehousesAsync();
+    }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        if(pallet is not null)
+        {
+                return;
+        }
+        
+        if (Id is not null)
+        {
+            pallet = await PalletClient.GetPalletAsync(Id.Value);
+            pallet.CapacityInKG = Math.Round(pallet.CapacityInKG,3);          
+            pallet.CapacityInCBM = Math.Round(pallet.CapacityInCBM,3);             
+            title = $"Edit Pallet #{pallet.PalletNumber}";
+        }
+        else{
+            pallet = new ();
+            title = "New Pallet";
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(pallet);
+        if(Id is null)
+        {
+            int PalletNumber = await PalletClient.GetPalletNumberAsync(Convert.ToInt32(pallet.WarehouseId));
+            PalletNumber++;    
+            pallet.PalletNumber = PalletNumber;
+
+            var hash = new HashCode();
+            hash.Add(DateTime.Now);
+            hash.Add(DateTime.Now.TimeOfDay);    
+
+            pallet.PalletHashCode = hash.ToHashCode();
+            pallet.DateAdded = DateTime.Now;
+            await PalletClient.AddPalletAsync(pallet);
+        }
+        else
+        {
+            pallet.Id = Id.Value;
+            pallet.DateAdded = DateTime.Now;
+            await PalletClient.UpdatePalletAsync(pallet);
+        }
+
+        navigationManager.NavigateTo("pallet");
+    }
+}
+    

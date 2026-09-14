@@ -1,0 +1,68 @@
+/* src/styles.scss */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
+/* Initialize Tailwind v4 */
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* By prefixing with --color-, Tailwind creates utility classes for these automatically! */
+  --color-sidebar-bg: #0C1628;
+  --color-sidebar-hover: #1a2d4f;
+  --color-sidebar-active: #1e3a63;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-active: #f0f6ff;
+  --color-sidebar-border: #1e3155;
+  --color-accent: #3b82f6;
+  --color-accent-light: #dbeafe;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-50 text-slate-900 m-0 p-0;
+  }
+}
+
+@layer components {
+  /* Reusable Sidebar Link */
+  .sidebar-link {
+    @apply flex items-center gap-2.5 px-4 py-2.5 rounded-md text-sidebar-text text-[13.5px] font-medium transition-colors no-underline my-[1px];
+  }
+  .sidebar-link:hover {
+    @apply bg-sidebar-hover text-sidebar-text-active;
+  }
+  .sidebar-link.active {
+    @apply bg-sidebar-active text-sidebar-text-active font-semibold shadow-[inset_3px_0_0_var(--color-accent)];
+  }
+
+  /* Reusable Cards & Tables */
+  .stat-card {
+    @apply bg-white rounded-xl border border-slate-200 p-5 transition-shadow hover:shadow-[0_4px_16px_rgba(15,23,42,0.08)];
+  }
+  
+  .data-table {
+    @apply w-full text-left border-collapse text-[13px];
+  }
+  .data-table th {
+    @apply bg-slate-50 text-slate-500 font-semibold text-[11.5px] uppercase tracking-wider px-4 py-3 border-b border-slate-200 whitespace-nowrap;
+  }
+  .data-table td {
+    @apply px-4 py-3 border-b border-slate-100 text-slate-700 align-middle;
+  }
+  .data-table tbody tr:hover td {
+    @apply bg-slate-50;
+  }
+  .data-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide;
+  }
+}

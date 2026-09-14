@@ -1,0 +1,84 @@
+﻿@using WMS.Frontend.Components.Pages.Bin
+@attribute [StreamRendering]
+@inject RackClient Client
+
+<table class="table table-striped table-bordered table-hover table-responsive table-sm mb-0">
+        <thead  class="align-middle">
+            <th style="width:5%"></th>
+            <th style="width:5%"></th>
+            <th>Rack Name</th>
+            <th>No. of Bay</th>
+            <th>No. of Level</th>
+            <th style="width:10%;"></th>
+        </thead>
+        <tbody>
+            @if (racks is null)
+            {
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+            else if (racks?.Any() != true)
+            {
+                <tr>
+                    <td colspan="6" class="text-center fw-bolder">Empty Rack/s.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var rack in racks)
+                {
+                    <tr>
+                        <td></td>
+                        <td class="text-center">
+                            <ActiveButton Id="@("Rack" + rack.Id)" />
+                        </td>
+                        <td>@rack.Name</td>
+                        <td>Bay: @rack.Bay</td>
+                        <td>Level: @rack.Level</td>
+                        <td>
+                            <div class="d-flex flex-column flex-sm-row justify-content-center gap-1">
+                                <a class="btn btn-success" role="button" href= "/warehouse/@rack.Id/bin/add" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                                            <i class="bi bi-plus-square"></i>
+                                </a>
+                                <a class="btn btn-primary" role="button" href="@RackUrl(rack.Id)">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="@GetDeleteModalId(rack)">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <DeleteRack rack="@rack" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="6" class="hiddenRow">
+                            <div class="collapse" id="Rack@(rack.Id)">
+                                <Bins rack="@rack"/>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+@code {
+    [Parameter]
+    public int WarehouseId {get;set;}
+    private RackSummary[]? racks;
+    protected override async Task OnInitializedAsync()
+    {
+        racks = await Client.GetRacksAsync(WarehouseId);
+        StateHasChanged();
+    } 
+    private static string RackUrl(int id) => $"/warehouse/rack/edit/{id}";
+    
+    private string GetDeleteModalId(RackSummary rack)
+    {
+        return $"#{DeleteRack.GetModalId(rack)}";
+    }
+}

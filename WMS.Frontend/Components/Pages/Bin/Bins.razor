@@ -1,0 +1,81 @@
+﻿@using QRCoder
+@attribute [StreamRendering]
+@inject BinClient Client
+@inject BayClient BayClient
+
+@if(bins is not null && rack is not null)
+{    
+    <div class="rack">
+        <h3 class="text-center">@rack.Name 
+           <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="@GetPrintModalId(rack)"><i class="bi bi-printer"></i></button>            
+        </h3>
+        
+        <!-- Render each row (level) inside the rack -->
+        @for(int level = Convert.ToInt32(rack.Level); level >= 1 ; level--)
+        {
+            <div class="rowBins">
+                <!-- Render each bay (column) inside the row -->
+                @for(int bay = 1; bay <= Convert.ToInt32(rack.Bay); bay++)
+                {
+                    <div class="bayBins">
+                        <div class="bin">
+                        <!-- Render each bin location inside the bay -->
+                        @if(bins.Where(bin => Convert.ToInt32(bin.Level) == level && Convert.ToInt32(bin.Bay) == bay).Count() > 0)
+                        {
+                            @foreach (var bin in bins.Where(bin => Convert.ToInt32(bin.Level) == level && Convert.ToInt32(bin.Bay) == bay))
+                            {
+                                <a href="" data-bs-toggle="modal" data-bs-target="@GetImageModalId(bin.BinHashCode)"><p>B@(bin.Bay)L@(bin.Level)-B@(@bin.BinName.Replace("Bin", "").Replace(" ",""))</p></a>
+                                <QRCodeModal bin="@bin" />
+                                <DeleteBin bin="@bin" />
+                            }   
+                        }
+                        else{
+                            <p>No bin assigned.</p>   
+                        }                                             
+                        </div>                        
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <PrintByBayModal rack="@rack" bays="@bays" />
+}
+else{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+
+@code {
+    [Parameter]
+    public RackSummary? rack {get; set;}
+    private BinSummary[]? bins;    
+    private BaySummary[]? bays;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(rack is not null)
+        {
+            bins = await Client.GetBinsByRackAsync(rack.Id);
+            if(int.TryParse(rack.Bay.Replace("Bay",""), out int value))
+            {
+                 bays = await BayClient.GetBayAsync(value);     
+            }       
+        }        
+    } 
+
+    private static string BinUrl(int id) => $"/warehouse/bin/edit/{id}"; 
+       
+    private string GetImageModalId(string QRHashCode)
+    {
+         return $"#{QRCodeModal.GetModalId(QRHashCode)}";
+    }
+
+    private string GetPrintModalId(RackSummary rack)
+    {
+         return $"#{PrintByBayModal.GetModalId(rack)}";
+    }
+}

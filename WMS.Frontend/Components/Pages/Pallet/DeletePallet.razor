@@ -1,0 +1,50 @@
+﻿@using WMS.Frontend.Models
+@inject PalletClient Client
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="modal fade" id="@GetModalId(pallet)" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">@title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <p>
+            This will delete the record. Once deleted can not be rolled back.
+            Do you want to proceed?
+          </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="@ConfirmAsync">Delete</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+    [Parameter]
+    public PalletSummary? pallet {get;set;}
+
+    private string title = string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        title = $"Delete Pallet #{pallet!.PalletNumber}?";
+    }
+
+    public static string GetModalId(PalletSummary? pallet)
+    {
+        ArgumentNullException.ThrowIfNull(pallet);
+        return $"deletePalletModal-{pallet.Id}";
+    }
+
+    private async Task ConfirmAsync()
+    {
+      await Client.DeletePalletAsync(pallet!.Id);
+      NavigationManager.Refresh(true);
+    }
+}
+

@@ -1,0 +1,105 @@
+﻿@page "/product/add"
+@page "/product/edit/{id:int}"
+@rendermode InteractiveServer
+
+@inject NavigationManager navigationManager
+@inject ProductClient ProductClient
+
+<PageTitle>@title</PageTitle>
+<h3>@title</h3>
+
+@if(product is null)
+{
+     <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@product" FormName="AddEditWarehouse" OnValidSubmit="HandleSubmitAsync" Enhance>
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="product.Name" class="form-control"/>
+                    <ValidationMessage For="() => product.Name"/>
+                </div>
+                <div class="mb-3">
+                    <label for="typeofpackage" class="form-label">Type of Package:</label>
+                    <InputText id="typeofpackage" @bind-Value="product.TypeOfPackage" class="form-control"/>
+                    <ValidationMessage For="() => product.TypeOfPackage"/>
+                </div>
+                <div class="mb-3">
+                    <label for="measurement" class="form-label">Measurement:</label>
+                    <InputText id="measurement" @bind-Value="product.Measurement" class="form-control"/>
+                    <ValidationMessage For="() => product.Measurement"/>
+                </div>
+                <div class="mb-3">
+                    <label for="Weight" class="form-label">Weight:</label>
+                    <InputNumber id="Weight" @bind-Value="product.Weight" class="form-control"/>
+                    <ValidationMessage For="() => product.Weight"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a role="button" class="btn btn-secondary" href="/product">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int? Id {get;set;}
+    
+    [SupplyParameterFromForm]
+    private ProductDetails? product {get;set;}
+
+    private string title = string.Empty;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(product is not null)
+        {
+                return;
+        }
+        
+        if (Id is not null)
+        {
+            product = await ProductClient.GetProductAsync(Id.Value);
+            product.Weight = Math.Round(product.Weight,2);
+            title = $"Edit {product.Name}";
+        }
+        else{
+            product = new ()
+            {
+                Name = string.Empty,
+                TypeOfPackage = string.Empty,
+                Measurement = string.Empty,                
+            };
+
+            title = "New Product";
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(product);
+        if(Id is null)
+        {
+            product.DateAdded = DateTime.Now;
+            await ProductClient.AddProductAsync(product);
+        }
+        else
+        {
+            product.Id = Id.Value;
+            product.DateAdded = DateTime.Now;
+            await ProductClient.UpdateProductAsync(product);
+        }
+
+        navigationManager.NavigateTo("product");
+    }
+}
+    

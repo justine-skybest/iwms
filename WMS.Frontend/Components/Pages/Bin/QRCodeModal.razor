@@ -1,0 +1,460 @@
+﻿@using QRCoder
+@using System.Drawing
+@using System.Globalization
+@inject BinClient BinClient
+
+@if (bin is not null && checkIns is not null && History is not null)
+{
+  <div class="modal fade" id="@GetModalId(bin.BinHashCode)" tabindex="-1" style="overflow:auto;">
+    <div class="modal-dialog" style="min-width:350px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 text-start" id="exampleModalLabel">@bin.BinName<p
+              style="font-size:12px; margin:0px; font-weight: lighter;">@(bin.Warehouse + "/" + bin.Rack + "/" + bin.Bay +
+                          "/" + bin.Level)</p>
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <br>
+      </div>
+      <div class="modal-body">
+        <div class="flex flex-column QR-container print-section">
+          <div class="flex-child @GenerateColorByLevel(GetLastIndexOf(bin.Level, "number"), "")">
+            <div class="flex img-padding">
+              <img style="min-width:30px; width:150px;" src=@("data:image/png;base64," +
+                                                                        System.Convert.ToBase64String(PngByteQRCodeHelper.GetQRCode(bin.BinHashCode.ToString(),
+                                                                        QRCodeGenerator.ECCLevel.Q, 10))) />
+            </div>
+            <div class="flex flex-row pd-0-10 mg-b-1">
+              <div class="flex-child bg-white">
+                <h3 class="title mg-t-b-0">
+                  @(bin.Rack.StartsWith("Warehouse") ? "Warehouse" : @GetLastIndexOf(bin.Warehouse, "text"))
+                </h3>
+                <p class="text-val">@GetLastIndexOf(bin.Warehouse, "number")</p>
+              </div>
+              <div class="flex-child bg-white">
+                <h3 class="title mg-t-b-0">
+                  @(bin.Rack.StartsWith("Rack") ? "Rack" : @GetLastIndexOf(bin.Rack, "text"))
+                </h3>
+                <p class="text-val">@GetLastIndexOf(bin.Rack, "number")</p>
+              </div>
+              <div class="flex-child bg-white">
+                <h3 class="title mg-t-b-0">
+                  Bay
+                </h3>
+                <p class="text-val">@GetLastIndexOf(bin.Bay, "number")</p>
+              </div>
+              <div class="flex-child bg-white">
+                <h3 class="title mg-t-b-0">
+                  Level
+                </h3>
+                <p class="text-val">@GetLastIndexOf(bin.Level, "number")</p>
+              </div>
+              <div class="flex-child bg-white">
+                <h3 class="title mg-t-b-0">
+                  Bin
+                </h3>
+                <p class="text-val mg-l-1 @GenerateColorByLevel(GetLastIndexOf(bin.Level, "number"), "f-c")">
+                  @GetLastIndexOf(bin.BinName, "number")</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        @* @if (checkIns is not null)
+          { *@
+            <div class="flex flex-column">
+              <EditForm Model="_model" class="d-flex flex-row justify-content-center gap-3 mt-2 pt-2 border-top border-2">
+                <InputRadioGroup @bind-Value="@_model.SelectedType">
+                  @foreach (var showBy in ShowStockBy)
+                  {
+                    <label class="form-label">
+                      <InputRadio Value="showBy" />
+                      @showBy
+                    </label>
+                  }
+                </InputRadioGroup>
+              </EditForm>
+
+              @if(@_model.SelectedType == "History"){
+                  if(History.Length == 0){
+                    <h1 class="text-success">No Previous History</h1>
+                  }
+                  else{
+                    @foreach (var movement in History)
+                    {
+                        <div class="movement-block mb-4 p-3 border rounded">
+                            <div class="movement-header d-flex justify-content-between align-items-center mb-2">
+                                <strong>@movement.MovementType</strong>
+                                <span>@movement.Date.ToString("yyyy-MM-dd HH:mm", CultureInfo.CurrentCulture)</span>
+                            </div>
+                            <div>
+                                @if (!string.IsNullOrEmpty(movement.PalletNumber))
+                                {
+                                    <p><strong>Pallet:</strong> @movement.PalletNumber</p>
+                                }
+                            </div>
+
+                            @if (movement.MovementType == "Checked In")
+                            {
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Series</th>
+                                            <th>Shipper</th>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var product in movement.Products)
+                                        {
+                                            <tr>
+                                                <td>@product.ReceivingSeries</td>
+                                                <td>@product.Shipper</td>
+                                                <td>@product.Name</td>
+                                                <!-- For CheckIn, show total quantity (QuantityLeft is full quantity here) -->
+                                                <td>@product.QuantityLeft</td>
+                                                <td>@product.Remarks</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else if (movement.MovementType == "Manual Picking")
+                            {
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Series</th>
+                                            <th>Shipper</th>
+                                            <th>Product</th>
+                                            <th>Qty Picked</th>
+                                            <th>Qty Left</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var product in movement.Products)
+                                        {
+                                            <tr>
+                                                <td>@product.ReceivingSeries</td>
+                                                <td>@product.Shipper</td>
+                                                <td>@product.Name</td>
+                                                <td>@product.QuantityPicked</td>
+                                                <td>@product.QuantityLeft</td>
+                                                <td>@product.Remarks</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+
+                            @if (!string.IsNullOrEmpty(movement.Notes))
+                            {
+                                <p><em>Notes:</em> @movement.Notes</p>
+                            }
+                        </div>
+                    }
+                  }
+              }              
+              else{
+                   @if(checkIns.Length == 0)
+                   {
+                    <h1 class="text-success">Vacant</h1>
+                   }
+                   else
+                   {
+                    @foreach (var checkin in checkIns)
+                    {
+                      if (!String.IsNullOrWhiteSpace(checkin.PalletNumber))
+                      {
+                        <h5>@checkin.PalletNumber</h5>                  
+                        // Display grouped boxed items
+                        foreach (var product in checkin.ReceivedProducts)
+                        {
+                        
+                          <ol style="text-align:left;">
+                            <li>
+                                <div style="display: flex; justify-content: space-between;">
+                                  <span>@product.Name</span>
+                                  <strong>Qty: @product.Quantity</strong>
+                                </div>
+                              </li>
+                              <ul>
+                                <li>
+                                    Receiving Series: @product.ReceivingSeries
+                                </li>
+                                <li>
+                                    Receiving Series: @product.Shipper
+                                </li>
+                                <li>
+                                    Package Type: @product.TypeOfPackage
+                                </li>
+                                <li>
+                                    Measurement: @product.Measurement
+                                </li>
+                                <li>
+                                    Weight: @(Convert.ToDecimal(@product.Weight).ToString("N2"))                              
+                                </li>
+                                <li>
+                                    CBM: @(Convert.ToDecimal(product.CBM).ToString("N2"))
+                                </li>
+                                <li>
+                                    Total Weight: @(Convert.ToDecimal(product.TotalWeight).ToString("N2"))
+                                </li>
+                                <li>
+                                    Expiration Date: @product.ExpirationDate
+                                </li>
+                                <li>
+                                    Remarks: @product.Remarks
+                                </li>
+                              </ul>
+                          </ol>
+                        }
+                      }
+                      else
+                      {
+                        var boxedGroups = checkin.ReceivedProducts
+                            .Where(rp => !string.IsNullOrWhiteSpace(rp.ContainerName))
+                            .GroupBy(rp => rp.ContainerName)
+                            .OrderBy(g => g.Key);
+
+                        var loose = checkin.ReceivedProducts
+                            .Where(rp => string.IsNullOrWhiteSpace(rp.ContainerName))
+                            .ToList();
+
+                        // Display grouped boxed items
+                        foreach (var group in boxedGroups)
+                        {
+                          <h5>@group.Key</h5>
+                          <ol style="text-align:left;">
+                            @foreach (var item in group)
+                            {
+                              <li>
+                                <div style="display: flex; justify-content: space-between;">
+                                  <span>@item.Name</span>
+                                  <strong>Qty: @item.Quantity</strong>
+                                </div>
+                              </li>
+                              <ul>
+                                 <li>
+                                    Receiving Series: @item.ReceivingSeries
+                                </li>
+                                <li>
+                                    Package Type: @item.TypeOfPackage
+                                </li>
+                                <li>
+                                    Measurement: @item.Measurement
+                                </li>
+                                <li>
+                                    Weight: @(Convert.ToDecimal(@item.Weight).ToString("N2"))                              
+                                </li>
+                                <li>
+                                    CBM: @(Convert.ToDecimal(item.CBM).ToString("N2"))
+                                </li>
+                                <li>
+                                    Total Weight: @(Convert.ToDecimal(item.TotalWeight).ToString("N2"))
+                                </li>
+                                <li>
+                                    Expiration Date: @item.ExpirationDate
+                                </li>
+                                <li>
+                                    Remarks: @item.Remarks
+                                </li>
+                              </ul>
+                            }
+                          </ol>
+                        }
+
+                        // Display loose items
+                        if (loose.Any())
+                        {
+                            <h4>Loose Items</h4>
+                            <ol style="text-align:left;">
+                            @foreach (var item in loose)
+                            {
+                                <li>
+                                <div style="display: flex; justify-content: space-between;">
+                                  <span>@item.Name</span>
+                                  <strong>Qty: @item.Quantity</strong>
+                                </div>
+                              </li>
+                              <ul>
+                                <li>
+                                    Receiving Series: @item.ReceivingSeries
+                                </li>
+                                <li>
+                                    Package Type: @item.TypeOfPackage
+                                </li>
+                                <li>
+                                    Measurement: @item.Measurement
+                                </li>
+                                <li>
+                                    Weight: @(Convert.ToDecimal(@item.Weight).ToString("N2"))                              
+                                </li>
+                                <li>
+                                    CBM: @(Convert.ToDecimal(item.CBM).ToString("N2"))
+                                </li>
+                                <li>
+                                    Total Weight: @(Convert.ToDecimal(item.TotalWeight).ToString("N2"))
+                                </li>
+                                <li>
+                                    Expiration Date: @item.ExpirationDate
+                                </li>
+                                <li>
+                                    Remarks: @item.Remarks
+                                </li>
+                              </ul>
+                            }
+                            </ol>
+                        }
+                      }               
+                    }
+                    } 
+              }                          
+            </div>
+          @* } *@
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Print</button>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="@GetDeleteModalId(bin)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+else{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+
+@code {
+
+  [Parameter]
+  public BinSummary? bin { get; set; }
+
+  private DisplayCheckInProducts[]? checkIns;
+
+  private BinMovementHistory[]? History;
+
+  private string[] Colors = {
+        "",             // 0 - unused or default
+        "yellow",       // 1
+        "violet",       // 2
+        "blue",         // 3
+        "green",        // 4
+        "red",          // 5
+        "pink",         // 6
+        "orange",       // 7
+        "teal",         // 8
+        "magenta",      // 9
+        "lime",         //10
+        "navy",         //11
+        "maroon",       //12
+        "cyan",         //13
+        "indigo",       //14
+        "brown",        //15
+        "turquoise",    //16
+        "coral",        //17
+        "purple",       //18
+        "skyblue",      //19
+        "chartreuse"    //20
+    };
+
+  private Random rnd = new Random();
+
+  List<String> ShowStockBy = new List<string> { "Current Stock", "History" };
+
+  FormClass _model = new FormClass();
+
+  class FormClass
+  {
+    public String SelectedType { get; set; } = "Current Stock";
+  }
+  
+  protected override async Task OnInitializedAsync()
+  {
+    if (bin is not null)
+    {
+      checkIns = await BinClient.GetBinStockDetailsAsync(bin.Id);
+      History = await BinClient.GetBinContentMovement(bin.Id);
+    }
+  }
+
+  private string GenerateRandomBGColor()
+  {
+    string randomColor = $"rgb({rnd.Next(0, 256)}, {rnd.Next(0, 256)}, {rnd.Next(0, 256)})";
+    return randomColor;
+  }
+
+  private string GenerateColorByLevel(string level, string FontColor)
+  {
+      if (!int.TryParse(level, out int value) || value < 0)
+          return "";
+
+      string baseColor = value <= 20 ? Colors[value] : "gray";
+
+      string FColor = "";
+      if (!string.IsNullOrWhiteSpace(FontColor))
+      {
+          FColor = baseColor.Equals("yellow", StringComparison.OrdinalIgnoreCase) ? "" : "f-white";
+      }
+
+      return $"{baseColor} {FColor}".Trim();
+  }
+
+  public static string GetModalId(string QRHashCode)
+  {
+    ArgumentNullException.ThrowIfNull(QRHashCode);
+    return $"Modal-{QRHashCode}";
+  }
+
+  private string GetLastIndexOf(string text, string returnType)
+  {
+      if (string.IsNullOrWhiteSpace(text))
+          return returnType.Equals("number", StringComparison.OrdinalIgnoreCase) ? "1" : "";
+
+      var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+      string lastWord = words.Last();
+      bool isLastWordNumber = int.TryParse(lastWord, out int indexNumber);
+
+      // ✅ Handle 'number' logic
+      if (returnType.Equals("number", StringComparison.OrdinalIgnoreCase))
+      {
+          return isLastWordNumber ? lastWord : "1"; // default to 1
+      }
+
+      // ✅ Handle 'text' logic
+      if (returnType.Equals("text", StringComparison.OrdinalIgnoreCase))
+      {
+          // Check if the word "Warehouse" is present (case-insensitive)
+          int warehouseIndex = Array.FindIndex(words, w => w.Equals("Warehouse", StringComparison.OrdinalIgnoreCase));
+
+          if (warehouseIndex > 0)
+          {
+              // Abbreviate all words before "Warehouse", then append ".Warehouse"
+              string abbreviation = string.Concat(words.Take(warehouseIndex).Select(w => w[0]));
+              return $"{abbreviation}.Warehouse";
+          }
+          else
+          {
+              // If no "Warehouse" is found, fall back to existing abbreviation logic
+              var wordsToAbbreviate = isLastWordNumber ? words.Take(words.Length - 1) : words;
+              return string.Concat(wordsToAbbreviate.Select(w => w[0]));
+          }
+      }
+
+      // Default fallback
+      return string.Empty;
+  }
+
+  private string GetDeleteModalId(BinSummary bin)
+  {
+    return $"#{DeleteBin.GetModalId(bin)}";
+  }
+}

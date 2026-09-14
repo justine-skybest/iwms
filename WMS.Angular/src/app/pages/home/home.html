@@ -1,0 +1,186 @@
+<!-- Top Bar Mock -->
+<header class="h-[60px] bg-white border-b border-slate-200 flex items-center justify-between px-7 -mx-7 mb-[22px] sticky top-0 z-30">
+  <div>
+    <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Dashboard</h1>
+    <p class="m-0 text-xs text-slate-500 mt-[1px]">Sep 14, 2026 · Real-time warehouse overview</p>
+  </div>
+</header>
+
+<div class="flex flex-col gap-5">
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-6 gap-[14px]">
+    <app-stat-card label="Total Pallets" value="1,341" sub="Across 5 warehouses" color="#3b82f6" icon="pallets"></app-stat-card>
+    <app-stat-card label="Bin Utilization" value="68%" sub="Avg. across all WH" color="#8b5cf6" icon="box"></app-stat-card>
+    <app-stat-card label="Pending Check-In" value="45" sub="Awaiting processing" color="#f59e0b" icon="scan"></app-stat-card>
+    <app-stat-card label="Expiring Soon" value="12" sub="Within 30 days" color="#f97316" icon="bell"></app-stat-card>
+    <app-stat-card label="Expired" value="3" sub="Requires disposal" color="#ef4444" icon="check"></app-stat-card>
+    <app-stat-card label="Receiving Today" value="8" sub="Shipments expected" color="#22c55e" icon="truck"></app-stat-card>
+  </div>
+
+  <!-- Quick Nav to Mobile App -->
+  <div class="bg-gradient-to-br from-[#1e3a63] to-[#1a56db] rounded-xl px-6 py-4 flex items-center justify-between">
+    <div>
+      <div class="font-display font-bold text-base text-blue-50">Mobile Operations App</div>
+      <div class="text-[13px] text-blue-300 mt-[3px]">Quick actions for warehouse staff — Item Receipt, Check In, Pick Order, and more</div>
+    </div>
+    <button (click)="goToMobile()" class="flex items-center gap-2 bg-blue-500 border-none rounded-lg px-5 py-2.5 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600">
+      Open Mobile App <app-icon name="arrowRight" [size]="16"></app-icon>
+    </button>
+  </div>
+
+  <!-- Row 1: Recent Receiving + Products Expiring -->
+  <div class="grid grid-cols-2 gap-[14px]">
+    <app-table-card title="Recent Receiving Transactions">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Series</th>
+            <th>Warehouse</th>
+            <th>Shipper / Exporter</th>
+            <th>Date Received</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of recentReceiving">
+            <td><span class="font-mono text-xs text-blue-500">{{r.series}}</span></td>
+            <td><span class="badge bg-blue-100 text-blue-700">{{r.warehouse}}</span></td>
+            <td class="text-[13px]">{{r.shipper}}</td>
+            <td class="font-mono text-xs text-slate-500">{{r.dateReceived}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </app-table-card>
+
+    <app-table-card title="Products Expiring Soon">
+      <span extra class="badge bg-amber-100 text-amber-800">12 items</span>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Series</th>
+            <th>Qty</th>
+            <th>Expiration</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of expiringProducts">
+            <td class="font-medium">{{p.product}}</td>
+            <td><span class="font-mono text-[11px] text-slate-500">{{p.series}}</span></td>
+            <td><span class="font-mono text-xs">{{p.qty}}</span></td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'bg-red-100 text-red-800': p.status === 'critical',
+                'bg-amber-100 text-amber-800': p.status === 'warning',
+                'bg-green-100 text-green-800': p.status === 'ok'
+              }">
+                {{p.expiration}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </app-table-card>
+  </div>
+
+  <!-- Row 2: Aging Inventory + Top Products -->
+  <div class="grid grid-cols-[1.6fr_1fr] gap-[14px]">
+    <app-table-card title="Aging Inventory — Oldest On-Shelf Stock">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Series</th>
+            <th>Bin(s)</th>
+            <th>Qty</th>
+            <th>Days in Storage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of agingInventory">
+            <td class="font-medium">{{a.product}}</td>
+            <td><span class="font-mono text-[11px] text-slate-500">{{a.series}}</span></td>
+            <td><span class="font-mono text-xs text-slate-600">{{a.bins}}</span></td>
+            <td><span class="font-mono text-xs">{{a.qty}}</span></td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'bg-red-100 text-red-800': a.days > 300,
+                'bg-amber-100 text-amber-800': a.days > 200 && a.days <= 300,
+                'bg-slate-100 text-slate-700': a.days <= 200
+              }">
+                {{a.days}}d
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </app-table-card>
+
+    <app-table-card title="Top Products On-Hand">
+      <div class="px-[18px] pt-[10px] pb-[14px]">
+        <div *ngFor="let p of topProducts; let i = index" class="flex items-center gap-2.5 mb-3 last:mb-0">
+          <span class="font-mono text-[11px] text-slate-400 w-4 text-center">{{i + 1}}</span>
+          <div class="flex-1 min-w-0">
+            <div class="text-[13px] text-slate-700 font-medium truncate">{{p.product}}</div>
+            <div class="h-[5px] bg-slate-100 rounded-[3px] mt-1 overflow-hidden">
+              <div class="h-full bg-blue-500 rounded-[3px]" [style.width.%]="(p.qty / maxTopQty) * 100"></div>
+            </div>
+          </div>
+          <span class="font-mono text-xs text-blue-500 font-semibold w-[50px] text-right shrink-0">{{p.qty | number}}</span>
+        </div>
+      </div>
+    </app-table-card>
+  </div>
+
+  <!-- Row 3: Receiving vs Picking + Per-Warehouse -->
+  <div class="grid grid-cols-[1fr_1.4fr] gap-[14px]">
+    <app-table-card title="Receiving vs. Picking — Last 7 Days">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Received Qty</th>
+            <th>Picked Qty</th>
+            <th>Net</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of receivingVsPicking">
+            <td><span class="font-mono text-xs text-slate-600">{{r.date}}</span></td>
+            <td><span class="font-mono text-xs text-green-500 font-semibold">{{r.received}}</span></td>
+            <td><span class="font-mono text-xs text-blue-500 font-semibold">{{r.picked}}</span></td>
+            <td>
+              <span class="font-mono text-xs font-semibold" [ngClass]="(r.received - r.picked) >= 0 ? 'text-green-600' : 'text-red-600'">
+                {{(r.received - r.picked) >= 0 ? '+' : ''}}{{r.received - r.picked}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </app-table-card>
+
+    <app-table-card title="Per-Warehouse Breakdown">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Warehouse</th>
+            <th>Pallets</th>
+            <th>Bin Utilization</th>
+            <th>Pending Check-In</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let w of warehouseBreakdown">
+            <td><span class="badge bg-slate-100 text-slate-700">{{w.warehouse}}</span></td>
+            <td><span class="font-mono text-xs">{{w.pallets}}</span></td>
+            <td><app-util-bar [pct]="w.utilization"></app-util-bar></td>
+            <td>
+              <span class="badge" [ngClass]="w.pending > 10 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'">
+                {{w.pending}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </app-table-card>
+  </div>
+</div>

@@ -1,0 +1,243 @@
+﻿@using QRCoder
+@attribute [StreamRendering]
+@inject BayClient BayClient
+@inject BinClient BinClient
+@inject IJSRuntime JSRuntime
+
+<div class="modal fade" id="@GetModalId(rack)" tabindex="-1" style="overflow:auto;"> 
+    <div class="modal-dialog" style="min-width:@(binCount is null ? 1 * 350 : binCount.Count() * 350)px;">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Batch Printing (By Bay)</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="bay" class="form-label">Bay:</label>
+                    @if(bay is not null)
+                    {
+                        <EditForm Model="@bay" FormName="AddEditBin" Enhance>
+                             <InputSelect id="bay" Value="bay.Id" TValue="int" ValueChanged="HandleBayChange" ValueExpression="@(() => bay.Id)" class="form-select">
+                                <option value="0">Select a bay</option>
+                                @if(bays is not null)
+                                {
+                                    @foreach (var bay in bays)
+                                    {
+                                        <option value="@bay.Id"> Bay @bay.BayNumber</option>
+                                    }
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="() => bay.Id"/>
+                        </EditForm>                                                      
+                    }                    
+                </div>
+                <div  id="PrintPreview@(rack is null ? "" : rack.Id.ToString())">                    
+                        @if(bins is not null)
+                        {
+                            @if(bay is not null && bay.Id != 0)
+                            {
+                                @if(bins.Count() == 0)
+                                {
+                                    <p class="text-center bold fw-bold">No bins assigned.</p>
+                                }
+                                else{                                                                                                                                            
+                                    @foreach(var level in bins.GroupBy(bin => bin.Level).Select(bin => bin.First()).Select(bin => bin.Level).OrderByDescending(level => int.Parse(level)).ToList())
+                                    {
+                                        <div class="flex flex-column QR-container print-section"  style="min-width: @(bins.Where(bin => bin.Level == level).Count() * 300)px;">         
+                                            <div class= "flex-child flex flex-row gap-1">                                       
+                                                @foreach(var bin in bins.Where(bin => bin.Level == level).ToList())
+                                                {
+                                                    <div class="flex-child @GenerateColorByLevel(GetLastIndexOf(bin.Level, "number"), "")">
+                                                        <div class="flex img-padding">
+                                                            <img style="min-width:30px; width:150px;" src=@("data:image/png;base64," +
+                                                            System.Convert.ToBase64String(PngByteQRCodeHelper.GetQRCode(bin.BinHashCode, QRCodeGenerator.ECCLevel.Q,
+                                                            10))) />
+                                                        </div>
+                                                        <div class="flex flex-row pd-0-10 mg-b-1">
+                                                            <div class="flex-child bg-white">
+                                                                <h3 class="title mg-t-b-0">@(bin.Rack.StartsWith("Warehouse") ? "Warehouse" : @GetLastIndexOf(bin.Warehouse, "text"))</h3>
+                                                                <p class="text-val">@GetLastIndexOf(bin.Warehouse, "number")</p>
+                                                            </div>
+                                                            <div class="flex-child bg-white">
+                                                                <h3  class="title mg-t-b-0">@(bin.Rack.StartsWith("Rack") ? "Rack" : @GetLastIndexOf(bin.Rack, "text"))</h3>
+                                                                <p class="text-val">@GetLastIndexOf(bin.Rack, "number")</p>
+                                                            </div>
+                                                            <div class="flex-child bg-white">
+                                                                <h3  class="title mg-t-b-0">Bay</h3>
+                                                                <p class="text-val">@GetLastIndexOf(bin.Bay, "number")</p>
+                                                            </div>
+                                                            <div class="flex-child bg-white">
+                                                                <h3  class="title mg-t-b-0">Level</h3>
+                                                                <p class="text-val">@GetLastIndexOf(bin.Level, "number")</p>
+                                                            </div>                
+                                                            <div class="flex-child bg-white">
+                                                                <h3  class="title mg-t-b-0">Bin</h3>
+                                                                <p class="text-val mg-l-1 @GenerateColorByLevel(GetLastIndexOf(bin.Level, "number"), "f-c")">
+                                                                    @GetLastIndexOf(bin.BinName, "number")</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>    
+                                                }
+                                            </div>
+                                        </div>  
+                                    }
+                                }       
+                            }                                
+                        }              
+            </div>           
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="PrintComponent" >Print</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RackSummary? rack {get;set;}
+    [Parameter]
+    public BaySummary[]? bays {get;set;}
+
+    [SupplyParameterFromForm]
+    private BaySummary? bay {get;set;} = new()
+    {
+        Id = 0,
+        BayNumber = ""
+    };
+
+    private BinSummary[]? bins;
+
+    private BinSummary[]? binCount;
+    
+    private string title = string.Empty;
+
+    private string[] Colors = {
+        "",             // 0 - unused or default
+        "yellow",       // 1
+        "violet",       // 2
+        "blue",         // 3
+        "green",        // 4
+        "red",          // 5
+        "pink",         // 6
+        "orange",       // 7
+        "teal",         // 8
+        "magenta",      // 9
+        "lime",         //10
+        "navy",         //11
+        "maroon",       //12
+        "cyan",         //13
+        "indigo",       //14
+        "brown",        //15
+        "turquoise",    //16
+        "coral",        //17
+        "purple",       //18
+        "skyblue",      //19
+        "chartreuse"    //20
+    };
+    
+    private Random rnd = new Random();
+
+    private string GenerateRandomBGColor()
+    {
+        string randomColor = $"rgb({rnd.Next(0, 256)}, {rnd.Next(0, 256)}, {rnd.Next(0, 256)})";
+        return randomColor;
+    }
+
+    private string GenerateColorByLevel(string level, string FontColor)
+    {
+        if (!int.TryParse(level, out int value) || value < 0)
+            return "";
+
+        string baseColor = value <= 20 ? Colors[value] : "gray";
+
+        string FColor = "";
+        if (!string.IsNullOrWhiteSpace(FontColor))
+        {
+            FColor = baseColor.Equals("yellow", StringComparison.OrdinalIgnoreCase) ? "" : "f-white";
+        }
+
+        return $"{baseColor} {FColor}".Trim();
+    }
+
+    private string GetLastIndexOf(string text, string returnType)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return returnType.Equals("number", StringComparison.OrdinalIgnoreCase) ? "1" : "";
+
+        var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string lastWord = words.Last();
+        bool isLastWordNumber = int.TryParse(lastWord, out int indexNumber);
+
+        // ✅ Handle 'number' logic
+        if (returnType.Equals("number", StringComparison.OrdinalIgnoreCase))
+        {
+            return isLastWordNumber ? lastWord : "1"; // default to 1
+        }
+
+        // ✅ Handle 'text' logic
+        if (returnType.Equals("text", StringComparison.OrdinalIgnoreCase))
+        {
+            // Check if the word "Warehouse" is present (case-insensitive)
+            int warehouseIndex = Array.FindIndex(words, w => w.Equals("Warehouse", StringComparison.OrdinalIgnoreCase));
+
+            if (warehouseIndex > 0)
+            {
+                // Abbreviate all words before "Warehouse", then append ".Warehouse"
+                string abbreviation = string.Concat(words.Take(warehouseIndex).Select(w => w[0]));
+                return $"{abbreviation}.Warehouse";
+            }
+            else
+            {
+                // If no "Warehouse" is found, fall back to existing abbreviation logic
+                var wordsToAbbreviate = isLastWordNumber ? words.Take(words.Length - 1) : words;
+                return string.Concat(wordsToAbbreviate.Select(w => w[0]));
+            }
+        }
+
+        // Default fallback
+        return string.Empty;
+    }
+    public static string GetModalId(RackSummary? rack)
+    {
+        ArgumentNullException.ThrowIfNull(rack);
+        return $"printModal-{rack.Id}";
+    }
+
+    private async Task ConfirmAsync()
+    {
+        ArgumentNullException.ThrowIfNull(rack);
+        ArgumentNullException.ThrowIfNull(bay);
+        bins = await BinClient.GetBinsByBayAsync(rack.Id,bay.Id);
+    }  
+
+   
+    private async Task HandleBayChange(int BayId)
+    {
+        if (rack is null) throw new ArgumentNullException("Rack is null!");
+        if (bay is null) throw new ArgumentNullException("Bay is null!");
+        
+        bay.Id = BayId;
+        bins = await BinClient.GetBinsByBayAsync(rack.Id,bay.Id);
+        var levels = bins.GroupBy(bin => bin.Level).Select(bin => bin.First()).Select(bin => bin.Level).ToList();
+        if(levels.Count == 0){
+            binCount = null;
+        }
+        else{
+            foreach(var level in levels)
+            {
+                if (binCount is null || binCount.Count() < bins.Where(bin => bin.Level == level).ToArray().Count())
+                {
+                    binCount = bins.Where(bin => bin.Level == level).ToArray();
+                }
+            }        
+        }        
+    }
+
+    private async Task PrintComponent()
+    {
+        if (rack is null) throw new ArgumentNullException("Rack is null!");
+        await JSRuntime.InvokeVoidAsync("printComponent", $"#PrintPreview{rack.Id}");
+    } 
+}

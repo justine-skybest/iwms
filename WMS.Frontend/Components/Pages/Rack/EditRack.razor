@@ -1,0 +1,218 @@
+﻿@page "/rack/add"
+@page "/rack/edit/{id:int}"
+@page "/{sourcePage}/{warehouseId:int}/rack/add"
+@page "/{sourcePage}/rack/edit/{id:int}"
+@rendermode InteractiveServer
+
+@inject IJSRuntime JS
+@inject NavigationManager navigationManager
+@inject RackClient rackClient
+@inject WarehouseClient warehouseClient
+@inject BayClient BayClient
+@inject LevelClient LevelClient
+
+<PageTitle>@title</PageTitle>
+<h3>@title</h3>
+
+@if(warehouses is null || rack is null || bays is null || levels is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@rack" FormName="AddEditRack" OnValidSubmit="HandleSubmitAsync" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary/>
+                <div class="mb-3">
+                    <label for="warehouse" class="form-label">Warehouse:</label>
+                    <InputSelect id="warehouse" @bind-Value="rack.WarehouseId" class="form-select">
+                        <option value="">Select a warehouse</option>
+                        @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => rack.WarehouseId"/>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="rack.Name" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => rack.Name"/>
+                </div>
+                <div class="mb-3"> 
+                    <InputCheckbox @bind-Value="rack.IsFloorDocking" class="form-check-input" id="floorDockingCheck" />
+                    <label class="form-check-label" for="floorDockingCheck">
+                        Is Floor Docking
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label for="bay" class="form-label">Bay:</label>
+                    <InputSelect id="bay" @bind-Value="rack.BayId" class="form-select">
+                        <option value="">Select a bay</option>
+                        @foreach (var bay in bays)
+                        {
+                            <option value="@bay.Id"> @bay.BayNumber</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => rack.BayId"/>
+                </div>
+                <div class="mb-3">
+                    <label for="level" class="form-label">Level:</label>
+                    <InputSelect id="level" @bind-Value="rack.LevelId" class="form-select">
+                        <option value="">Select a level</option>
+                        @foreach (var level in levels)
+                        {
+                            <option value="@level.Id"> @level.LevelNumber</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => rack.LevelId"/>
+                </div>
+
+                @if(warehouse is not null && warehouse.FloorPlanImage is not null && warehouse.FloorPlanImage.Length > 0){
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Floor Plan Location:</label>
+                        <div class="mb-3">
+                            <button id="AddBox" class="btn btn-secondary">Add Box</button>
+                            <button id="AddText" class="btn btn-secondary">Add Text</button>
+                            <button id="RemoveObject" disabled class="btn btn-secondary">Remove</button>
+                        </div>
+                        <canvas id="canvas" class="border"></canvas>
+                        <ValidationMessage For="() => rack.RackFloorMapObject"/>
+                    </div>
+                 }
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a role="button" class="btn btn-secondary" href="/@(sourcePage is null || sourcePage == "" ? "rack" : sourcePage)">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+    
+}
+
+
+@code {
+    [Parameter]
+    public string? sourcePage {get;set;}
+    [Parameter]
+    public int? Id {get; set;}
+    [Parameter]
+    public int? WarehouseId {get; set;}
+
+
+    [SupplyParameterFromForm]
+    private RackDetails? rack {get; set;}
+
+    private WarehouseDetails? warehouse {get; set;}
+
+    private WarehouseSummary[]? warehouses;
+    
+    private BaySummary[]? bays {get; set;}
+
+    private LevelSummary[]? levels {get; set;}
+
+    private string title = string.Empty;
+
+    private string? FloorMapImageSrc {get; set;}
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(rack is not null)
+        {
+            return;
+        }
+
+        if(Id is not null)
+        {
+            rack = await rackClient.GetRackAsync(Id.Value);
+            title = $"Edit {rack.Name}";
+        }
+        else{
+            rack = new()
+            {
+                Name = string.Empty,
+                WarehouseId = WarehouseId.ToString(),
+                RackFloorMapObject = new List<RackFloorMapObjectDetails>(),               
+            };
+
+            title = "New Rack";
+        }
+
+        warehouse = await warehouseClient.GetWarehouseAsync(Convert.ToInt32(rack.WarehouseId));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await warehouseClient.GetWarehousesAsync();
+        bays = await BayClient.GetBayAsync();
+        levels = await LevelClient.GetLevelAsync();
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(rack);
+
+        // Get objects from the canvas using JavaScript Interop
+        var objects = await JS.InvokeAsync<List<RackFloorMapObjectDetails>>("getCanvasObjects", "canvas");
+
+        if(objects is not null && objects.Count() > 0)
+        {
+            List<RackFloorMapObjectDetails> rackFloorMapObjects = new List<RackFloorMapObjectDetails>();
+            foreach (var obj in objects)
+            {
+                rackFloorMapObjects.Add(new RackFloorMapObjectDetails
+                {
+                    Type = obj.Type,
+                    Left = obj.Left,
+                    Top = obj.Top,
+                    Width = obj.Width,
+                    Height = obj.Height,
+                    Text = obj.Text,
+                    Fill = obj.Fill,
+                    Stroke = obj.Stroke,
+                    StrokeWidth = obj.StrokeWidth,
+                    FontSize = obj.FontSize,                    
+                    ScaleX = obj.ScaleX,
+                    ScaleY = obj.ScaleY,
+                    Angle = obj.Angle
+                });
+            }
+            rack.RackFloorMapObject = rackFloorMapObjects;
+        }
+
+        if(Id is null)
+        {
+            await rackClient.AddRackAsync(rack);
+        }
+        else
+        {
+            rack.Id = Id.Value;
+            rack.DateAdded = DateTime.Now;
+            await rackClient.UpdateRackAsync(rack);
+        }
+
+        navigationManager.NavigateTo((sourcePage is null || sourcePage == "" ? "rack" : sourcePage));
+    }
+
+    private bool isCanvasInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (warehouse is not null && rack is not null && !isCanvasInitialized)
+        {
+            isCanvasInitialized = true;
+            if(Id is null)
+            {
+                await JS.InvokeVoidAsync("InitializeCanvas", "canvas", $"data:image/jpeg;base64,{Convert.ToBase64String(warehouse.FloorPlanImage!)}");                
+            }
+            else{
+                await JS.InvokeVoidAsync("renderObjectsOnCanvas", "canvas", $"data:image/jpeg;base64,{Convert.ToBase64String(warehouse.FloorPlanImage!)}", rack.RackFloorMapObject);                
+            }
+        }
+    }    
+}
+

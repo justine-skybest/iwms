@@ -1,0 +1,679 @@
+﻿@page "/receiving/{WarehouseId:int}/add"
+@page "/receiving/{WarehouseId:int}/edit/{id:int}"
+@rendermode InteractiveServer
+@using BlazorBarcodeScanner.ZXing.JS
+@using WMS.Frontend.Mapping
+@using WMS.Frontend.Models.Receiving
+
+@inject NavigationManager navigationManager
+@inject WarehouseClient WarehouseClient
+@inject ReceivingClient ReceivingClient
+@inject ProductClient ProductClient
+@inject PalletClient PalletClient
+
+<PageTitle>@title</PageTitle>
+
+@if(IsLoading)
+{
+    <div class="full-screen-spinner d-flex justify-content-center align-items-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+@if(receiving is null || SelectedProduct is null || Product is null || warehouse is null)
+{
+     <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="row ">
+        <div class="col-sm-6 ">
+            <h2>@title</h2>
+        </div>
+        <div class="col-sm-6 d-flex justify-content-sm-end align-items-sm-end  mt-sm-0 justify-content-center align-items-center mt-4">
+            <h3><i>@warehouse.Name</i></h3>
+        </div>
+    </div>
+
+    <EditForm Context="FormContext" Model="@receiving" FormName="AddEditWarehouse" OnValidSubmit="HandleSubmitAsync" Enhance>
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>      
+        <fieldset class="border border-1 rounded row p-2 mb-3">    
+            <div class="col-md">
+                <div class = "mb-2">
+                    <label for="TransportCompany" class="form-label">Transport Co.:</label>
+                    <InputText id="TransportCompany" @bind-Value="receiving.TransportCompany" class="form-control" onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.TransportCompany"/>
+                </div>
+                <div class="mb-2">
+                    <label for="Shipper" class="form-label">Shipper/Exporter:</label>
+                    <InputText id="Shipper" @bind-Value="receiving.Shipper" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.Shipper"/>
+                </div>
+                <div class="mb-2">
+                    <label for="Consignee" class="form-label">Consignee/Importer:</label>
+                    <InputText id="Consignee" @bind-Value="receiving.Consignee" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.Consignee"/>
+                </div>
+            </div>
+             <div class="col-md">
+                <div class = "mb-2">
+                    <label for="DateReceived" class="form-label">Date Received:</label>
+                    <InputDate Type="InputDateType.Date" id="DateReceived" @bind-Value="receiving.DateReceived" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.DateReceived"/>
+                </div>
+                <div class = "mb-2">
+                    <label for="Reference" class="form-label">INV / PO / DR No.</label>
+                    <InputTextArea id="Reference" @bind-Value="receiving.Reference" class="form-control" rows="2" />
+                    <ValidationMessage For="() => receiving.Reference"/>
+                </div>
+            </div>
+        </fieldset>
+        
+        <fieldset class="border border-1 row rounded p-2 mb-3">    
+            <div class="row p-2">
+                <div>
+                    <h2><b class="@(String.IsNullOrWhiteSpace(PalletNumbers) ?  "text-danger" : "text-success")">*</b>Pallet #: @PalletNumbers</h2>                    
+                </div>                    
+                
+                <div>
+                    <p>Please scan a pallet qr code or generate a new pallet ID.</p>
+                    <button class="btn btn-success" type="button"  @onclick="OnShowModalClick">Scan QR Code</button>
+                    <button class="btn btn-primary" type="button" @onclick="GeneratePallet">Generate Pallet ID</button>                                       
+                </div>
+            </div>
+        </fieldset>
+
+         <fieldset class="border border-1 row rounded p-2 mb-3">    
+            <div class="row p-3">
+                <div class="col-md-6 mb-2">
+                    <label for="product" class="form-label"><b class="@(String.IsNullOrWhiteSpace(Product.Name) ?  "text-danger" : "text-success")">*</b>Product:</label>
+                    <AutoComplete @bind-Value="Product.Name"
+                      TItem="ProductSummary"
+                      DataProvider="ProductsDataProvider"
+                      PropertyName="Name"
+                      Placeholder="Search a product" 
+                      OnChanged="(ProductSummary product) => OnAutoCompleteChanged(product)"  onkeypress="return event.keyCode!=13"/>                      
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="TypeOfPackage" class="form-label">Type of Package:</label>
+                    <InputText id="shippier" @bind-Value="Product.TypeOfPackage" class="form-control" readonly  onkeypress="return event.keyCode!=13"/>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="consignee" class="form-label">Measurement:</label>
+                    <InputText id="consignee" @bind-Value="Product.Measurement" class="form-control" readonly  onkeypress="return event.keyCode!=13"/>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="Weight" class="form-label">Weight:</label>
+                    <InputNumber id="Weight" @bind-Value='Product.Weight' class="form-control" readonly onkeypress="return event.keyCode!=13"/>
+                </div>
+                <div class="@(IsIndividualItemSelected ? "col-md-4" : "col-md-6") mb-2">
+                    <label for="AssignedPallet" class="form-label">
+                        <InputCheckbox @bind-Value="IsPalletSelected"/> 
+                        @if(SelectedCheckInType.Equals("Pallet"))
+                        {
+                            <b class="@(String.IsNullOrWhiteSpace(SelectedProduct.PalletId) ?  "text-danger" : "text-success")">*</b>
+                        }
+                        Palletized 
+                        <InputCheckbox @bind-Value="IsIndividualItemSelected"/> 
+                        @if(SelectedCheckInType.Equals("IndividualItem"))
+                        {
+                            <b class="text-success">*</b>                            
+                        }
+                        Indv. Item                        
+                    </label>
+                     <InputSelect id="AssignedPallet" @bind-Value="SelectedProduct.PalletId" class="form-select" disabled="@(SelectedCheckInType.Equals("IndividualItem"))">
+                        <option value="">Select a pallet</option>
+                        @if(pallets is not null)
+                        {
+                            @foreach (var pallet in pallets.OrderBy(p=> p.PalletNumber))
+                            {
+                                <option value="@pallet.Id"> Pallet # @pallet.PalletNumber</option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => SelectedProduct.PalletId"/>
+                </div>
+                @if(SelectedCheckInType.Equals("IndividualItem"))
+                {
+                     <div class="col-md-2 mb-2">
+                        <label for="IsItemBoxed" class="form-label">
+                            @if(IsBoxed)
+                            {
+                                <b class="@(String.IsNullOrWhiteSpace(SelectedProduct.ContainerName) ?  "text-danger" : "text-success")">*</b>
+                            }
+                            <InputCheckbox Value="@IsBoxed" TValue="bool"  ValueExpression="@(() => IsBoxed)" ValueChanged="@IsItemBoxedCheckChanged"/>                        
+                            Is Item Boxed?                      
+                        </label>        
+                        <InputText id="BoxName" @bind-Value="SelectedProduct.ContainerName" class="form-control"  disabled="@(IsBoxed == false)" onkeypress="return event.keyCode!=13" Placeholder="Box Name (Ex. Box 1)" />            
+                     </div>                     
+                }                
+                <div class="col-md-2 mb-2">
+                    <label for="Quantity" class="form-label"><b class="@(SelectedProduct.Quantity == 0 ?  "text-danger" : "text-success")">*</b>Quantity:</label>                                        
+                    <InputNumber id="Quantity" Value="@SelectedProduct.Quantity" class="form-control" TValue="int" ValueExpression="@(() => SelectedProduct.Quantity)" ValueChanged="@OnQuantityChanged" ParsingErrorMessage="The Quantity must be a whole number."  onkeypress="return event.keyCode!=13"/>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="CBM" class="form-label">
+                    @if(IsBoxed){
+                        <b class="@(String.IsNullOrEmpty(SelectedProduct.CBM) ?  "text-danger" : "text-success")">*</b>
+                    }    
+                    CBM:</label>
+                    <InputText id="CBM" @bind-Value="SelectedProduct.CBM" class="form-control" readonly="@(IsBoxed == false ? true : false)" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 46 && this.value.indexOf('.') == -1)) && event.keyCode!=13"/>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="TotalWeight" class="form-label">
+                    @if(IsBoxed){
+                        <b class="@(String.IsNullOrEmpty(SelectedProduct.TotalWeight) ?  "text-danger" : "text-success")">*</b>
+                    }
+                    Total Weight:</label>
+                    <InputText id="TotalWeight" @bind-Value="SelectedProduct.TotalWeight" class="form-control" readonly="@(IsBoxed == false ? true : false)" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 46 && this.value.indexOf('.') == -1)) && event.keyCode!=13"/>
+                </div>
+                <div class="col-md-4 mb-6">
+                    <label for="ExpirationDate" class="form-label"><b class="@(SelectedProduct.ExpirationDate < DateOnly.FromDateTime(DateTime.Now) ?  "text-danger" : "text-success")">*</b>Expiration Date:</label>
+                    <InputDate Type="InputDateType.Date" id="ExpirationDate" @bind-Value="SelectedProduct.ExpirationDate" class="form-control"/>
+                </div>                
+                <div class="col-md-7 mb-6 pr-0">
+                    <label for="Remarks" class="form-label"><b class="@(String.IsNullOrWhiteSpace(SelectedProduct.Remarks) ?  "text-danger" : "text-success")">*</b>Remarks:</label>
+                    <InputTextArea id="Remarks" @bind-Value="SelectedProduct.Remarks" class="form-control" rows="1" />
+                </div>
+                <div class="col-md-1 d-flex flex-column flex-md-column justify-content-center align-items-center p-0">                
+                    <button style="width:100%;" type="button" @onclick="AppendSelectedProduct" class="btn btn-primary mt-4"><i class="bi bi-clipboard2-plus-fill"></i></button>    
+                </div>
+                @if(!String.IsNullOrWhiteSpace(DisplayError))
+                {   
+                    <div class="col pt-3">
+                        <Alert Color="AlertColor.Danger"> <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@DisplayError</Alert>
+                    </div>
+                }
+            </div>
+             <div class="row">
+               <Grid @ref="ProductGrid"                     
+                    TItem="ReceivedProductSummary"                      
+                    Data="SelectedProductGrid"
+                    Class="table table-hover table-bordered table-striped"
+                    AllowPaging="true"
+                    PageSize="10"
+                    PageSizeSelectorVisible="true"
+                    PageSizeSelectorItems="@(new int[] { 5,10,20 })"
+                    Responsive="true"
+                    Context="GridContext">
+
+                    <GridColumns>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Name">
+                            @context.Name
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Type of Package">
+                            @context.TypeOfPackage
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Measurement">
+                            @context.Measurement
+                        </GridColumn>         
+                         <GridColumn TItem="ReceivedProductSummary" HeaderText="Box Name">
+                            @context.ContainerName
+                        </GridColumn>                   
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Quantity">
+                            @context.Quantity
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="CBM">
+                            @context.CBM                    
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Total">
+                            @context.TotalWeight
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Expiration Date">
+                            @context.ExpirationDate
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Assigned Pallet">
+                            @context.PalletId
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="Remarks">
+                            @context.Remarks
+                        </GridColumn>
+                        <GridColumn TItem="ReceivedProductSummary" HeaderText="">
+                            <button class="btn btn-danger" type="button" @onclick="@(()=> GetDeleteModalId(@context))">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </GridColumn>
+                    </GridColumns>
+
+                    <GridTemplates>
+                        <GridEmptyDataTemplate TItem="ReceivedProductSummary">
+                            <div class="text-center">
+                                <svg clip-rule="evenodd" fill-rule="evenodd" height="128" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 64 64" width="128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="fi_7486754"><linearGradient id="lg1"><stop offset="0" stop-color="#cadcf0"></stop><stop offset="1" stop-color="#a4bbdb"></stop></linearGradient><linearGradient id="_Linear1" gradientTransform="matrix(40 0 0 25.912 12 48.573)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg1" y1="0" y2="0"></linearGradient><linearGradient id="lg2"><stop offset="0" stop-color="#a4bbdb"></stop><stop offset="1" stop-color="#8da3be"></stop></linearGradient><linearGradient id="_Linear2" gradientTransform="matrix(20.086 0 0 25.912 31.914 48.573)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg2" y1="0" y2="0"></linearGradient><linearGradient id="lg3"><stop offset="0" stop-color="#e9f3fc"></stop><stop offset="1" stop-color="#cadcf0"></stop></linearGradient><linearGradient id="_Linear3" gradientTransform="matrix(14.679 14.768 -21.492 8.973 12.133 35.609)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2=".337"></linearGradient><linearGradient id="_Linear4" gradientTransform="matrix(25.743 1.634 -3.837 17.203 32.081 42.038)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2=".227"></linearGradient><linearGradient id="_Linear5" gradientTransform="matrix(20.007 -6.501 5.236 7.762 9.382 31.736)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2="-.619"></linearGradient><linearGradient id="_Linear6" gradientTransform="matrix(15.249 13.945 -20.61 7.651 37.354 21.357)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2=".429"></linearGradient><linearGradient id="_Linear7" gradientTransform="matrix(40 0 0 13 12 35.606)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg1" y1="0" y2="0"></linearGradient><linearGradient id="_Linear8" gradientTransform="matrix(.431 16.153 -16.153 .431 34.048 28.815)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg2" y1="0" y2="0"></linearGradient><linearGradient id="_Linear9" gradientTransform="matrix(19.724 23.273 -23.273 19.724 20.991 6.831)" gradientUnits="userSpaceOnUse" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#559aff"></stop><stop offset="1" stop-color="#2e69ef"></stop></linearGradient><linearGradient id="_Linear18" gradientTransform="matrix(6.695 0 0 4.448 30.933 4.607)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2="0"></linearGradient><linearGradient id="_Linear19" gradientTransform="matrix(6.695 0 0 -4.448 30.933 10.607)" gradientUnits="userSpaceOnUse" x1="0" x2="1" xlink:href="#lg3" y1="0" y2="0"></linearGradient><g id="Exp-3.-G"><path d="m52 35.617h-40v18.512c0 .883.579 1.662 1.425 1.916 4.019 1.205 15.321 4.596 18 5.4.375.112.775.112 1.15 0 2.679-.804 13.981-4.195 18-5.4.846-.254 1.425-1.033 1.425-1.916 0-4.636 0-18.512 0-18.512z" fill="url(#_Linear1)"></path><path d="m52 35.617h-20s-.194 25.912 0 25.912.387-.028.575-.084c2.679-.804 13.981-4.195 18-5.4.846-.254 1.425-1.033 1.425-1.916 0-4.636 0-18.512 0-18.512z" fill="url(#_Linear2)"></path><path d="m32 42.106-20-6.489s-3.507 5.2-5.075 7.524c-.176.261-.219.588-.117.885.103.297.338.528.637.626 3.799 1.234 15.045 4.888 17.995 5.846.423.138.887-.021 1.137-.39 1.341-1.979 5.423-8.002 5.423-8.002z" fill="url(#_Linear3)"></path><path d="m52 35.617-20 6.489s4.082 6.023 5.423 8.002c.25.369.714.528 1.137.39 2.95-.958 14.196-4.612 17.995-5.846.299-.098.534-.329.637-.626.102-.297.059-.624-.117-.885-1.568-2.324-5.075-7.524-5.075-7.524z" fill="url(#_Linear4)"></path><path d="m27.159 21.986c-.25-.367-.713-.526-1.136-.388-2.948.957-14.197 4.612-17.996 5.847-.299.097-.535.328-.637.625s-.059.625.117.885c1.444 2.142 4.493 6.662 4.493 6.662l20-6.511s-3.592-5.283-4.841-7.12z" fill="url(#_Linear5)"></path><path d="m56.493 28.955c.176-.26.219-.588.117-.885s-.338-.528-.637-.625c-3.799-1.235-15.048-4.89-17.996-5.847-.423-.138-.886.021-1.136.388-1.249 1.837-4.841 7.12-4.841 7.12l20 6.511s3.049-4.52 4.493-6.662z" fill="url(#_Linear6)"></path><path d="m52 35.617-20-6.511-20 6.511 20 6.489z" fill="url(#_Linear7)"></path><path d="m32 42.106v-13l-20 6.511z" fill="url(#_Linear8)"></path><g fill="url(#_Linear9)"><path d="m27.982 31.978c-.416-.272-.791-.563-1.124-.868-.406-.373-1.039-.346-1.413.061-.373.406-.346 1.039.061 1.412.409.376.87.734 1.382 1.069.462.302 1.082.172 1.384-.29s.172-1.082-.29-1.384z"></path><path d="m24.866 28.906c-.297-.403-.548-.808-.754-1.213-.25-.492-.853-.688-1.345-.438s-.688.853-.438 1.345c.254.498.562.997.927 1.492.327.444.953.539 1.398.212.444-.328.539-.954.212-1.398z"></path><path d="m23.404 24.825c.01-.403.069-.794.177-1.169.152-.53-.155-1.085-.686-1.237-.53-.152-1.085.155-1.237.686-.153.536-.239 1.095-.254 1.67-.013.552.423 1.011.975 1.024.552.014 1.011-.422 1.025-.974z"></path><path d="m24.942 21.485c.257-.238.545-.458.86-.657.467-.295.607-.913.313-1.379-.295-.467-.913-.607-1.38-.313-.423.267-.807.562-1.152.882-.405.375-.429 1.008-.054 1.413s1.008.429 1.413.054z"></path><path d="m28.661 19.76c.503-.093 1.036-.153 1.598-.176.552-.024.98-.491.957-1.042s-.49-.98-1.042-.957c-.66.028-1.286.099-1.877.208-.542.101-.902.623-.801 1.165.1.543.622.902 1.165.802z"></path><path d="m33.873 19.701c.853.01 1.647-.02 2.384-.085.55-.049.957-.535.908-1.085-.049-.549-.535-.956-1.085-.907-.675.059-1.402.087-2.184.077-.552-.006-1.005.437-1.011.988-.007.552.436 1.006.988 1.012z"></path><path d="m39.544 19.003c.99-.303 1.826-.691 2.526-1.136.465-.297.603-.915.306-1.381-.296-.465-.915-.603-1.381-.306-.563.358-1.238.666-2.036.91-.527.162-.825.721-.663 1.249.161.528.721.825 1.248.664z"></path><path d="m44.634 15.068c.472-.976.653-2.008.607-3.003-.026-.552-.495-.978-1.046-.952s-.978.494-.952 1.045c.032.676-.09 1.377-.41 2.04-.24.497-.032 1.096.465 1.336s1.096.031 1.336-.466z"></path><path d="m43.997 8.529c-.729-.985-1.718-1.671-2.796-1.892-.541-.11-1.07.238-1.181.779-.11.541.239 1.07.779 1.181.622.127 1.17.554 1.591 1.123.329.443.956.536 1.399.208.444-.329.537-.956.208-1.399z"></path></g><path d="m30.933 6.831c1.082-6.127 10.459-5.731 5 0z" fill="url(#_Linear18)"></path><path d="m30.933 8.383c1.082 6.126 10.459 5.731 5 0z" fill="url(#_Linear19)"></path><path d="m30.843 8.617h6.696c.552 0 1-.448 1-1s-.448-1-1-1h-6.696c-.551 0-1 .448-1 1s.449 1 1 1z" fill="url(#_Linear9)"></path></g></svg>
+                            </div>
+                        </GridEmptyDataTemplate>
+                    </GridTemplates>
+                </Grid>
+                <ValidationMessage For="() => receiving.Products" />
+            </div>
+        </fieldset>
+
+         <fieldset class="border border-1 rounded row p-2  mb-3">    
+            <div class="col-md">
+                <div class = "mb-2">
+                    <label for="PlateNumber" class="form-label">Plate No.:</label>
+                    <InputText id="PlateNumber" @bind-Value="receiving.PlateNumber" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.PlateNumber"/>
+                </div>
+                <div class="mb-2">
+                    <label for="DriverName" class="form-label">Driver:</label>
+                    <InputText id="DriverName" @bind-Value="receiving.DriverName" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.DriverName"/>
+                </div>
+                <div class="mb-2">
+                    <label for="DateTime" class="form-label">Date-Time:</label>
+                    <InputDate Type="InputDateType.DateTimeLocal" id="DateTime" @bind-Value="receiving.DateTime" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.DateTime"/>
+                </div>
+            </div>
+             <div class="col-md">
+                <div class = "mb-2">
+                    <label for="ClientRepresentative" class="form-label">Shipper Representative</label>
+                     <InputText id="ClientRepresentative" @bind-Value="receiving.ClientRepresentative" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.ClientRepresentative"/>
+                </div>
+                <div class = "mb-2">
+                    <label for="CheckerName" class="form-label">Checker</label>
+                     <InputText id="CheckerName" @bind-Value="receiving.CheckerName" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                    <ValidationMessage For="() => receiving.CheckerName"/>
+                </div>
+                <div class="row">
+                    <div class="col-md mb-2">
+                        <label for="TimeIn" class="form-label">Time In</label>
+                        <InputDate Type="InputDateType.DateTimeLocal" id="TimeIn" @bind-Value="receiving.TimeStart" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                        <ValidationMessage For="() => receiving.TimeStart" />
+                    </div>
+                    <div class="col-md  mb-2">
+                        <label for="TimeOut" class="form-label">Time Out</label>
+                        <InputDate Type="InputDateType.DateTimeLocal" id="TimeOut" @bind-Value="receiving.TimeEnd" class="form-control"  onkeypress="return event.keyCode!=13"/>
+                        <ValidationMessage For="() => receiving.TimeEnd" />
+                    </div>
+                </div>                
+            </div>
+        </fieldset>
+        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mb-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a role="button" class="btn btn-secondary" href="/receiving">Cancel</a>
+        </div>        
+    </EditForm>
+
+    <Modal @ref="QRScanner"
+       title="QR Scanner"
+       UseStaticBackdrop="true" 
+       CloseOnEscape="false">
+        <BodyTemplate>
+            <BlazorBarcodeScanner.ZXing.JS.BarcodeReader
+                    Title="Scan QR Code from Camera"
+                    StartCameraAutomatically="true"    
+                    ShowStart="false"
+                    ShowStop="false"
+                    ShowResult="false"
+                    ShowReset="false"         
+                    ShowToggleTorch = "false" 
+                    ShowVideoDeviceList="true"
+                    VideoWidth="300"
+                    VideoHeight="200"
+                    OnBarcodeReceived="OnScanned"
+
+            />
+            @if(!String.IsNullOrWhiteSpace(OnScannedText))
+                {   
+                    <div class="col pt-3">
+                        <Alert Color="AlertColor.Danger"> <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@OnScannedText</Alert>
+                    </div>
+                }
+        </BodyTemplate>
+
+    </Modal>
+}
+
+@code {
+    [Parameter]
+    public int? Id {get;set;}
+    [Parameter]
+    public int WarehouseId {get;set;}
+    
+    [SupplyParameterFromForm]
+    private ReceivingDetails? receiving {get;set;}
+
+    private string title = string.Empty;
+
+    DateTime datetoMax = DateTime.Now.AddDays(60);
+    DateTime datetoMin = DateTime.Now;
+
+    private IEnumerable<ProductSummary> Products = default!;
+    
+    private ProductSummary? Product {get;set;}
+
+    Grid<ReceivedProductSummary> ProductGrid = default!;
+
+    private List<ReceivedProductSummary> SelectedProductGrid = new List<ReceivedProductSummary>();
+    
+    private ReceivedProductDetails? SelectedProduct {get;set;}    
+    
+    private List<PalletDetails> pallets = new List<PalletDetails>();
+    
+    private string PalletNumbers = string.Empty;
+
+    private Modal QRScanner = default!;
+
+    private string? DisplayError {get;set;}
+
+    private WarehouseDetails? warehouse{get; set;}
+
+    private string SelectedCheckInType { get; set;} = "Pallet";
+
+    private bool IsBoxed { get; set;}
+
+    private string? OnScannedText {get;set;}
+
+    private bool IsLoading {get;set;} = false;
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(receiving is not null)
+        {
+                return;
+        }
+        
+        if (Id is not null)
+        {
+            receiving = await ReceivingClient.GetReceivingAsync(Id.Value);
+            warehouse = await WarehouseClient.GetWarehouseAsync(Convert.ToInt32(receiving.WarehouseId));
+            foreach(var palletID in receiving.Products.Select(product => product.PalletId))
+            {
+                if (int.TryParse(palletID, out int palletId))
+                {
+                    PalletDetails existPallet = await PalletClient.GetPalletAsync(palletId);
+                    if(existPallet.Id != 0 && existPallet.PalletNumber != 0 && existPallet.PalletHashCode != 0 && !pallets.Any(p => p.Id == existPallet.Id))
+                    {
+                        pallets.Add(existPallet);
+                        PalletNumbers = string.Join(",", pallets.Select(p => p.PalletNumber).OrderBy(p => p));        
+                    }
+                }
+            }
+            var summaries = await Task.WhenAll(receiving.Products.Select(product => product.ToSummaryAsync(ProductClient, PalletClient)));
+            SelectedProductGrid = summaries.ToList();
+            title = $"Edit {receiving.Series}";
+        }
+        else{
+            warehouse = await WarehouseClient.GetWarehouseAsync(WarehouseId);
+            receiving = new ()
+            {
+                WarehouseId = warehouse.Id.ToString(),
+                Series = "SLCWH-00001-24",
+                TransportCompany = string.Empty,
+                Shipper = string.Empty,   
+                Consignee = string.Empty,
+                DateReceived = DateTime.Now,
+                Reference = string.Empty,
+                Products = new List<ReceivedProductDetails>(),            
+                PlateNumber = string.Empty,
+                DriverName = string.Empty,
+                ClientRepresentative = string.Empty,      
+                CheckerName = string.Empty,                
+                DateTime = DateTime.Now,
+                TimeStart = DateTime.Now,
+                TimeEnd = DateTime.Now        
+            };            
+            title = "New Receiving";
+        }
+
+        ResetSelectedProduct();
+    }
+    
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(receiving);
+
+        try
+        {
+            IsLoading = true;
+            DisplayError = null;   // clear previous error
+            StateHasChanged();
+
+            if (Id is null)
+            {
+                int SeriesNumber = 0;
+                var TwoDigitYear = DateTime.Now.ToString("yy");
+                var series = await ReceivingClient.GetReceivingSeriesAsync();
+
+                if (!string.IsNullOrWhiteSpace(series) && !series.Equals("No series found"))
+                {
+                    SeriesNumber = int.Parse(series.Replace("SLCWH-", "").Replace($"-{TwoDigitYear}", ""));
+                    SeriesNumber++;
+                }
+                else
+                {
+                    SeriesNumber = 1;
+                }
+
+                receiving.Series = $"SLCWH-{SeriesNumber.ToString("D5")}-{TwoDigitYear}";
+                receiving.DateAdded = DateTime.Now;
+                await ReceivingClient.AddReceivingAsync(receiving);
+            }
+            else
+            {
+                receiving.DateAdded = DateTime.Now;
+                await ReceivingClient.UpdateReceivingAsync(receiving);
+            }
+
+            navigationManager.NavigateTo("receiving");
+        }
+        catch (Exception ex)
+        {
+            DisplayError = $"Error saving receiving: {ex.Message}";
+            IsLoading = false;    // Re-enable button
+            StateHasChanged();
+
+            await Task.Delay(2000);  // Show error for 2 seconds
+            DisplayError = null;
+            StateHasChanged();
+        }
+    }
+    private async Task<AutoCompleteDataProviderResult<ProductSummary>> ProductsDataProvider(AutoCompleteDataProviderRequest<ProductSummary> request)
+    {
+        Products = await ProductClient.GetProductsAsync(request.Filter.Value);
+        return await Task.FromResult(new AutoCompleteDataProviderResult<ProductSummary> { Data = Products, TotalCount = Products.Count() });
+    }
+
+    private void OnAutoCompleteChanged(ProductSummary product)
+    {
+        if(SelectedProduct is null || product is null)
+        {
+            ResetSelectedProduct();
+        }
+        else if(product is not null){
+            SelectedProduct.ProductId = product.Id;        
+            Product = product;
+            Product.Weight = Math.Round(Product.Weight,2);
+        }    
+    }
+
+    private  void OnQuantityChanged(int Quantity)
+    {
+        if(SelectedProduct is not null && Product is not null)
+        {
+            SelectedProduct.Quantity = Quantity;
+            if(!IsBoxed){
+                SelectedProduct.TotalWeight = (Quantity * Product.Weight).ToString("N2");
+                if (!String.IsNullOrWhiteSpace(Product.Measurement))
+                {
+                    var Measurements = Product.Measurement.Replace(" ", "");
+                    var result = Measurements.Contains("X") ? Measurements.Split("X") : new string[0];
+                    decimal Dimension = 1;
+                    foreach (string Measurement in result)
+                    {
+                        if (decimal.TryParse(Measurement, out decimal value))
+                        {
+                            Dimension = Dimension * value;
+                        }
+                    }
+                    SelectedProduct.CBM = ((Dimension * Quantity) / 1000000).ToString("N2");
+                }
+            }
+        }
+    }
+
+    private void IsItemBoxedCheckChanged(bool value)
+    {
+        IsBoxed = value;
+        if(SelectedProduct is not null)
+        {
+            SelectedProduct.ContainerName = String.Empty;
+            SelectedProduct.CBM = String.Empty;
+            SelectedProduct.TotalWeight = String.Empty;
+        }
+    }
+
+
+    private async Task AppendSelectedProduct()
+    {
+        if(SelectedProduct is not null && receiving is not null && Product is not null)
+        {
+            if(SelectedProduct.ProductId != 0 && SelectedProduct.Quantity != 0 && SelectedProduct.ExpirationDate >= DateOnly.FromDateTime(DateTime.Now) && !String.IsNullOrWhiteSpace(SelectedProduct.CBM) && !String.IsNullOrEmpty(SelectedProduct.TotalWeight) && (!String.IsNullOrWhiteSpace(SelectedProduct.PalletId) || (IsIndividualItemSelected && (IsBoxed ? !String.IsNullOrEmpty(SelectedProduct.ContainerName) : true))) && !String.IsNullOrWhiteSpace(SelectedProduct.Remarks))
+            {                                      
+                if(IsPalletSelected)
+                {
+                    PalletDetails selectedPallet = await PalletClient.GetPalletAsync(Convert.ToInt32(SelectedProduct.PalletId));
+                    SelectedProductGrid.Add(new ReceivedProductSummary(){
+                        Id = Product.Id,
+                        Name = Product.Name,
+                        TypeOfPackage = Product.TypeOfPackage,
+                        Measurement = Product.Measurement,
+                        Weight = Product.Weight,
+                        Quantity = SelectedProduct.Quantity,
+                        CBM = Convert.ToDecimal(SelectedProduct.CBM).ToString("N2"),
+                        TotalWeight = Convert.ToDecimal(SelectedProduct.TotalWeight).ToString("N2"),
+                        ExpirationDate = SelectedProduct.ExpirationDate,
+                        ContainerName = "",
+                        PalletId = $"Pallet #{selectedPallet.PalletNumber}",     
+                        Remarks = SelectedProduct.Remarks
+                    });
+                }
+                else{
+                    SelectedProductGrid.Add(new ReceivedProductSummary(){
+                        Id = Product.Id,
+                        Name = Product.Name,
+                        TypeOfPackage = Product.TypeOfPackage,
+                        Measurement = Product.Measurement,
+                        Weight = Product.Weight,
+                        Quantity = SelectedProduct.Quantity,
+                        CBM = Convert.ToDecimal(SelectedProduct.CBM).ToString("N2"),
+                        TotalWeight = Convert.ToDecimal(SelectedProduct.TotalWeight).ToString("N2"),
+                        ExpirationDate = SelectedProduct.ExpirationDate,
+                        ContainerName = !String.IsNullOrEmpty(SelectedProduct.ContainerName) ? SelectedProduct.ContainerName : "",
+                        PalletId = "Individiual Item(s)",     
+                        Remarks = SelectedProduct.Remarks
+                    });
+                    SelectedProduct.PalletId = null;
+                }
+                                             
+                receiving.Products.Add(SelectedProduct);
+                await ProductGrid.RefreshDataAsync();
+                ResetSelectedProduct();
+            }    
+            else{
+                DisplayError = "Input that has '*' should be fill-up.";
+                await Task.Delay(2000);                
+            }       
+            DisplayError = "";
+        }
+    }
+
+    private void ResetSelectedProduct()
+    {
+        IsBoxed = false;
+        SelectedProduct = new(){                        
+            CBM = string.Empty,
+            TotalWeight = string.Empty,
+            ExpirationDate = DateOnly.FromDateTime(DateTime.Now),
+            Remarks = string.Empty,
+            ContainerName = string.Empty,
+            PalletId = string.Empty        
+        };
+        Product = new(){
+                Name = string.Empty,
+                TypeOfPackage = string.Empty,
+                Measurement = string.Empty
+        };
+    }    
+
+    private async Task GetDeleteModalId(ReceivedProductSummary product)
+    {
+        if(receiving is not null)
+        {
+            SelectedProductGrid.Remove(product);
+            receiving.Products = SelectedProductGrid.Select(products => products.ToDetails()).ToList();            
+            await ProductGrid.RefreshDataAsync();  
+        }
+    }   
+
+    private async Task GeneratePallet()
+    {
+        pallets.Add(await PalletClient.AutomaticAddPalletAsync(WarehouseId));
+        PalletNumbers = string.Join(",", pallets.Select(p => p.PalletNumber).OrderBy(p => p));
+    }
+
+    private async void OnScanned(BarcodeReceivedEventArgs args)
+    {
+        if (int.TryParse(args.BarcodeText, out int palletNumber))
+        {
+            PalletDetails existingPallet = await PalletClient.GetPalletByHashCodeAsync(palletNumber, WarehouseId);
+            if(existingPallet.Id == 0 && existingPallet.PalletNumber == 0 && existingPallet.PalletHashCode == 0)
+            {
+                OnScannedText = existingPallet.PalletDimension; //The variable PalletDimension was used to store the message from the api.
+            }
+            else if(pallets.Any(p => p.Id == existingPallet.Id))
+            {
+                OnScannedText = "This QR Code is already scanned and available as an option in the pallet selection.";          
+            }
+            else{
+                OnScannedText = "";
+                pallets.Add(existingPallet);
+                PalletNumbers = string.Join(",", pallets.Select(p => p.PalletNumber).OrderBy(p => p));        
+                await QRScanner.HideAsync();
+                StateHasChanged();
+            } 
+        }        
+    }
+
+    private async Task OnShowModalClick()
+    {
+        await QRScanner.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await QRScanner.HideAsync();
+    }
+
+
+    private bool IsPalletSelected
+    {
+        get => SelectedCheckInType == "Pallet";
+        set
+        {
+            if (value) SelectedCheckInType = "Pallet";
+        }
+    }
+
+    private bool IsIndividualItemSelected
+    {
+        get => SelectedCheckInType == "IndividualItem";
+        set
+        {
+            if (value) SelectedCheckInType = "IndividualItem";
+            SelectedProduct!.PalletId = "";
+            IsItemBoxedCheckChanged(false);
+        }
+    }
+}
+    

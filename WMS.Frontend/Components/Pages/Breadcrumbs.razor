@@ -1,0 +1,25 @@
+﻿@using System.Text.RegularExpressions
+@if(Links is not null)
+{
+    <nav class="mt-3" style="--bs-breadcrumb-divider: url(@((char)34 + "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236c757d'/%3E%3C/svg%3E" + (char)34));" aria-label="breadcrumb">
+      <ol class="breadcrumb">
+            @foreach (var link in Links.OrderBy(x => x.OrderIndex))
+            {
+                if (link.IsActive)
+                {
+                    <li class="breadcrumb-item active mt-bread-item" aria-current="page">@Regex.Replace(link.Title.ToLower(), @"^[a-z]|(?<= )[a-z]", match => match.Value.ToUpper())</li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item"><a class="mt-bread-item-link" href="@link.Address">@Regex.Replace(link.Title.ToLower(), @"^[a-z]|(?<= )[a-z]", match => match.Value.ToUpper())</a></li>
+                }
+            }
+        </ol>
+</nav>
+}
+
+@code {
+    [Parameter]
+    public List<BreadcrumbLink>? Links { get; set; }
+    protected override Task OnParametersSetAsync() => base.OnParametersSetAsync();    
+}

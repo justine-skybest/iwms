@@ -1,0 +1,171 @@
+﻿@page "/pallet"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@using QRCoder
+@inject WarehouseClient WarehouseClient
+@inject PalletClient PalletClient
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Pallet</PageTitle>
+
+@if(pallets is null  || warehouses is null)
+{
+     <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">            
+        <div class="col d-flex flex-column justify-content-center align-items-start gap-1 flex-md-row col-md-3 align-items-md-center">
+                    <label for="warehouse">Warehouse:</label>
+                    <InputSelect id="warehouse" Value="WarehouseId" TValue="string" ValueChanged="HandleWarehouseChange"
+                        ValueExpression="@(() => WarehouseId)" class="form-select">
+                        <option value="">Select a warehouse</option>
+                        @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+                </div>        
+            <button class="btn btn-success" type="button" @onclick="@GeneratePallet"><i class="bi bi-house-add"></i>
+                Add Pallet (Default)
+            </button>                      
+            <a class="btn btn-success" type="button" href= "/pallet/add"><i class="bi bi-house-add"></i>
+                Add Pallet (Detailed)
+            </a>                      
+    </div>
+    @if (!String.IsNullOrWhiteSpace(DisplayError))
+    {
+        <div class="col pt-3">
+            <Alert Color="AlertColor.Danger">
+                <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@DisplayError
+            </Alert>
+        </div>
+    }
+    
+    <div class="table-responsive">
+          <table class = "table table-striped table-bordered table-hover mt-3">
+                <thead class="table-dark align-middle">
+                    <th style="width:5%" class="text-center"></th>
+                    <th></th>
+                    <th>Pallet Dimension</th>
+                    <th>Warehouse</th>
+                    <th>Capacity in Kg</th>
+                    <th>Capacity in CBM</th>
+                    <th style="width:20%">Date Added</th>
+                    <th style ="width:10%;"></th>
+                </thead>
+                <tbody>
+                    @if(pallets.Count() > 0)
+                    {
+                        @foreach(var pallet in pallets)
+                    {            
+                        <tr class="align-middle">
+                            <td><img style="min-width:30px;" data-bs-toggle="modal" data-bs-target="@GetImageModalId(@pallet.PalletHashCode.ToString())"
+                                    class="rounded mx-auto d-block img-fluid" src=@("data:image/png;base64," +
+                            System.Convert.ToBase64String(PngByteQRCodeHelper.GetQRCode(@pallet.PalletHashCode.ToString(),
+                            QRCodeGenerator.ECCLevel.Q, 10))) /></td>                            
+                            <td>Pallet #@pallet.PalletNumber</td>                            
+                            <td>@pallet.PalletDimension</td>
+                            <td>@pallet.Warehouse</td>
+                            <td>@pallet.CapacityInKG.ToString("N3")</td>
+                            <td>@pallet.CapacityInCBM.ToString("N3")</td>
+                            <td class="text-center">@pallet.DateAdded</td>
+                            <td>
+                                <div class="d-flex flex-column flex-sm-row justify-content-center gap-1">                                
+                                    <a class="btn btn-primary" role="button" href="@PalletUrl(pallet.Id)">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class ="btn btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="@GetDeleteModalId(pallet)">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                    <DeletePallet pallet="@pallet"/>    
+                                    <PalletQRModal pallet="@pallet"/>
+                                </div>                                                                  
+                            </td>
+                        </tr>
+                    }          
+                    }
+                    else{
+                        <tr><td class="text-center" colspan="8"><p class="m-0"><b>No existing pallet under this warehouse.</b></p></td></tr>
+                    }
+                      
+                </tbody>
+            </table>
+    </div>            
+}
+
+@code {
+    
+    private PalletSummary[]? pallets;
+
+    private WarehouseSummary[]? warehouses {get;set;}
+
+    private WarehouseDetails? selectedWarehouse { get; set; }
+
+    private string? WarehouseId { get; set; }
+
+    private String? DisplayError {get; set;}
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await WarehouseClient.GetWarehousesAsync();
+        if(warehouses.Count() > 0)
+        {
+            WarehouseId = "1";
+            pallets = await PalletClient.GetPalletsByWarehouseAsync(1);  
+        }
+        else{
+            WarehouseId = "";
+            pallets = await PalletClient.GetPalletsAsync();  
+        }             
+    }
+
+    private static string PalletUrl(int id) => $"/pallet/edit/{id}";
+        
+    private string GetDeleteModalId(PalletSummary pallet)
+    {
+        return $"#{DeletePallet.GetModalId(pallet)}";
+    }  
+
+    private string GetImageModalId(string QRHashCode)
+    {
+         return $"#{PalletQRModal.GetModalId(QRHashCode)}";
+    }
+
+    private async Task GeneratePallet()
+    {
+        if(!String.IsNullOrWhiteSpace(WarehouseId)){
+            if (int.TryParse(WarehouseId, out int result))
+            {
+                await PalletClient.AutomaticAddPalletAsync(result);
+                NavigationManager.Refresh(true);
+            }            
+        }
+        else{
+            DisplayError = "You need to select in what warehouse the pallet is located.";
+            await Task.Delay(2000);    
+            DisplayError = "";
+        }
+    }
+
+    private async Task HandleWarehouseChange(string selectedWarehouseId)
+    {
+        if (!String.IsNullOrWhiteSpace(selectedWarehouseId))
+        {
+            WarehouseId = selectedWarehouseId;
+            selectedWarehouse = await WarehouseClient.GetWarehouseAsync(Convert.ToInt32(selectedWarehouseId));
+            pallets = await PalletClient.GetPalletsByWarehouseAsync(selectedWarehouse.Id);          
+        }
+        else
+        {
+            selectedWarehouse = null;
+            WarehouseId = "";
+            pallets = await PalletClient.GetPalletsAsync(); 
+        }
+    }
+}

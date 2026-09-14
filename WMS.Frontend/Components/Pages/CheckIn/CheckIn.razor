@@ -1,0 +1,563 @@
+﻿@page "/checkin"
+@page "/checkin/{TypeOfCheckIn}"
+@using WMS.Frontend.Components.Pages.Rack
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>Check in</PageTitle>
+
+@if(IsLoading)
+{
+    <div class="full-screen-spinner d-flex justify-content-center align-items-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+
+@if(TypeOfCheckIn is not null && (TypeOfCheckIn.Equals("ByPallet") || TypeOfCheckIn.Equals("ByItem")) && checkIn is not null)
+{    
+    @if (warehouses is not null)
+    {
+        <div class="d-flex justify-content-end gap-1 mb-2">
+            <div
+                class="col d-flex flex-column justify-content-center align-items-start gap-1 flex-md-row col-md-3 align-items-md-center">
+                <label for="warehouse">Warehouse:</label>
+                <InputSelect id="warehouse" Value="WarehouseId" TValue="string" ValueChanged="HandleWarehouseChange"
+                    ValueExpression="@(() => WarehouseId)" class="form-select">
+                    <option value="">Select a warehouse</option>
+                    @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+            </div>
+        </div>
+
+        @if (selectedWarehouse is not null)
+        {
+                @if(TypeOfCheckIn.Equals("ByPallet"))
+                {
+                     <div class="border border-1 rounded row p-2 mb-2">
+                        <h5><b class="@(selectedPalletToCheckIn is null ?  "text-danger" : "text-success")">*</b>Pallet(s) to be Checked In</h5>
+                        @if (pallets is not null)
+                        {
+                            <Grid TItem="PalletToBeCheckIn" Class="table table-striped table-bordered table-hover"  Data="pallets"
+                            AllowSelection="true" AllowDetailView="true"  AllowFiltering="true" AllowSorting="true" 
+                            HeaderRowCssClass="bg-secondary text-white border-bottom-0" 
+                            FiltersRowCssClass="bg-dark text-white bg-opacity-25 border-bottom-0" AllowPaging="true"
+                            PageSizeSelectorVisible="true"  PageSizeSelectorItems="@(new int[] { 5,10,20,30,40,50,60})" Responsive="true" SelectedItemsChanged="OnSelectedItemsChanged">
+
+                                <GridColumns>
+                                    <GridColumn TItem="PalletToBeCheckIn" HeaderText="Pallet Number" PropertyName="PalletNumber">
+                                        @context.PalletNumber
+                                    </GridColumn>
+                                    <GridColumn TItem="PalletToBeCheckIn" HeaderText="Dimension" PropertyName="PalletDimension">
+                                        @(String.IsNullOrWhiteSpace(@context.PalletDimension) ? "Not Assigned" : @context.PalletDimension)
+                                    </GridColumn>
+                                    <GridColumn TItem="PalletToBeCheckIn" HeaderText="Capacity in KG" PropertyName="CapacityInKG">
+                                        @(@context.CapacityInKG == 0 ? "Not Assigned" : @context.CapacityInCBM.ToString("N2"))
+                                    </GridColumn>
+                                    <GridColumn TItem="PalletToBeCheckIn" HeaderText="Capicity in CBM" PropertyName="CapacityInCBM">
+                                        @(@context.CapacityInCBM == 0 ? "Not Assigned" : @context.CapacityInCBM.ToString("N2"))
+                                    </GridColumn>
+                                </GridColumns>
+
+                                <GridDetailView TItem="PalletToBeCheckIn">
+                                    @foreach (var product in @context.ReceivedProducts)
+                                    {
+                                        <div class="d-flex flex-column flex-md-row justify-content-end border-bottom p-2">
+
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Name</div>
+                                                    <div class="col-9">@product.Name</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Type of Package</div>
+                                                    <div class="col-9">@product.TypeOfPackage</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Measurement</div>
+                                                    <div class="col-9">@product.Measurement</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Weight</div>
+                                                    <div class="col-9">@product.Weight.ToString("N2")</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Quantity</div>
+                                                    <div class="col-9">@product.Quantity</div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">CBM</div>
+                                                    <div class="col-9">@product.CBM</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Total Weight</div>
+                                                    <div class="col-9">@product.TotalWeight</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Expiration Date</div>
+                                                    <div class="col-9">@product.ExpirationDate</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Remarks</div>
+                                                    <div class="col-9">@product.Remarks</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-3 fw-bold">Receiving Series</div>
+                                                    <div class="col-9">@product.ReceivingSeries</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    }
+                                </GridDetailView>
+                            </Grid>
+                        }
+                        else
+                        {
+                            <p>No pallet(s) to be checked in under the selected warehouse.</p>
+                        }
+                    </div>
+                }
+                else if(TypeOfCheckIn.Equals("ByItem")){
+                     <div class="border border-1 rounded row p-2 mb-2">
+                        <h5><b>*</b>Individual Item(s) to be Checked In</h5>
+                        @if(individualItems is not null)
+                        {
+                            <Grid TItem="ToCheckInProductSummary" Class="table table-striped table-bordered table-hover" AllowSelection="true"
+                                SelectionMode="GridSelectionMode.Multiple" HeaderRowCssClass="bg-secondary text-white border-bottom-0" Responsive="true"
+                                AllowRowClick="false" AllowFiltering="true" AllowSorting="true" SelectedItemsChanged="OnSelectedIndItemsChanged" Data="individualItems"
+                                AllowPaging="true"  PageSizeSelectorVisible="true" PageSizeSelectorItems="@(new int[] { 5,10,20,30,40,50,60})" >
+
+                                <GridColumns>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Product Name" PropertyName="Name">
+                                        @context.Name
+                                    </GridColumn>
+                                    
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Receiving Series" PropertyName="ReceivingSeries">
+                                        @context.ReceivingSeries
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Type of Package" PropertyName="TypeOfPackage">
+                                        @context.TypeOfPackage
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Box Name" PropertyName="ContainerName">
+                                        @context.ContainerName
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Quantity" PropertyName="Quantity">
+                                        @context.Quantity
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="CBM" PropertyName="CBM">
+                                        @context.CBM
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="TotalWeight" PropertyName="TotalWeight">
+                                        @context.TotalWeight
+                                    </GridColumn>                            
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Expiration Date" PropertyName="ExpirationDate">
+                                        @context.ExpirationDate
+                                    </GridColumn>
+                                    <GridColumn TItem="ToCheckInProductSummary" HeaderText="Remarks" PropertyName="Remarks">
+                                        @context.Remarks
+                                    </GridColumn>
+                                </GridColumns>
+                            </Grid>
+                        }
+                        else
+                        {
+                            <p>No individual item(s) to be checked in under the selected warehouse.</p>
+                        }
+                    </div>
+                }
+               
+                <div class="border border-1 rounded row p-2 mb-2">
+                    <div>
+                        <h5><b class="@(BinNumbers is null ?  "text-danger" : "text-success")">*</b>Bin Location #: @(BinNumbers)</h5>                    
+                    </div>                    
+                    
+                    <div>
+                        <p>Please scan a bin location QR code or select one manually from the list.</p>
+                        <button class="btn btn-success" type="button"  @onclick="OnShowModalClick">Scan QR Code</button>
+                        @* <button class="btn btn-primary" type="button" @onclick="OnShowManual">Pick Manually</button>                                        *@
+                        <button class="btn btn-primary" type="button" >Pick Manually</button>                                       
+                    </div>
+                </div>
+                @if(OnShowManualSelect)
+                {
+                    <div class="border border-1 rounded row p-2 mb-2">
+                        <Racks WarehouseId="selectedWarehouse.Id" />
+                    </div>
+                }            
+                <div class="border border-1 rounded row p-2 mb-2">
+                    <h5 for="notes" class="form-label">Note:</h5>
+                    <InputText id="notes" @bind-Value="checkIn.Notes" class="form-control" />                
+                
+                    <div class="d-flex justify-content-end mt-2">
+                        <ConfirmDialog @ref="dialog" />
+                        <Button Color="ButtonColor.Success" @onclick="ShowSaveConfirmationAsync"><i class="bi bi-house-add"></i> Check In </Button>
+                    </div>
+                </div>
+            @if (!String.IsNullOrWhiteSpace(DisplayError))
+            {
+                <div class="col pt-3">
+                    <Alert Color="AlertColor.Danger">
+                        <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@DisplayError
+                    </Alert>
+                </div>
+            }
+            <Modal @ref="QRScanner"
+            title="QR Scanner"
+            UseStaticBackdrop="true" 
+            CloseOnEscape="false">
+                <BodyTemplate>
+                    <BlazorBarcodeScanner.ZXing.JS.BarcodeReader
+                            Title="Scan QR Code from Camera"
+                            StartCameraAutomatically="true"    
+                            ShowStart="false"
+                            ShowStop="false"
+                            ShowResult="false"
+                            ShowReset="false"         
+                            ShowToggleTorch = "false" 
+                            ShowVideoDeviceList="true"
+                            VideoWidth="300"
+                            VideoHeight="200"
+                            OnBarcodeReceived="OnScanned"
+                    />
+                    @if(!String.IsNullOrWhiteSpace(OnBinScannedText))
+                    {   
+                        <div class="col pt-3">
+                            <Alert Color="AlertColor.Danger"> <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@OnBinScannedText</Alert>
+                        </div>
+                    }
+                </BodyTemplate>
+            </Modal>
+        }
+    }
+    else
+    {
+        <p>No existing warehouse record.</p>
+    }
+}
+else{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+
+
+@inject NavigationManager navigationManager
+@inject PalletClient PalletClient
+@inject CheckInClient CheckInClient
+@inject WarehouseClient WarehouseClient
+@inject BinClient BinClient
+@inject ReceivingClient ReceivingClient
+@inject RackClient RackClient
+
+@code
+{
+    [Parameter]
+    public required string TypeOfCheckIn {get; set;}
+    
+    //Warehouse
+    private WarehouseSummary[]? warehouses { get; set; }
+
+    private WarehouseDetails? selectedWarehouse { get; set; }
+    
+    private string? WarehouseId { get; set; }
+
+
+    //Checkin
+    private CheckInDetails? checkIn  {get; set;}    
+
+
+    //Bins
+    private List<BinSummary> selectedBins = new List<BinSummary>();
+
+    private string BinNumbers = string.Empty;
+    
+    private string? OnBinScannedText {get;set;}
+
+
+    //Pallets
+    private IEnumerable<PalletToBeCheckIn> pallets = default!;
+
+    private PalletToBeCheckIn? selectedPalletToCheckIn { get; set; }
+
+
+    //Individual Items
+    private IEnumerable<ToCheckInProductSummary> individualItems = default!;
+    private List<ToCheckInProductSummary>? selectedIndividualItems {get;set;}
+                
+
+    //Others
+    private string? DisplayError { get; set; }
+
+    private Modal QRScanner = default!;
+
+    private bool OnShowManualSelect = false;
+
+    private ConfirmDialog dialog = default!;
+
+    [Inject] ToastService ToastService { get; set; } = default!;
+
+    private bool IsLoading {get;set;} = false;
+
+    protected override void OnParametersSet()
+    {
+        if(TypeOfCheckIn is not null && (TypeOfCheckIn.Equals("ByPallet") || TypeOfCheckIn.Equals("ByItem")))
+        {
+            checkIn = new ()
+            {
+                CheckInType = TypeOfCheckIn,
+                BinIds =  new List<int>(),
+                PalletId = 0,
+                ReceivedProductIds = new List<int>(),
+                Notes = ""
+            };
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await WarehouseClient.GetWarehousesAsync();
+    }
+    
+    private async Task OnSelectedItemsChanged(HashSet<PalletToBeCheckIn> pallet)
+    {
+        if (pallet is not null && pallet.Any())
+        {
+            selectedPalletToCheckIn = pallet.FirstOrDefault();
+        }
+        else{
+            selectedPalletToCheckIn = null;
+        }
+        await Task.CompletedTask;
+    }
+
+    private Task OnSelectedIndItemsChanged(HashSet<ToCheckInProductSummary> items)
+    {
+        selectedIndividualItems = items is not null && items.Any() ? items.ToList() : null;
+        return Task.CompletedTask;
+    }
+
+
+    private async Task ShowSaveConfirmationAsync()
+    {
+        if(TypeOfCheckIn.Equals("ByPallet"))
+        {                     
+            if(selectedPalletToCheckIn is null)
+            {
+                DisplayError = "You need to select a pallet to be check in.";
+                await Task.Delay(2000);
+                DisplayError = "";
+                return;
+            }             
+        }
+        else if(TypeOfCheckIn.Equals("ByItem"))
+        {                                                                         
+             if(selectedIndividualItems is null)
+             {
+                DisplayError = "You need to select an item to be check in.";
+                await Task.Delay(2000);
+                DisplayError = "";
+                return;
+             }
+        }
+        
+
+        if(selectedBins.Count() == 0)
+        {
+            DisplayError = "You need to select a bin location to check in.";
+            await Task.Delay(2000);
+            DisplayError = "";
+            return;
+        }     
+
+        var options = new ConfirmDialogOptions
+            {
+                YesButtonText = "OK",
+                YesButtonColor = ButtonColor.Success,
+                NoButtonText = "CANCEL",
+                NoButtonColor = ButtonColor.Danger
+            };
+
+        var confirmation = await dialog.ShowAsync(
+            title: "Confirmation",
+            message1: "Do you want to proceed the Check in?",
+            confirmDialogOptions: options);
+
+        if (confirmation && checkIn is not null)
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            checkIn.CheckInType = TypeOfCheckIn;
+            checkIn.BinIds = selectedBins.Select(bin => bin.Id).OrderBy(bin => bin).ToList();
+            checkIn.PalletId = selectedPalletToCheckIn is null ? null : selectedPalletToCheckIn.Id;     
+            checkIn.ReceivedProductIds = selectedIndividualItems is null ? selectedPalletToCheckIn is not null ? selectedPalletToCheckIn.ReceivedProducts.Select(product => product.Id).ToList() : null : selectedIndividualItems.Select(item => item.Id).OrderBy(item => item).ToList();
+            checkIn.CheckInDate = DateTime.Now;
+
+            await CheckInClient.AddCheckInAsync(checkIn);
+            IsLoading = false;  
+            navigationManager.Refresh(true);
+        }
+        else{
+
+            
+        }
+    }
+    
+    private async Task HandleWarehouseChange(string selectedWarehouseId)
+    {
+        if (!String.IsNullOrWhiteSpace(selectedWarehouseId))
+        {
+            WarehouseId = selectedWarehouseId;
+            pallets = default!;  
+            individualItems = default!;  
+            selectedWarehouse = await WarehouseClient.GetWarehouseAsync(Convert.ToInt32(selectedWarehouseId));
+            if(TypeOfCheckIn.Equals("ByPallet"))
+            {                     
+                pallets = await PalletClient.GetPalletToCheckIn(selectedWarehouse.Id);                
+            }
+            else if(TypeOfCheckIn.Equals("ByItem"))
+            {                                                                         
+                individualItems = await ReceivingClient.GetToCheckInProduct(selectedWarehouse.Id);
+            }            
+            OnShowManualSelect = false;
+        }
+        else
+        {
+            selectedWarehouse = null;
+            WarehouseId = "";
+        }        
+    }
+
+    private void OnShowManual()
+    {
+        if(OnShowManualSelect)
+        {
+            OnShowManualSelect = false;
+        }
+        else{
+            OnShowManualSelect = true;
+        }
+    }
+    
+    private async void OnScanned(BarcodeReceivedEventArgs args)
+    {
+        if (int.TryParse(args.BarcodeText, out int BinHashCode))
+        {
+            BinSummary existingBin = await BinClient.GetBinByHashCodeAsync(BinHashCode, Convert.ToInt32(WarehouseId));            
+            if(existingBin.Id == 0)
+            {
+                 OnBinScannedText = existingBin.Warehouse;  //The variable Warehouse was used to store the message from the api.   
+            }
+            else if(selectedBins.Any(bin => bin.Id == existingBin.Id))
+            {
+                  OnBinScannedText = "This QR Code is already scanned and added as selected bin(s).";     
+            }
+            else{
+                OnShowManualSelect = false;
+                if(TypeOfCheckIn.Equals("ByPallet"))
+                {
+                    selectedBins.Clear();            
+                    selectedBins.Add(existingBin);
+                }                    
+                else if (TypeOfCheckIn.Equals("ByItem"))
+                {
+                    RackDetails rack = await RackClient.GetRackByBinAsync(existingBin.Id);
+
+                    bool canAdd;
+
+                    if (rack.IsFloorDocking)
+                    {
+                        // Floor-loaded: allow same Warehouse & Rack only
+                        canAdd = selectedBins.Count == 0 ||
+                                selectedBins.All(bin => bin.Warehouse == existingBin.Warehouse && bin.Rack == existingBin.Rack);
+                    }
+                    else
+                    {
+                        // Not floor-loaded: require same Warehouse, Rack, Bay, and Level
+                        canAdd = selectedBins.Count == 0 ||
+                                selectedBins.All(bin => bin.Warehouse == existingBin.Warehouse &&
+                                                        bin.Rack == existingBin.Rack &&
+                                                        bin.Bay == existingBin.Bay &&
+                                                        bin.Level == existingBin.Level);
+                    }
+
+                    if (canAdd)
+                    {
+                        // Add only if not already in list
+                        if (!selectedBins.Any(bin => bin.BinHashCode == existingBin.BinHashCode))
+                        {
+                            selectedBins.Add(existingBin);
+                        }
+                        else
+                        {
+                            OnBinScannedText = "This QR Code is already scanned and added as a selected bin.";
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        OnBinScannedText = rack.IsFloorDocking
+                            ? "Bins from different warehouses or racks cannot be added. Only bins from the same rack and warehouse can be selected."
+                            : "Bins from different warehouses, racks, bays, or levels cannot be added. Only bins from the same exact location can be selected.";
+                        return;
+                    }                                   
+                }
+                 // Recompute bin string
+                BinNumbers = string.Join(",", selectedBins
+                        .Select(bin => $"{GetLastIndexOf(bin.Warehouse, "text")}{GetLastIndexOf(bin.Warehouse, "number")}" +
+                                    $"{GetLastIndexOf(bin.Rack, "text")}{GetLastIndexOf(bin.Rack, "number")}" +
+                                    $"B{bin.Bay}L{bin.Level}-B{bin.BinName.Replace("Bin", "").Replace(" ", "")}")
+                        .OrderBy(bin => bin));
+
+                await QRScanner.HideAsync();
+                StateHasChanged();
+            }
+        }        
+    }
+    private async Task OnShowModalClick()
+    {
+        OnBinScannedText = "";
+        await QRScanner.ShowAsync();
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await QRScanner.HideAsync();
+    }
+
+    private string GetLastIndexOf(string text, string returnType)
+    {
+      // Split the text into words
+      var words = text.Split(' ');
+
+      // Check if the last word is numeric
+      string lastWord = words.Last();
+      bool isLastWordNumber = int.TryParse(lastWord, out int indexNumber);
+
+      // Determine what to return based on returnType
+      if (returnType.Equals("text", StringComparison.OrdinalIgnoreCase))
+      {
+          // Extract the abbreviation from all words except the last one if it's a number
+          return string.Concat(
+              words.Take(isLastWordNumber ? words.Length - 1 : words.Length)
+                  .Select(word => word[0]) // Get the first letter of each word
+          );
+      }
+      else if (returnType.Equals("number", StringComparison.OrdinalIgnoreCase) && isLastWordNumber)
+      {
+          // Return the number if it's a valid integer
+          return lastWord;
+      }
+
+      // Fallback to an empty string if no valid returnType is provided
+      return string.Empty;
+    }
+}

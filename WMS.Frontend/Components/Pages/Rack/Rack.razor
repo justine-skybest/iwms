@@ -1,0 +1,73 @@
+﻿@page "/rack"
+@page "/warehouse/rack"
+@attribute [StreamRendering]
+
+@inject RackClient Client
+
+
+<PageTitle>Rack</PageTitle>
+
+@if(racks is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">        
+        <a class="btn btn-primary" type="button" href= "/rack/add">Add New</a>
+    </div>
+    
+    <table class = "table table-striped table-bordered table-hover table-responsive mt-3">
+        <thead class="table-dark">
+            <th>Name</th>
+            <th>Warehouse</th>
+            <th>Bay</th>
+            <th>Level</th>
+            <th style ="width:10%;"></th>
+        </thead>
+        <tbody>
+            @foreach(var rack in racks)
+            {
+                <tr>
+                    <td>@rack.Name</td>
+                    <td>@rack.Warehouse</td>
+                    <td>@rack.Bay</td>
+                    <td>@rack.Level</td>
+                     <td>
+                        <div class="d-flex justify-content-center">
+                            <a class="btn btn-primary me-2" role="button" href="@RackUrl(rack.Id)">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                             <button class ="btn btn-danger" 
+                                     data-bs-toggle="modal" 
+                                     data-bs-target="@GetDeleteModalId(rack)">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>                     
+                        <DeleteRack rack="@rack"/>                  
+                    </td>
+                </tr>
+            }            
+        </tbody>
+    </table>
+}
+
+
+@code{
+    private RackSummary[]? racks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        racks = await Client.GetRacksAsync();
+    } 
+    private static string RackUrl(int id) => $"/rack/edit/{id}";
+    
+    private string GetDeleteModalId(RackSummary rack)
+    {
+        return $"#{DeleteRack.GetModalId(rack)}";
+    }
+}

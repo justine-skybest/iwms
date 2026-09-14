@@ -1,0 +1,123 @@
+﻿@page "/warehouse"
+
+@using QRCoder
+@using WMS.Frontend.Components.Pages.Rack
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject NavigationManager navigationManager
+@inject WarehouseClient WarehouseClient
+@inject RackClient RackClient
+@inject BinClient BinClient
+
+<PageTitle>Warehouse</PageTitle>
+
+@if(warehouses is null)
+{
+   <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">        
+        <a >
+        </a>
+        <Tooltip Class="mt-2 btn btn-success" Title="Add new warehouse" Placement="TooltipPlacement.Top" @onclick="NewWarehouse"> 
+           <i class="bi bi-house-add"></i>
+            Add New
+        </Tooltip>                       
+    </div>
+
+    
+    <div class="table-responsive">
+          <table class = "table table-striped table-bordered table-hover mt-3">
+                <thead class="table-dark align-middle">
+                    <th style="width:5%"></th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th style="width:20%">Date Added</th>
+                    <th style="width:20%">Floor Plan</th>
+                    <th style ="width:10%;"></th>
+                </thead>
+                <tbody>
+                    @foreach(var warehouse in warehouses)
+                    {            
+                        <tr class="align-middle">
+                            <td class="text-center">
+                                <ActiveButton Id= "@("Warehouse" + warehouse.Id)"/>
+                            </td>
+                            <td>@warehouse.Name</td>
+                            <td>@warehouse.Address</td>
+                            <td class="text-center">@warehouse.DateAdded</td>
+                            <td class="text-center">
+                                @if (warehouse.FloorPlanImage != null && warehouse.FloorPlanImage.Length > 0)
+                                {
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(warehouse.FloorPlanImage)"
+                                        style="max-width: 150px; max-height: 150px;"
+                                        data-bs-toggle="modal" data-bs-target="@GetFloormanModalId(warehouse.Id)"/>
+                                    <ImageModal warehouse=warehouse ImageSrc="@($"data:image/jpeg;base64,{Convert.ToBase64String(warehouse.FloorPlanImage)}")" imageBytes =warehouse.FloorPlanImage/>
+                                }
+                                else
+                                {
+                                    <p class="m-0">No floor plan image available.</p>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column flex-sm-row justify-content-center gap-1">
+                                    <a class="btn btn-success" role="button" href= "/warehouse/@warehouse.Id/rack/add" data-bs-toggle="tooltip" data-bs-title="Default tooltip">
+                                        <i class="bi bi-plus-square"></i>
+                                    </a>
+                                    <a class="btn btn-primary" role="button" href="@WarehouseUrl(warehouse.Id)">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class ="btn btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="@GetDeleteModalId(warehouse)">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                    <DeleteWarehouse warehouse="@warehouse"/>    
+                                </div>                                                                  
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="6" class="hiddenRow">                    
+                                <div class="collapse" id="Warehouse@(warehouse.Id)">                                    
+                                    <Racks WarehouseId="@warehouse.Id" />         
+                                </div>
+                            </td>
+                        </tr>
+                    }            
+                </tbody>
+            </table>
+    </div>            
+}
+
+
+@code{
+    private WarehouseSummary[]? warehouses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await WarehouseClient.GetWarehousesAsync();           
+    } 
+
+    private static string WarehouseUrl(int id) => $"/warehouse/edit/{id}";
+        
+    private string GetDeleteModalId(WarehouseSummary warehouse)
+    {
+        return $"#{DeleteWarehouse.GetModalId(warehouse)}";
+    }   
+
+    private void NewWarehouse()
+    {
+         navigationManager.NavigateTo("warehouse/add");
+    }
+
+    private string GetFloormanModalId(int WarehouseId)
+    {
+        return $"#{ImageModal.GetModalId(WarehouseId)}";
+    }   
+}

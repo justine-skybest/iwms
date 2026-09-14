@@ -1,0 +1,247 @@
+﻿@page "/bin/add"
+@page "/bin/edit/{id:int}"
+@page "/{sourcePage}/{RackId:int}/bin/add"
+@page "/{sourcePage}/bin/edit/{id:int}"
+
+@rendermode InteractiveServer
+
+@inject NavigationManager navigationManager
+@inject BinClient binClient
+@inject RackClient rackClient
+@inject BayClient BayClient
+@inject LevelClient LevelClient
+@inject BinNamesClient BinNamesClient
+@inject WarehouseClient warehouseClient
+
+<PageTitle>@title</PageTitle>
+<h3>@title</h3>
+
+@if(warehouses is null || racks is null || levels is null || bays is null || bin is null || binNames is null)
+{
+     <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <Preload LoadingText="Loading..." />
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="@bin" FormName="AddEditBin" OnValidSubmit="HandleSubmitAsync" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary/>
+                <div class="mb-3">
+                    <label for="warehouse" class="form-label">Warehouse:</label>
+                    <InputSelect id="warehouse" Value="bin.WarehouseId" TValue="string" ValueChanged="HandleWarehouseChange" ValueExpression="@(() => bin.WarehouseId)" class="form-select">
+                        <option value="">Select a warehouse</option>
+                        @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => bin.WarehouseId"/>
+                </div>
+                <div class="mb-3">
+                    <label for="rack" class="form-label">Rack:</label>
+                    <InputSelect id="rack" Value="bin.RackId" TValue="string" ValueChanged="HandleRackChange" ValueExpression="@(() => bin.RackId)" class="form-select">
+                        <option value="">Select a rack</option>
+                        @foreach (var rack in racks)
+                        {
+                            <option value="@rack.Id"> @rack.Name</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => bin.RackId"/>
+                </div>
+                 <div class="mb-3">
+                    <label for="bay" class="form-label">Bay:</label>
+                    <InputSelect id="bay" Value="bin.BayId" TValue="string" ValueChanged="HandleBayChange" ValueExpression="@(() => bin.BayId)" class="form-select">
+                        <option value="">Select a bay</option>
+                        @foreach (var bay in bays)
+                        {
+                            <option value="@bay.Id"> Bay @bay.BayNumber</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => bin.BayId"/>
+                </div>
+                 <div class="mb-3">
+                    <label for="level" class="form-label">Level:</label>
+                    <InputSelect id="level" Value="bin.LevelId" TValue="string" ValueChanged="HandleLevelChange" ValueExpression="@(() => bin.LevelId)"  class="form-select">
+                        <option value="">Select a level</option>
+                        @foreach (var level in levels)
+                        {
+                            <option value="@level.Id"> Level @level.LevelNumber</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => bin.LevelId"/>
+                </div>
+                 <div class="mb-3">
+                    <label for="name" class="form-label">Bin Name:</label>
+                    <InputSelect id="name" @bind-Value="bin.BinId" class="form-select">
+                        <option value="">Select a rack</option>
+                        @foreach (var binName in binNames)
+                        {
+                            <option value="@binName.Id"> @binName.BinName</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => bin.BinId"/>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a role="button" class="btn btn-secondary" href="/@(sourcePage is null || sourcePage == "" ? "bin" : sourcePage)">Cancel</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public string? sourcePage {get;set;}
+    [Parameter]
+    public int? Id {get; set;}
+    [Parameter]
+    public int? RackId {get; set;}
+
+    [SupplyParameterFromForm]
+    private BinDetails? bin {get;set;}
+
+    private BinNameSummary[]? binNames {get;set;}
+    
+    private BaySummary[]? bays {get; set;}
+
+    private LevelSummary[]? levels {get; set;}
+    
+    private RackSummary[]? racks {get; set;}
+
+    private WarehouseSummary[]? warehouses;
+    
+    [Inject] protected PreloadService PreloadService { get; set; } = default!;
+
+    private string title = string.Empty;
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if(bin is not null)
+        {
+            return;
+        }
+
+        if(Id is not null)
+        {
+            bin = await binClient.GetBinAsync(Id.Value);         
+            RackDetails rack = await rackClient.GetRackAsync(Convert.ToInt32(bin.RackId));
+            bin.WarehouseId = rack.WarehouseId;
+            racks = await rackClient.GetRacksAsync(Convert.ToInt32(bin.WarehouseId));               
+            bays = await BayClient.GetBayAsync(Convert.ToInt32(bin.BayId));
+            levels = await LevelClient.GetLevelAsync(Convert.ToInt32(bin.LevelId));
+            binNames = await BinNamesClient.GetBinNamesAsync(Convert.ToInt32(bin.RackId),Convert.ToInt32(bin.BayId),Convert.ToInt32(bin.LevelId), Convert.ToInt32(bin.BinId));
+        
+            var binName = await BinNamesClient.GetBinNamesAsync(Convert.ToInt32(bin.BinId));              
+            title = $"Edit {binName.BinName}";
+        }
+        else if(RackId is not null){
+            RackDetails rack = await rackClient.GetRackAsync(Convert.ToInt32(RackId));
+            racks = await rackClient.GetRacksAsync(Convert.ToInt32(rack.WarehouseId));     
+            bays = await BayClient.GetBayAsync(Convert.ToInt32(rack.BayId));
+            levels = await LevelClient.GetLevelAsync(Convert.ToInt32(rack.LevelId));
+            binNames = await BinNamesClient.GetBinNamesAsync(Convert.ToInt32(rack.Id), Convert.ToInt32(rack.BayId), Convert.ToInt32(rack.LevelId));
+
+            bin = new()
+            {
+                WarehouseId = rack.WarehouseId,
+                RackId = rack.Id.ToString(),
+                BayId = "",
+                LevelId = "",                
+            };
+            title = "New Bin";
+        }
+        else{
+            bin = new();
+            title = "New Bin";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = await warehouseClient.GetWarehousesAsync();   
+        racks = await rackClient.GetRacksAsync();                  
+        bays = await BayClient.GetBayAsync();
+        levels = await LevelClient.GetLevelAsync();  
+        binNames = await BinNamesClient.GetBinNamesAsync();             
+    }  
+      
+    private async Task HandleWarehouseChange(string WarehouseId)
+    {
+        if(bin is null){
+            throw new Exception("Bin is null!");
+        }
+        bin.WarehouseId = WarehouseId;
+        bin.RackId = "";
+        racks = await rackClient.GetRacksAsync(Convert.ToInt32(WarehouseId));     
+    }
+
+    private async Task HandleRackChange(string RackId)
+    {
+        if(bin is null){
+            throw new Exception("Bin is null!");
+        }
+        bin.RackId = RackId;
+        bin.BayId = "";
+        bin.LevelId = "";
+        
+        RackDetails rack = await rackClient.GetRackAsync(Convert.ToInt32(RackId));
+        bays = await BayClient.GetBayAsync(Convert.ToInt32(rack.BayId));
+        levels = await LevelClient.GetLevelAsync(Convert.ToInt32(rack.LevelId));
+    }
+
+    private async Task HandleBayChange(string id)
+    {
+        if(bin is null){
+            throw new Exception("Bin is null!");
+        }
+        if(bin.RackId is not null && bin.BayId is not null && bin.LevelId is not null)
+        {    
+            bin.BayId = id;
+            bin.BinId = "";
+            binNames = await BinNamesClient.GetBinNamesAsync(Convert.ToInt32(bin.RackId), Convert.ToInt32(bin.BayId), Convert.ToInt32(bin.LevelId));
+        }
+    }
+
+    private async Task HandleLevelChange(string id)
+    {
+        if(bin is null){
+            throw new Exception("Bin is null!");
+        }
+        if(bin.RackId is not null && bin.BayId is not null && bin.LevelId is not null)
+        {            
+            bin.LevelId = id;
+            bin.BinId = "";
+            binNames = await BinNamesClient.GetBinNamesAsync(Convert.ToInt32(bin.RackId), Convert.ToInt32(bin.BayId), Convert.ToInt32(bin.LevelId));
+        }
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        ArgumentNullException.ThrowIfNull(bin);
+        PreloadService.Show(SpinnerColor.Light, "Saving data...");
+        if(Id is null)
+        {
+            var hash = new HashCode();
+            hash.Add(DateTime.Now);
+            hash.Add(DateTime.Now.TimeOfDay);            
+            bin.BinHashCode = hash.ToHashCode();
+            
+            bin.DateAdded = DateTime.Now;            
+            await binClient.AddBinAsync(bin);
+        }
+        else
+        {
+            bin.Id = Id.Value;
+            bin.DateAdded = DateTime.Now;
+            await binClient.UpdateBinAsync(bin);
+        }     
+        PreloadService.Hide();   
+        navigationManager.NavigateTo((sourcePage is null || sourcePage == "" ? "bin" : sourcePage));
+    }
+}

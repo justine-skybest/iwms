@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-slate-50 flex flex-col font-sans">
+  
+  <!-- App Header (Dark Theme) -->
+  <div class="bg-sidebar-bg px-6 pt-10 pb-8 rounded-b-4xl shadow-lg">
+    <div class="flex items-center gap-2.5 mb-4">
+      <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shadow-md">
+        <app-icon name="warehouses" [size]="16" stroke="#fff"></app-icon>
+      </div>
+      <span class="font-display font-bold text-base text-sidebar-text-active tracking-wide">Skybest Mobile</span>
+    </div>
+    
+    <div class="font-display font-extrabold text-[28px] text-sidebar-text-active tracking-tight leading-tight">
+      Welcome back,<br/>Admin
+    </div>
+    <div class="text-sm text-sidebar-text mt-1.5 font-medium">Sep 14, 2026 · WH-NORTH-01</div>
+
+    <!-- Quick stats strip -->
+    <div class="flex gap-3 mt-6">
+      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
+        <div class="font-mono font-bold text-xl text-sidebar-text-active">45</div>
+        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Pending</div>
+      </div>
+      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
+        <div class="font-mono font-bold text-xl text-sidebar-text-active">12</div>
+        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Expiring</div>
+      </div>
+      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
+        <div class="font-mono font-bold text-xl text-sidebar-text-active">8</div>
+        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Receiving</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="flex-1 px-6 py-8">
+    <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Quick Actions</div>
+
+    <!-- Mobile Grid (Responsive) -->
+    <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
+      <button
+        *ngFor="let action of mobileActions"
+        class="bg-white rounded-2xl p-3 flex flex-col items-center gap-2.5 cursor-pointer shadow-sm transition-transform active:scale-95 border-2"
+        [style.borderColor]="activeAction === action.label ? action.color : 'transparent'"
+        (click)="toggleAction(action.label)"
+      >
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center" [ngStyle]="{'background': action.bg}">
+          <app-icon [name]="action.icon" [size]="24" [stroke]="action.color"></app-icon>
+        </div>
+        <span class="text-xs font-semibold text-slate-700 text-center leading-tight">{{action.label}}</span>
+      </button>
+    </div>
+
+    <!-- Action Details Panel -->
+    <div *ngIf="activeAction" class="mt-6 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm transition-all">
+      <div class="font-display font-bold text-lg text-slate-900">{{activeAction}}</div>
+      <p class="mt-1.5 text-sm text-slate-500 leading-relaxed">
+        Tap to open {{activeAction.toLowerCase()}} workflow. Scanner and barcode support available.
+      </p>
+      <button class="mt-4 w-full py-3.5 bg-accent text-white border-none rounded-xl font-semibold text-[15px] cursor-pointer font-display transition-colors active:bg-blue-600 shadow-md shadow-blue-500/20">
+        Start {{activeAction}}
+      </button>
+    </div>
+
+    <!-- Recent activity -->
+    <div class="mt-8">
+      <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Recent Activity</div>
+      
+      <div class="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm">
+        <div *ngFor="let a of recentActivity" class="flex items-center gap-3 py-3 border-b border-slate-100 last:border-b-0">
+          <div class="w-2.5 h-2.5 rounded-full shrink-0" [ngStyle]="{'background': a.dot}"></div>
+          <span class="flex-1 text-[14px] font-medium text-slate-700">{{a.text}}</span>
+          <span class="text-xs text-slate-400 font-mono">{{a.time}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

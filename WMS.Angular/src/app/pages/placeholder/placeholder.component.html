@@ -1,0 +1,44 @@
+<header style="height: 60px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; margin: -22px -28px 22px; position: sticky; top: 0; z-index: 30;">
+  <div>
+    <h1 style="font-family: var(--font-display); font-weight: 700; font-size: 18px; color: #0f172a; margin: 0;">{{name}}</h1>
+    <p style="margin: 0; font-size: 12px; color: #64748b; margin-top: 1px;">Manage and view all {{name.toLowerCase()}} records</p>
+  </div>
+</header>
+
+<div>
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div [ngStyle]="{'background': color + '18'}" style="width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center;">
+        <app-icon [name]="icon" [size]="20" [stroke]="color"></app-icon>
+      </div>
+      <div>
+        <h2 style="margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 18px; color: #0f172a;">{{name}}</h2>
+      </div>
+    </div>
+    <button style="display: flex; align-items: center; gap: 7px; background: #3b82f6; border: none; border-radius: 8px; padding: 9px 18px; color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; font-family: var(--font-display);">
+      + Add {{getAddLabel()}}
+    </button>
+  </div>
+
+  <app-table-card [title]="'All ' + name">
+    <span extra style="font-size: 12px; color: #64748b;">{{currentRows.length}} records shown</span>
+    <table class="data-table">
+      <thead>
+        <tr><th *ngFor="let col of currentCols" style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">{{col}}</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of currentRows">
+          <td *ngFor="let cell of row; let j = index" style="padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 13px;">
+            <span *ngIf="j === 0" style="font-family: var(--font-mono); font-size: 12px; color: #3b82f6;">{{cell}}</span>
+            <span *ngIf="j === row.length - 1 && isStatus(cell)" 
+                  [ngStyle]="{'background': (cell === 'Active' || cell === 'Checked In') ? '#dcfce7' : (cell === 'Pending') ? '#fef3c7' : '#fee2e2', 'color': (cell === 'Active' || cell === 'Checked In') ? '#166534' : (cell === 'Pending') ? '#92400e' : '#991b1b'}" 
+                  style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+              {{cell}}
+            </span>
+            <span *ngIf="j !== 0 && !isStatus(cell)">{{cell}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </app-table-card>
+</div>

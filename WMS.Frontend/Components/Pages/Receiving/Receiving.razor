@@ -1,0 +1,243 @@
+﻿@page "/receiving"
+@rendermode InteractiveServer
+
+@using System.Runtime.InteropServices;
+@inject NavigationManager navigationManager
+@inject DocumentServiceWindows DocumentServiceWindows
+@inject ReceivingClient ReceivingClient
+@inject WarehouseClient WarehouseClient
+@inject IJSRuntime JS
+
+<PageTitle>Receiving</PageTitle>
+
+@if (receivings is null || warehouses is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+   </div>
+}
+else
+{
+    <div class="d-flex justify-content-end gap-1">
+        <div class="col d-flex flex-column justify-content-center align-items-start gap-1 flex-md-row col-md-3 align-items-md-center">
+                    <label for="warehouse">Warehouse:</label>
+                    <InputSelect id="warehouse" Value="WarehouseId"  TValue="string" ValueChanged="OnWarehouseChanged"  ValueExpression="@(() => WarehouseId)"  class="form-select">
+                        <option value="">Select a warehouse</option>
+                        @foreach (var warehouse in warehouses)
+                        {
+                            <option value="@warehouse.Id"> @warehouse.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+        <div class="d-flex align-items-end">
+            <button class="btn btn-success" type="button" @onclick="OnCreateNew"><i class="bi bi-house-add"></i>
+                Add New
+            </button>
+        </div>
+    </div>
+    @if (!String.IsNullOrWhiteSpace(DisplayError))
+    {
+        <div class="col pt-3">
+            <Alert Color="AlertColor.Danger">
+                <Icon Name="IconName.ExclamationTriangleFill" class="me-2"></Icon>@DisplayError
+            </Alert>
+        </div>
+    }
+    <div class="table-responsive">
+        <Grid TItem="ReceivingSummary" Class="table table-striped table-bordered table-hover mt-3" Data="receivings"
+            AllowDetailView="true" AllowFiltering="true" AllowSorting="true"
+            HeaderRowCssClass="bg-secondary text-white border-bottom-0"
+            FiltersRowCssClass="bg-dark text-white bg-opacity-25 border-bottom-0" AllowPaging="true" PageSize="10"
+            PageSizeSelectorVisible="true" PageSizeSelectorItems="@(new int[] { 5,10,20 })" Responsive="true">
+
+            <GridColumns>
+                <GridColumn TItem="ReceivingSummary" HeaderText="Series" PropertyName="Series" SortKeySelector="@(item => item.Series)" IsDefaultSortColumn="true" SortDirection="SortDirection.Descending">
+                    @context.Series
+                </GridColumn>
+                <GridColumn TItem="ReceivingSummary" HeaderText="Transport Co." PropertyName="TransportCompany">
+                    @context.TransportCompany
+                </GridColumn>
+                <GridColumn TItem="ReceivingSummary" HeaderText="Shipper / Exporter" PropertyName="Shipper">
+                    @context.Shipper
+                </GridColumn>
+                <GridColumn TItem="ReceivingSummary" HeaderText="Consignee / Importer" PropertyName="Consignee">
+                    @context.Consignee
+                </GridColumn>
+                <GridColumn TItem="ReceivingSummary" HeaderText="Date Received" PropertyName="DateReceived">
+                    @context.DateReceived.ToString("MM/dd/yyyy")
+                </GridColumn>
+                <GridColumn TItem="ReceivingSummary" HeaderText="INV / PO / DR NO." PropertyName="Reference">
+                    @context.Reference
+                </GridColumn>
+                @* <GridColumn TItem="ReceivingSummary" HeaderText="Plate Number" PropertyName="PlateNumber">
+            @context.PlateNumber
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Driver's Name" PropertyName="DriverName">
+            @context.DriverName
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Client's Representative"
+            PropertyName="ClientRepresentative">
+            @context.ClientRepresentative
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Checker's Name" PropertyName="CheckerName">
+            @context.CheckerName
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Transport Co." PropertyName="DateTime">
+            @context.DateTime
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Time Start" PropertyName="TimeStart">
+            @context.TimeStart
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Time End" PropertyName="TimeEnd">
+            @context.TimeEnd
+            </GridColumn>
+            <GridColumn TItem="ReceivingSummary" HeaderText="Date Added" PropertyName="DateAdded">
+            @context.DateAdded
+            </GridColumn> *@
+            <GridColumn TItem="ReceivingSummary">
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-1 align-items-center">
+                        <button class="btn btn-outline-secondary"  @onclick="@(() => DownloadDocument(@context))"><i class="bi bi-printer"></i></button>
+                        <a class="btn btn-primary" role="button" href="@ReceivingUrl(@context.Id, @context.WarehouseId)">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <button class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="@GetDeleteModalId(@context)"><i class="bi bi-x-lg"></i>
+                        </button>
+                        <DeleteReceiving receiving="@context"/>
+                    </div>
+                </GridColumn>
+            </GridColumns>
+
+            <GridDetailView TItem="ReceivingSummary">
+                @foreach (var product in @context.Products)
+                {
+                    <div class="d-flex flex-column flex-md-row justify-content-end border-bottom p-2">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-3 fw-bold">Name</div>
+                                <div class="col-9">@product.Name</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Type of Package</div>
+                                <div class="col-9">@product.TypeOfPackage</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Measurement</div>
+                                <div class="col-9">@product.Measurement</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Weight</div>
+                                <div class="col-9">@product.Weight.ToString("N2")</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Quantity</div>
+                                <div class="col-9">@product.Quantity</div>
+                            </div>
+                        </div>
+                        <div class="col">                            
+                            <div class="row">
+                                <div class="col-3 fw-bold">CBM</div>
+                                <div class="col-9">@product.CBM</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Total Weight</div>
+                                <div class="col-9">@product.TotalWeight</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Expiration Date</div>
+                                <div class="col-9">@product.ExpirationDate</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3 fw-bold">Remarks</div>
+                                <div class="col-9">@product.Remarks</div>
+                            </div>
+                             <div class="row">
+                                <div class="col-3 fw-bold">Assigned Pallet</div>
+                                <div class="col-9">@(String.IsNullOrWhiteSpace(product.PalletId) ? "Individual Item(s)" : $"Pallet #{product.PalletId}")  <b>@(!String.IsNullOrWhiteSpace(@product.ContainerName) ? $" (In {@product.ContainerName})" : "")</b> </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </GridDetailView>
+        </Grid>
+    </div>
+}
+
+@code {
+
+    private ReceivingSummary[]? receivings;
+
+    private WarehouseSummary[]? warehouses {get;set;}
+
+    private string? WarehouseId {get; set;}
+
+    private String? DisplayError {get; set;}
+    
+    protected override async Task OnInitializedAsync()
+    {        
+        receivings = await ReceivingClient.GetReceivingsAsync();
+        warehouses = await WarehouseClient.GetWarehousesAsync();
+    }
+
+    private async Task OnWarehouseChanged(string WarehouseIdParam)
+    {
+        // Assuming the value is always a valid integer
+        if (WarehouseIdParam != null && int.TryParse(WarehouseIdParam, out var selectedWarehouseId))
+        {
+            WarehouseId = WarehouseIdParam;
+            // Now you can pass selectedWarehouseId to your method
+            receivings = await ReceivingClient.GetReceivingsByWarehouseAsync(selectedWarehouseId);
+        }
+        else{
+            WarehouseId = "";
+            receivings = await ReceivingClient.GetReceivingsAsync();
+        }
+    }
+
+    private static string ReceivingUrl(int id, int WarehouseId) => $"/receiving/{WarehouseId}/edit/{id}";
+
+    private string GetDeleteModalId(ReceivingSummary receiving)
+    {
+        return $"#{DeleteReceiving.GetModalId(receiving)}";
+    }
+
+    private async Task OnCreateNew()
+    {
+        if(!String.IsNullOrWhiteSpace(WarehouseId)){
+            if (int.TryParse(WarehouseId, out int result))
+            {
+                navigationManager.NavigateTo($"/receiving/{result}/add");
+            }            
+        }
+        else{
+            DisplayError = "You need to select what warehouse you will create a Receiving Tally.";
+            await Task.Delay(2000);    
+        }
+        DisplayError = "";
+    }
+
+    private async Task DownloadDocument(ReceivingSummary receivingSummary)
+    { 
+        byte[] fileBytes;    
+        @* // Check the operating system and call the respective GenerateDocument method
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            fileBytes = DocumentServiceWindows.GenerateDocument(receivingSummary); // Use Windows-specific service
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            fileBytes = DocumentServiceUbuntu.GenerateDocument(receivingSummary); // Use Ubuntu-specific service
+        }
+        else
+        {
+            throw new InvalidOperationException("Unsupported OS platform."); // Handle other OS platforms if needed
+        } *@
+        fileBytes = DocumentServiceWindows.GenerateDocument(receivingSummary); 
+        var fileName = $"{receivingSummary.Series}.docx";
+
+        // Trigger file download (requires JavaScript interop)
+        await JS.InvokeVoidAsync("downloadFile", fileName, Convert.ToBase64String(fileBytes));
+    }
+}
