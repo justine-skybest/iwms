@@ -54,6 +54,62 @@
         }
       }
     },
+    "/warehouse/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseDetailsDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/warehouse/{id}": {
       "get": {
         "tags": [
@@ -186,6 +242,45 @@
         }
       }
     },
+    "/rack/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RackSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/rack/warehouse/{id}": {
       "get": {
         "tags": [
@@ -212,6 +307,54 @@
                   "items": {
                     "$ref": "#/components/schemas/RackSummaryDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rack/v2/warehouse/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RackSummaryDtoPaginatedResponse"
                 }
               }
             }
@@ -367,6 +510,53 @@
         }
       }
     },
+    "/bin/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bin/AvailableBin/{WarehouseId}": {
       "get": {
         "tags": [
@@ -400,11 +590,62 @@
         }
       }
     },
+    "/bin/v2/AvailableBin/{WarehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "WarehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinDetailsDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bin/CheckedIn/{BinHashCode}/{WarehouseId}": {
       "get": {
         "tags": [
           "WMS.Api"
         ],
+        "summary": "Locate Checked-In Bin by QR Code",
+        "description": "Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.",
+        "operationId": "GetCheckedInBinByQrCode",
         "parameters": [
           {
             "name": "BinHashCode",
@@ -427,19 +668,26 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/bin/QRCode/{BinHashCode}/{WarehouseId}": {
+    "/bin/QRCode/{binHashCode}/{warehouseId}": {
       "get": {
         "tags": [
           "WMS.Api"
         ],
         "parameters": [
           {
-            "name": "BinHashCode",
+            "name": "binHashCode",
             "in": "path",
             "required": true,
             "schema": {
@@ -448,7 +696,7 @@
             }
           },
           {
-            "name": "WarehouseId",
+            "name": "warehouseId",
             "in": "path",
             "required": true,
             "schema": {
@@ -459,7 +707,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
           }
         }
       }
@@ -486,10 +741,55 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BinSummaryDto"
-                  }
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bin/v2/rack/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
                 }
               }
             }
@@ -532,6 +832,63 @@
                   "items": {
                     "$ref": "#/components/schemas/BinSummaryDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bin/v2/rack/{rackId}/bay/{bayId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "rackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
                 }
               }
             }
@@ -633,7 +990,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckedInProductSumamryDto"
+                }
+              }
+            }
           }
         }
       }
@@ -683,6 +1047,45 @@
         }
       }
     },
+    "/bay/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BayDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bay/lessOrEqual/{id}": {
       "get": {
         "tags": [
@@ -716,6 +1119,54 @@
         }
       }
     },
+    "/bay/v2/lessOrEqual/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BayDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/level": {
       "get": {
         "tags": [
@@ -731,6 +1182,45 @@
                   "items": {
                     "$ref": "#/components/schemas/LevelDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/level/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelDtoPaginatedResponse"
                 }
               }
             }
@@ -771,6 +1261,54 @@
         }
       }
     },
+    "/level/v2/lessOrEqual/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LevelDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/binnames": {
       "get": {
         "tags": [
@@ -786,6 +1324,45 @@
                   "items": {
                     "$ref": "#/components/schemas/BinNamesDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/binnames/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinNamesDtoPaginatedResponse"
                 }
               }
             }
@@ -837,6 +1414,72 @@
                   "items": {
                     "$ref": "#/components/schemas/BinNamesDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/binnames/v2/rack/{rackId}/bay/{bayId}/level/{levelId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "rackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "levelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinNamesDtoPaginatedResponse"
                 }
               }
             }
@@ -904,6 +1547,81 @@
         }
       }
     },
+    "/binnames/v2/rack/{rackId}/bay/{bayId}/level/{levelId}/binName/{binNameId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "rackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "levelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "binNameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinNamesDtoPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/binnames/{id}": {
       "get": {
         "tags": [
@@ -963,6 +1681,62 @@
           "required": true
         },
         "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1157,6 +1931,21 @@
         ],
         "parameters": [
           {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "schema": {
@@ -1182,6 +1971,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReceivingSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1350,6 +2149,54 @@
         }
       }
     },
+    "/receivedProduct/v2/ToCheckInProducts/{WarehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "WarehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToCheckInProductsPaginatedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/checkin": {
       "get": {
         "tags": [
@@ -1399,6 +2246,70 @@
         }
       }
     },
+    "/checkin/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/checkin/Bin/{id}": {
       "get": {
         "tags": [
@@ -1425,6 +2336,71 @@
                   "items": {
                     "$ref": "#/components/schemas/DisplayCheckInProductsDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkin/v2/Bin/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisplayCheckInProductsDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1498,6 +2474,70 @@
         }
       }
     },
+    "/pallet/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/pallet/Warehouse/{id}": {
       "get": {
         "tags": [
@@ -1524,6 +2564,104 @@
                   "items": {
                     "$ref": "#/components/schemas/PalletSummaryDto"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pallet/ToBeCheckIn/{WarehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "WarehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PalletToBeCheckInDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pallet/v2/ToBeCheckIn/{WarehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "WarehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletToBeCheckInDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1607,47 +2745,14 @@
         }
       }
     },
-    "/pallet/ToBeCheckIn/{WarehouseId}": {
+    "/pallet/QRCode/{palletHashCode}/{warehouseId}": {
       "get": {
         "tags": [
           "WMS.Api"
         ],
         "parameters": [
           {
-            "name": "WarehouseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PalletToBeCheckInDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/pallet/QRCode/{PalletHasCode}/{WarehouseId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "parameters": [
-          {
-            "name": "PalletHasCode",
+            "name": "palletHashCode",
             "in": "path",
             "required": true,
             "schema": {
@@ -1656,7 +2761,7 @@
             }
           },
           {
-            "name": "WarehouseId",
+            "name": "warehouseId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1795,6 +2900,62 @@
         }
       }
     },
+    "/manualpicking/v2": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManualPickingSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/manualpicking/{Id}": {
       "get": {
         "tags": [
@@ -1818,6 +2979,243 @@
           }
         }
       }
+    },
+    "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Locate a pallet by its pallet number",
+        "description": "Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.",
+        "operationId": "LocatePalletByNumber",
+        "parameters": [
+          {
+            "name": "palletNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletLocationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/pallet/locate/qrcode/{hashCode}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Locate a pallet by its QR code hash",
+        "description": "Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.",
+        "operationId": "LocatePalletByQrCode",
+        "parameters": [
+          {
+            "name": "hashCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletLocationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/pallet": {
+      "post": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Transfer a whole pallet to a new bin",
+        "description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin, logging the transfer.",
+        "operationId": "TransferPallet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferPalletDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/item": {
+      "post": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Transfer a single item to a new bin",
+        "description": "Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.",
+        "operationId": "TransferItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferItemDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/report": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Get a transfer log report",
+        "description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+        "operationId": "GetTransferReport",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransferLogDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/item/bin/{binId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "List individually checked-in items in a bin",
+        "description": "Returns item-level (non-pallet) received products currently checked in to the given bin.",
+        "operationId": "GetItemsInBin",
+        "parameters": [
+          {
+            "name": "binId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemLocationSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1830,6 +3228,35 @@
             "format": "int32"
           },
           "bayNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BayDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BayDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
             "type": "integer",
             "format": "int32"
           }
@@ -1870,6 +3297,35 @@
         },
         "additionalProperties": false
       },
+      "BinDetailsDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BinDetailsDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "BinNamesDto": {
         "type": "object",
         "properties": {
@@ -1880,6 +3336,35 @@
           "binName": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "BinNamesDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BinNamesDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -1922,6 +3407,35 @@
         },
         "additionalProperties": false
       },
+      "BinSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BinSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "CheckInSummaryDto": {
         "type": "object",
         "properties": {
@@ -1958,6 +3472,35 @@
           "notes": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckInSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckInSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2351,6 +3894,35 @@
         },
         "additionalProperties": false
       },
+      "DisplayCheckInProductsDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DisplayCheckInProductsDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "HttpValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -2388,6 +3960,36 @@
         },
         "additionalProperties": {}
       },
+      "ItemLocationSummaryDto": {
+        "type": "object",
+        "properties": {
+          "receivedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checkInId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeOfPackage": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivingSeries": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "LevelDto": {
         "type": "object",
         "properties": {
@@ -2396,6 +3998,35 @@
             "format": "int32"
           },
           "levelNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LevelDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LevelDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
             "type": "integer",
             "format": "int32"
           }
@@ -2429,6 +4060,75 @@
             "format": "date-time"
           },
           "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ManualPickingSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManualPickingSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PalletLocationDto": {
+        "type": "object",
+        "properties": {
+          "palletId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "palletNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "palletHashCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checkInId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "currentBinLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
             "type": "string",
             "nullable": true
           }
@@ -2469,6 +4169,35 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PalletSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PalletSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2514,6 +4243,35 @@
               "$ref": "#/components/schemas/ToCheckInProducts"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PalletToBeCheckInDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PalletToBeCheckInDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2618,6 +4376,35 @@
         },
         "additionalProperties": false
       },
+      "ProductSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "RackFloorMapObjectDetails": {
         "type": "object",
         "properties": {
@@ -2717,6 +4504,35 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RackSummaryDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RackSummaryDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2986,6 +4802,122 @@
         },
         "additionalProperties": false
       },
+      "ToCheckInProductsPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToCheckInProducts"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferItemDto": {
+        "type": "object",
+        "properties": {
+          "receivedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fromCheckInId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toBinId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferLogDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "transferType": {
+            "type": "string",
+            "nullable": true
+          },
+          "itemDescription": {
+            "type": "string",
+            "nullable": true
+          },
+          "fromBinLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "toBinLocation": {
+            "type": "string",
+            "nullable": true
+          },
+          "transferDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferPalletDto": {
+        "type": "object",
+        "properties": {
+          "palletId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toBinId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferResultDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UpdateBinDto": {
         "type": "object",
         "properties": {
@@ -3124,6 +5056,35 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WarehouseDetailsDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WarehouseDetailsDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

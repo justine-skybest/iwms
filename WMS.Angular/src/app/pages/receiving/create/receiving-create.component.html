@@ -1,0 +1,398 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-sm">
+  <div class="w-full max-w-5xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto">
+    <div>
+      <!-- Header -->
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <div>
+          <h2 class="text-base font-bold">New Receiving Receipt</h2>
+          <p class="text-xs text-slate-400">Complete transaction details below</p>
+        </div>
+        <button (click)="onClose()" class="p-1 rounded-lg text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="p-5 space-y-6">
+        <!-- Global Validation Error Banner -->
+        <div *ngIf="validationError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 font-medium">
+          {{ validationError }}
+        </div>
+
+        <!-- GENERAL INFORMATION -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">General Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Series No.:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.series" 
+                placeholder="SLCWH-00001-26" 
+                maxlength="15"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg font-mono focus:ring-1 focus:ring-blue-500 uppercase" 
+                required 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Date Received:</label>
+              <input type="date" [(ngModel)]="newReceiving.dateReceived" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>INV / PO / DR Ref No.:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.reference" 
+                placeholder="Reference #" 
+                maxlength="35"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+                required 
+              />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- LOGISTICS & TRANSPORT -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Logistics & Driver Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Transport Company:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.transportCompany" 
+                placeholder="Transport Co." 
+                maxlength="85"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+                required 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Driver Name:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.driverName" 
+                placeholder="Driver Name" 
+                maxlength="50"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+                required 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Plate Number:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.plateNumber" 
+                placeholder="Plate #" 
+                maxlength="25"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+                required 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Shipper / Exporter:
+              </label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.shipper" 
+                placeholder="Shipper / Exporter" 
+                maxlength="85"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+                required 
+              />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Consignee / Importer:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.consignee" 
+                placeholder="Consignee / Importer" 
+                maxlength="85"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+              />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- AUDIT & PERSONNEL -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Audit & Personnel</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Checker Name:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.checkerName" 
+                placeholder="Checker Name" 
+                maxlength="50"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Client Representative:</label>
+              <input 
+                type="text" 
+                [(ngModel)]="newReceiving.clientRepresentative" 
+                placeholder="Client Rep" 
+                maxlength="50"
+                class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Time Start:</label>
+              <input type="time" [(ngModel)]="newReceiving.timeStart" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Time End:</label>
+              <input type="time" [(ngModel)]="newReceiving.timeEnd" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- ADD ITEM SECTION -->
+        <div class="bg-slate-50 p-4 border border-slate-200 rounded-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Add Received Product</h3>
+            <div class="flex items-center gap-4 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+              <label class="flex items-center gap-1.5 text-xs text-slate-700 font-medium cursor-pointer">
+                <input type="radio" name="itemType" value="individual" [(ngModel)]="itemType" (change)="onItemTypeChange()" /> Individual Item
+              </label>
+              <label class="flex items-center gap-1.5 text-xs text-slate-700 font-medium cursor-pointer">
+                <input type="radio" name="itemType" value="palletized" [(ngModel)]="itemType" (change)="onItemTypeChange()" /> Palletized
+              </label>
+            </div>
+          </div>
+
+          <!-- Pallet Scanning Block -->
+          <div *ngIf="itemType === 'palletized'" class="bg-blue-50/50 p-3 border border-blue-200 rounded-lg space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-blue-900">Pallet QR Code</label>
+              <app-qr-scanner buttonText="Scan Pallet QR" modalTitle="Pallet Location Scanner" (scanSuccess)="onQrScanned($event)"></app-qr-scanner>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" [(ngModel)]="palletQrCodeInput" placeholder="Pallet QR HashCode" (keyup.enter)="scanAndLocatePallet()" class="flex-1 text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              <button (click)="scanAndLocatePallet()" [disabled]="isLocatingPallet" class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg">
+                {{ isLocatingPallet ? 'Locating...' : 'Locate' }}
+              </button>
+            </div>
+            <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
+            <div *ngIf="scannedPallet" class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-2.5 rounded-md flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <span><strong>Pallet #:</strong> {{ scannedPallet.palletNumber || scannedPallet.palletId }}</span>
+                <span><strong>Location:</strong> {{ scannedPallet.currentBinLocation || 'Unassigned' }}</span>
+              </div>
+              <button (click)="clearScannedPallet()" type="button" class="text-red-600 hover:text-red-800 font-semibold text-xs px-2 py-0.5 rounded hover:bg-red-100 transition-colors">
+                Remove Pallet
+              </button>
+            </div>
+          </div>
+
+          <!-- PRODUCT FIELD INPUTS -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <!-- Searchable Product Combobox -->
+            <div class="relative">
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Product:
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  [(ngModel)]="productSearchQuery"
+                  (input)="onProductSearchInput()"
+                  (focus)="openProductDropdown()"
+                  placeholder="Search product name or code..."
+                  class="w-full text-xs pl-8 pr-8 py-2 border border-slate-300 rounded-lg bg-white focus:ring-1 focus:ring-blue-500"
+                />
+                <lucide-icon [img]="SearchIcon" [size]="14" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"></lucide-icon>
+
+                <button
+                  *ngIf="productSearchQuery"
+                  (click)="clearProductSelection()"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                >
+                  <lucide-icon [img]="XIcon" [size]="12"></lucide-icon>
+                </button>
+                <button
+                  *ngIf="!productSearchQuery"
+                  (click)="openProductDropdown()"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 p-0.5"
+                >
+                  <lucide-icon [img]="ChevronDownIcon" [size]="14"></lucide-icon>
+                </button>
+              </div>
+
+              <!-- Dropdown List -->
+              <div
+                *ngIf="isProductDropdownOpen"
+                class="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto divide-y divide-slate-100"
+              >
+                <div *ngIf="isSearchingProducts" class="p-3 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
+                  <lucide-icon [img]="LoaderIcon" [size]="14" class="animate-spin text-blue-600"></lucide-icon>
+                  Searching products...
+                </div>
+
+                <div
+                  *ngFor="let p of searchedProducts"
+                  (click)="selectProduct(p)"
+                  class="p-2.5 hover:bg-slate-50 cursor-pointer flex items-center justify-between transition-colors"
+                >
+                  <div>
+                    <div class="text-xs font-semibold text-slate-800">{{ p.name }}</div>
+                    <div class="text-[11px] text-slate-400 font-mono">ID: #{{ p.id }}</div>
+                  </div>
+                  <lucide-icon *ngIf="productDraft.productId === p.id" [img]="CheckIcon" [size]="14" class="text-blue-600"></lucide-icon>
+                </div>
+
+                <div *ngIf="!isSearchingProducts && searchedProducts.length === 0" class="p-3 text-center text-xs text-slate-400">
+                  No products found.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">
+                <span class="text-red-500">*</span>Quantity:
+              </label>
+              <input type="number" min="1" [(ngModel)]="productDraft.quantity" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Expiration Date:</label>
+              <input type="date" [(ngModel)]="productDraft.expirationDate" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+            </div>
+          </div>
+
+          <!-- Individual Optional Fields -->
+          <div *ngIf="itemType === 'individual'" class="space-y-3">
+            <label class="flex items-center gap-2 text-xs text-slate-700 font-medium cursor-pointer">
+              <input type="checkbox" [(ngModel)]="isBoxed" class="rounded text-blue-600" /> Is Item Boxed?
+            </label>
+            <div *ngIf="isBoxed" class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3 bg-white rounded-lg border border-slate-200">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Box Name:</label>
+                <input type="text" [(ngModel)]="productDraft.containerName" placeholder="Ex. Box 1" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">CBM:</label>
+                <input type="text" [(ngModel)]="productDraft.cbm" placeholder="0.00" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Total Weight:</label>
+                <input type="text" [(ngModel)]="productDraft.totalWeight" placeholder="0.00" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Remarks:</label>
+            <input type="text" [(ngModel)]="productDraft.remarks" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+          </div>
+
+          <div class="flex justify-end">
+            <button (click)="addProductItem()" type="button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg">
+              + Add Item To Receipt
+            </button>
+          </div>
+        </div>
+
+        <!-- STAGED ITEMS TABLE -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Staged Items ({{ stagedItems.length }})
+            </h3>
+            <button
+              *ngIf="stagedItems.length > 0"
+              (click)="clearAllStagedItems()"
+              type="button"
+              class="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1 transition-colors"
+            >
+              <lucide-icon [img]="TrashIcon" [size]="12" class="text-red-500"></lucide-icon>
+              Clear All Items
+            </button>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg overflow-x-auto">
+            <table class="w-full text-xs text-left whitespace-nowrap">
+              <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5">Name</th>
+                  <th class="p-2.5">Type of Package</th>
+                  <th class="p-2.5">Measurement</th>
+                  <th class="p-2.5">Box Name</th>
+                  <th class="p-2.5 text-right">Quantity</th>
+                  <th class="p-2.5 text-right">CBM</th>
+                  <th class="p-2.5 text-right">Total</th>
+                  <th class="p-2.5">Expiration Date</th>
+                  <th class="p-2.5">Assigned Pallet</th>
+                  <th class="p-2.5">Remarks</th>
+                  <th class="p-2.5 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors">
+                  <td class="p-2.5 font-medium text-slate-800">{{ item.productName || 'Product #' + item.productId }}</td>
+                  <td class="p-2.5 text-slate-600">{{ item.typeOfPackage || '—' }}</td>
+                  <td class="p-2.5 text-slate-600">{{ item.measurement || '—' }}</td>
+                  <td class="p-2.5 text-slate-600">{{ item.containerName || '—' }}</td>
+                  <td class="p-2.5 text-right font-mono font-semibold text-slate-800">{{ item.quantity || 0 }}</td>
+                  <td class="p-2.5 text-right font-mono text-slate-600">{{ item.cbm || '—' }}</td>
+                  <td class="p-2.5 text-right font-mono text-slate-600">{{ item.totalWeight || '—' }}</td>
+                  <td class="p-2.5 font-mono text-slate-600">{{ item.expirationDate || '—' }}</td>
+                  <td class="p-2.5 font-mono">
+                    <div *ngIf="item.palletId" class="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 px-2 py-0.5 rounded-md text-[11px]">
+                      <span>#{{ item.palletId }}</span>
+                    </div>
+                    <span *ngIf="!item.palletId" class="text-slate-400">—</span>
+                  </td>
+                  <td class="p-2.5 text-slate-500 max-w-xs truncate">{{ item.remarks || '—' }}</td>
+                  <td class="p-2.5 text-center">
+                    <button
+                      (click)="removeProductItem(idx)"
+                      type="button"
+                      class="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors"
+                      title="Remove Product"
+                    >
+                      <lucide-icon [img]="TrashIcon" [size]="14" class="text-red-500"></lucide-icon>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr *ngIf="stagedItems.length === 0">
+                  <td colspan="11" class="p-4 text-center text-slate-400">
+                    No items added yet. Use the form above to stage items.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2">
+      <button (click)="onClose()" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100">
+        Cancel
+      </button>
+      <button (click)="saveReceiving()" [disabled]="isSaving" type="button" class="px-5 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 disabled:opacity-50">
+        {{ isSaving ? 'Saving...' : 'Save Receipt' }}
+      </button>
+    </div>
+  </div>
+</div>

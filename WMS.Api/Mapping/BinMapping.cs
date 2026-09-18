@@ -45,19 +45,19 @@ public static class BinMapping
         );
     }
 
-    public static BinSummaryDto ToSummaryDto(this Bin bin)
-    {
-        return new(
-            bin.Id,
-            bin.Rack!.Warehouse!.Name,
-            bin.Rack!.Name,
-            bin.Bay!.BayNumber.ToString(),
-            bin.Level!.LevelNumber.ToString(),
-            bin.BinNames!.BinName,
-            bin.BinHashCode.ToString(),
-            bin.DateAdded
-        );
-    }
+public static BinSummaryDto ToSummaryDto(this Bin bin)
+{
+    return new(
+        bin.Id,
+        bin.Rack?.Warehouse?.Name,
+        bin.Rack?.Name,
+        bin.Bay?.BayNumber.ToString(),
+        bin.Level?.LevelNumber.ToString(),
+        bin.BinNames?.BinName,
+        bin.BinHashCode.ToString(),
+        bin.DateAdded
+    );
+}
     
     public static BinMovementHistoryDto ToMovementHistoryDto(this CheckIn ci)
     {

@@ -45,12 +45,17 @@ public static class CheckInMapping
 
     public static CheckInSummaryDto ToCheckInSummaryDto(this CheckIn checkIn)
     {
+        // Retrieve products from CheckIn, or fallback to Pallet.ReceivedProducts if empty/null
+        var products = (checkIn.ReceivedProducts != null && checkIn.ReceivedProducts.Count != 0)
+            ? checkIn.ReceivedProducts
+            : checkIn.Pallet?.ReceivedProducts;
+
         return new CheckInSummaryDto(
             checkIn.Id,
             checkIn.CheckInType,
-            checkIn.Bins.Select(bins => bins.ToSummaryDto()).ToList(),
-            !String.IsNullOrWhiteSpace(Convert.ToString(checkIn.Pallet?.PalletNumber)) ? "Pallet " + checkIn.Pallet!.PalletNumber : "",
-            checkIn.ReceivedProducts is null ? [] : checkIn.ReceivedProducts.Select(receivedproducts => receivedproducts.ToReceivedProductSummaryDto()).ToList(),
+            checkIn.Bins?.Select(bins => bins.ToSummaryDto()).ToList() ?? [],
+            !string.IsNullOrWhiteSpace(Convert.ToString(checkIn.Pallet?.PalletNumber)) ? "Pallet " + checkIn.Pallet!.PalletNumber : "",
+            products is null ? [] : products.Select(receivedproducts => receivedproducts.ToReceivedProductSummaryDto()).ToList(),
             checkIn.CheckInDate,
             checkIn.Notes
         );

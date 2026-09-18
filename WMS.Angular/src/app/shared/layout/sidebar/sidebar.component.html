@@ -1,10 +1,10 @@
-<aside class="w-[228px] bg-sidebar-bg flex flex-col flex-shrink-0 h-full border-r border-sidebar-border">
+<aside class="w-full bg-sidebar-bg flex flex-col flex-shrink-0 h-full border-r border-sidebar-border">
   
   <!-- Logo -->
   <div class="px-5 pt-5 pb-4 border-b border-sidebar-border">
     <div class="flex items-center gap-2">
-      <div class="w-[30px] h-[30px] bg-accent rounded-md flex items-center justify-center">
-        <app-icon name="warehouses" [size]="16" stroke="#fff"></app-icon>
+      <div class="w-7.5 h-7.5 bg-white rounded-md flex items-center justify-center">
+        <img src="images/skybest.png" alt="Warehouse" class="w-4 h-4" />
       </div>
       <div>
         <div class="font-display font-bold text-[15px] text-sidebar-text-active leading-none">Skybest WMS</div>
@@ -29,10 +29,26 @@
       <span>{{ item.label }}</span>
     </a>
 
-    <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-4 pb-2">
+    <!-- <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-4 pb-2">
       Operations
     </div>
-    
+
+    <a routerLink="/receiving" routerLinkActive="active" class="sidebar-link">
+      <app-icon name="truck" [size]="15"></app-icon>
+      <span>Item Receipt</span>
+      <span class="ml-auto text-[9px] bg-blue-500 text-white px-1.5 py-0.5 rounded-sm font-bold">NEW</span>
+    </a>
+
+    <a routerLink="/check-in" routerLinkActive="active" class="sidebar-link">
+      <app-icon name="scan" [size]="15"></app-icon>
+      <span>Check-In</span>
+    </a>
+
+    <a routerLink="/pick-order" routerLinkActive="active" class="sidebar-link">
+      <app-icon name="list" [size]="15"></app-icon>
+      <span>Pick Order</span>
+    </a> -->
+
     <a routerLink="/mobile" target="_blank" routerLinkActive="active" class="sidebar-link">
       <app-icon name="mobile" [size]="15"></app-icon>
       <span>Mobile Operations</span>

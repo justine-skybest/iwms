@@ -1,39 +1,48 @@
 <div class="min-h-screen bg-slate-50 flex flex-col font-sans">
   
-  <!-- App Header (Dark Theme) -->
-  <div class="bg-sidebar-bg px-6 pt-10 pb-8 rounded-b-4xl shadow-lg">
-    <div class="flex items-center gap-2.5 mb-4">
-      <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center shadow-md">
-        <app-icon name="warehouses" [size]="16" stroke="#fff"></app-icon>
+  <!-- App Header (Compact Dark Theme) -->
+  <div class="bg-sidebar-bg px-4 pt-4 pb-4 rounded-b-2xl shadow-md border-b border-sidebar-border/40">
+    <!-- Top Row: App Title & Location Badge -->
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 bg-accent rounded-lg flex items-center justify-center shadow-sm">
+          <app-icon name="warehouses" [size]="14" stroke="#fff"></app-icon>
+        </div>
+        <span class="font-display font-bold text-sm text-sidebar-text-active tracking-wide">Skybest Mobile</span>
       </div>
-      <span class="font-display font-bold text-base text-sidebar-text-active tracking-wide">Skybest Mobile</span>
+      <span class="text-[11px] font-mono font-medium text-sidebar-text bg-white/10 border border-white/10 px-2.5 py-0.5 rounded-full">
+        WH-NORTH-01
+      </span>
     </div>
     
-    <div class="font-display font-extrabold text-[28px] text-sidebar-text-active tracking-tight leading-tight">
-      Welcome back,<br/>Admin
+    <!-- User Greeting & Date (Single Row) -->
+    <div class="flex items-baseline justify-between mb-3">
+      <h1 class="font-display font-bold text-lg text-sidebar-text-active leading-tight m-0">
+        Welcome back, <span class="text-accent-light font-extrabold">Admin</span>
+      </h1>
+      <span class="text-xs text-sidebar-text font-medium">Sep 14, 2026</span>
     </div>
-    <div class="text-sm text-sidebar-text mt-1.5 font-medium">Sep 14, 2026 · WH-NORTH-01</div>
 
-    <!-- Quick stats strip -->
-    <div class="flex gap-3 mt-6">
-      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
-        <div class="font-mono font-bold text-xl text-sidebar-text-active">45</div>
-        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Pending</div>
+    <!-- Compact Quick Stats Strip -->
+    <div class="grid grid-cols-3 gap-2">
+      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
+        <span class="font-mono font-bold text-sm text-sidebar-text-active">45</span>
+        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Pending</span>
       </div>
-      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
-        <div class="font-mono font-bold text-xl text-sidebar-text-active">12</div>
-        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Expiring</div>
+      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
+        <span class="font-mono font-bold text-sm text-sidebar-text-active">12</span>
+        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Expiring</span>
       </div>
-      <div class="flex-1 bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl py-3 px-2 text-center">
-        <div class="font-mono font-bold text-xl text-sidebar-text-active">8</div>
-        <div class="text-[11px] text-sidebar-text mt-1 font-medium uppercase tracking-wider">Receiving</div>
+      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
+        <span class="font-mono font-bold text-sm text-sidebar-text-active">8</span>
+        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Receiving</span>
       </div>
     </div>
   </div>
 
   <!-- Body -->
-  <div class="flex-1 px-6 py-8">
-    <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Quick Actions</div>
+  <div class="flex-1 px-4 py-6">
+    <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-3">Quick Actions</div>
 
     <!-- Mobile Grid (Responsive) -->
     <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
@@ -56,14 +65,14 @@
       <p class="mt-1.5 text-sm text-slate-500 leading-relaxed">
         Tap to open {{activeAction.toLowerCase()}} workflow. Scanner and barcode support available.
       </p>
-      <button class="mt-4 w-full py-3.5 bg-accent text-white border-none rounded-xl font-semibold text-[15px] cursor-pointer font-display transition-colors active:bg-blue-600 shadow-md shadow-blue-500/20">
+      <button (click)="startAction()" class="mt-4 w-full py-3.5 bg-accent text-white border-none rounded-xl font-semibold text-[15px] cursor-pointer font-display transition-colors active:bg-blue-600 shadow-md shadow-blue-500/20">
         Start {{activeAction}}
       </button>
     </div>
 
     <!-- Recent activity -->
     <div class="mt-8">
-      <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-4">Recent Activity</div>
+      <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-3">Recent Activity</div>
       
       <div class="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm">
         <div *ngFor="let a of recentActivity" class="flex items-center gap-3 py-3 border-b border-slate-100 last:border-b-0">

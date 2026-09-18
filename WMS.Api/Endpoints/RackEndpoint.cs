@@ -9,39 +9,132 @@ namespace WMS.Api.Endpoints;
 public static class RackEndpoint
 {
     const string GetRacksEndpointName = "GetRack";
-    public static RouteGroupBuilder MapRackEndpoints(this WebApplication app){
-   
+
+    public static RouteGroupBuilder MapRackEndpoints(this WebApplication app)
+    {
         var group = app.MapGroup("rack").WithParameterValidation();
-        
-        group.MapGet("/", async (WMSContext dbContext) =>  
-        await dbContext.Racks
-            .Include(rack => rack.Warehouse)
-            .Include(bin => bin.Bay)
-            .Include(bin => bin.Level)
-            .Include(rack => rack.RackFloorMapObject)
-            .OrderBy(rack => rack.Warehouse)
-            .ThenBy(rack => rack.Name)
-            .Select(rack => rack.ToRackSummaryDto())            
-            .AsNoTracking()
-            .ToListAsync()
+
+        // -----------------------------------------------------------------------------
+        // GET / (v1 & v2)
+        // -----------------------------------------------------------------------------
+        group.MapGet("/", async (WMSContext dbContext) =>
+            await dbContext.Racks
+                .Include(rack => rack.Warehouse)
+                .Include(rack => rack.Bay)
+                .Include(rack => rack.Level)
+                .Include(rack => rack.RackFloorMapObject)
+                .OrderBy(rack => rack.Warehouse)
+                .ThenBy(rack => rack.Name)
+                .Select(rack => rack.ToRackSummaryDto())
+                .AsNoTracking()
+                .ToListAsync()
         );
 
-        group.MapGet("/warehouse/{id}", async (int id, WMSContext dbContext ) => 
-        
+        group.MapGet("/v2", async (
+            WMSContext dbContext,
+            int page = 1,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
+        {
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Racks
+                .Include(rack => rack.Warehouse)
+                .Include(rack => rack.Bay)
+                .Include(rack => rack.Level)
+                .Include(rack => rack.RackFloorMapObject)
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(rack => rack.Warehouse)
+                    .ThenBy(rack => rack.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(rack => rack.ToRackSummaryDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<RackSummaryDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<RackSummaryDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // GET /warehouse/{id} (v1 & v2)
+        // -----------------------------------------------------------------------------
+        group.MapGet("/warehouse/{id}", async (int id, WMSContext dbContext) =>
             await dbContext.Racks
                     .Include(rack => rack.Warehouse)
-                    .Include(bin => bin.Bay)
-                    .Include(bin => bin.Level)
+                    .Include(rack => rack.Bay)
+                    .Include(rack => rack.Level)
                     .Include(rack => rack.RackFloorMapObject)
                     .Where(rack => rack.WarehouseId == id)
-                    .Select(rack => rack.ToRackSummaryDto())                    
+                    .Select(rack => rack.ToRackSummaryDto())
                     .AsNoTracking()
-                    .ToListAsync()                    
+                    .ToListAsync()
         );
 
-        group.MapGet("/{id}", async (int id, WMSContext dbContext) => 
+        group.MapGet("/v2/warehouse/{id}", async (
+            int id,
+            WMSContext dbContext,
+            int page = 1,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
         {
-            Rack? rack = await dbContext.Racks.Include(rack => rack.RackFloorMapObject).FirstOrDefaultAsync(result => result.Id == id);
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Racks
+                .Where(rack => rack.WarehouseId == id)
+                .Include(rack => rack.Warehouse)
+                .Include(rack => rack.Bay)
+                .Include(rack => rack.Level)
+                .Include(rack => rack.RackFloorMapObject)
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(rack => rack.Warehouse)
+                    .ThenBy(rack => rack.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(rack => rack.ToRackSummaryDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<RackSummaryDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<RackSummaryDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // Single Item & Helper Endpoints
+        // -----------------------------------------------------------------------------
+        group.MapGet("/{id}", async (int id, WMSContext dbContext) =>
+        {
+            Rack? rack = await dbContext.Racks
+                .Include(rack => rack.RackFloorMapObject)
+                .FirstOrDefaultAsync(result => result.Id == id);
 
             return rack is null ? Results.NotFound() : Results.Ok(rack.ToRackDetailsDto());
         }).WithName(GetRacksEndpointName);
@@ -64,39 +157,42 @@ public static class RackEndpoint
             }
 
             return Results.Ok(rack.ToRackDetailsDto());
-
         });
 
-        group.MapPost("/", async (CreateRackDto newRack, WMSContext dbContext) => 
+        // -----------------------------------------------------------------------------
+        // Mutation Endpoints
+        // -----------------------------------------------------------------------------
+        group.MapPost("/", async (CreateRackDto newRack, WMSContext dbContext) =>
         {
             Rack rack = newRack.ToEntity();
             dbContext.Racks.Add(rack);
             await dbContext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetRacksEndpointName, new {id = rack.Id}, rack.ToRackDetailsDto());            
+            return Results.CreatedAtRoute(GetRacksEndpointName, new { id = rack.Id }, rack.ToRackDetailsDto());
         });
 
-        group.MapPut("/{id}", async (int id, UpdateRackDto updatedRack, WMSContext dbContext) => 
+        group.MapPut("/{id}", async (int id, UpdateRackDto updatedRack, WMSContext dbContext) =>
         {
-            var existingRack = await dbContext.Racks.Include(rack => rack.RackFloorMapObject).FirstOrDefaultAsync(result => result.Id == id);
+            var existingRack = await dbContext.Racks
+                .Include(rack => rack.RackFloorMapObject)
+                .FirstOrDefaultAsync(result => result.Id == id);
+
             if (existingRack is null)
             {
                 return Results.NotFound();
             }
+
             dbContext.Entry(existingRack).CurrentValues.SetValues(updatedRack.ToEntity(id));
 
-            // Update the related entities (ReceivedProducts)
             foreach (var updatedObject in updatedRack.RackFloorMapObject)
             {
                 var existingObject = existingRack.RackFloorMapObject.FirstOrDefault(p => p.Id == updatedObject.Id);
                 if (existingObject != null && existingObject.Id != 0)
                 {
-                    // Update existing product properties
                     dbContext.Entry(existingObject).CurrentValues.SetValues(updatedObject);
                 }
                 else
                 {
-                    // If the product doesn't exist, you might want to add it
                     existingRack.RackFloorMapObject.Add(new RackFloorMapObject
                     {
                         RackId = updatedObject.RackId,
@@ -117,7 +213,6 @@ public static class RackEndpoint
                 }
             }
 
-            // Optionally remove any products that are not in the updatedReceiving
             foreach (var existingObject in existingRack.RackFloorMapObject.ToList())
             {
                 if (!updatedRack.RackFloorMapObject.Any(p => p.Id == existingObject.Id))
@@ -125,14 +220,15 @@ public static class RackEndpoint
                     dbContext.RackFloorMapObjects.Remove(existingObject);
                 }
             }
+
             await dbContext.SaveChangesAsync();
             return Results.NoContent();
         });
 
-        group.MapDelete("/{id}", async (int id, WMSContext dbContext) => 
+        group.MapDelete("/{id}", async (int id, WMSContext dbContext) =>
         {
             await dbContext.Racks.Where(rack => rack.Id == id).ExecuteDeleteAsync();
-            return Results.NoContent();            
+            return Results.NoContent();
         });
 
         return group;

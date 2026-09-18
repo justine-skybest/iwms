@@ -1,22 +1,26 @@
-<!-- Mobile Drawer (slides in from left) -->
-  <!-- <app-mobile-drawer /> -->
+@if (hideLayout()) {
+  <router-outlet />
+} @else {
+  <!-- Mobile Drawer -->
+  <app-mobile-drawer />
 
   <div class="flex h-dvh flex-col overflow-hidden">
-    <!-- Mobile Header (visible only on mobile) -->
-    <!-- <app-mobile-header /> -->
+    <!-- Mobile Header -->
+    <app-mobile-header />
 
     <div class="flex min-h-0 flex-1">
-      <!-- Desktop Sidebar (hidden on mobile) -->
+      <!-- Desktop Sidebar -->
       <div class="hidden md:block">
         <app-sidebar />
       </div>
 
       <div class="relative min-w-0 flex-1 overflow-y-auto">
-        <div [class.p-2]="layoutService.isMobile()" [class.p-4]="!layoutService.isMobile()">
+        <div class="pb-16" [class.p-2]="layoutService.isMobile()" [class.p-4]="!layoutService.isMobile()">
           <router-outlet />
         </div>
       </div>
-
-      <!-- <app-copilot-drawer /> -->
     </div>
   </div>
+
+  <app-warehouse-switcher />
+}

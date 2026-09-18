@@ -1,0 +1,175 @@
+<div class="flex flex-col gap-5">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Pick Order</h1>
+      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} pick orders</p>
+    </div>
+    <button class="flex items-center gap-2 bg-accent border-none rounded-lg px-4 py-2 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600" (click)="openCreateModal()">
+      <lucide-icon [img]="plusIcon" [size]="16"></lucide-icon>
+      New Pick Order
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
+    <div class="flex-1 relative">
+      <lucide-icon [img]="searchIcon" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by order number or warehouse..."
+        class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+      />
+    </div>
+    <select
+      [(ngModel)]="pageSize"
+      (change)="changePageSize($event)"
+      class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+    >
+      <option [value]="10">10 / page</option>
+      <option [value]="25">25 / page</option>
+      <option [value]="50">50 / page</option>
+      <option [value]="100">100 / page</option>
+    </select>
+    <button (click)="onSearch()" class="px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-colors">
+      Search
+    </button>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
+    {{error}}
+  </div>
+
+  <!-- Modal for creating a new pick order -->
+  <app-create-pick-order-modal
+    [isOpen]="showCreateModal"
+    (closed)="onCreateModalClosed()"
+    (created)="onCreateOrderCreated()"
+  ></app-create-pick-order-modal>
+
+<!-- Table -->
+<div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="data-table w-full">
+      <thead>
+        <tr>
+          <th class="text-left">ID</th>
+          <th class="text-left">Warehouse</th>
+          <th class="text-left">Bin</th>
+          <th class="text-left">Picked Products</th>
+          <th class="text-left">Date Picked</th>
+          <th class="text-left">Notes</th>
+          <th class="text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loading State -->
+        <tr *ngIf="isLoading">
+          <td colspan="7" class="text-center py-10 text-slate-400 text-sm">
+            Loading pick orders...
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!isLoading && pickOrders.length === 0">
+          <td colspan="7" class="text-center py-10 text-slate-400 text-sm">
+            No pick orders found.
+          </td>
+        </tr>
+
+        <!-- Data Rows -->
+        <tr *ngFor="let p of pickOrders">
+          <!-- ID -->
+          <td>
+            <span class="font-mono text-xs text-slate-500">#{{ p.id }}</span>
+          </td>
+
+          <!-- Warehouse -->
+          <td class="font-medium text-slate-900">
+            {{ p.warehouse || 'N/A' }}
+          </td>
+
+          <!-- Bin -->
+          <td>
+            <span class="font-mono text-xs text-slate-700">{{ p.bin || '—' }}</span>
+          </td>
+
+          <!-- Picked Products (Item Count & Total Qty) -->
+          <td>
+            <div class="flex items-center gap-1.5">
+              <span class="badge bg-slate-100 text-slate-700">
+                {{ p.pickProducts?.length ?? 0 }} {{ (p.pickProducts?.length === 1 ? 'item' : 'items') }}
+              </span>
+              <span *ngIf="getTotalQuantity(p.pickProducts) as totalQty" class="text-xs text-slate-500 font-medium">
+                ({{ totalQty }} total pcs)
+              </span>
+            </div>
+          </td>
+
+          <!-- Date Picked -->
+          <td class="font-mono text-xs text-slate-600">
+            {{ formatDate(p.pickingDate) }}
+          </td>
+
+          <!-- Notes -->
+          <td class="text-[13px] text-slate-600 max-w-[200px] truncate" [title]="p.notes || ''">
+            {{ p.notes || '—' }}
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <div class="flex items-center gap-1">
+              <button 
+                class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors" 
+                title="View" 
+                (click)="openDetails(p)"
+              >
+                <lucide-icon [img]="eyeIcon" size="14" class="text-slate-600"></lucide-icon>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors" title="Edit">
+                <lucide-icon [img]="pencilIcon" size="14" class="text-yellow-500"></lucide-icon>
+              </button>
+              <button class="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                <lucide-icon [img]="trashIcon" size="14" class="text-red-500"></lucide-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+    <div class="text-xs text-slate-500">
+      Showing {{(page - 1) * pageSize + 1}} to {{endItemCount}} of {{totalCount}} pick orders
+    </div>
+    <div class="flex items-center gap-1">
+      <button
+        (click)="goToPage(page - 1)"
+        [disabled]="page <= 1"
+        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <lucide-icon name="chevronLeft" [size]="14"></lucide-icon>
+      </button>
+      <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
+      <button
+        (click)="goToPage(page + 1)"
+        [disabled]="page >= totalPages"
+        class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <lucide-icon name="chevronRight" [size]="14"></lucide-icon>
+      </button>
+    </div>
+</div>
+  </div>
+</div>
+
+<app-pick-order-details-drawer
+  [isOpen]="showDetailsDrawer"
+  [pickOrder]="selectedPickOrder"
+  (closed)="onDetailsDrawerClosed()"
+></app-pick-order-details-drawer>

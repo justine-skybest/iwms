@@ -7,27 +7,28 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import type { BinSummaryDto } from '../../models/bin-summary-dto';
 
 export interface BinQrCodeBinHashCodeWarehouseIdGet$Params {
-  BinHashCode: number;
-  WarehouseId: number;
+  binHashCode: number;
+  warehouseId: number;
 }
 
-export function binQrCodeBinHashCodeWarehouseIdGet(http: HttpClient, rootUrl: string, params: BinQrCodeBinHashCodeWarehouseIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+export function binQrCodeBinHashCodeWarehouseIdGet(http: HttpClient, rootUrl: string, params: BinQrCodeBinHashCodeWarehouseIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<BinSummaryDto>> {
   const rb = new RequestBuilder(rootUrl, binQrCodeBinHashCodeWarehouseIdGet.PATH, 'get');
   if (params) {
-    rb.path('BinHashCode', params.BinHashCode, {});
-    rb.path('WarehouseId', params.WarehouseId, {});
+    rb.path('binHashCode', params.binHashCode, {});
+    rb.path('warehouseId', params.warehouseId, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<BinSummaryDto>;
     })
   );
 }
 
-binQrCodeBinHashCodeWarehouseIdGet.PATH = '/bin/QRCode/{BinHashCode}/{WarehouseId}';
+binQrCodeBinHashCodeWarehouseIdGet.PATH = '/bin/QRCode/{binHashCode}/{warehouseId}';

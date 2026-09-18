@@ -7,23 +7,24 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import type { CheckedInProductSumamryDto } from '../../models/checked-in-product-sumamry-dto';
 
 export interface BinStockIdBinIdGet$Params {
   BinId: number;
 }
 
-export function binStockIdBinIdGet(http: HttpClient, rootUrl: string, params: BinStockIdBinIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+export function binStockIdBinIdGet(http: HttpClient, rootUrl: string, params: BinStockIdBinIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<CheckedInProductSumamryDto>> {
   const rb = new RequestBuilder(rootUrl, binStockIdBinIdGet.PATH, 'get');
   if (params) {
     rb.path('BinId', params.BinId, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<CheckedInProductSumamryDto>;
     })
   );
 }

@@ -1,0 +1,111 @@
+<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
+  <!-- Dropdown Popover -->
+  <div 
+    *ngIf="isOpen()"
+    class="mb-3 w-80 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden transition-all duration-200 origin-bottom-right"
+  >
+    <!-- Header -->
+    <div class="px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <app-icon name="warehouse" [size]="16" class="text-blue-400"></app-icon>
+        <span class="text-xs font-semibold tracking-wide uppercase text-slate-300">Active Warehouse</span>
+      </div>
+      <button 
+        (click)="warehouseService.fetchWarehouses()" 
+        title="Refresh list"
+        class="text-slate-400 hover:text-white p-1 rounded transition-colors"
+      >
+        <app-icon name="refresh" [size]="13"></app-icon>
+      </button>
+    </div>
+
+    <!-- Body / List -->
+    <div class="p-1.5 max-h-72 overflow-y-auto">
+      <!-- Loading State -->
+      <div *ngIf="warehouseService.isLoading()" class="py-8 text-center text-xs text-slate-400 flex flex-col items-center gap-2">
+        <span>Loading warehouses...</span>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="warehouseService.error() && !warehouseService.isLoading()" class="p-3 text-xs text-red-600 bg-red-50 rounded-xl">
+        {{ warehouseService.error() }}
+      </div>
+
+      <!-- List -->
+      <ng-container *ngIf="!warehouseService.isLoading()">
+        <!-- All Warehouses Option -->
+        <button
+          (click)="selectWarehouse(null)"
+          [class.bg-blue-50]="warehouseService.selectedWarehouseId() === null"
+          [class.border-blue-200]="warehouseService.selectedWarehouseId() === null"
+          class="w-full text-left p-2.5 rounded-xl border border-transparent hover:bg-slate-50 transition-colors flex items-center justify-between group/item my-0.5"
+        >
+          <div class="flex flex-col gap-0.5 min-w-0 pr-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate">
+                All Warehouses
+              </span>
+            </div>
+            <span class="text-[11px] text-slate-400 truncate">
+              View data across all locations
+            </span>
+          </div>
+
+          <div 
+            *ngIf="warehouseService.selectedWarehouseId() === null" 
+            class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0 shadow-sm"
+          ></div>
+        </button>
+
+        <div class="my-1 border-t border-slate-100"></div>
+
+        <!-- Individual Warehouses -->
+        <button
+          *ngFor="let w of warehouseService.warehouses()"
+          (click)="selectWarehouse(w.id ?? null)"
+          [class.bg-blue-50]="w.id === warehouseService.selectedWarehouseId()"
+          [class.border-blue-200]="w.id === warehouseService.selectedWarehouseId()"
+          class="w-full text-left p-2.5 rounded-xl border border-transparent hover:bg-slate-50 transition-colors flex items-center justify-between group/item my-0.5"
+        >
+          <div class="flex flex-col gap-0.5 min-w-0 pr-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors truncate">
+                {{ w.name || 'Unnamed Warehouse' }}
+              </span>
+            </div>
+            <span *ngIf="w.address" class="text-[11px] text-slate-400 truncate">
+              {{ w.address }}
+            </span>
+          </div>
+
+          <div 
+            *ngIf="w.id === warehouseService.selectedWarehouseId()" 
+            class="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0 shadow-sm"
+          ></div>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Icon-Only FAB with Hover Tooltip -->
+  <div class="relative group flex items-center">
+    <div 
+      *ngIf="!isOpen()"
+      class="pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 absolute right-full mr-3 whitespace-nowrap bg-slate-900 text-white text-xs px-3 py-1.5 rounded-xl shadow-lg border border-slate-700/60 flex items-center gap-2"
+    >
+      <span class="text-[10px] uppercase font-bold text-slate-400">Warehouse:</span>
+      <span class="font-semibold text-slate-100">
+        {{ warehouseService.activeWarehouse()?.name || 'All Warehouses' }}
+      </span>
+    </div>
+
+    <button
+      (click)="toggleMenu()"
+      [attr.aria-label]="'Active Warehouse: ' + (warehouseService.activeWarehouse()?.name || 'All Warehouses')"
+      class="relative w-12 h-12 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-full shadow-xl border border-slate-700/50 transition-all transform active:scale-95 cursor-pointer"
+    >
+      <lucide-icon [img]="WarehouseIcon" [size]="18" strokeWidth="1.8" class="text-blue-400"></lucide-icon>
+      <span class="absolute top-0.5 right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-900"></span>
+    </button>
+  </div>
+</div>

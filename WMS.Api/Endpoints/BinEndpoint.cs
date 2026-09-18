@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
+using WMS.Api.Dtos;
 using WMS.Api.Dtos.Bin;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Dtos.Receiving;
@@ -16,6 +17,9 @@ public static class BinEndpoint
     {
         var group = app.MapGroup("bin").WithParameterValidation();
 
+        // -----------------------------------------------------------------------------
+        // GET / (v1 & v2)
+        // -----------------------------------------------------------------------------
         group.MapGet("/", async (WMSContext dbContext) =>
             await dbContext.Bins
                 .Include(bin => bin.Rack)
@@ -33,6 +37,59 @@ public static class BinEndpoint
                 .ToListAsync()
         );
 
+        group.MapGet("/v2", async (
+            WMSContext dbContext,
+            int page = 1,
+            int? warehouseId = null,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
+        {
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Bins
+                .Include(bin => bin.Rack)
+                    .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Bay)
+                .Include(bin => bin.Level)
+                .Include(bin => bin.BinNames)
+                .AsNoTracking();
+
+            if (warehouseId.HasValue)
+            {
+                query = query.Where(bi => bi.Rack!.WarehouseId == warehouseId.Value);
+            }
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(bin => bin.Rack!.Warehouse)
+                    .ThenBy(bin => bin.Rack)
+                    .ThenBy(bin => bin.Bay)
+                    .ThenBy(bin => bin.Level)
+                    .ThenBy(bin => bin.BinNames)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bin => bin.ToSummaryDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<BinSummaryDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<BinSummaryDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // GET /AvailableBin/{WarehouseId} (v1 & v2)
+        // -----------------------------------------------------------------------------
         group.MapGet("/AvailableBin/{WarehouseId:int}", async (WMSContext dbContext, int WarehouseId) =>
             await dbContext.Bins
                     .Include(bin => bin.Rack)
@@ -53,15 +110,70 @@ public static class BinEndpoint
                     .ToListAsync() ?? []
         );
 
+        group.MapGet("/v2/AvailableBin/{WarehouseId:int}", async (
+            int WarehouseId,
+            WMSContext dbContext,
+            int page = 1,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
+        {
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Bins
+                .Include(bin => bin.Rack)
+                    .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Bay)
+                .Include(bin => bin.Level)
+                .Include(bin => bin.BinNames)
+                .Where(bin => bin.Rack!.WarehouseId == WarehouseId)
+                .Where(bin => !dbContext.CheckIns.Any(checkIn => checkIn.Bins.Any(b => b.Id == bin.Id)))
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(bin => bin.Rack!.Warehouse)
+                    .ThenBy(bin => bin.Rack)
+                    .ThenBy(bin => bin.Bay)
+                    .ThenBy(bin => bin.Level)
+                    .ThenBy(bin => bin.BinNames)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bin => bin.ToDetailsDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<BinDetailsDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<BinDetailsDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // GET /CheckedIn & /QRCode
+        // -----------------------------------------------------------------------------
         group.MapGet("CheckedIn/{BinHashCode:int}/{WarehouseId:int}", async (int BinHashCode, int WarehouseId, WMSContext dbContext) =>
         {
-            // Load bin with related entities
+            // Load bin with related entities including CheckIns and their products
             var bin = await dbContext.Bins
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
                 .Include(b => b.Bay)
                 .Include(b => b.Level)
                 .Include(b => b.BinNames)
+                .Include(b => b.CheckIns)
+                    .ThenInclude(ci => ci.ReceivedProducts)
+                .Include(b => b.CheckIns)
+                    .ThenInclude(ci => ci.Pallet)
+                        .ThenInclude(p => p!.ReceivedProducts)
                 .FirstOrDefaultAsync(b => b.BinHashCode == BinHashCode && b.Rack!.WarehouseId == WarehouseId);
 
             if (bin == null)
@@ -72,32 +184,30 @@ public static class BinEndpoint
                     "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.Now));
             }
 
-            // Get all CheckIns linked to this bin with ReceivedProducts loaded
-            var checkIns = await dbContext.CheckIns
-                .Where(ci => ci.Bins.Any(b => b.Id == bin.Id))
-                .Include(ci => ci.ReceivedProducts)
-                .ToListAsync();
-
-            if (!checkIns.Any())
+            if (!bin.CheckIns.Any())
             {
-                // Bin has no CheckIns, so considered empty
                 return Results.Ok(new BinSummaryDto(
                     0,
                     "This QR code is from a bin location that is currently empty.",
                     "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.Now));
             }
 
-            // Check if any CheckIn has unpicked quantity
+            // Check if any CheckIn linked to this bin has unpicked quantity
             bool anyUnpicked = false;
-            foreach (var checkIn in checkIns)
+            foreach (var checkIn in bin.CheckIns)
             {
-                foreach (var received in checkIn.ReceivedProducts)
+                var products = checkIn.ReceivedProducts.Any()
+                    ? checkIn.ReceivedProducts
+                    : checkIn.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>();
+
+                foreach (var received in products)
                 {
                     var totalPicked = await dbContext.PickedProducts
                         .Where(p =>
                             p.ReceivedProductId == received.Id &&
                             p.ManualPicking != null &&
-                            p.ManualPicking.CheckInId == checkIn.Id)
+                            p.ManualPicking.CheckInId == checkIn.Id &&
+                            p.ManualPicking.BinId == bin.Id)
                         .SumAsync(p => (int?)p.QuantityPicked) ?? 0;
 
                     if (totalPicked < received.Quantity)
@@ -117,68 +227,68 @@ public static class BinEndpoint
                     "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.Now));
             }
 
-            // Otherwise return the bin summary DTO
             return Results.Ok(bin.ToSummaryDto());
-        });
+        })
+        .WithName("GetCheckedInBinByQrCode")
+        .WithSummary("Locate Checked-In Bin by QR Code")
+        .WithDescription("Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.")
+        .Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
-        group.MapGet("/QRCode/{BinHashCode:int}/{WarehouseId:int}", async (int BinHashCode, int WarehouseId, WMSContext dbContext) =>
+        group.MapGet("/QRCode/{binHashCode:int}/{warehouseId:int}", async (
+    int binHashCode,
+    int warehouseId,
+    WMSContext dbContext,
+    CancellationToken cancellationToken = default) =>
         {
-            // Get the bin with related entities
             var bin = await dbContext.Bins
+                .AsNoTracking()
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
                 .Include(b => b.Bay)
                 .Include(b => b.Level)
                 .Include(b => b.BinNames)
-                .Where(b => b.BinHashCode == BinHashCode && b.Rack!.WarehouseId == WarehouseId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(b => b.BinHashCode == binHashCode && b.Rack!.WarehouseId == warehouseId, cancellationToken);
 
             if (bin is null)
             {
                 return Results.Ok(new BinSummaryDto(
                     0,
                     "This QR code is not present on any bin location in this warehouse.",
-                    "Empty",   
-                    "Empty",   
-                    "Empty",  
-                    "Empty",     
-                    "Empty",     
-                    DateTime.Now 
+                    "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.UtcNow
                 ));
             }
 
             bool binIsInUse = await dbContext.CheckIns
-            .Where(checkIn => checkIn.Bins.Any(b => b.Id == bin.Id))
-            .AnyAsync(checkIn =>
-                checkIn.ReceivedProducts.Any(received =>
-                    dbContext.PickedProducts
-                        .Where(p =>
-                            p.ReceivedProductId == received.Id &&
-                            p.ManualPicking != null &&
-                            p.ManualPicking.CheckInId == checkIn.Id &&
-                            checkIn.Bins.Any(b => b.Id == p.ManualPicking.BinId)
-                        )
-                        .Sum(p => p.QuantityPicked) < received.Quantity
-                )
-            );
+                .AsNoTracking()
+                .Where(checkIn => checkIn.Bins.Any(b => b.Id == bin.Id))
+                .AnyAsync(checkIn =>
+                    checkIn.ReceivedProducts.Any(received =>
+                        dbContext.PickedProducts
+                            .Where(p =>
+                                p.ReceivedProductId == received.Id &&
+                                p.ManualPicking != null &&
+                                p.ManualPicking.CheckInId == checkIn.Id &&
+                                checkIn.Bins.Any(b => b.Id == p.ManualPicking.BinId)
+                            )
+                            .Sum(p => p.QuantityPicked) < received.Quantity
+                    ), cancellationToken);
 
             if (binIsInUse)
             {
                 return Results.Ok(new BinSummaryDto(
                     0,
                     "This QR code is from a bin location that is currently in use.",
-                    "Empty",   
-                    "Empty",   
-                    "Empty",  
-                    "Empty",     
-                    "Empty",     
-                    DateTime.Now 
+                    "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.UtcNow
                 ));
             }
 
             return Results.Ok(bin.ToSummaryDto());
-        });
+        })
+        .Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
+        // -----------------------------------------------------------------------------
+        // GET /rack/{id} (v1 & v2)
+        // -----------------------------------------------------------------------------
         group.MapGet("/rack/{id}", async (int id, WMSContext dbContext) =>
            await dbContext.Bins
                .Include(bin => bin.Rack)
@@ -195,8 +305,57 @@ public static class BinEndpoint
                .Select(bin => bin.ToSummaryDto())
                .AsNoTracking()
                .ToListAsync()
-        );
+        ).Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
+        group.MapGet("/v2/rack/{id}", async (
+            int id,
+            WMSContext dbContext,
+            int page = 1,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
+        {
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Bins
+                .Include(bin => bin.Rack)
+                    .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Bay)
+                .Include(bin => bin.Level)
+                .Include(bin => bin.BinNames)
+                .Where(bin => bin.RackId == id)
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(bin => bin.Rack!.Warehouse)
+                    .ThenBy(bin => bin.Rack)
+                    .ThenBy(bin => bin.Bay)
+                    .ThenBy(bin => bin.Level)
+                    .ThenBy(bin => bin.BinNames)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bin => bin.ToSummaryDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<BinSummaryDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<BinSummaryDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // GET /rack/{rackId}/bay/{bayId} (v1 & v2)
+        // -----------------------------------------------------------------------------
         group.MapGet("/rack/{rackId}/bay/{bayId}", async (int rackId, int bayId, WMSContext dbContext) =>
             await dbContext.Bins
                 .Include(bin => bin.Rack)
@@ -215,20 +374,69 @@ public static class BinEndpoint
                 .ToListAsync()
         );
 
+        group.MapGet("/v2/rack/{rackId}/bay/{bayId}", async (
+            int rackId,
+            int bayId,
+            WMSContext dbContext,
+            int page = 1,
+            int pageSize = 50,
+            CancellationToken cancellationToken = default) =>
+        {
+            const int maxPageSize = 500;
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+            var query = dbContext.Bins
+                .Include(bin => bin.Rack)
+                    .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Bay)
+                .Include(bin => bin.Level)
+                .Include(bin => bin.BinNames)
+                .Where(bin => bin.RackId == rackId && bin.BayId == bayId)
+                .AsNoTracking();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .OrderBy(bin => bin.Rack!.Warehouse)
+                    .ThenBy(bin => bin.Rack)
+                    .ThenBy(bin => bin.Bay)
+                    .ThenBy(bin => bin.Level)
+                    .ThenBy(bin => bin.BinNames)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(bin => bin.ToSummaryDto())
+                .ToListAsync(cancellationToken);
+
+            var response = new PaginatedResponse<BinSummaryDto>
+            {
+                Items = items,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Results.Ok(response);
+        })
+        .Produces<PaginatedResponse<BinSummaryDto>>(StatusCodes.Status200OK);
+
+        // -----------------------------------------------------------------------------
+        // Standard Single Item & Operation Routes
+        // -----------------------------------------------------------------------------
         group.MapGet("/{id}", async (int id, WMSContext dbContext) =>
         {
             Bin? bin = await dbContext.Bins.FindAsync(id);
 
             return bin is null ? Results.NotFound() : Results.Ok(bin.ToDetailsDto());
         }).WithName(GetBinEndpointName);
-        
+
         group.MapGet("/stock/id/{BinId}", async (int BinId, WMSContext dbContext) =>
         {
             var bin = await dbContext.Bins.FindAsync(BinId);
             if (bin == null)
                 return Results.NotFound($"Bin with ID#{BinId} not found.");
 
-            // Get all check-ins involving this bin
             var checkIns = await dbContext.CheckIns
                 .Where(ci => ci.Bins.Any(b => b.Id == BinId))
                 .Include(ci => ci.ReceivedProducts)
@@ -241,7 +449,6 @@ public static class BinEndpoint
             if (!checkIns.Any())
                 return Results.Ok(new List<DisplayCheckInProductsDto>());
 
-            // Get all picked quantities for these CheckIns (regardless of picking bin)
             var checkInIds = checkIns.Select(ci => ci.Id).ToList();
 
             var pickedMap = await dbContext.PickedProducts
@@ -252,7 +459,6 @@ public static class BinEndpoint
                 .GroupBy(pp => pp.ReceivedProductId)
                 .ToDictionaryAsync(g => g.Key, g => g.Sum(pp => pp.QuantityPicked));
 
-            // Assemble DTOs
             var result = checkIns.Select(ci => new DisplayCheckInProductsDto(
                 Id: ci.Id,
                 CheckInType: ci.CheckInType,
@@ -263,7 +469,7 @@ public static class BinEndpoint
                         var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
                         var availableQty = rp.Quantity - pickedQty;
 
-                    return new CheckedInProductSumamryDto(
+                        return new CheckedInProductSumamryDto(
                             id: rp.Id,
                             Name: rp.Product?.Name ?? "",
                             TypeOfPackage: rp.Product?.TypeOfPackage ?? "",
@@ -278,7 +484,6 @@ public static class BinEndpoint
                             PalletId: rp.PalletId?.ToString(),
                             ReceivingSeries: rp!.Receiving!.Series,
                             Shipper: rp!.Receiving!.Shipper
-                            
                         );
                     })
                     .Where(rp => rp.Quantity > 0)
@@ -290,7 +495,7 @@ public static class BinEndpoint
             .ToList();
 
             return Results.Ok(result);
-        });
+        }).Produces<CheckedInProductSumamryDto>(StatusCodes.Status200OK);
 
         group.MapGet("/history/{BinId}", async (int BinId, WMSContext dbContext) =>
         {
@@ -298,7 +503,6 @@ public static class BinEndpoint
             if (bin == null)
                 return Results.NotFound($"Bin with ID#{BinId} not found.");
 
-            // 1. Get all CheckIns where this bin is assigned
             var checkIns = await dbContext.CheckIns
                 .Where(ci => ci.Bins.Any(b => b.Id == BinId))
                 .Include(ci => ci.ReceivedProducts)
@@ -310,7 +514,6 @@ public static class BinEndpoint
 
             var checkInIds = checkIns.Select(ci => ci.Id).ToList();
 
-            // 2. Get ManualPickings tied to those CheckIns (regardless of bin)
             var manualPickings = await dbContext.ManualPickings
                 .Where(mp => mp.CheckInId != null && checkInIds.Contains(mp.CheckInId.Value))
                 .Include(mp => mp.CheckIn)
@@ -319,13 +522,12 @@ public static class BinEndpoint
                         .ThenInclude(rp => rp!.Product)
                 .Include(mp => mp.PickedProducts)
                     .ThenInclude(pp => pp.ReceivedProduct)
-                        .ThenInclude(rp => rp!.Receiving)                            
+                        .ThenInclude(rp => rp!.Receiving)
                 .OrderBy(mp => mp.PickingDate)
                 .ToListAsync();
 
-            // 3. Build movement history with cumulative picked tracking
             var cumulativePicked = new Dictionary<int, int>();
-            
+
             var inflows = checkIns.Select(ci => ci.ToMovementHistoryDto());
             var outflows = manualPickings.Select(mp => mp.ToMovementHistoryDto(cumulativePicked));
 
@@ -337,7 +539,6 @@ public static class BinEndpoint
 
             return Results.Ok(history);
         });
-
 
         group.MapPost("/", async (CreateBinDto newBin, WMSContext dbContext) =>
         {

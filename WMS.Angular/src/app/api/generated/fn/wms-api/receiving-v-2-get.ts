@@ -10,6 +10,8 @@ import { RequestBuilder } from '../../request-builder';
 import type { ReceivingSummaryDtoPaginatedResponse } from '../../models/receiving-summary-dto-paginated-response';
 
 export interface ReceivingV2Get$Params {
+  search?: string;
+  warehouseId?: number;
   page?: number;
   pageSize?: number;
 }
@@ -17,6 +19,8 @@ export interface ReceivingV2Get$Params {
 export function receivingV2Get(http: HttpClient, rootUrl: string, params?: ReceivingV2Get$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingSummaryDtoPaginatedResponse>> {
   const rb = new RequestBuilder(rootUrl, receivingV2Get.PATH, 'get');
   if (params) {
+    rb.query('search', params.search, {});
+    rb.query('warehouseId', params.warehouseId, {});
     rb.query('page', params.page, {});
     rb.query('pageSize', params.pageSize, {});
   }

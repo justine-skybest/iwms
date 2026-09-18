@@ -1,0 +1,81 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex justify-end">
+  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" (click)="close()"></div>
+
+  <div class="relative w-full max-w-md h-full bg-white shadow-xl flex flex-col">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0">
+      <div>
+        <h2 class="text-base font-bold font-display text-slate-900 m-0">Check-In #{{ checkIn?.id }}</h2>
+        <p class="m-0 text-xs text-slate-500 mt-[1px]">{{ formatDate(checkIn?.checkInDate) }}</p>
+      </div>
+      <button (click)="close()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+        <lucide-icon [img]="xIcon" [size]="18"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6" *ngIf="checkIn as c">
+      <!-- Summary -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 mb-1">Type</p>
+          <span class="badge bg-purple-100 text-purple-700">{{ formatCheckInType(c.checkInType) }}</span>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-500 mb-1">Pallet Number</p>
+          <p class="text-sm font-medium text-slate-900 m-0">{{ c.palletNumber || '—' }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="c.notes">
+        <p class="text-xs font-semibold text-slate-500 mb-1">Notes</p>
+        <p class="text-sm text-slate-700 m-0 whitespace-pre-wrap">{{ c.notes }}</p>
+      </div>
+
+      <!-- Bins -->
+      <div>
+        <p class="text-xs font-semibold text-slate-500 mb-2">Bin Locations ({{ c.bins?.length ?? 0 }})</p>
+        <div class="flex flex-col gap-2">
+          <div
+            *ngFor="let bin of c.bins"
+            class="border border-slate-200 rounded-lg px-3 py-2 flex items-center justify-between"
+          >
+            <div>
+              <p class="text-sm font-medium text-slate-900 m-0">{{ bin.binName || '—' }}</p>
+              <p class="text-xs text-slate-500 m-0">{{ binLocation(bin) }}</p>
+            </div>
+            <span class="text-xs text-slate-400">{{ bin.warehouse || '—' }}</span>
+          </div>
+          <p *ngIf="!c.bins?.length" class="text-xs text-slate-400 m-0">No bins assigned.</p>
+        </div>
+      </div>
+
+      <!-- Products -->
+      <div>
+        <p class="text-xs font-semibold text-slate-500 mb-2">
+          Products ({{ c.receivedProducts?.length ?? 0 }})
+        </p>
+        <div class="flex flex-col gap-2">
+          <div
+            *ngFor="let product of c.receivedProducts"
+            class="border border-slate-200 rounded-lg px-3 py-2 flex flex-col gap-1"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <p class="text-sm font-medium text-slate-900 m-0">{{ product.name || '—' }}</p>
+              <span class="text-xs text-slate-400 shrink-0">Qty: {{ product.quantity }}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-slate-500">
+              <span>Package: {{ product.typeOfPackage || '—' }}</span>
+              <span>Measurement: {{ product.measurement || '—' }}</span>
+              <span>Weight: {{ product.weight }}</span>
+              <span>Total Weight: {{ product.totalWeight }}</span>
+              <span>CBM: {{ product.cbm }}</span>
+              <span>Container: {{ product.containerName || '—' }}</span>
+              <span>Expiration: {{ formatDate(product.expirationDate) }}</span>
+            </div>
+            <p *ngIf="product.remarks" class="text-xs text-slate-500 m-0 mt-1">{{ product.remarks }}</p>
+          </div>
+          <p *ngIf="!c.receivedProducts?.length" class="text-xs text-slate-400 m-0">No products checked in.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

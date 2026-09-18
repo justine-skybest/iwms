@@ -1,0 +1,229 @@
+<div class="flex flex-col gap-5 relative">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Item Receipt</h1>
+      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} receiving transactions</p>
+    </div>
+    <button (click)="openCreate()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 border-none rounded-lg px-4 py-2 text-white font-semibold text-sm font-display transition-colors">
+      <app-icon name="plus" [size]="16"></app-icon>
+      New Receipt
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
+    <div class="flex-1 relative">
+      <app-icon name="search" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></app-icon>
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by series, shipper, or warehouse..."
+        class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+      />
+    </div>
+    <select
+      [(ngModel)]="pageSize"
+      (change)="changePageSize($event)"
+      class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+    >
+      <option [value]="10">10 / page</option>
+      <option [value]="25">25 / page</option>
+      <option [value]="50">50 / page</option>
+      <option [value]="100">100 / page</option>
+    </select>
+    <button (click)="onSearch()" class="px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-colors">
+      Search
+    </button>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
+    {{error}}
+  </div>
+
+  <!-- Main Table -->
+  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="data-table w-full text-left">
+        <thead class="bg-slate-50 text-slate-600 text-xs font-semibold border-b border-slate-200">
+          <tr>
+            <!-- <th class="p-3">ID</th> -->
+            <th class="p-3">Series</th>
+            <th class="p-3">Warehouse</th>
+            <th class="p-3">Shipper / Exporter</th>
+            <th class="p-3">Date Received</th>
+            <th class="p-3">Transport</th>
+            <th class="p-3">Products</th>
+            <th class="p-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngIf="isLoading">
+            <td colspan="8" class="text-center py-10 text-slate-400 text-sm">
+              Loading receiving transactions...
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && receivings.length === 0">
+            <td colspan="8" class="text-center py-10 text-slate-400 text-sm">
+              No receiving transactions found.
+            </td>
+          </tr>
+          <tr *ngFor="let r of receivings" class="hover:bg-slate-50 transition-colors">
+            <!-- <td class="p-3"><span class="font-mono text-xs text-slate-500">#{{r.id}}</span></td> -->
+            <td class="p-3"><span class="font-mono text-xs font-semibold text-blue-600">{{r.series || 'N/A'}}</span></td>
+            <td class="p-3"><span class="inline-block px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">{{r.warehouse || '—'}}</span></td>
+            <td class="p-3 text-[13px] text-slate-700">{{r.shipper || '—'}}</td>
+            <td class="p-3 font-mono text-xs text-slate-600">{{formatDate(r.dateReceived)}}</td>
+            <td class="p-3 text-[13px] text-slate-600">{{r.transportCompany || '—'}}</td>
+            <td class="p-3">
+              <span class="inline-block px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-md">
+                {{r.products?.length ?? 0}} Items
+              </span>
+            </td>
+            <td class="p-3">
+              <button (click)="openView(r)" class="p-1.5 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors" title="View Details">
+                <app-icon name="eye" [size]="15"></app-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+      <div class="text-xs text-slate-500">
+        Showing {{(page - 1) * pageSize + 1}} to {{Math.min(page * pageSize, totalCount)}} of {{totalCount}} receipts
+      </div>
+      <div class="flex items-center gap-1">
+        <button
+          (click)="goToPage(page - 1)"
+          [disabled]="page <= 1"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <lucide-icon [img]="chevronLeftIcon" [size]="14"></lucide-icon>
+        </button>
+        <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
+        <button
+          (click)="goToPage(page + 1)"
+          [disabled]="page >= totalPages"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <lucide-icon [img]="chevronRightIcon" [size]="14"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+<!-- VIEW DETAILS DRAWER -->
+<div *ngIf="isViewOpen" class="fixed inset-0 z-50 flex justify-end">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" (click)="closeView()"></div>
+
+  <!-- Drawer Panel -->
+  <div class="relative z-10 w-full max-w-4xl h-full bg-white shadow-2xl flex flex-col">
+    <!-- Drawer Header (Fixed Top) -->
+    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+      <div>
+        <h2 class="text-base font-bold text-slate-800">Receiving Details</h2>
+        <p class="text-xs text-slate-500 font-mono">Series: {{selectedReceiving?.series || 'N/A'}}</p>
+      </div>
+      <button (click)="closeView()" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors">
+        ✕
+      </button>
+    </div>
+
+    <!-- Drawer Body (Scrollable) -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+      <!-- General & Logistics Information -->
+      <div>
+        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Transaction & Logistics Info</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div><span class="text-slate-400 block">Warehouse</span><span class="font-medium text-slate-800">{{selectedReceiving?.warehouse || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Date Received</span><span class="font-medium text-slate-800">{{formatDate(selectedReceiving?.dateReceived)}}</span></div>
+          <div><span class="text-slate-400 block">Reference / DR No.</span><span class="font-medium text-slate-800 font-mono">{{selectedReceiving?.reference || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Transport Co.</span><span class="font-medium text-slate-800">{{selectedReceiving?.transportCompany || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Shipper / Exporter</span><span class="font-medium text-slate-800">{{selectedReceiving?.shipper || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Consignee / Importer</span><span class="font-medium text-slate-800">{{selectedReceiving?.consignee || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Driver Name</span><span class="font-medium text-slate-800">{{selectedReceiving?.driverName || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Plate Number</span><span class="font-medium text-slate-800 font-mono">{{selectedReceiving?.plateNumber || '—'}}</span></div>
+        </div>
+      </div>
+
+      <!-- Audit & Personnel -->
+      <div>
+        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">Audit & Personnel</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div><span class="text-slate-400 block">Checker Name</span><span class="font-medium text-slate-800">{{selectedReceiving?.checkerName || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Client Representative</span><span class="font-medium text-slate-800">{{selectedReceiving?.clientRepresentative || '—'}}</span></div>
+          <div><span class="text-slate-400 block">Time Start</span><span class="font-medium text-slate-800 font-mono">{{formatTime(selectedReceiving?.timeStart)}}</span></div>
+          <div><span class="text-slate-400 block">Time End</span><span class="font-medium text-slate-800 font-mono">{{formatTime(selectedReceiving?.timeEnd)}}</span></div>
+        </div>
+      </div>
+
+      <!-- Received Products Table -->
+      <div>
+        <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2">
+          Received Products ({{selectedReceiving?.products?.length || 0}})
+        </h3>
+        <div class="border border-slate-200 rounded-lg overflow-x-auto">
+          <table class="w-full text-xs text-left whitespace-nowrap">
+            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+              <tr>
+                <th class="p-2.5">Name</th>
+                <th class="p-2.5">Type of Package</th>
+                <th class="p-2.5">Measurement</th>
+                <th class="p-2.5">Box Name</th>
+                <th class="p-2.5 text-right">Quantity</th>
+                <th class="p-2.5 text-right">CBM</th>
+                <th class="p-2.5 text-right">Total Weight</th>
+                <th class="p-2.5">Expiration Date</th>
+                <th class="p-2.5">Assigned Pallet</th>
+                <th class="p-2.5">Remarks</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr *ngFor="let p of selectedReceiving?.products">
+                <td class="p-2.5 font-medium text-slate-800">{{p.name || '—'}}</td>
+                <td class="p-2.5 text-slate-500">{{p.typeOfPackage || '—'}}</td>
+                <td class="p-2.5 text-slate-500">{{p.measurement || '—'}}</td>
+                <td class="p-2.5 text-slate-500">{{p.containerName || '—'}}</td>
+                <td class="p-2.5 text-right font-mono font-semibold text-slate-800">{{p.quantity || 0}}</td>
+                <td class="p-2.5 text-right font-mono text-slate-600">{{p.cbm || '—'}}</td>
+                <td class="p-2.5 text-right font-mono text-slate-600">{{p.totalWeight || '—'}}</td>
+                <td class="p-2.5 font-mono text-slate-500">{{formatDate(p.expirationDate)}}</td>
+                <td class="p-2.5 font-mono">
+                  <span *ngIf="p.palletId" class="inline-block bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[11px]">
+                    #{{p.palletId}}
+                  </span>
+                  <span *ngIf="!p.palletId" class="text-slate-400">—</span>
+                </td>
+                <td class="p-2.5 text-slate-500 max-w-xs truncate">{{p.remarks || '—'}}</td>
+              </tr>
+              <tr *ngIf="!selectedReceiving?.products?.length">
+                <td colspan="10" class="p-4 text-center text-slate-400">No items listed.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Footer (Fixed Bottom) -->
+    <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end shrink-0">
+      <button (click)="closeView()" class="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300 transition-colors">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!-- ISOLATED CREATION COMPONENT DRAWER -->
+  <app-receiving-create
+    [isOpen]="isCreateOpen"
+    (close)="closeCreate()"
+    (created)="loadReceivings()"
+  ></app-receiving-create>
+</div>

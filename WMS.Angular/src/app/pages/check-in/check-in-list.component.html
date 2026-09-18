@@ -1,0 +1,148 @@
+<div class="flex flex-col gap-5">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Check-In</h1>
+      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} check-in transactions</p>
+    </div>
+    <button 
+      (click)="openCreateModal()"
+      class="flex items-center gap-2 bg-accent border-none rounded-lg px-4 py-2 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600"
+    >
+      <lucide-icon [img]="plusIcon" [size]="16"></lucide-icon>
+      New Check-In
+    </button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
+    <div class="flex-1 relative">
+      <lucide-icon [img]="searchIcon" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by pallet number or warehouse..."
+        class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+      />
+    </div>
+    <select
+      [(ngModel)]="pageSize"
+      (change)="changePageSize($event)"
+      class="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+    >
+      <option [value]="10">10 / page</option>
+      <option [value]="25">25 / page</option>
+      <option [value]="50">50 / page</option>
+      <option [value]="100">100 / page</option>
+    </select>
+    <button (click)="onSearch()" class="px-4 py-2 bg-slate-900 text-white text-sm font-semibold rounded-lg hover:bg-slate-700 transition-colors">
+      Search
+    </button>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
+    {{error}}
+  </div>
+
+  <!-- Table -->
+  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="data-table w-full">
+        <thead>
+          <tr>
+            <th class="text-left">ID</th>
+            <th class="text-left">Pallet Number</th>
+            <th class="text-left">Check-In Type</th>
+            <th class="text-left">Date</th>
+            <th class="text-left">Bins</th>
+            <th class="text-left">Products</th>
+            <th class="text-left">Notes</th>
+            <th class="text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td colspan="8" class="text-center py-10 text-slate-400 text-sm">
+              Loading check-in transactions...
+            </td>
+          </tr>
+          <tr *ngIf="!isLoading && checkIns.length === 0">
+            <td colspan="8" class="text-center py-10 text-slate-400 text-sm">
+              No check-in transactions found.
+            </td>
+          </tr>
+          <tr *ngFor="let c of checkIns">
+            <td><span class="font-mono text-xs text-slate-500">{{c.id}}</span></td>
+            <td class="font-medium text-slate-900">{{c.palletNumber || '—'}}</td>
+            <td><span class="badge bg-purple-100 text-purple-700">{{formatCheckInType(c.checkInType)}}</span></td>
+            <td class="font-mono text-xs text-slate-600">{{formatDate(c.checkInDate)}}</td>
+            <td>
+              <span class="badge bg-slate-100 text-slate-700">
+                {{c.bins?.length ?? 0}}
+              </span>
+            </td>
+            <td>
+              <span class="badge bg-slate-100 text-slate-700">
+                {{c.receivedProducts?.length ?? 0}}
+              </span>
+            </td>
+            <td class="text-[13px] text-slate-600 max-w-[200px] truncate">{{c.notes || '—'}}</td>
+            <td>
+              <div class="flex items-center gap-1">
+                <button (click)="viewDetails(c)" class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors" title="View">
+                  <lucide-icon [img]="eyeIcon" [size]="14"></lucide-icon>
+                </button>
+                <button class="p-1.5 rounded-lg hover:bg-slate-100 transition-colors" title="Edit">
+                  <lucide-icon [img]="pencilIcon" [size]="14" class="text-yellow-500"></lucide-icon>
+                </button>
+                <button class="p-1.5 rounded-lg hover:bg-red-50 transition-colors" title="Delete">
+                  <lucide-icon [img]="trashIcon" [size]="14" class="text-red-500" stroke="#ef4444"></lucide-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+      <div class="text-xs text-slate-500">
+        Showing {{(page - 1) * pageSize + 1}} to {{Math.min(page * pageSize, totalCount)}} of {{totalCount}} check-ins
+      </div>
+      <div class="flex items-center gap-1">
+        <button
+          (click)="goToPage(page - 1)"
+          [disabled]="page <= 1"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <lucide-icon [img]="chevronLeft" [size]="14"></lucide-icon>
+        </button>
+        <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
+        <button
+          (click)="goToPage(page + 1)"
+          [disabled]="page >= totalPages"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <lucide-icon [img]="chevronRight" [size]="14"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Standalone Create Modal -->
+<app-create-check-in-modal
+  [isOpen]="showCreateModal"
+  (closed)="closeCreateModal()"
+  (created)="loadCheckIns()"
+></app-create-check-in-modal>
+
+<!-- Details Drawer -->
+<app-check-in-details-drawer
+  [isOpen]="showDetailsDrawer"
+  [checkIn]="selectedCheckIn"
+  (closed)="closeDetailsDrawer()"
+></app-check-in-details-drawer>

@@ -1,0 +1,22 @@
+<header class="flex md:hidden items-center justify-between px-4 py-3 bg-sidebar-bg border-b border-sidebar-border shrink-0">
+  <div class="flex items-center gap-3">
+    <!-- Trigger Button -->
+    <button
+      (click)="layoutService.toggleMobileMenu()"
+      type="button"
+      class="p-2 text-sidebar-text hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+      aria-label="Open mobile menu"
+    >
+      <lucide-icon [img]="menuIcon" [size]="20"></lucide-icon>
+    </button>
+
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 bg-white rounded flex items-center justify-center">
+        <img src="images/skybest.png" alt="Skybest WMS" class="w-3.5 h-3.5" />
+      </div>
+      <span class="font-display font-bold text-sm text-sidebar-text-active">
+        Skybest WMS
+      </span>
+    </div>
+  </div>
+</header>

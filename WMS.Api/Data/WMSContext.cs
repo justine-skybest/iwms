@@ -34,6 +34,8 @@ public class WMSContext(DbContextOptions<WMSContext> options)
 
     public DbSet<PickedProduct> PickedProducts => Set<PickedProduct>();
 
+    public DbSet<TransferLog> TransferLogs => Set<TransferLog>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.Entity<Bay>().HasData(

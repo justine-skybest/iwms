@@ -1,0 +1,203 @@
+<div class="flex flex-col h-screen w-full bg-white dark:bg-slate-900 overflow-hidden">
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <header class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-3">
+        <lucide-icon [img]="WarehouseIcon" [size]="20" class="text-blue-400"></lucide-icon>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">Warehouse 3D Viewer</h1>
+          <p class="text-sm text-slate-500">{{ selectedWarehouseName }}{{ warehouseAddress ? ` - ${warehouseAddress}` : '' }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button *ngIf="!isFullscreen"
+                (click)="toggleFullscreen()"
+                [attr.aria-label]="'Toggle Fullscreen'"
+                class="w-10 h-10 flex items-center justify-center bg-white hover:bg-slate-50 rounded-xl p-1.5 transition-colors hover:shadow-md shadow-sm border border-slate-200">
+          <lucide-icon [img]="MaximizeIcon" [size]="18" class="text-slate-600 hover:text-slate-900"></lucide-icon>
+        </button>
+        <button *ngIf="isFullscreen"
+                (click)="toggleFullscreen()"
+                [attr.aria-label]="'Exit Fullscreen'"
+                class="w-10 h-10 flex items-center justify-center bg-white hover:bg-slate-50 rounded-xl p-1.5 transition-colors hover:shadow-md shadow-sm border border-slate-200">
+          <lucide-icon [img]="MinimizeIcon" [size]="18" class="text-slate-600 hover:text-slate-900"></lucide-icon>
+        </button>
+        <button (click)="loadWarehouseData()"
+                [attr.aria-label]="'Refresh data'"
+                class="w-10 h-10 flex items-center justify-center bg-white hover:bg-slate-50 rounded-xl p-1.5 transition-colors hover:shadow-md shadow-sm border border-slate-200">
+          <lucide-icon [img]="RefreshIcon" [size]="18" class="text-slate-600 hover:text-slate-900"></lucide-icon>
+        </button>
+        <button (click)="resetView()"
+                [attr.aria-label]="'Reset view'"
+                class="w-10 h-10 flex items-center justify-center bg-white hover:bg-slate-50 rounded-xl p-1.5 transition-colors hover:shadow-md shadow-sm border border-slate-200">
+          <lucide-icon [img]="ResetIcon" [size]="18" class="text-slate-600 hover:text-slate-900"></lucide-icon>
+        </button>
+        <button (click)="showInfo = !showInfo"
+                [attr.aria-label]="'Show/Hide info panel'"
+                class="w-10 h-10 flex items-center justify-center bg-white hover:bg-slate-50 rounded-xl p-1.5 transition-colors hover:shadow-md shadow-sm border border-slate-200">
+          <lucide-icon [img]="InfoIcon" [size]="18" class="text-slate-600 hover:text-slate-900"></lucide-icon>
+        </button>
+      </div>
+    </header>
+
+    <div class="relative flex-1 w-full h-full min-h-0 overflow-hidden bg-slate-50">
+      <!-- 3D Canvas Container -->
+      <div #viewerContainer class="absolute inset-0 w-full h-full" tabindex="0"></div>
+
+      <!-- Loading Overlay -->
+      <div *ngIf="isLoading"
+           class="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+        <div class="text-center space-y-3">
+          <div class="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin duration-1000 mx-auto"></div>
+          <p class="text-lg font-semibold text-slate-800">Loading floor plan layout...</p>
+          <p class="text-sm text-slate-500">Mapping perimeter racks, cross-docking aisles and staging zones...</p>
+        </div>
+      </div>
+
+      <!-- Error Overlay -->
+      <div *ngIf="error && !isLoading"
+           class="absolute inset-0 flex items-center justify-center bg-white/90 backdrop-blur-sm z-10">
+        <div class="bg-red-50 border-l-4 border-red-500 p-6 max-w-2xl text-center space-y-4 shadow-lg rounded-r-xl">
+          <div class="flex items-center justify-center mb-3">
+            <div class="w-10 h-10 border-4 border-red-400 rounded-full flex items-center justify-center">
+              <lucide-icon [img]="AlertIcon" [size]="20" class="text-red-500"></lucide-icon>
+            </div>
+          </div>
+          <h2 class="text-lg font-semibold text-red-800">Unable to load warehouse data</h2>
+          <p class="text-sm text-red-600">{{ error }}</p>
+          <button (click)="loadWarehouseData()"
+                  class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-300">
+            <lucide-icon [img]="RefreshIcon" [size]="16"></lucide-icon>
+            Retry
+          </button>
+        </div>
+      </div>
+
+      <!-- Info Panel -->
+      <div *ngIf="showInfo"
+          class="absolute top-6 left-6 z-20 max-w-xs bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-slate-200 p-4 space-y-3">
+        
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-slate-800 flex items-center gap-2 m-0">
+            <lucide-icon [img]="InfoIcon" size="18" class="text-blue-400"></lucide-icon>
+            Warehouse Statistics
+          </h3>
+          <button (click)="showInfo = false"
+                  class="p-1 rounded hover:bg-slate-100 transition-colors text-slate-500 hover:text-slate-800 border-0 bg-transparent cursor-pointer">
+            <lucide-icon [img]="XIcon" size="16" class="text-slate-500 hover:text-slate-900"></lucide-icon>
+          </button>
+        </div>
+
+        <div class="space-y-2 text-sm text-slate-600">
+          <div class="flex justify-between">
+            <span>Racks:</span>
+            <span class="font-medium">{{ totalRacks }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Bays:</span>
+            <span class="font-medium">{{ totalBays }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Levels:</span>
+            <span class="font-medium">{{ totalLevels }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Bins:</span>
+            <span class="font-medium">{{ totalBins }}</span>
+          </div>
+          <div class="border-t border-slate-100 pt-1 mt-2"></div>
+          
+          <!-- Selected Bin Details Formatted Location Tag -->
+          <div *ngIf="selectedBin" class="space-y-2.5">
+            <p class="text-xs font-bold text-slate-700 m-0">Selected Bin Tag</p>
+
+            <!-- Physical Bin Label Display -->
+            <div class="bg-yellow-400 p-2.5 rounded-xl shadow-md border-2 border-yellow-500 flex flex-col gap-2">
+              <!-- Top Section: QR Code -->
+              <div class="flex items-start justify-between gap-2">
+                <div *ngIf="selectedBinQrUrl" class="bg-white p-1 rounded-lg shadow-sm border border-yellow-500/20 shrink-0">
+                  <img [src]="selectedBinQrUrl" alt="Bin QR Code" class="w-24 h-24 object-contain" />
+                </div>
+                <!-- <div class="flex-1 text-right pt-1">
+                  <span class="text-[10px] font-mono text-yellow-950 font-bold block">HASH</span>
+                  <span class="text-xs font-mono font-extrabold text-black block truncate">{{ selectedBin.binHashCode }}</span>
+                </div> -->
+              </div>
+
+              <!-- Bottom Section: Location Table Grid -->
+              <div class="bg-white rounded border border-slate-900 overflow-hidden grid grid-cols-5 divide-x divide-slate-900 text-center">
+                <!-- S.Warehouse -->
+                <div class="py-1 px-0.5 flex flex-col justify-center">
+                  <span class="text-[8px] font-semibold text-slate-800 leading-none">S.Warehouse</span>
+                  <span class="text-xs font-extrabold text-black mt-1 leading-none">
+                    {{ getWareHouseNameLastIndex(selectedBin.warehouse!) }}
+                  </span>
+                </div>
+
+                <!-- MS / Rack -->
+                <div class="py-1 px-0.5 flex flex-col justify-center">
+                  <span class="text-[8px] font-semibold text-slate-800 leading-none">{{getInitials(selectedBin.rack!)}}</span>
+                  <span class="text-xs font-extrabold text-black mt-1 leading-none">
+                    {{ getWareHouseNameLastIndex(selectedBin.rack!) }}
+                  </span>
+                </div>
+
+                <!-- Bay -->
+                <div class="py-1 px-0.5 flex flex-col justify-center">
+                  <span class="text-[8px] font-semibold text-slate-800 leading-none">Bay</span>
+                  <span class="text-xs font-extrabold text-black mt-1 leading-none">
+                    {{ selectedBin.bay! }}
+                  </span>
+                </div>
+
+                <!-- Level -->
+                <div class="py-1 px-0.5 flex flex-col justify-center">
+                  <span class="text-[8px] font-semibold text-slate-800 leading-none">Level</span>
+                  <span class="text-xs font-extrabold text-black mt-1 leading-none">
+                    {{ selectedBin.level ?? '1' }}
+                  </span>
+                </div>
+
+                <!-- Bin (Highlighted Column) -->
+                <div class="py-1 px-0.5 flex flex-col justify-center bg-yellow-400">
+                  <span class="text-[8px] font-bold text-black leading-none">Bin</span>
+                  <span class="text-xs font-black text-black mt-1 leading-none">
+                    {{ selectedBin.binName?.replace('Bin ', '') ?? selectedBin.binName ?? '1' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+        </div>
+
+          <!-- Hovered Bin Details -->
+          <div *ngIf="hoveredBin && !selectedBin" class="border-t border-slate-100 pt-2 mt-2">
+            <div class="flex items-center gap-2 px-2 py-1 bg-yellow-50 rounded">
+              <div class="w-4 h-4 bg-yellow-400 rounded-full"></div>
+              <div><p class="text-xs font-medium text-yellow-800 m-0">Hovered Bin</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!isLoading && !error && (!hoveredBin && !selectedBin && racks.length === 0)"
+           class="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
+        <div class="text-center space-y-4">
+          <div class="w-14 h-14 border-4 border-dashed border-blue-300 rounded-full flex items-center justify-center mx-auto">
+            <lucide-icon [img]="BoxIcon" [size]="24" class="text-blue-400"></lucide-icon>
+          </div>
+          <p class="text-lg font-semibold text-slate-800">No warehouse data available</p>
+          <p class="text-sm text-slate-500">Please ensure a warehouse is selected from the warehouse switcher</p>
+        </div>
+      </div>
+
+      <!-- Controls Hint -->
+      <div *ngIf="!isFullscreen" class="absolute bottom-6 left-6 z-20 bg-slate-900/80 text-white rounded-xl px-3 py-2 text-xs backdrop-blur-sm">
+        <span class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
+          <span>Left-click to select bin • Hover to inspect • Scroll/Middle-drag to orbit • Right-drag to pan</span>
+        </span>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,186 +1,171 @@
 <!-- Top Bar Mock -->
-<header class="h-[60px] bg-white border-b border-slate-200 flex items-center justify-between px-7 -mx-7 mb-[22px] sticky top-0 z-30">
+<header class="h-auto sm:h-[60px] bg-white border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-0 px-4 sm:px-7 -mx-4 sm:-mx-7 mb-[22px] py-3 sm:py-0 sticky top-0 z-30">
   <div>
     <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Dashboard</h1>
-    <p class="m-0 text-xs text-slate-500 mt-[1px]">Sep 14, 2026 · Real-time warehouse overview</p>
+    <p class="m-0 text-xs text-slate-500 mt-[1px]">{{ currentDate }} · Real-time warehouse overview</p>
   </div>
 </header>
 
 <div class="flex flex-col gap-5">
   <!-- KPI Cards -->
-  <div class="grid grid-cols-6 gap-[14px]">
-    <app-stat-card label="Total Pallets" value="1,341" sub="Across 5 warehouses" color="#3b82f6" icon="pallets"></app-stat-card>
-    <app-stat-card label="Bin Utilization" value="68%" sub="Avg. across all WH" color="#8b5cf6" icon="box"></app-stat-card>
-    <app-stat-card label="Pending Check-In" value="45" sub="Awaiting processing" color="#f59e0b" icon="scan"></app-stat-card>
-    <app-stat-card label="Expiring Soon" value="12" sub="Within 30 days" color="#f97316" icon="bell"></app-stat-card>
-    <app-stat-card label="Expired" value="3" sub="Requires disposal" color="#ef4444" icon="check"></app-stat-card>
-    <app-stat-card label="Receiving Today" value="8" sub="Shipments expected" color="#22c55e" icon="truck"></app-stat-card>
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-[14px]">
+    <app-stat-card label="Total Products" [value]="totalProducts()" sub="Across all warehouses" color="#3b82f6" icon="products"></app-stat-card>
+    <app-stat-card label="Total Warehouses" [value]="totalWarehouses()" sub="Active locations" color="#8b5cf6" icon="warehouses"></app-stat-card>
+    <app-stat-card label="Total Pallets" [value]="totalPallets()" sub="In inventory" color="#22c55e" icon="pallets"></app-stat-card>
+    <app-stat-card label="Pending Receiving" [value]="pendingReceiving()" sub="Awaiting processing" color="#f59e0b" icon="truck"></app-stat-card>
+    <app-stat-card label="Check-Ins Today" [value]="totalCheckIns()" sub="Items checked in" color="#06b6d4" icon="check"></app-stat-card>
+    <app-stat-card label="Pick Orders" [value]="recentPickOrders().length" sub="Recent activity" color="#ef4444" icon="list"></app-stat-card>
   </div>
 
-  <!-- Quick Nav to Mobile App -->
-  <div class="bg-gradient-to-br from-[#1e3a63] to-[#1a56db] rounded-xl px-6 py-4 flex items-center justify-between">
+    <!-- Quick Nav to Mobile App -->
+  <div class="bg-gradient-to-br from-[#1e3a63] to-[#1a56db] rounded-xl px-5 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
     <div>
       <div class="font-display font-bold text-base text-blue-50">Mobile Operations App</div>
       <div class="text-[13px] text-blue-300 mt-[3px]">Quick actions for warehouse staff — Item Receipt, Check In, Pick Order, and more</div>
     </div>
-    <button (click)="goToMobile()" class="flex items-center gap-2 bg-blue-500 border-none rounded-lg px-5 py-2.5 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600">
-      Open Mobile App <app-icon name="arrowRight" [size]="16"></app-icon>
-    </button>
+    <a 
+      href="/mobile" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      class="w-full sm:w-auto shrink-0 whitespace-nowrap flex items-center justify-center gap-2 bg-blue-500 rounded-lg px-5 py-2.5 text-white font-semibold text-sm font-display transition-colors hover:bg-blue-600"
+    >
+      Open Mobile App 
+      <app-icon name="arrowRight" [size]="16"></app-icon>
+    </a>
   </div>
 
-  <!-- Row 1: Recent Receiving + Products Expiring -->
-  <div class="grid grid-cols-2 gap-[14px]">
+  <!-- Row 1: Recent Receiving + Recent Check-Ins -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-[14px]">
     <app-table-card title="Recent Receiving Transactions">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Series</th>
-            <th>Warehouse</th>
-            <th>Shipper / Exporter</th>
-            <th>Date Received</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of recentReceiving">
-            <td><span class="font-mono text-xs text-blue-500">{{r.series}}</span></td>
-            <td><span class="badge bg-blue-100 text-blue-700">{{r.warehouse}}</span></td>
-            <td class="text-[13px]">{{r.shipper}}</td>
-            <td class="font-mono text-xs text-slate-500">{{r.dateReceived}}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="data-table min-w-[560px] lg:min-w-0">
+          <thead>
+            <tr>
+              <th>Series</th>
+              <th>Warehouse</th>
+              <th>Shipper / Exporter</th>
+              <th>Date Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of recentReceivings()">
+              <td><span class="font-mono text-xs text-blue-500">{{r.series}}</span></td>
+              <td><span class="badge bg-blue-100 text-blue-700">{{r.warehouse}}</span></td>
+              <td class="text-[13px]">{{r.shipper || 'N/A'}}</td>
+              <td class="font-mono text-xs text-slate-500">{{r.dateReceived ? formatDate(r.dateReceived) : 'Unknown'}}</td>
+            </tr>
+            <tr *ngIf="recentReceivings().length === 0">
+              <td colspan="4" class="text-center py-8 text-slate-400 text-sm">No recent receiving transactions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </app-table-card>
 
-    <app-table-card title="Products Expiring Soon">
-      <span extra class="badge bg-amber-100 text-amber-800">12 items</span>
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Series</th>
-            <th>Qty</th>
-            <th>Expiration</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let p of expiringProducts">
-            <td class="font-medium">{{p.product}}</td>
-            <td><span class="font-mono text-[11px] text-slate-500">{{p.series}}</span></td>
-            <td><span class="font-mono text-xs">{{p.qty}}</span></td>
-            <td>
-              <span class="badge" [ngClass]="{
-                'bg-red-100 text-red-800': p.status === 'critical',
-                'bg-amber-100 text-amber-800': p.status === 'warning',
-                'bg-green-100 text-green-800': p.status === 'ok'
-              }">
-                {{p.expiration}}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </app-table-card>
-  </div>
-
-  <!-- Row 2: Aging Inventory + Top Products -->
-  <div class="grid grid-cols-[1.6fr_1fr] gap-[14px]">
-    <app-table-card title="Aging Inventory — Oldest On-Shelf Stock">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Series</th>
-            <th>Bin(s)</th>
-            <th>Qty</th>
-            <th>Days in Storage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let a of agingInventory">
-            <td class="font-medium">{{a.product}}</td>
-            <td><span class="font-mono text-[11px] text-slate-500">{{a.series}}</span></td>
-            <td><span class="font-mono text-xs text-slate-600">{{a.bins}}</span></td>
-            <td><span class="font-mono text-xs">{{a.qty}}</span></td>
-            <td>
-              <span class="badge" [ngClass]="{
-                'bg-red-100 text-red-800': a.days > 300,
-                'bg-amber-100 text-amber-800': a.days > 200 && a.days <= 300,
-                'bg-slate-100 text-slate-700': a.days <= 200
-              }">
-                {{a.days}}d
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </app-table-card>
-
-    <app-table-card title="Top Products On-Hand">
-      <div class="px-[18px] pt-[10px] pb-[14px]">
-        <div *ngFor="let p of topProducts; let i = index" class="flex items-center gap-2.5 mb-3 last:mb-0">
-          <span class="font-mono text-[11px] text-slate-400 w-4 text-center">{{i + 1}}</span>
-          <div class="flex-1 min-w-0">
-            <div class="text-[13px] text-slate-700 font-medium truncate">{{p.product}}</div>
-            <div class="h-[5px] bg-slate-100 rounded-[3px] mt-1 overflow-hidden">
-              <div class="h-full bg-blue-500 rounded-[3px]" [style.width.%]="(p.qty / maxTopQty) * 100"></div>
-            </div>
-          </div>
-          <span class="font-mono text-xs text-blue-500 font-semibold w-[50px] text-right shrink-0">{{p.qty | number}}</span>
-        </div>
+    <app-table-card title="Recent Check-Ins">
+      <div class="overflow-x-auto">
+        <table class="data-table min-w-[480px] lg:min-w-0">
+          <thead>
+            <tr>
+              <th>Pallet</th>
+              <th>Warehouse</th>
+              <th>Date</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of recentCheckIns()">
+              <td><span class="font-mono text-xs text-green-500">{{c.series}}</span></td>
+              <td><span class="badge bg-green-100 text-green-700">{{c.warehouse || '—'}}</span></td>
+              <td class="font-mono text-xs text-slate-500">{{c.dateReceived ? formatDate(c.dateReceived) : 'Unknown'}}</td>
+              <td><span class="badge bg-slate-100 text-slate-700">Standard</span></td>
+            </tr>
+            <tr *ngIf="recentCheckIns().length === 0">
+              <td colspan="4" class="text-center py-8 text-slate-400 text-sm">No recent check-ins</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </app-table-card>
   </div>
 
-  <!-- Row 3: Receiving vs Picking + Per-Warehouse -->
-  <div class="grid grid-cols-[1fr_1.4fr] gap-[14px]">
-    <app-table-card title="Receiving vs. Picking — Last 7 Days">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Received Qty</th>
-            <th>Picked Qty</th>
-            <th>Net</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let r of receivingVsPicking">
-            <td><span class="font-mono text-xs text-slate-600">{{r.date}}</span></td>
-            <td><span class="font-mono text-xs text-green-500 font-semibold">{{r.received}}</span></td>
-            <td><span class="font-mono text-xs text-blue-500 font-semibold">{{r.picked}}</span></td>
-            <td>
-              <span class="font-mono text-xs font-semibold" [ngClass]="(r.received - r.picked) >= 0 ? 'text-green-600' : 'text-red-600'">
-                {{(r.received - r.picked) >= 0 ? '+' : ''}}{{r.received - r.picked}}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Row 2: Recent Pick Orders + Top Products -->
+  <div class="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-[14px]">
+    <app-table-card title="Recent Pick Orders">
+      <div class="overflow-x-auto">
+        <table class="data-table min-w-[480px] lg:min-w-0">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Warehouse</th>
+              <th>Bin</th>
+              <th>Date Picked</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of recentPickOrders()">
+              <td><span class="font-mono text-xs text-purple-500">{{p.id || 'N/A'}}</span></td>
+              <td><span class="badge bg-purple-100 text-purple-700">{{p.warehouse || '—'}}</span></td>
+              <td class="text-[13px]">{{p.bin || '—'}}</td>
+              <td class="font-mono text-xs text-slate-500">{{p.pickingDate ? formatDate(p.pickingDate) : 'Unknown'}}</td>
+            </tr>
+            <tr *ngIf="recentPickOrders().length === 0">
+              <td colspan="4" class="text-center py-8 text-slate-400 text-sm">No recent pick orders</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </app-table-card>
 
+    <app-table-card title="Recent Products">
+      <div class="px-[18px] pt-[10px] pb-[14px]">
+        <div *ngFor="let p of recentProducts(); let i = index" class="flex items-center gap-2.5 mb-3 last:mb-0">
+          <span class="font-mono text-[11px] text-slate-400 w-4 text-center">{{i + 1}}</span>
+          <div class="flex-1 min-w-0">
+            <div class="text-[13px] text-slate-700 font-medium truncate">{{p.series}}</div>
+            <div class="h-[5px] bg-slate-100 rounded-[3px] mt-1 overflow-hidden">
+              <div class="h-full bg-blue-500 rounded-[3px]" [style.width.%]="Math.min((p.qty / 5000) * 100, 100)"></div>
+            </div>
+          </div>
+          <span class="font-mono text-xs text-blue-500 font-semibold w-[50px] text-right shrink-0">{{p.qty | number}}</span>
+        </div>
+        <div *ngIf="recentProducts().length === 0" class="text-center py-8 text-slate-400 text-sm">No products found</div>
+      </div>
+    </app-table-card>
+  </div>
+
+  <!-- Row 3: Per-Warehouse Breakdown -->
+  <div class="grid grid-cols-1 gap-[14px]">
     <app-table-card title="Per-Warehouse Breakdown">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Warehouse</th>
-            <th>Pallets</th>
-            <th>Bin Utilization</th>
-            <th>Pending Check-In</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let w of warehouseBreakdown">
-            <td><span class="badge bg-slate-100 text-slate-700">{{w.warehouse}}</span></td>
-            <td><span class="font-mono text-xs">{{w.pallets}}</span></td>
-            <td><app-util-bar [pct]="w.utilization"></app-util-bar></td>
-            <td>
-              <span class="badge" [ngClass]="w.pending > 10 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'">
-                {{w.pending}}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="data-table min-w-[640px] lg:min-w-0">
+          <thead>
+            <tr>
+              <th>Warehouse</th>
+              <th>Pallets</th>
+              <th>Bin Utilization</th>
+              <th>Pending Check-In</th>
+              <th>Total Products</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let w of warehouseBreakdown()">
+              <td><span class="badge bg-slate-100 text-slate-700">{{w.warehouse}}</span></td>
+              <td><span class="font-mono text-xs">{{w.pallets}}</span></td>
+              <td><app-util-bar [pct]="w.utilization"></app-util-bar></td>
+              <td>
+                <span class="badge" [ngClass]="w.pending > 10 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'">
+                  {{w.pending}}
+                </span>
+              </td>
+              <td class="font-mono text-xs text-slate-600">—</td>
+            </tr>
+            <tr *ngIf="warehouseBreakdown().length === 0">
+              <td colspan="5" class="text-center py-8 text-slate-400 text-sm">No warehouse data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </app-table-card>
   </div>
 </div>

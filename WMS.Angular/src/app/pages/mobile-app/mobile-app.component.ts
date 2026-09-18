@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 
 @Component({
@@ -12,13 +13,13 @@ export class MobileAppComponent {
   activeAction: string | null = null;
 
   mobileActions = [
-    { label: "Item Receipt", icon: "truck", color: "#3b82f6", bg: "#dbeafe" },
-    { label: "Check In", icon: "scan", color: "#22c55e", bg: "#dcfce7" },
-    { label: "Pick Order", icon: "list", color: "#8b5cf6", bg: "#ede9fe" },
-    { label: "Cycle Count", icon: "rotate", color: "#f59e0b", bg: "#fef3c7" },
-    { label: "Transfer", icon: "transfer", color: "#06b6d4", bg: "#cffafe" },
-    { label: "Products", icon: "products", color: "#0f172a", bg: "#f1f5f9" },
-    { label: "Route Return", icon: "route", color: "#ef4444", bg: "#fee2e2" },
+    { label: "Item Receipt", icon: "truck", color: "#3b82f6", bg: "#dbeafe", path: '/receiving' },
+    { label: "Check In", icon: "scan", color: "#22c55e", bg: "#dcfce7", path: '/check-in' },
+    { label: "Pick Order", icon: "list", color: "#8b5cf6", bg: "#ede9fe", path: '/pick-order' },
+    { label: "Cycle Count", icon: "rotate", color: "#f59e0b", bg: "#fef3c7", path: '/check-in' },
+    { label: "Transfer", icon: "transfer", color: "#06b6d4", bg: "#cffafe", path: '/pallets' },
+    { label: "Products", icon: "products", color: "#0f172a", bg: "#f1f5f9", path: '/products' },
+    { label: "Warehouses", icon: "warehouses", color: "#0f172a", bg: "#f1f5f9", path: '/warehouses' },
   ];
 
   recentActivity = [
@@ -27,7 +28,17 @@ export class MobileAppComponent {
     { text: "Pick order #4471 completed", time: "1 hr ago", dot: "#8b5cf6" },
   ];
 
+  constructor(private router: Router) {}
+
   toggleAction(label: string) {
     this.activeAction = this.activeAction === label ? null : label;
+  }
+
+  startAction() {
+    if (!this.activeAction) return;
+    const action = this.mobileActions.find(item => item.label === this.activeAction);
+    if (action?.path) {
+      this.router.navigate([action.path]);
+    }
   }
 }
