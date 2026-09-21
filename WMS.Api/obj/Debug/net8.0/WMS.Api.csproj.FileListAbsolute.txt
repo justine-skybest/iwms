@@ -211,4 +211,3 @@ C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\refint\WMS.Api.dll
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\WMS.Api.pdb
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\WMS.Api.genruntimeconfig.cache
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\ref\WMS.Api.dll
-C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

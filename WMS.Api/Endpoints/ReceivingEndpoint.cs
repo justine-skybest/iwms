@@ -60,25 +60,26 @@ public static class ReceivingEndpoint
             }
 
             if (!string.IsNullOrWhiteSpace(search))
-        {
-                // NOTE: assumes Series and Warehouse name are the meaningful
-                // search targets. Add Shipper/Exporter here too if Receiving
-                // has that field (the dashboard's "Shipper / Exporter" column
-                // suggests it might, but it isn't visible in this file).
+            {
                 query = query.Where(receiving =>
                     receiving.Series.Contains(search) ||
                     (receiving.Warehouse != null && receiving.Warehouse.Name.Contains(search)) ||
                     (receiving.Shipper != null && receiving.Shipper.Contains(search)));
-        }
+            }
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            var items = await query
+            // Fetch entities from MySQL first
+            var receivings = await query
                 .OrderByDescending(receiving => receiving.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(receiving => receiving.ToReceivingSummaryDto())
                 .ToListAsync(cancellationToken);
+
+            // Map to DTOs in C# memory
+            var items = receivings
+                .Select(receiving => receiving.ToReceivingSummaryDto())
+                .ToList();
 
             var response = new PaginatedResponse<ReceivingSummaryDto>
             {
