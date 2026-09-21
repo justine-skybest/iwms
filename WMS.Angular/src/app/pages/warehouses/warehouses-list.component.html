@@ -1,22 +1,22 @@
-<div class="flex flex-col gap-5">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Warehouses</h1>
-      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} warehouses total</p>
-    </div>
-    <div class="flex items-center gap-2">
-      <button class="flex items-center gap-2 bg-accent border-none rounded-lg px-4 py-2 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600">
-        <app-icon name="plus" [size]="16"></app-icon>
-        Add Warehouse
-      </button>
-    </div>
-  </div>
+<app-page-header 
+  title="Warehouses" 
+  subtitle="{{totalCount}} warehouses total"
+  [showDate]="false"
+  [showWarehouse]="false"
+  >
+  <button class="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200">
+    Export CSV
+  </button>
+  <button class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+    + Add Warehouse
+  </button>
+</app-page-header>
 
+<div class="flex flex-col gap-5">
   <!-- Toolbar -->
   <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
     <div class="flex-1 relative">
-      <app-icon name="search" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></app-icon>
+      <lucide-icon [img]="searchIcon" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
       <input
         type="text"
         [(ngModel)]="search"
@@ -80,7 +80,7 @@
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-600 rounded-lg text-xs font-semibold transition-colors border border-slate-200"
                 title="View 3D Layout"
               >
-                <app-icon name="box" [size]="14"></app-icon>
+                <lucide-icon [img]="boxIcon" [size]="14"></lucide-icon>
                 3D View
               </button>
             </td>
@@ -100,7 +100,7 @@
           [disabled]="page <= 1"
           class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <app-icon name="chevronLeft" [size]="14"></app-icon>
+          <lucide-icon [img]="chevronLeft" [size]="14"></lucide-icon>
         </button>
         <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
         <button
@@ -108,7 +108,7 @@
           [disabled]="page >= totalPages"
           class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <app-icon name="chevronRight" [size]="14"></app-icon>
+          <lucide-icon [img]="chevronRight" [size]="14"></lucide-icon>
         </button>
       </div>
     </div>

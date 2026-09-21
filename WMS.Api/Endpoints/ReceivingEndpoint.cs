@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
+using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -138,11 +140,13 @@ public static class ReceivingEndpoint
         // -----------------------------------------------------------------------------
         // Mutation Endpoints
         // -----------------------------------------------------------------------------
-        group.MapPost("/", async (CreateReceivingDto NewReceiving, WMSContext dbContext) =>
+        group.MapPost("/", async (CreateReceivingDto NewReceiving, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             Receiving receiving = NewReceiving.ToEntity();
             dbContext.Receivings.Add(receiving);
             await dbContext.SaveChangesAsync();
+
+            await hubContext.Clients.All.ReceivingCreated();
 
             return Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, receiving.ToReceivingDetailsDto());
         });

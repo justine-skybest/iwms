@@ -8,15 +8,22 @@ import { IconComponent } from '../../shared/components/icon/icon.component';
 
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { Router } from '@angular/router';
+import { BoxIcon, ChevronLeft, ChevronRight, LucideAngularModule, PlusIcon, SearchIcon } from 'lucide-angular';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'app-warehouses-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent],
+  imports: [CommonModule, FormsModule, IconComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './warehouses-list.component.html',
 })
 export class WarehousesListComponent implements OnInit {
   Math = Math;
+  readonly searchIcon = SearchIcon;
+  readonly plus = PlusIcon;
+  readonly chevronLeft = ChevronLeft;
+  readonly chevronRight = ChevronRight;
+  readonly boxIcon = BoxIcon;
 
   formatDate(dateStr?: string): string {
     if (!dateStr) return '—';

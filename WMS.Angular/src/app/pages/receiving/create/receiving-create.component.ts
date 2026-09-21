@@ -7,6 +7,7 @@ import { CreateReceivingDto, PalletLocationDto, ProductSummaryDto, ProductSummar
 import { locatePalletByQrCode, productV2Get, receivingPost } from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
 import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check } from 'lucide-angular';
+import { ToastService } from '../../../lib/services/toast.service';
 
 type ItemType = 'individual' | 'palletized';
 
@@ -34,6 +35,7 @@ export class ReceivingCreateComponent {
   private cd = inject(ChangeDetectorRef);
   private elementRef = inject(ElementRef);
   public warehouseService = inject(WarehouseService);
+  private toastService = inject(ToastService)
 
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
@@ -359,10 +361,12 @@ export class ReceivingCreateComponent {
 
     try {
       await this.api.invoke(receivingPost, { body: payload });
+      this.toastService.success(`Receiving ${payload.series} successfully submitted`)
       this.created.emit();
       this.onClose();
     } catch (err) {
       console.error('Failed to create receiving:', err);
+      this.toastService.error(`Failed to create receiving: ${err}`)
       this.validationError = 'Failed to save receiving receipt. Please check server connection.';
     } finally {
       this.isSaving = false;

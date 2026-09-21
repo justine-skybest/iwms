@@ -7,9 +7,10 @@ import { LayoutService } from './lib/services/layout.service';
 import { WarehouseSwitcherComponent } from './shared/components/warehouse-switcher/warehouse-switcher.component';
 import { MobileDrawer } from './shared/layout/mobile-drawer/mobile-drawer';
 import { MobileHeaderComponent } from './shared/layout/mobile-header/mobile-header.component';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
-  imports: [SidebarComponent, RouterOutlet, WarehouseSwitcherComponent, MobileDrawer, MobileHeaderComponent],
+  imports: [SidebarComponent, RouterOutlet, WarehouseSwitcherComponent, MobileDrawer, MobileHeaderComponent, ToastComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

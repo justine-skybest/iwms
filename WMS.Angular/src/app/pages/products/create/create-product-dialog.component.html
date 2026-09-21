@@ -1,0 +1,157 @@
+@if (isOpen) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h2 class="text-base font-bold font-display text-slate-900 m-0">
+          {{ isEditMode ? 'Edit Product' : 'Add New Product' }}
+        </h2>
+        <button type="button" (click)="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors" [disabled]="isSubmitting">
+          <app-icon name="x" [size]="18"></app-icon>
+        </button>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="p-6 flex flex-col gap-4" novalidate>
+        <!-- Error Message Banner -->
+        @if (errorMessage) {
+          <div class="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <!-- Product Name -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">
+            Product Name <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="name"
+            name="name"
+            placeholder="e.g. Premium Steel Screws"
+            class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 font-medium"
+            [class.border-red-300]="validationErrors['name']"
+            [class.focus:ring-red-500/20]="validationErrors['name']"
+            [class.focus:border-red-500]="validationErrors['name']"
+            [class.border-slate-200]="!validationErrors['name']"
+            [class.focus:ring-blue-500/20]="!validationErrors['name']"
+            [class.focus:border-blue-500]="!validationErrors['name']"
+            [disabled]="isSubmitting"
+            required
+          />
+          @if (validationErrors['name']) {
+            <div class="text-red-500 text-[10px] font-medium mt-1">
+              {{ validationErrors['name'] }}
+            </div>
+          }
+        </div>
+
+        <!-- Type of Package -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">
+            Type of Package <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="typeOfPackage"
+            name="typeOfPackage"
+            placeholder="e.g. Box, Pallet, Carton"
+            class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 font-medium"
+            [class.border-red-300]="validationErrors['typeOfPackage']"
+            [class.focus:ring-red-500/20]="validationErrors['typeOfPackage']"
+            [class.focus:border-red-500]="validationErrors['typeOfPackage']"
+            [class.border-slate-200]="!validationErrors['typeOfPackage']"
+            [class.focus:ring-blue-500/20]="!validationErrors['typeOfPackage']"
+            [class.focus:border-blue-500]="!validationErrors['typeOfPackage']"
+            [disabled]="isSubmitting"
+            required
+          />
+          @if (validationErrors['typeOfPackage']) {
+            <div class="text-red-500 text-[10px] font-medium mt-1">
+              {{ validationErrors['typeOfPackage'] }}
+            </div>
+          }
+        </div>
+
+        <!-- Measurement -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">
+            Measurement <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="measurement"
+            name="measurement"
+            placeholder="e.g. 50x50x50 cm, 10-pack"
+            class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 font-medium"
+            [class.border-red-300]="validationErrors['measurement']"
+            [class.focus:ring-red-500/20]="validationErrors['measurement']"
+            [class.focus:border-red-500]="validationErrors['measurement']"
+            [class.border-slate-200]="!validationErrors['measurement']"
+            [class.focus:ring-blue-500/20]="!validationErrors['measurement']"
+            [class.focus:border-blue-500]="!validationErrors['measurement']"
+            [disabled]="isSubmitting"
+            required
+          />
+          @if (validationErrors['measurement']) {
+            <div class="text-red-500 text-[10px] font-medium mt-1">
+              {{ validationErrors['measurement'] }}
+            </div>
+          }
+        </div>
+
+        <!-- Weight -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">
+            Weight (kg) <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            [min]="0"
+            [(ngModel)]="weight"
+            name="weight"
+            placeholder="0.00"
+            class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 font-mono font-medium"
+            [class.border-red-300]="validationErrors['weight']"
+            [class.focus:ring-red-500/20]="validationErrors['weight']"
+            [class.focus:border-red-500]="validationErrors['weight']"
+            [class.border-slate-200]="!validationErrors['weight']"
+            [class.focus:ring-blue-500/20]="!validationErrors['weight']"
+            [class.focus:border-blue-500]="!validationErrors['weight']"
+            [disabled]="isSubmitting"
+            required
+          />
+          @if (validationErrors['weight']) {
+            <div class="text-red-500 text-[10px] font-medium mt-1">
+              {{ validationErrors['weight'] }}
+            </div>
+          }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 mt-2">
+          <button
+            type="button"
+            (click)="closeModal()"
+            [disabled]="isSubmitting"
+            class="px-4 py-2 text-xs font-semibold text-slate-600 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          >
+            @if (isSubmitting) {
+              <span>Saving...</span>
+            } @else {
+              <span>{{ isEditMode ? 'Save Changes' : 'Add Product' }}</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

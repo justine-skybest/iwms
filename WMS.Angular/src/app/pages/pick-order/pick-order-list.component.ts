@@ -8,11 +8,12 @@ import { manualpickingV2Get } from '../../api/generated/functions';
 import { ManualPickingSummaryDto, ManualPickingSummaryDtoPaginatedResponse, PickedProductSummaryDto } from '../../api/generated/models';
 import { Eye, EyeIcon, LucideAngularModule, PencilIcon, Plus, Search, Trash2Icon } from 'lucide-angular';
 import { PickOrderDetailsDrawerComponent } from './details/pick-order-details-drawer.component';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'app-pick-order-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, CreatePickOrderModalComponent, LucideAngularModule, PickOrderDetailsDrawerComponent],
+  imports: [CommonModule, FormsModule, IconComponent, CreatePickOrderModalComponent, LucideAngularModule, PickOrderDetailsDrawerComponent, PageHeaderComponent],
   templateUrl: './pick-order-list.component.html',
 })
 export class PickOrderListComponent implements OnInit {

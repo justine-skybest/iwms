@@ -7,14 +7,23 @@ import { PalletSummaryDto, PalletSummaryDtoPaginatedResponse } from '../../api/g
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
-import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, PlusIcon, SearchIcon } from 'lucide-angular';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
+import { CreatePalletDialogComponent } from './create/create-pallet-dialog.component';
 
 export type PalletWithQr = PalletSummaryDto & { qrCodeUrl?: string };
 
 @Component({
   selector: 'app-pallets-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, LucideAngularModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    IconComponent, 
+    LucideAngularModule, 
+    PageHeaderComponent, 
+    CreatePalletDialogComponent
+  ],
   templateUrl: './pallets-list.component.html',
 })
 export class PalletsListComponent implements OnInit {
@@ -23,8 +32,10 @@ export class PalletsListComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
   private warehouseService = inject(WarehouseService);
 
-  readonly chevronLeftIcon = ChevronLeft;
-  readonly chevronRightIcon = ChevronRight;
+  readonly chevronLeft = ChevronLeft;
+  readonly chevronRight = ChevronRight;
+  readonly plus = PlusIcon;
+  readonly searchIcon = SearchIcon;
 
   pallets: PalletWithQr[] = [];
   isLoading = true;
@@ -35,7 +46,11 @@ export class PalletsListComponent implements OnInit {
   totalCount = 0;
   totalPages = 0;
 
-  // State for enlarged QR preview modal
+  // Dialog State
+  isCreateDialogOpen = false;
+  palletToEdit?: PalletSummaryDto;
+
+  // Enlarged QR preview modal state
   selectedPalletForQr: PalletWithQr | null = null;
 
   get endItemCount(): number {
@@ -72,7 +87,6 @@ export class PalletsListComponent implements OnInit {
       const response = await this.api.invoke(palletV2Get, params) as PalletSummaryDtoPaginatedResponse;
       const rawItems = response.items ?? [];
 
-      // Generate QR data URL for each pallet item in parallel
       this.pallets = await Promise.all(
         rawItems.map(async (pallet) => ({
           ...pallet,
@@ -84,19 +98,40 @@ export class PalletsListComponent implements OnInit {
 
       this.totalCount = response.totalCount ?? 0;
       this.totalPages = response.totalPages ?? 0;
-
-      if (this.pallets.length === 0) {
-        console.debug('loadPallets: request succeeded but returned 0 items', { params, response });
-      }
     } catch (err) {
       this.error = 'Unable to load pallets. Please try again.';
       console.error('Failed to load pallets:', { params, search: this.search, err });
-    } finally {
+    }
+    finally {
       this.isLoading = false;
       this.cd.markForCheck();
     }
   }
 
+  // Dialog Control
+  openCreateDialog(): void {
+    this.palletToEdit = undefined;
+    this.isCreateDialogOpen = true;
+    this.cd.markForCheck();
+  }
+
+  openEditDialog(pallet: PalletSummaryDto): void {
+    this.palletToEdit = pallet;
+    this.isCreateDialogOpen = true;
+    this.cd.markForCheck();
+  }
+
+  closeCreateDialog(): void {
+    this.isCreateDialogOpen = false;
+    this.palletToEdit = undefined;
+    this.cd.markForCheck();
+  }
+
+  onPalletSaved(): void {
+    void this.loadPallets();
+  }
+
+  // QR Preview
   openQrPreview(pallet: PalletWithQr): void {
     this.selectedPalletForQr = pallet;
   }
@@ -105,6 +140,7 @@ export class PalletsListComponent implements OnInit {
     this.selectedPalletForQr = null;
   }
 
+  // Helpers & Actions
   formatDate(dateStr?: string): string {
     if (!dateStr) return '—';
     try {

@@ -16,10 +16,12 @@ export const routes: Routes = [
   {
     path: 'products',
     loadChildren: () => import("./pages/products/products.routes").then((m) => m.productsRoutes),
+    title: 'Products'
   },
   {
     path: 'warehouses',
     loadChildren: () => import("./pages/warehouses/warehouses.routes").then((m) => m.warehousesRoutes),
+    title: 'Warehouses'
   },
   {
     path: 'warehouse-3d',
@@ -29,23 +31,28 @@ export const routes: Routes = [
   {
     path: 'pallets',
     loadChildren: () => import("./pages/pallets/pallets.routes").then((m) => m.palletsRoutes),
+    title: 'Pallets'
   },
   {
     path: 'receiving',
     loadChildren: () => import("./pages/receiving/receiving.routes").then((m) => m.receivingRoutes),
+    title: 'Receiving'
   },
   {
     path: 'check-in',
     loadChildren: () => import("./pages/check-in/check-in.routes").then((m) => m.checkInRoutes),
+    title: 'Checkin'
   },
   {
     path: 'pick-order',
     loadChildren: () => import("./pages/pick-order/pick-order.routes").then((m) => m.pickOrderRoutes),
+    title: 'Pick-Order'
   },
   {
     path: 'mobile',
     component: MobileAppComponent,
     data: { hideLayout: true, breadcrumb: 'Mobile Operations' },
+    title: 'Mobile Operations'
   },
   { path: '**', redirectTo: 'home' }
 ];

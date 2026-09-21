@@ -9,11 +9,12 @@ import { WarehouseService } from '../../lib/services/warehouse.service';
 import { CreateCheckInModalComponent } from './components/create/create-check-in-modal.component';
 import { CheckInDetailsDrawerComponent } from './components/details-drawer/check-in-details-drawer.component';
 import { ChevronLeft, ChevronRight, EyeIcon, LucideAngularModule, PencilIcon, PlusIcon, Search, SearchIcon, TrashIcon } from 'lucide-angular';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'app-check-in-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, CreateCheckInModalComponent, CheckInDetailsDrawerComponent, LucideAngularModule],
+  imports: [CommonModule, FormsModule, IconComponent, CreateCheckInModalComponent, CheckInDetailsDrawerComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './check-in-list.component.html',
 })
 export class CheckInListComponent implements OnInit {

@@ -31,6 +31,7 @@ import {
   binQrCodeBinHashCodeWarehouseIdGet,
 } from '../../../../api/generated/functions';
 import { SearchableSelectComponent, SelectOption } from '../select/select.component';
+import { ToastService } from '../../../../lib/services/toast.service';
 
 type CheckInType = 'Pallet' | 'Item';
 
@@ -55,6 +56,7 @@ export class CreateCheckInModalComponent implements OnChanges {
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
   private warehouseService = inject(WarehouseService);
+  private toastService = inject(ToastService)
 
   isSubmitting = false;
   isLocatingPallet = false;
@@ -347,11 +349,13 @@ export class CreateCheckInModalComponent implements OnChanges {
 
     try {
       await this.api.invoke(checkinPost, { body: dto });
+      this.toastService.success(`New Checkin successfully submitted`)
       this.resetForm();
       this.created.emit();
       this.closed.emit();
     } catch (err) {
       this.createError = 'Failed to create check-in transaction. Please try again.';
+      this.toastService.error(`Failed to create check-in transaction. Please try again.`)
       console.error('Failed to create check-in:', { dto, err });
     } finally {
       this.isSubmitting = false;

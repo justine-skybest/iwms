@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Endpoints;
+using WMS.Api.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ var connString = builder.Configuration.GetConnectionString("WMS");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -15,7 +17,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -27,6 +30,7 @@ builder.Services.AddDbContext<WMSContext>(
 var app = builder.Build();
 
 app.UseCors("AngularOrigin");
+app.MapHub<NotificationHub>("/hubs/notifications");
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -46,6 +50,8 @@ app.MapCheckInEndpoints();
 app.MapPalletEndpoints();
 app.MapManualPickingEndpoints();
 app.MapTransferEndpoints();
+app.MapDashboardEndpoints();
+app.MapInventoryEndpoints();
 // app.MigrateDb();
 
 app.Run();

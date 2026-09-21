@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Product;
 using WMS.Api.Entities;
+using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -86,16 +88,24 @@ public static class ProductEndpoint
         }
         ).WithName(GetProductEndpointName);
 
-        group.MapPost("/", async (CreateProductDto newProduct, WMSContext dbContext) =>
+        group.MapPost("/", async (CreateProductDto newProduct, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             Product product = newProduct.ToEntity();
             dbContext.Products.Add(product);
             await dbContext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetProductEndpointName, new { id = product.Id }, product.ToProductDetailsDto());
-        });
+            await hubContext.Clients.All.ProductCreated();
 
-        group.MapPut("/{id}", async (int id, UpdateProductDto updatedProduct, WMSContext dbContext) =>
+            return Results.CreatedAtRoute(GetProductEndpointName, new { id = product.Id }, product.ToProductDetailsDto());
+        })
+        .WithName("CreateProduct")
+        .WithSummary("Create a new product")
+        .WithDescription("Creates a new product record and returns the created product details.")
+        .Accepts<CreateProductDto>("application/json")
+        .Produces<ProductDetailsDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+
+        group.MapPut("/{id}", async (int id, UpdateProductDto updatedProduct, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             var existingProduct = await dbContext.Products.FindAsync(id);
             if (existingProduct is null)
@@ -106,8 +116,17 @@ public static class ProductEndpoint
             dbContext.Entry(existingProduct).CurrentValues.SetValues(updatedProduct.ToEntity(id));
             await dbContext.SaveChangesAsync();
 
+            await hubContext.Clients.All.ProductUpdated();
+
             return Results.NoContent();
-        });
+        })
+        .WithName("UpdateProduct")
+        .WithSummary("Update an existing product")
+        .WithDescription("Updates all details of an existing product by its ID.")
+        .Accepts<UpdateProductDto>("application/json")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{id}", async (int id, WMSContext dbContext) =>
         {

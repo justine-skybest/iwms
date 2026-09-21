@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Pallet;
 using WMS.Api.Entities;
+using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -230,16 +232,27 @@ public static class PalletEndpoint
         // -----------------------------------------------------------------------------
         // Mutation Endpoints
         // -----------------------------------------------------------------------------
-        group.MapPost("/", async (CreatePalletDto newPallet, WMSContext dbContext) =>
+        group.MapPost("/", async (CreatePalletDto newPallet, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             Pallet pallet = newPallet.ToEntity();
             dbContext.Pallets.Add(pallet);
             await dbContext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetPalletEndpointName, new { id = pallet.Id }, pallet.ToSummaryDto());
-        });
+            // Explicitly load the Warehouse navigation property so ToSummaryDto can access Warehouse details
+            await dbContext.Entry(pallet).Reference(p => p.Warehouse).LoadAsync();
 
-        group.MapPost("/autocreate/{WarehouseId:int}", async (WMSContext dbContext, int WarehouseId) =>
+            await hubContext.Clients.All.PalletCreated();
+
+            return Results.CreatedAtRoute(GetPalletEndpointName, new { id = pallet.Id }, pallet.ToSummaryDto());
+        })
+        .WithName("CreatePallet")
+        .WithSummary("Create a new pallet")
+        .WithDescription("Creates a new pallet record in the system and returns its details.")
+        .Accepts<CreatePalletDto>("application/json")
+        .Produces<PalletSummaryDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
+
+        group.MapPost("/autocreate/{WarehouseId:int}", async (WMSContext dbContext, int WarehouseId, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             var lastNumber = await dbContext.Pallets
                                 .OrderByDescending(pallet => pallet.PalletNumber)
@@ -267,10 +280,12 @@ public static class PalletEndpoint
             dbContext.Pallets.Add(pallet);
             await dbContext.SaveChangesAsync();
 
+            await hubContext.Clients.All.PalletCreated();
+
             return pallet is null ? Results.NoContent() : Results.Ok(pallet.ToDetailDto());
         });
 
-        group.MapPut("/{id}", async (int id, CreatePalletDto updatedPallet, WMSContext dbContext) =>
+        group.MapPut("/{id}", async (int id, CreatePalletDto updatedPallet, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
         {
             var existingPallet = await dbContext.Pallets.FindAsync(id);
             if (existingPallet is null)
@@ -281,8 +296,17 @@ public static class PalletEndpoint
             dbContext.Entry(existingPallet).CurrentValues.SetValues(updatedPallet.ToUpdateEntity(id));
             await dbContext.SaveChangesAsync();
 
+            await hubContext.Clients.All.PalletUpdated();
+
             return Results.NoContent();
-        });
+        })
+        .WithName("UpdatePallet")
+        .WithSummary("Update an existing pallet")
+        .WithDescription("Updates all details of an existing pallet by its ID.")
+        .Accepts<CreatePalletDto>("application/json")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapDelete("/{id}", async (int id, WMSContext dbContext) =>
         {

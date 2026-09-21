@@ -1,0 +1,142 @@
+@if (isOpen) {
+  <div 
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    (click)="closeModal()"
+  >
+    <div 
+      class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden flex flex-col my-auto"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 m-0">Transfer Pallet</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Relocate a checked-in pallet to a new bin location</p>
+        </div>
+        <button 
+          type="button" 
+          (click)="closeModal()" 
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          [disabled]="isSubmitting"
+        >
+          <app-icon name="x" class="w-5 h-5"></app-icon>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
+        <!-- Error Alert -->
+        @if (errorMessage) {
+          <div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700">
+            <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+
+        <!-- STEP 1: Search or Scan Pallet -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              1. Search or Scan Pallet
+            </label>
+
+            <!-- Pallet Camera Scanner -->
+            <app-qr-scanner
+              buttonText="Scan Pallet QR"
+              modalTitle="Scan Pallet Barcode/QR Code"
+              (scanSuccess)="onPalletQrScanned($event)"
+            ></app-qr-scanner>
+          </div>
+
+          <app-searchable-select
+            placeholder="Type Pallet # or Hash Code..."
+            [searchFn]="searchPallets"
+            [selected]="selectedPalletOption"
+            (selectedChange)="onPalletSelectChange($event)"
+            [disabled]="isSubmitting"
+            [minChars]="1"
+          ></app-searchable-select>
+        </div>
+
+        <!-- Located Pallet Info Banner -->
+        @if (locatedPallet) {
+          <div class="p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl space-y-1 text-xs">
+            <div class="flex items-center justify-between text-blue-900 font-semibold">
+              <span>Pallet #{{ locatedPallet.palletNumber }}</span>
+              <span class="font-mono text-[11px] text-blue-600">Hash: {{ locatedPallet.palletHashCode }}</span>
+            </div>
+            <div class="text-slate-600">
+              <span class="text-slate-400">Current Location: </span>
+              <strong class="text-slate-800">{{ locatedPallet.currentBinLocation || 'Not checked in' }}</strong>
+            </div>
+          </div>
+        }
+
+        <!-- STEP 2: Search or Scan Destination Bin -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+              2. Destination Bin Location
+            </label>
+
+            <!-- Bin Camera Scanner -->
+            <app-qr-scanner
+              buttonText="Scan Bin QR"
+              modalTitle="Scan Destination Bin QR Code"
+              (scanSuccess)="onBinQrScanned($event)"
+            ></app-qr-scanner>
+          </div>
+
+          <app-searchable-select
+            placeholder="Search Bin ID or Name..."
+            [searchFn]="searchBins"
+            [selected]="selectedBinOption"
+            (selectedChange)="onBinSelectChange($event)"
+            [disabled]="isSubmitting"
+            [minChars]="0"
+          ></app-searchable-select>
+        </div>
+
+        <!-- Notes Input -->
+        <div class="space-y-1">
+          <label for="notes" class="block text-xs font-medium text-slate-700">
+            Transfer Reason / Notes (Optional)
+          </label>
+          <textarea
+            id="notes"
+            [(ngModel)]="notes"
+            rows="2"
+            placeholder="Reason for relocating this pallet..."
+            class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            [disabled]="isSubmitting"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end gap-2 px-6 py-3.5 bg-slate-50 border-t border-slate-100">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          (click)="onSubmitTransfer()"
+          class="px-4 py-2 text-xs font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="isSubmitting || !locatedPallet || !selectedToBinId"
+        >
+          @if (isSubmitting) {
+            <span class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            <span>Transferring...</span>
+          } @else {
+            <span>Execute Transfer</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

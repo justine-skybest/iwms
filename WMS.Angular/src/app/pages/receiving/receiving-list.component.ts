@@ -7,23 +7,32 @@ import { ReceivingSummaryDto, ReceivingSummaryDtoPaginatedResponse } from '../..
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
-import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon } from 'lucide-angular';
+import { SignalRService } from '../../lib/services/signalr.service';
+import { Subject, takeUntil } from 'rxjs';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'app-receiving-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, ReceivingCreateComponent, LucideAngularModule],
+  imports: [CommonModule, FormsModule, IconComponent, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './receiving-list.component.html',
 })
 export class ReceivingListComponent implements OnInit {
   @Output() closed = new EventEmitter<void>();
   Math = Math;
-  readonly chevronLeftIcon = ChevronLeft;
-  readonly chevronRightIcon = ChevronRight;
+  readonly chevronLeft = ChevronLeft;
+  readonly chevronRight = ChevronRight;
+  readonly eyeIcon = EyeIcon;
+  readonly searchIcon = SearchIcon;
+  readonly plus = PlusIcon;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
   public warehouseService = inject(WarehouseService);
+  private signalRService = inject(SignalRService);
+
+  private destroy$ = new Subject<void>();
 
   receivings: ReceivingSummaryDto[] = [];
   isLoading = true;
@@ -49,6 +58,17 @@ export class ReceivingListComponent implements OnInit {
 
   ngOnInit(): void {
     void this.loadReceivings();
+
+    this.signalRService.receivingUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        void this.loadReceivings();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
     close(): void {

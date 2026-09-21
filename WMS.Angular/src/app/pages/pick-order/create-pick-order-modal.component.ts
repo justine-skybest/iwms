@@ -25,6 +25,7 @@ import {
   getCheckedInBinByQrCode,
   manualpickingPost,
 } from '../../api/generated/functions';
+import { ToastService } from '../../lib/services/toast.service';
 
 @Component({
   selector: 'app-create-pick-order-modal',
@@ -40,6 +41,7 @@ export class CreatePickOrderModalComponent implements OnChanges {
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
   public warehouseService = inject(WarehouseService);
+  private toastService = inject(ToastService)
 
   isSubmitting = false;
   isScanning = false;
@@ -188,12 +190,13 @@ async loadBinItems(binId: number): Promise<void> {
       };
 
       await this.api.invoke(manualpickingPost, { body: dto });
-
+      this.toastService.success(`New Pick-order successfully submitted`)
       this.resetForm();
       this.created.emit();
       this.closed.emit();
     } catch (err) {
       this.errorMessage = 'Failed to create pick order. Please try again.';
+      this.toastService.error(`Failed to create pick order. Please try again.`)
       console.error('Failed to create pick order:', err);
     } finally {
       this.isSubmitting = false;

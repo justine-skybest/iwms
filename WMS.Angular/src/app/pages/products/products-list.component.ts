@@ -1,32 +1,37 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { productV2Get } from '../../api/generated/functions';
 import { ProductSummaryDto, ProductSummaryDtoPaginatedResponse } from '../../api/generated/models';
 import { IconComponent } from '../../shared/components/icon/icon.component';
+import { LucideAngularModule, PlusIcon, SearchIcon, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
+import { CreateProductDialogComponent } from './create/create-product-dialog.component';
 
 @Component({
   selector: 'app-products-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IconComponent,
+    LucideAngularModule,
+    PageHeaderComponent,
+    CreateProductDialogComponent,
+  ],
   templateUrl: './products-list.component.html',
 })
 export class ProductsListComponent implements OnInit {
   Math = Math;
+  private api = inject(Api);
+  private cd = inject(ChangeDetectorRef);
 
-  formatDate(dateStr?: string): string {
-    if (!dateStr) return '—';
-    try {
-      return new Date(dateStr).toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric'
-      });
-    } catch {
-      return dateStr;
-    }
-  }
+  readonly plus = PlusIcon;
+  readonly searchIcon = SearchIcon;
+  readonly chevronLeft = ChevronLeft;
+  readonly chevronRight = ChevronRight;
+
   products: ProductSummaryDto[] = [];
   isLoading = true;
   error = '';
@@ -36,12 +41,34 @@ export class ProductsListComponent implements OnInit {
   totalCount = 0;
   totalPages = 0;
 
-  constructor(private api: Api, private cd: ChangeDetectorRef) {}
+  // Dialog State
+  isCreateOpen = false;
+  productToEdit?: ProductSummaryDto;
 
   ngOnInit(): void {
-    // Explicit unfiltered fetch on load — does not depend on the search
-    // branch in loadProducts(), so a future change to that logic can't
-    // accidentally suppress the initial load again.
+    void this.loadProducts();
+  }
+
+  // Dialog Controls
+  openCreateDialog(): void {
+    this.productToEdit = undefined;
+    this.isCreateOpen = true;
+    this.cd.markForCheck();
+  }
+
+  openEditDialog(product: ProductSummaryDto): void {
+    this.productToEdit = product;
+    this.isCreateOpen = true;
+    this.cd.markForCheck();
+  }
+
+  closeCreateDialog(): void {
+    this.isCreateOpen = false;
+    this.productToEdit = undefined;
+    this.cd.markForCheck();
+  }
+
+  onProductSaved(): void {
     void this.loadProducts();
   }
 
@@ -63,20 +90,25 @@ export class ProductsListComponent implements OnInit {
       this.products = response.items ?? [];
       this.totalCount = response.totalCount ?? 0;
       this.totalPages = response.totalPages ?? 0;
-
-      if (this.products.length === 0) {
-        // Helps distinguish "genuinely no products" from "request failed silently"
-        console.debug('loadProducts: request succeeded but returned 0 items', { params, response });
-      }
     } catch (err) {
       this.error = 'Unable to load products. Please try again.';
       console.error('Failed to load products:', { params, search: this.search, err });
     } finally {
       this.isLoading = false;
-      // Ensures the view updates even under OnPush change detection or a
-      // zoneless setup, where mutating plain properties after an `await`
-      // does not automatically trigger a re-render.
       this.cd.markForCheck();
+    }
+  }
+
+  formatDate(dateStr?: string): string {
+    if (!dateStr) return '—';
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateStr;
     }
   }
 

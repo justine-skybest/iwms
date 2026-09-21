@@ -1,0 +1,178 @@
+@if (isOpen) {
+  <div 
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden"
+    (click)="closeModal()"
+  >
+    <div 
+      class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
+        <div class="min-w-0 flex-1 pr-2">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 m-0 truncate">Inventory Inspector</h2>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan Pallet or Bin QR code to view on-hand stock</p>
+        </div>
+        <button 
+          type="button" 
+          (click)="closeModal()" 
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors shrink-0"
+        >
+          <app-icon name="x" class="w-5 h-5"></app-icon>
+        </button>
+      </div>
+
+      <!-- Scrollable Modal Body -->
+      <div class="p-4 sm:p-6 space-y-4 flex-1 min-h-0 overflow-y-auto">
+        
+        <!-- Search & Camera Bar -->
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+            Scan / Enter QR Code
+          </label>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1 min-w-0">
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (keyup.enter)="executeInspection(searchQuery)"
+                placeholder="Pallet #, Hash Code, or Bin Name..."
+                class="w-full text-xs sm:text-sm pl-3.5 pr-8 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-all"
+                [disabled]="isLoading"
+              />
+              @if (searchQuery) {
+                <button 
+                  type="button" 
+                  (click)="clearSearch()" 
+                  class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-md"
+                >
+                  <app-icon name="x" class="w-4 h-4"></app-icon>
+                </button>
+              }
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <app-qr-scanner
+                buttonText="Scan QR"
+                modalTitle="Scan Inventory QR Code"
+                (scanSuccess)="executeInspection($event)"
+                class="flex-1 sm:flex-none"
+              ></app-qr-scanner>
+
+              <button
+                type="button"
+                (click)="executeInspection(searchQuery)"
+                class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5"
+                [disabled]="isLoading || !searchQuery"
+              >
+                @if (isLoading) {
+                  <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                  <span>Searching</span>
+                } @else {
+                  <span>Inspect</span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Alert -->
+        @if (errorMessage) {
+          <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in duration-100">
+            <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
+            <span class="leading-relaxed">{{ errorMessage }}</span>
+          </div>
+        }
+
+        <!-- Inspection Result Header & Location Summary -->
+        @if (inspectionResult) {
+          <div class="space-y-3 pt-1 animate-in fade-in duration-150">
+            
+            <div class="p-3.5 rounded-2xl border space-y-2 text-xs"
+              [class.bg-emerald-50/80]="inspectionResult.inspectionType === 'Pallet'"
+              [class.border-emerald-200]="inspectionResult.inspectionType === 'Pallet'"
+              [class.bg-purple-50/80]="inspectionResult.inspectionType === 'Bin'"
+              [class.border-purple-200]="inspectionResult.inspectionType === 'Bin'"
+            >
+              <div class="flex items-center justify-between gap-2 font-bold">
+                <span class="flex items-center gap-1.5"
+                  [class.text-emerald-900]="inspectionResult.inspectionType === 'Pallet'"
+                  [class.text-purple-900]="inspectionResult.inspectionType === 'Bin'"
+                >
+                  <span class="w-2 h-2 rounded-full"
+                    [class.bg-emerald-500]="inspectionResult.inspectionType === 'Pallet'"
+                    [class.bg-purple-500]="inspectionResult.inspectionType === 'Bin'"
+                  ></span>
+                  {{ inspectionResult.title || 'Location Found' }}
+                </span>
+                <span class="text-[10px] uppercase tracking-wider font-mono px-2 py-0.5 rounded-md"
+                  [class.bg-emerald-100]="inspectionResult.inspectionType === 'Pallet'"
+                  [class.text-emerald-800]="inspectionResult.inspectionType === 'Pallet'"
+                  [class.bg-purple-100]="inspectionResult.inspectionType === 'Bin'"
+                  [class.text-purple-800]="inspectionResult.inspectionType === 'Bin'"
+                >
+                  {{ inspectionResult.inspectionType ?? 'Location' }} Mode
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1 border-t border-slate-200/50">
+                <div><span class="text-slate-400">Bin Location:</span> <strong class="text-slate-800">{{ inspectionResult.binLocation || 'Not Checked In' }}</strong></div>
+                <div><span class="text-slate-400">Rack / Bay:</span> <strong class="text-slate-800">{{ inspectionResult.rack || '—' }} / {{ inspectionResult.bay || '—' }}</strong></div>
+              </div>
+            </div>
+
+            <!-- Items List -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider px-1">
+                <span>Stored Items</span>
+                <span class="text-slate-400 font-normal">({{ (inspectionResult.items?.length ?? 0) }} total)</span>
+              </div>
+
+              <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                @for (item of inspectionResult.items ?? []; track item.receivedProductId ?? $index) {
+                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs">
+                    <div class="min-w-0 flex-1">
+                      <div class="font-bold text-slate-900 truncate">{{ item.productName || 'N/A' }}</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">
+                        {{ item.typeOfPackage || 'Unit' }} · Exp: <span class="font-mono text-amber-700 font-semibold">{{ formatDate(item.expirationDate) }}</span>
+                      </div>
+                    </div>
+                    
+                    <div class="text-right shrink-0">
+                      <span class="font-mono text-xs font-bold text-slate-800 bg-white border border-slate-200 px-2 py-1 rounded-md block">
+                        Qty: {{ item.quantity ?? 0 }}
+                      </span>
+                      @if (item.isPalletized && item.palletNumber) {
+                        <span class="text-[10px] text-emerald-700 font-mono font-semibold block mt-1">
+                          Pallet #{{ item.palletNumber }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if ((inspectionResult.items?.length ?? 0) === 0) {
+                  <div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-slate-200">
+                    No stored inventory found at this location.
+                  </div>
+                }
+              </div>
+            </div>
+
+          </div>
+        }
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-end px-4 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-100 shrink-0">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-5 py-2.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}

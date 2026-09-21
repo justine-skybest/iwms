@@ -1,20 +1,21 @@
-<div class="flex flex-col gap-5 relative">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Item Receipt</h1>
-      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} receiving transactions</p>
-    </div>
-    <button (click)="openCreate()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 border-none rounded-lg px-4 py-2 text-white font-semibold text-sm font-display transition-colors">
-      <app-icon name="plus" [size]="16"></app-icon>
-      New Receipt
-    </button>
-  </div>
+<app-page-header 
+  title="Receiving" 
+  subtitle="{{totalCount}} receiving transactions"
+  [showDate]="false"
+  >
+  <button class="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200">
+    Export CSV
+  </button>
+  <button (click)="openCreate()" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+    + New Receipt
+  </button>
+</app-page-header>
 
+<div class="flex flex-col gap-5 relative">
   <!-- Toolbar -->
   <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
     <div class="flex-1 relative">
-      <app-icon name="search" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></app-icon>
+      <lucide-icon [img]="searchIcon" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
       <input
         type="text"
         [(ngModel)]="search"
@@ -84,7 +85,7 @@
             </td>
             <td class="p-3">
               <button (click)="openView(r)" class="p-1.5 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors" title="View Details">
-                <app-icon name="eye" [size]="15"></app-icon>
+                <lucide-icon [img]="eyeIcon" [size]="15"></lucide-icon>
               </button>
             </td>
           </tr>
@@ -103,7 +104,7 @@
           [disabled]="page <= 1"
           class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <lucide-icon [img]="chevronLeftIcon" [size]="14"></lucide-icon>
+          <lucide-icon [img]="chevronLeft" [size]="14"></lucide-icon>
         </button>
         <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
         <button
@@ -111,7 +112,7 @@
           [disabled]="page >= totalPages"
           class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <lucide-icon [img]="chevronRightIcon" [size]="14"></lucide-icon>
+          <lucide-icon [img]="chevronRight" [size]="14"></lucide-icon>
         </button>
       </div>
     </div>

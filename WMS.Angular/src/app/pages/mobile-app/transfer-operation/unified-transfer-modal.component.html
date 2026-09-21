@@ -1,0 +1,219 @@
+@if (isOpen) {
+  <div 
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden"
+    (click)="closeModal()"
+  >
+    <div 
+      class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header (Fixed at top) -->
+      <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
+        <div class="min-w-0 flex-1 pr-2">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 m-0 truncate">Transfer Inventory</h2>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan any Pallet or Bin QR code to start relocating</p>
+        </div>
+        <button 
+          type="button" 
+          (click)="closeModal()" 
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors shrink-0"
+          [disabled]="isSubmitting"
+        >
+          <app-icon name="x" class="w-5 h-5"></app-icon>
+        </button>
+      </div>
+
+      <!-- Scrollable Body Content -->
+      <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 min-h-0 overflow-y-auto">
+        <!-- Error Alert -->
+        @if (errorMessage) {
+          <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in duration-100">
+            <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
+            <span class="leading-relaxed">{{ errorMessage }}</span>
+          </div>
+        }
+
+        <!-- STEP 1: Universal Source Scanner -->
+        <div class="space-y-2">
+          <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+            1. Scan or Enter QR Code
+          </label>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1 min-w-0">
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (keyup.enter)="processSmartScan(searchQuery)"
+                placeholder="Scan Pallet / Bin QR or enter number..."
+                class="w-full text-xs sm:text-sm px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-all"
+                [disabled]="isSubmitting || isLocating"
+              />
+            </div>
+
+            <!-- Scanner Action Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+              <app-qr-scanner
+                buttonText="Scan QR"
+                modalTitle="Scan Pallet or Bin QR Code"
+                (scanSuccess)="processSmartScan($event)"
+                class="flex-1 sm:flex-none"
+              ></app-qr-scanner>
+
+              <button
+                type="button"
+                (click)="processSmartScan(searchQuery)"
+                class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5"
+                [disabled]="isLocating || !searchQuery"
+              >
+                @if (isLocating) {
+                  <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                  <span>Searching</span>
+                } @else {
+                  <span>Detect</span>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODE A: DETECTED PALLET -->
+        @if (transferType === 'PALLET' && locatedPallet) {
+          <div class="p-3.5 sm:p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-2 text-xs animate-in fade-in duration-150">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-emerald-900 font-bold">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                Pallet Transfer Detected (#{{ locatedPallet.palletNumber }})
+              </span>
+              <span class="font-mono text-[11px] text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md">
+                Hash: {{ locatedPallet.palletHashCode }}
+              </span>
+            </div>
+            <div class="text-slate-600 pt-0.5 text-xs">
+              <span class="text-slate-500">Current Location: </span>
+              <strong class="text-slate-800 font-semibold">{{ locatedPallet.currentBinLocation || 'Not checked in' }}</strong>
+            </div>
+          </div>
+        }
+
+        <!-- MODE B: DETECTED BIN WITH ITEMS -->
+        @if (transferType === 'ITEM' && locatedBin) {
+          <div class="p-3.5 sm:p-4 bg-purple-50/80 border border-purple-200 rounded-2xl space-y-3 animate-in fade-in duration-150">
+            <div class="flex items-center justify-between text-purple-900 font-bold text-xs gap-2">
+              <span class="flex items-center gap-1.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-purple-500 shrink-0"></span>
+                <span class="truncate">Item Transfer (Bin {{ locatedBin.binName || locatedBin.id }})</span>
+              </span>
+              <span class="text-[11px] text-purple-700 font-medium shrink-0 bg-purple-100/80 px-2 py-0.5 rounded-md">
+                {{ itemsInBin.length }} item(s)
+              </span>
+            </div>
+
+            <p class="text-[11px] text-purple-800 font-medium m-0">Select item to relocate:</p>
+
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+              @for (item of itemsInBin; track item.receivedProductId) {
+                <div 
+                  (click)="selectedItem = item"
+                  class="p-3 bg-white border rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 text-xs shadow-sm touch-manipulation hover:border-purple-300"
+                  [class.border-purple-600]="selectedItem?.receivedProductId === item.receivedProductId"
+                  [class.ring-2]="selectedItem?.receivedProductId === item.receivedProductId"
+                  [class.ring-purple-500/20]="selectedItem?.receivedProductId === item.receivedProductId"
+                  [class.bg-purple-50/60]="selectedItem?.receivedProductId === item.receivedProductId"
+                  [class.border-slate-200]="selectedItem?.receivedProductId !== item.receivedProductId"
+                >
+                  <div class="flex items-start gap-2.5 min-w-0">
+                    <input 
+                      type="radio" 
+                      name="itemChoice" 
+                      [checked]="selectedItem?.receivedProductId === item.receivedProductId"
+                      class="mt-0.5 text-purple-600 focus:ring-purple-500 shrink-0"
+                    />
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-900 truncate">{{ item.productName || 'N/A' }}</div>
+                      <div class="text-[10px] text-slate-500 truncate mt-0.5">
+                        {{ item.typeOfPackage || 'Item' }} · Series: <span class="font-mono text-slate-700">{{ item.receivingSeries || '—' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span class="font-mono text-xs font-bold text-slate-800 shrink-0 bg-slate-100 px-2 py-1 rounded-md">
+                    Qty: {{ item.quantity ?? 0 }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- STEP 2: DESTINATION BIN & NOTES -->
+        @if (transferType !== 'NONE' && (transferType === 'PALLET' || selectedItem)) {
+          <div class="space-y-4 pt-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-150">
+            <!-- Destination Bin -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  2. Destination Bin Location
+                </label>
+
+                <app-qr-scanner
+                  buttonText="Scan Bin QR"
+                  modalTitle="Scan Destination Bin QR Code"
+                  (scanSuccess)="onDestinationBinQrScanned($event)"
+                ></app-qr-scanner>
+              </div>
+
+              <app-searchable-select
+                placeholder="Search Destination Bin ID or Name..."
+                [searchFn]="searchBins"
+                [selected]="selectedDestinationBinOption"
+                (selectedChange)="onDestinationBinSelectChange($event)"
+                [disabled]="isSubmitting"
+                [minChars]="0"
+              ></app-searchable-select>
+            </div>
+
+            <!-- Notes -->
+            <div class="space-y-1">
+              <label for="smartTransferNotes" class="block text-xs font-medium text-slate-700">
+                Transfer Notes <span class="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <textarea
+                id="smartTransferNotes"
+                [(ngModel)]="notes"
+                rows="2"
+                placeholder="Reason for relocating inventory..."
+                class="w-full text-xs p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition-all"
+                [disabled]="isSubmitting"
+              ></textarea>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Modal Footer (Fixed at bottom) -->
+      <div class="flex items-center justify-end gap-2 px-4 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-100 shrink-0">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-colors"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          (click)="onSubmitTransfer()"
+          class="px-5 py-2.5 text-xs font-semibold text-white bg-cyan-600 rounded-xl hover:bg-cyan-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          [disabled]="isSubmitting || transferType === 'NONE' || !selectedDestinationBinOption.length || (transferType === 'ITEM' && !selectedItem)"
+        >
+          @if (isSubmitting) {
+            <span class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+            <span>Transferring...</span>
+          } @else {
+            <span>Execute Transfer</span>
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+}

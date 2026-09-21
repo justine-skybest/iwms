@@ -1,20 +1,22 @@
-<div class="flex flex-col gap-5">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Products</h1>
-      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} products total</p>
-    </div>
-    <button class="flex items-center gap-2 bg-accent border-none rounded-lg px-4 py-2 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600">
-      <app-icon name="plus" [size]="16"></app-icon>
-      Add Product
-    </button>
-  </div>
+<app-page-header 
+  title="Products" 
+  [subtitle]="totalCount + ' products total'"
+  [showDate]="false"
+>
+  <button class="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200 transition-colors">
+    Export CSV
+  </button>
+  <button (click)="openCreateDialog()" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors flex items-center gap-1">
+    <lucide-icon [img]="plus" [size]="14"></lucide-icon>
+    <span>Add Product</span>
+  </button>
+</app-page-header>
 
+<div class="flex flex-col gap-5">
   <!-- Toolbar -->
   <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
     <div class="flex-1 relative">
-      <app-icon name="search" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></app-icon>
+      <lucide-icon [img]="searchIcon" [size]="16" stroke="#94a3b8" class="absolute left-3 top-1/2 -translate-y-1/2"></lucide-icon>
       <input
         type="text"
         [(ngModel)]="search"
@@ -38,70 +40,97 @@
     </button>
   </div>
 
-  <!-- Error -->
-  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
-    {{error}}
-  </div>
+  <!-- Error Alert -->
+  @if (error) {
+    <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
+      {{ error }}
+    </div>
+  }
 
   <!-- Table -->
   <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
     <div class="overflow-x-auto">
       <table class="data-table w-full">
         <thead>
-          <tr>
-            <th class="text-left">ID</th>
-            <th class="text-left">Product Name</th>
-            <th class="text-left">Type of Package</th>
-            <th class="text-left">Measurement</th>
-            <th class="text-left">Weight</th>
-            <th class="text-left">Date Added</th>
+          <tr class="border-b border-slate-200 bg-slate-50/50 text-xs font-semibold text-slate-600">
+            <th class="text-left px-4 py-3">ID</th>
+            <th class="text-left px-4 py-3">Product Name</th>
+            <th class="text-left px-4 py-3">Type of Package</th>
+            <th class="text-left px-4 py-3">Measurement</th>
+            <th class="text-left px-4 py-3">Weight</th>
+            <th class="text-left px-4 py-3">Date Added</th>
+            <th class="text-right px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="isLoading">
-            <td colspan="6" class="text-center py-10 text-slate-400 text-sm">
-              Loading products...
-            </td>
-          </tr>
-          <tr *ngIf="!isLoading && products.length === 0">
-            <td colspan="6" class="text-center py-10 text-slate-400 text-sm">
-              No products found.
-            </td>
-          </tr>
-          <tr *ngFor="let product of products">
-            <td><span class="font-mono text-xs text-slate-500">{{product.id}}</span></td>
-            <td class="font-medium text-slate-900">{{product.name || 'N/A'}}</td>
-            <td><span class="badge bg-slate-100 text-slate-700">{{product.typeOfPackage || '—'}}</span></td>
-            <td class="text-[13px] text-slate-600">{{product.measurement || '—'}}</td>
-            <td><span class="font-mono text-xs text-slate-600">{{formatWeight(product.weight)}}</span></td>
-            <td class="font-mono text-xs text-slate-500">{{product.dateAdded ? formatDate(product.dateAdded) : '—'}}</td>
-          </tr>
+          @if (isLoading) {
+            <tr>
+              <td colspan="7" class="text-center py-10 text-slate-400 text-sm">
+                Loading products...
+              </td>
+            </tr>
+          } @else if (products.length === 0) {
+            <tr>
+              <td colspan="7" class="text-center py-10 text-slate-400 text-sm">
+                No products found.
+              </td>
+            </tr>
+          } @else {
+            @for (product of products; track product.id) {
+              <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                <td class="px-4 py-3"><span class="font-mono text-xs text-slate-500">#{{ product.id }}</span></td>
+                <td class="px-4 py-3 font-medium text-slate-900">{{ product.name || 'N/A' }}</td>
+                <td class="px-4 py-3"><span class="badge bg-slate-100 text-slate-700">{{ product.typeOfPackage || '—' }}</span></td>
+                <td class="px-4 py-3 text-[13px] text-slate-600">{{ product.measurement || '—' }}</td>
+                <td class="px-4 py-3"><span class="font-mono text-xs text-slate-600">{{ formatWeight(product.weight) }}</span></td>
+                <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ product.dateAdded ? formatDate(product.dateAdded) : '—' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <button 
+                    (click)="openEditDialog(product)"
+                    class="text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors px-2 py-1 rounded hover:bg-blue-50"
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            }
+          }
         </tbody>
       </table>
     </div>
 
     <!-- Pagination -->
-    <div *ngIf="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
-      <div class="text-xs text-slate-500">
-        Showing {{(page - 1) * pageSize + 1}} to {{Math.min(page * pageSize, totalCount)}} of {{totalCount}} products
+    @if (totalPages > 1) {
+      <div class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+        <div class="text-xs text-slate-500">
+          Showing {{ (page - 1) * pageSize + 1 }} to {{ Math.min(page * pageSize, totalCount) }} of {{ totalCount }} products
+        </div>
+        <div class="flex items-center gap-1">
+          <button
+            (click)="goToPage(page - 1)"
+            [disabled]="page <= 1"
+            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <lucide-icon [img]="chevronLeft" [size]="14"></lucide-icon>
+          </button>
+          <span class="px-3 text-xs font-medium text-slate-700">{{ page }} / {{ totalPages }}</span>
+          <button
+            (click)="goToPage(page + 1)"
+            [disabled]="page >= totalPages"
+            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <lucide-icon [img]="chevronRight" [size]="14"></lucide-icon>
+          </button>
+        </div>
       </div>
-      <div class="flex items-center gap-1">
-        <button
-        (click)="goToPage(page - 1)"
-        [disabled]="page <= 1"
-        class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <
-      </button>
-      <span class="px-3 text-xs font-medium text-slate-700">{{page}} / {{totalPages}}</span>
-      <button
-        (click)="goToPage(page + 1)"
-        [disabled]="page >= totalPages"
-        class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        >
-      </button>
-      </div>
-    </div>
+    }
   </div>
 </div>
+
+<!-- Create / Edit Product Dialog -->
+<app-create-product-dialog
+  [isOpen]="isCreateOpen"
+  [productToEdit]="productToEdit"
+  (closed)="closeCreateDialog()"
+  (created)="onProductSaved()"
+></app-create-product-dialog>

@@ -11,32 +11,16 @@
         <span class="font-display font-bold text-sm text-sidebar-text-active tracking-wide">Skybest Mobile</span>
       </div>
       <span class="text-[11px] font-mono font-medium text-sidebar-text bg-white/10 border border-white/10 px-2.5 py-0.5 rounded-full">
-        WH-NORTH-01
+        {{ currentWarehouse().name }}
       </span>
     </div>
     
-    <!-- User Greeting & Date (Single Row) -->
+    <!-- User Greeting & Date -->
     <div class="flex items-baseline justify-between mb-3">
       <h1 class="font-display font-bold text-lg text-sidebar-text-active leading-tight m-0">
         Welcome back, <span class="text-accent-light font-extrabold">Admin</span>
       </h1>
-      <span class="text-xs text-sidebar-text font-medium">Sep 14, 2026</span>
-    </div>
-
-    <!-- Compact Quick Stats Strip -->
-    <div class="grid grid-cols-3 gap-2">
-      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
-        <span class="font-mono font-bold text-sm text-sidebar-text-active">45</span>
-        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Pending</span>
-      </div>
-      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
-        <span class="font-mono font-bold text-sm text-sidebar-text-active">12</span>
-        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Expiring</span>
-      </div>
-      <div class="bg-white/10 backdrop-blur-sm border border-white/5 rounded-xl py-1.5 px-2 flex items-center justify-center gap-2">
-        <span class="font-mono font-bold text-sm text-sidebar-text-active">8</span>
-        <span class="text-[10px] text-sidebar-text font-medium uppercase tracking-wider">Receiving</span>
-      </div>
+      <span class="text-xs text-sidebar-text font-medium">Sep 21, 2026</span>
     </div>
   </div>
 
@@ -44,43 +28,86 @@
   <div class="flex-1 px-4 py-6">
     <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-3">Quick Actions</div>
 
-    <!-- Mobile Grid (Responsive) -->
+    <!-- No Warehouse Selected Alert Banner -->
+    @if (!hasSelectedWarehouse()) {
+      <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2.5 text-amber-800 text-xs font-medium">
+        <app-icon name="alert-circle" class="w-4 h-4 text-amber-600 shrink-0"></app-icon>
+        <span>Please select a specific warehouse location in the floating company switcher to enable quick operations.</span>
+      </div>
+    }
+
+    <!-- Mobile Grid -->
     <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
-      <button
-        *ngFor="let action of mobileActions"
-        class="bg-white rounded-2xl p-3 flex flex-col items-center gap-2.5 cursor-pointer shadow-sm transition-transform active:scale-95 border-2"
-        [style.borderColor]="activeAction === action.label ? action.color : 'transparent'"
-        (click)="toggleAction(action.label)"
-      >
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center" [ngStyle]="{'background': action.bg}">
-          <app-icon [name]="action.icon" [size]="24" [stroke]="action.color"></app-icon>
-        </div>
-        <span class="text-xs font-semibold text-slate-700 text-center leading-tight">{{action.label}}</span>
-      </button>
+      @for (action of mobileActions; track action.id) {
+        <button
+          (click)="executeAction(action)"
+          [disabled]="!hasSelectedWarehouse() || action.disabled"
+          class="bg-white rounded-2xl p-3 flex flex-col items-center gap-2.5 transition-all border border-slate-200/80"
+          [class.opacity-40]="!hasSelectedWarehouse() || action.disabled"
+          [class.cursor-not-allowed]="!hasSelectedWarehouse() || action.disabled"
+          [class.cursor-pointer]="hasSelectedWarehouse()"
+          [class.active:scale-95]="hasSelectedWarehouse()"
+          [class.hover:border-slate-300]="hasSelectedWarehouse()"
+        >
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center" [ngStyle]="{'background': action.bg}">
+            <app-icon [name]="action.icon" [size]="24" [stroke]="action.color"></app-icon>
+          </div>
+          <span class="text-xs font-semibold text-slate-700 text-center leading-tight">{{ action.label }}</span>
+        </button>
+      }
     </div>
 
-    <!-- Action Details Panel -->
-    <div *ngIf="activeAction" class="mt-6 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm transition-all">
-      <div class="font-display font-bold text-lg text-slate-900">{{activeAction}}</div>
-      <p class="mt-1.5 text-sm text-slate-500 leading-relaxed">
-        Tap to open {{activeAction.toLowerCase()}} workflow. Scanner and barcode support available.
-      </p>
-      <button (click)="startAction()" class="mt-4 w-full py-3.5 bg-accent text-white border-none rounded-xl font-semibold text-[15px] cursor-pointer font-display transition-colors active:bg-blue-600 shadow-md shadow-blue-500/20">
-        Start {{activeAction}}
-      </button>
-    </div>
-
-    <!-- Recent activity -->
+    <!-- Recent Activity -->
     <div class="mt-8">
       <div class="text-[13px] font-bold text-slate-500 uppercase tracking-widest mb-3">Recent Activity</div>
       
       <div class="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm">
-        <div *ngFor="let a of recentActivity" class="flex items-center gap-3 py-3 border-b border-slate-100 last:border-b-0">
-          <div class="w-2.5 h-2.5 rounded-full shrink-0" [ngStyle]="{'background': a.dot}"></div>
-          <span class="flex-1 text-[14px] font-medium text-slate-700">{{a.text}}</span>
-          <span class="text-xs text-slate-400 font-mono">{{a.time}}</span>
-        </div>
+        @for (a of recentActivity; track a.text) {
+          <div class="flex items-center gap-3 py-3 border-b border-slate-100 last:border-b-0">
+            <div class="w-2.5 h-2.5 rounded-full shrink-0" [ngStyle]="{'background': a.dot}"></div>
+            <span class="flex-1 text-[14px] font-medium text-slate-700">{{ a.text }}</span>
+            <span class="text-xs text-slate-400 font-mono">{{ a.time }}</span>
+          </div>
+        }
       </div>
     </div>
   </div>
 </div>
+
+<!-- Operational Drawers & Modals -->
+
+<!-- Item Receipt Drawer -->
+<app-receiving-create
+  [isOpen]="isReceivingOpen"
+  (close)="isReceivingOpen = false"
+  (created)="onReceivingCreated()"
+></app-receiving-create>
+
+<!-- Check In Modal -->
+<app-create-check-in-modal
+  [isOpen]="isCheckInOpen"
+  (closed)="isCheckInOpen = false"
+  (created)="onCheckInCreated()"
+></app-create-check-in-modal>
+
+<!-- Transfer Modal -->
+<app-unified-transfer-modal
+  [isOpen]="isTransferOpen"
+  (closed)="isTransferOpen = false"
+  (created)="onTransferCreated()"
+></app-unified-transfer-modal>
+
+<!-- Pick Order Modal -->
+<app-create-pick-order-modal
+  [isOpen]="isPickOrderOpen"
+  (closed)="isPickOrderOpen = false"
+  (created)="onPickOrderCreated()"
+></app-create-pick-order-modal>
+
+<!-- Unified Inventory Check Modal -->
+<app-inventory-check-modal
+  [isOpen]="isInventoryCheckOpen"
+  (closed)="isInventoryCheckOpen = false"
+></app-inventory-check-modal>
+
+<app-warehouse-switcher />

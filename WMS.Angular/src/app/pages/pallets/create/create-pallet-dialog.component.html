@@ -1,0 +1,181 @@
+@if (isOpen) {
+  <!-- Backdrop Overlay -->
+  <div 
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    (click)="closeModal()"
+  >
+    <!-- Modal Container -->
+    <div 
+      class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden flex flex-col my-auto"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">
+            {{ isEditMode ? 'Edit Pallet' : 'Create New Pallet' }}
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">
+            {{ isEditMode ? 'Update pallet details and specs' : 'Add a new pallet to the current warehouse' }}
+          </p>
+        </div>
+        <button 
+          type="button" 
+          (click)="closeModal()" 
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          [disabled]="isSubmitting"
+        >
+          <app-icon name="x" class="w-5 h-5"></app-icon>
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <form (ngSubmit)="onSubmit()" #palletForm="ngForm">
+        <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+          
+          <!-- Global Error Alert -->
+          @if (errorMessage) {
+            <div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700">
+              <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
+              <span>{{ errorMessage }}</span>
+            </div>
+          }
+
+          <!-- Input Fields Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Pallet Number -->
+            <div class="col-span-1">
+              <label for="palletNumber" class="block text-xs font-medium text-slate-700 mb-1">
+                Pallet Number
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  id="palletNumber"
+                  name="palletNumber"
+                  [(ngModel)]="palletNumber"
+                  placeholder="e.g. 1001"
+                  class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300"
+                  [readOnly]="true"
+                />
+                @if (isLoadingNextNumber) {
+                  <div class="absolute right-2.5 top-1/2 -translate-y-1/2">
+                    <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-slate-400 border-t-transparent rounded-full"></span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Hash Code -->
+            <div class="col-span-1">
+              <label for="palletHashCode" class="block text-xs font-medium text-slate-700 mb-1">
+                Hash Code
+              </label>
+              <input
+                type="number"
+                id="palletHashCode"
+                name="palletHashCode"
+                [(ngModel)]="palletHashCode"
+                placeholder="e.g. 48291"
+                class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300"
+                [readOnly]="true"
+              />
+            </div>
+
+            <!-- Dimensions -->
+            <div class="col-span-1 sm:col-span-2">
+              <label for="palletDimension" class="block text-xs font-medium text-slate-700 mb-1">
+                Dimensions
+              </label>
+              <input
+                type="text"
+                id="palletDimension"
+                name="palletDimension"
+                [(ngModel)]="palletDimension"
+                placeholder="e.g. 120 x 100 x 15 cm"
+                class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300"
+                [disabled]="isSubmitting"
+              />
+            </div>
+
+            <!-- Capacity in CBM -->
+            <div class="col-span-1">
+              <label for="capacityInCBM" class="block text-xs font-medium text-slate-700 mb-1">
+                Capacity (CBM)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                id="capacityInCBM"
+                name="capacityInCBM"
+                [(ngModel)]="capacityInCBM"
+                placeholder="0.00"
+                class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300"
+                [disabled]="isSubmitting"
+              />
+            </div>
+
+            <!-- Capacity in KG -->
+            <div class="col-span-1">
+              <label for="capacityInKG" class="block text-xs font-medium text-slate-700 mb-1">
+                Capacity (KG)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                id="capacityInKG"
+                name="capacityInKG"
+                [(ngModel)]="capacityInKG"
+                placeholder="0.0"
+                class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300"
+                [disabled]="isSubmitting"
+              />
+            </div>
+
+            <!-- Date Added -->
+            <!-- <div class="col-span-1 sm:col-span-2">
+              <label for="dateAdded" class="block text-xs font-medium text-slate-700 mb-1">
+                Date Added
+              </label>
+              <input
+                type="date"
+                id="dateAdded"
+                name="dateAdded"
+                [(ngModel)]="dateAdded"
+                class="w-full text-xs px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-slate-300 text-slate-700"
+                [disabled]="isSubmitting"
+              />
+            </div> -->
+
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-2 px-6 py-3.5 bg-slate-50 border-t border-slate-100">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+            [disabled]="isSubmitting"
+          >
+            Cancel
+          </button>
+          
+          <button
+            type="submit"
+            class="px-4 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="isSubmitting || isLoadingNextNumber"
+          >
+            @if (isSubmitting) {
+              <span class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+              <span>Saving...</span>
+            } @else {
+              <span>{{ isEditMode ? 'Save Changes' : 'Create Pallet' }}</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

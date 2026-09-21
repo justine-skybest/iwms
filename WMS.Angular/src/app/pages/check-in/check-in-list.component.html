@@ -1,19 +1,17 @@
-<div class="flex flex-col gap-5">
-  <!-- Header -->
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="font-display font-bold text-lg text-slate-900 m-0 leading-tight">Check-In</h1>
-      <p class="m-0 text-xs text-slate-500 mt-[1px]">{{totalCount}} check-in transactions</p>
-    </div>
-    <button 
-      (click)="openCreateModal()"
-      class="flex items-center gap-2 bg-accent border-none rounded-lg px-4 py-2 text-white font-semibold text-sm cursor-pointer font-display transition-colors hover:bg-blue-600"
-    >
-      <lucide-icon [img]="plusIcon" [size]="16"></lucide-icon>
-      New Check-In
-    </button>
-  </div>
+<app-page-header 
+  title="Check-In" 
+  subtitle="{{totalCount}} check-in transactions"
+  [showDate]="false"
+  >
+  <button class="px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 rounded-md hover:bg-slate-200">
+    Export CSV
+  </button>
+  <button (click)="openCreateModal()" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+    + New Check-In
+  </button>
+</app-page-header>
 
+<div class="flex flex-col gap-5">
   <!-- Toolbar -->
   <div class="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
     <div class="flex-1 relative">
