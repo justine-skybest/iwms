@@ -46,7 +46,7 @@ app.MapCheckInEndpoints();
 app.MapPalletEndpoints();
 app.MapManualPickingEndpoints();
 app.MapTransferEndpoints();
-//app.MigrateDb();
+// app.MigrateDb();
 
 app.Run();
 

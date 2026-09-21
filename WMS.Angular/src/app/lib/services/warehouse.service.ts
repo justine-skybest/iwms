@@ -1,7 +1,7 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 import { Api } from '../../api/generated/api';
-import { warehouseGet } from '../../api/generated/functions';
-import { WarehouseDetailsDto } from '../../api/generated/models';
+import { warehouseV2Get } from '../../api/generated/functions';
+import { WarehouseDetailsDto, WarehouseDetailsDtoPaginatedResponse } from '../../api/generated/models';
 
 export const ALL_WAREHOUSES_OPTION: WarehouseDetailsDto = {
   name: 'All Warehouses',
@@ -52,31 +52,36 @@ export class WarehouseService {
     return this.selectedWarehouseId();
   }
 
- async fetchWarehouses(): Promise<void> {
-  this.isLoading.set(true);
-  this.error.set(null);
+  async fetchWarehouses(): Promise<void> {
+    this.isLoading.set(true);
+    this.error.set(null);
 
-  try {
-    const items = (await this.api.invoke(warehouseGet, {})) as WarehouseDetailsDto[];
-    const list = items ?? [];
-    this.warehouses.set(list);
+    try {
+      // Pass pageSize to ensure all items are fetched for the selector
+      const response = (await this.api.invoke(warehouseV2Get, {
+        pageSize: 1000
+      })) as WarehouseDetailsDtoPaginatedResponse;
 
-    const currentId = this.selectedWarehouseId();
-    
-    // FIX: 'null' is a valid selection representing "All Warehouses"
-    const isValid = currentId === null || list.some((w) => w.id === currentId);
+      // Unpack the items array from the paginated response wrapper
+      const list = response?.items ?? [];
+      this.warehouses.set(list);
 
-    // Only fallback to list[0] if currentId is a non-null ID that no longer exists in the list
-    if (!isValid && list.length > 0 && list[0].id !== undefined) {
-      this.setWarehouse(list[0].id);
+      const currentId = this.selectedWarehouseId();
+      
+      // 'null' is a valid selection representing "All Warehouses"
+      const isValid = currentId === null || list.some((w) => w.id === currentId);
+
+      // Only fallback to list[0] if currentId is a non-null ID that no longer exists in the list
+      if (!isValid && list.length > 0 && list[0].id !== undefined) {
+        this.setWarehouse(list[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load warehouses:', err);
+      this.error.set('Unable to load warehouses.');
+    } finally {
+      this.isLoading.set(false);
     }
-  } catch (err) {
-    console.error('Failed to load warehouses:', err);
-    this.error.set('Unable to load warehouses.');
-  } finally {
-    this.isLoading.set(false);
   }
-}
 
   setWarehouse(id: number | null): void {
     if (this.selectedWarehouseId() !== id) {
