@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 import { Api } from '../../api/generated/api';
 import { CreatePickOrderModalComponent } from './create-pick-order-modal.component';
 import { manualpickingV2Get } from '../../api/generated/functions';
@@ -13,7 +12,7 @@ import { PageHeaderComponent } from '../../shared/layout/page-header/page-header
 @Component({
   selector: 'app-pick-order-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, CreatePickOrderModalComponent, LucideAngularModule, PickOrderDetailsDrawerComponent, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, CreatePickOrderModalComponent, LucideAngularModule, PickOrderDetailsDrawerComponent, PageHeaderComponent],
   templateUrl: './pick-order-list.component.html',
 })
 export class PickOrderListComponent implements OnInit {

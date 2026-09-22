@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { receivingV2Get } from '../../api/generated/functions';
 import { ReceivingSummaryDto, ReceivingSummaryDtoPaginatedResponse } from '../../api/generated/models';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
 import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon } from 'lucide-angular';
@@ -15,7 +14,7 @@ import { PageHeaderComponent } from '../../shared/layout/page-header/page-header
 @Component({
   selector: 'app-receiving-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './receiving-list.component.html',
 })
 export class ReceivingListComponent implements OnInit {

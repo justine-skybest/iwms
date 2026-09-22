@@ -50,9 +50,9 @@ public static class DashboardEndpoint
                 .Where(b => b.CheckIns.Any())
                 .CountAsync();
 
-            // On-shelf stock condition
+            // On-shelf stock condition: Product is in an active CheckIn (direct or via Pallet) with remaining unpicked quantity
             Expression<Func<ReceivedProduct, bool>> isOnShelfStock = rp =>
-                rp.CheckIns.Any() &&
+                (rp.CheckIns.Any() || (rp.Pallet != null && rp.Pallet.CheckIns.Any())) &&
                 rp.Quantity > dbContext.PickedProducts
                     .Where(pp => pp.ReceivedProductId == rp.Id)
                     .Sum(pp => (int?)pp.QuantityPicked ?? 0);
@@ -85,7 +85,7 @@ public static class DashboardEndpoint
                 .Where(pp => pp.DatePicked >= todayStart && pp.DatePicked < todayEnd)
                 .SumAsync(pp => (int?)pp.QuantityPicked) ?? 0;
 
-            // 3. Recent Transactions & Expiring Products
+            // 3. Recent Transactions & Expiring Products (Referencing active CheckIns & remaining quantities)
             var recentReceivings = await dbContext.Receivings
                 .Where(r => activeWarehouseId == null || r.WarehouseId == activeWarehouseId)
                 .OrderByDescending(r => r.DateReceived)
@@ -100,23 +100,45 @@ public static class DashboardEndpoint
                 .AsNoTracking()
                 .ToListAsync();
 
-            var expiringProducts = await dbContext.ReceivedProducts
+            var expiringProductEntities = await dbContext.ReceivedProducts
+                .Include(rp => rp.Product)
+                .Include(rp => rp.Receiving!)
+                    .ThenInclude(r => r.Warehouse)
+                .Include(rp => rp.CheckIns)
+                .Include(rp => rp.Pallet!)
+                    .ThenInclude(p => p.CheckIns)
                 .Where(rp => rp.Receiving != null && (activeWarehouseId == null || rp.Receiving.WarehouseId == activeWarehouseId))
                 .Where(isOnShelfStock)
                 .Where(rp => rp.ExpirationDate <= expiringSoonCutoff)
                 .OrderBy(rp => rp.ExpirationDate)
                 .Take(10)
-                .Select(rp => new ExpiringProductDto(
-                    rp.Product!.Name,
-                    rp.Receiving!.Series,
-                    rp.ExpirationDate,
-                    rp.Quantity,
-                    rp.Receiving.Warehouse!.Name
-                ))
+                .AsSplitQuery()
                 .AsNoTracking()
                 .ToListAsync();
 
-            // 4. Aging Inventory (MySQL compatible via Split Query)
+            var expiringProductIds = expiringProductEntities.Select(rp => rp.Id).ToList();
+
+            var expiringPickedTotals = await dbContext.PickedProducts
+                .Where(pp => expiringProductIds.Contains(pp.ReceivedProductId))
+                .GroupBy(pp => pp.ReceivedProductId)
+                .Select(g => new { ReceivedProductId = g.Key, TotalPicked = g.Sum(pp => pp.QuantityPicked) })
+                .ToDictionaryAsync(x => x.ReceivedProductId, x => x.TotalPicked);
+
+            var expiringProducts = expiringProductEntities.Select(rp =>
+            {
+                var qtyPicked = expiringPickedTotals.GetValueOrDefault(rp.Id, 0);
+                var remainingQty = rp.Quantity - qtyPicked;
+
+                return new ExpiringProductDto(
+                    rp.Product?.Name ?? "",
+                    rp.Receiving?.Series ?? "",
+                    rp.ExpirationDate,
+                    remainingQty,
+                    rp.Receiving?.Warehouse?.Name ?? ""
+                );
+            }).ToList();
+
+            // 4. Aging Inventory (MySQL compatible via Split Query, handling direct & pallet check-ins)
             var agingProductEntities = await dbContext.ReceivedProducts
                 .Include(rp => rp.Product)
                 .Include(rp => rp.Receiving!)
@@ -124,9 +146,12 @@ public static class DashboardEndpoint
                 .Include(rp => rp.CheckIns)
                     .ThenInclude(ci => ci.Bins)
                         .ThenInclude(b => b.BinNames)
+                .Include(rp => rp.Pallet!)
+                    .ThenInclude(p => p.CheckIns)
+                        .ThenInclude(ci => ci.Bins)
+                            .ThenInclude(b => b.BinNames)
                 .Where(rp => rp.Receiving != null && (activeWarehouseId == null || rp.Receiving.WarehouseId == activeWarehouseId))
                 .Where(isOnShelfStock)
-                .OrderBy(rp => rp.CheckIns.Min(ci => ci.CheckInDate))
                 .Take(10)
                 .AsSplitQuery()
                 .AsNoTracking()
@@ -140,26 +165,36 @@ public static class DashboardEndpoint
                 .Select(g => new { ReceivedProductId = g.Key, TotalPicked = g.Sum(pp => pp.QuantityPicked) })
                 .ToDictionaryAsync(x => x.ReceivedProductId, x => x.TotalPicked);
 
-            var agingInventory = agingProductEntities.Select(rp =>
-            {
-                var earliestCheckIn = rp.CheckIns.Min(ci => ci.CheckInDate);
-                var binNames = rp.CheckIns
-                    .SelectMany(ci => ci.Bins)
-                    .Select(b => b.BinNames?.BinName)
-                    .Where(name => !string.IsNullOrEmpty(name))
-                    .Distinct();
+            var agingInventory = agingProductEntities
+                .Select(rp =>
+                {
+                    var activeCheckIns = rp.CheckIns
+                        .Concat(rp.Pallet?.CheckIns ?? Enumerable.Empty<CheckIn>())
+                        .ToList();
 
-                var qtyPicked = agingPickedTotals.GetValueOrDefault(rp.Id, 0);
+                    var earliestCheckIn = activeCheckIns.Any()
+                        ? activeCheckIns.Min(ci => ci.CheckInDate)
+                        : DateTime.Now;
 
-                return new AgingInventoryDto(
-                    rp.Product!.Name,
-                    rp.Receiving!.Series,
-                    rp.Receiving.Warehouse!.Name,
-                    string.Join(", ", binNames),
-                    rp.Quantity - qtyPicked,
-                    (todayStart - earliestCheckIn.Date).Days
-                );
-            }).ToList();
+                    var binNames = activeCheckIns
+                        .SelectMany(ci => ci.Bins)
+                        .Select(b => b.BinNames?.BinName)
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .Distinct();
+
+                    var qtyPicked = agingPickedTotals.GetValueOrDefault(rp.Id, 0);
+
+                    return new AgingInventoryDto(
+                        rp.Product?.Name ?? "",
+                        rp.Receiving?.Series ?? "",
+                        rp.Receiving?.Warehouse?.Name ?? "",
+                        string.Join(", ", binNames),
+                        rp.Quantity - qtyPicked,
+                        (todayStart - earliestCheckIn.Date).Days
+                    );
+                })
+                .OrderByDescending(dto => dto.DaysInStorage)
+                .ToList();
 
             // 5. Top Products On-Hand
             var topProductItems = await dbContext.ReceivedProducts

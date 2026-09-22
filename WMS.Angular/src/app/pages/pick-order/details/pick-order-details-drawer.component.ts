@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { ManualPickingSummaryDto, PickedProductSummaryDto } from '../../../api/generated/models';
 import { BoxIcon, LucideAngularModule, XIcon } from 'lucide-angular';
 
 @Component({
   selector: 'app-pick-order-details-drawer',
   standalone: true,
-  imports: [CommonModule, IconComponent, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './pick-order-details-drawer.component.html'
 })
 export class PickOrderDetailsDrawerComponent {

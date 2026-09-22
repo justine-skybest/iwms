@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { warehouseV2Get } from '../../api/generated/functions';
 import { WarehouseDetailsDto, WarehouseDetailsDtoPaginatedResponse } from '../../api/generated/models';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { Router } from '@angular/router';
@@ -14,7 +13,7 @@ import { PageHeaderComponent } from '../../shared/layout/page-header/page-header
 @Component({
   selector: 'app-warehouses-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, LucideAngularModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule, PageHeaderComponent],
   templateUrl: './warehouses-list.component.html',
 })
 export class WarehousesListComponent implements OnInit {

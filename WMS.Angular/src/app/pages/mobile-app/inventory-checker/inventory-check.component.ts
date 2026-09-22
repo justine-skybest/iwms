@@ -115,7 +115,7 @@ export class InventoryCheckModalComponent implements OnChanges {
         this.checkIns = (Array.isArray(res) ? res : [res]) as DisplayCheckInProductsDto[];
         this.toastService.success(`Inspected Bin "${binResponse.binName || binResponse.id}"`);
       } else {
-        this.errorMessage = `No checked-in Bin found matching QR code "${trimmed}".`;
+        this.errorMessage = binResponse.warehouse?? `No checked-in Bin found matching QR code "${trimmed}".`;
       }
     } catch (err: any) {
       console.error('Inventory inspection error:', err);

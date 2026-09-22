@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { productV2Get } from '../../api/generated/functions';
 import { ProductSummaryDto, ProductSummaryDtoPaginatedResponse } from '../../api/generated/models';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 import { LucideAngularModule, PlusIcon, SearchIcon, ChevronLeft, ChevronRight } from 'lucide-angular';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 import { CreateProductDialogComponent } from './create/create-product-dialog.component';
@@ -15,7 +14,6 @@ import { CreateProductDialogComponent } from './create/create-product-dialog.com
   imports: [
     CommonModule,
     FormsModule,
-    IconComponent,
     LucideAngularModule,
     PageHeaderComponent,
     CreateProductDialogComponent,

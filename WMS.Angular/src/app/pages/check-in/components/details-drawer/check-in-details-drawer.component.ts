@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IconComponent } from '../../../../shared/components/icon/icon.component';
 import { CheckInSummaryDto } from '../../../../api/generated/models';
 import { BoxIcon, LucideAngularModule, PencilIcon, TrashIcon, XIcon } from 'lucide-angular';
 
@@ -12,7 +11,7 @@ import { BoxIcon, LucideAngularModule, PencilIcon, TrashIcon, XIcon } from 'luci
 @Component({
   selector: 'app-check-in-details-drawer',
   standalone: true,
-  imports: [CommonModule, IconComponent, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './check-in-details-drawer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

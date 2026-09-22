@@ -302,7 +302,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "WMS.Api.Dtos.Bin.BinDetailsDto",
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
         "MediaTypes": [
           "application/json"
         ],
@@ -455,7 +455,7 @@
       }
     ],
     "EndpointName": "GetBinStockById",
-    "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products over direct check-in products.",
+    "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
     "Summary": "Get available stock in a specific bin by ID"
   },
   {
@@ -2483,7 +2483,7 @@
       "Transfers V2"
     ],
     "EndpointName": "TransferPalletV2",
-    "Description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin.",
+    "Description": "Moves a checked-in pallet (and all its contents) from its current bin into a new check-in record at the destination bin.",
     "Summary": "Transfer a whole pallet to a new bin"
   },
   {

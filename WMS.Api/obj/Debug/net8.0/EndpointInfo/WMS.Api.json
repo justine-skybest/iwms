@@ -331,7 +331,7 @@
           "Transfers V2"
         ],
         "summary": "Transfer a whole pallet to a new bin",
-        "description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin.",
+        "description": "Moves a checked-in pallet (and all its contents) from its current bin into a new check-in record at the destination bin.",
         "operationId": "TransferPalletV2",
         "requestBody": {
           "content": {
@@ -1485,7 +1485,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BinDetailsDto"
+                  "$ref": "#/components/schemas/BinSummaryDto"
                 }
               }
             }
@@ -1509,7 +1509,7 @@
           "WMS.Api"
         ],
         "summary": "Get available stock in a specific bin by ID",
-        "description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products over direct check-in products.",
+        "description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
         "operationId": "GetBinStockById",
         "parameters": [
           {

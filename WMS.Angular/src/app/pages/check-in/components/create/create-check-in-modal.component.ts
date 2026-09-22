@@ -184,7 +184,7 @@ export class CreateCheckInModalComponent implements OnChanges {
           this.selectedBins = [...this.selectedBins, binOption];
         }
       } else {
-        this.createError = 'Bin location not found for scanned QR code.';
+        this.createError = `Error: ${bin.warehouse?? "something went wrong."}`;
       }
     } catch (err) {
       console.error('Bin QR lookup failed:', err);

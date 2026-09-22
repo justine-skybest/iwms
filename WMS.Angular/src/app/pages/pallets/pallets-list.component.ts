@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { palletV2Get } from '../../api/generated/functions';
 import { PalletSummaryDto, PalletSummaryDtoPaginatedResponse } from '../../api/generated/models';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
 import { LucideAngularModule, ChevronLeft, ChevronRight, PlusIcon, SearchIcon } from 'lucide-angular';
@@ -19,7 +18,6 @@ export type PalletWithQr = PalletSummaryDto & { qrCodeUrl?: string };
   imports: [
     CommonModule, 
     FormsModule, 
-    IconComponent, 
     LucideAngularModule, 
     PageHeaderComponent, 
     CreatePalletDialogComponent

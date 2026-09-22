@@ -1,0 +1,45 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\dashboardendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\dashboardendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DashboardEndpoint.cs",
+              "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\DashboardEndpoint.cs",
+              "RelativeDocumentMoniker": "Endpoints\\DashboardEndpoint.cs",
+              "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\DashboardEndpoint.cs",
+              "RelativeToolTip": "Endpoints\\DashboardEndpoint.cs",
+              "ViewState": "AgIAACkBAAAAAAAAAAAuwDcBAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-22T08:08:52.546Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

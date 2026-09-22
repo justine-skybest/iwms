@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { checkinV2Get } from '../../api/generated/functions';
 import { CheckInSummaryDto, CheckInSummaryDtoPaginatedResponse } from '../../api/generated/models';
-import { IconComponent } from '../../shared/components/icon/icon.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { CreateCheckInModalComponent } from './components/create/create-check-in-modal.component';
 import { CheckInDetailsDrawerComponent } from './components/details-drawer/check-in-details-drawer.component';
@@ -14,7 +13,7 @@ import { PageHeaderComponent } from '../../shared/layout/page-header/page-header
 @Component({
   selector: 'app-check-in-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, CreateCheckInModalComponent, CheckInDetailsDrawerComponent, LucideAngularModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, CreateCheckInModalComponent, CheckInDetailsDrawerComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './check-in-list.component.html',
 })
 export class CheckInListComponent implements OnInit {
