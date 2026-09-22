@@ -11,7 +11,7 @@
       <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
         <div class="min-w-0 flex-1 pr-2">
           <h2 class="text-sm sm:text-base font-bold text-slate-900 m-0 truncate">Inventory Inspector</h2>
-          <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan Pallet or Bin QR code to view on-hand stock</p>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan Bin QR code to view all on-hand stock batches</p>
         </div>
         <button 
           type="button" 
@@ -22,13 +22,13 @@
         </button>
       </div>
 
-      <!-- Scrollable Modal Body -->
+      <!-- Scrollable Body Content -->
       <div class="p-4 sm:p-6 space-y-4 flex-1 min-h-0 overflow-y-auto">
         
         <!-- Search & Camera Bar -->
         <div class="space-y-2">
           <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Scan / Enter QR Code
+            Scan / Enter Bin QR Code
           </label>
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <div class="relative flex-1 min-w-0">
@@ -36,7 +36,7 @@
                 type="text"
                 [(ngModel)]="searchQuery"
                 (keyup.enter)="executeInspection(searchQuery)"
-                placeholder="Pallet #, Hash Code, or Bin Name..."
+                placeholder="Scan Bin QR code or enter Hash..."
                 class="w-full text-xs sm:text-sm pl-3.5 pr-8 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-all"
                 [disabled]="isLoading"
               />
@@ -54,7 +54,7 @@
             <div class="flex items-center gap-2 shrink-0">
               <app-qr-scanner
                 buttonText="Scan QR"
-                modalTitle="Scan Inventory QR Code"
+                modalTitle="Scan Bin QR Code"
                 (scanSuccess)="executeInspection($event)"
                 class="flex-1 sm:flex-none"
               ></app-qr-scanner>
@@ -84,79 +84,107 @@
           </div>
         }
 
-        <!-- Inspection Result Header & Location Summary -->
-        @if (inspectionResult) {
+        <!-- Inspection Result Summary -->
+        @if (binInfo) {
           <div class="space-y-3 pt-1 animate-in fade-in duration-150">
             
-            <div class="p-3.5 rounded-2xl border space-y-2 text-xs"
-              [class.bg-emerald-50/80]="inspectionResult.inspectionType === 'Pallet'"
-              [class.border-emerald-200]="inspectionResult.inspectionType === 'Pallet'"
-              [class.bg-purple-50/80]="inspectionResult.inspectionType === 'Bin'"
-              [class.border-purple-200]="inspectionResult.inspectionType === 'Bin'"
-            >
-              <div class="flex items-center justify-between gap-2 font-bold">
-                <span class="flex items-center gap-1.5"
-                  [class.text-emerald-900]="inspectionResult.inspectionType === 'Pallet'"
-                  [class.text-purple-900]="inspectionResult.inspectionType === 'Bin'"
-                >
-                  <span class="w-2 h-2 rounded-full"
-                    [class.bg-emerald-500]="inspectionResult.inspectionType === 'Pallet'"
-                    [class.bg-purple-500]="inspectionResult.inspectionType === 'Bin'"
-                  ></span>
-                  {{ inspectionResult.title || 'Location Found' }}
+            <!-- Bin Meta Header -->
+            <div class="p-3.5 bg-blue-50 border border-blue-200 rounded-2xl space-y-2 text-xs">
+              <div class="flex items-center justify-between gap-2 font-bold text-blue-900">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                  Bin: {{ binInfo.binName || binInfo.id }}
                 </span>
-                <span class="text-[10px] uppercase tracking-wider font-mono px-2 py-0.5 rounded-md"
-                  [class.bg-emerald-100]="inspectionResult.inspectionType === 'Pallet'"
-                  [class.text-emerald-800]="inspectionResult.inspectionType === 'Pallet'"
-                  [class.bg-purple-100]="inspectionResult.inspectionType === 'Bin'"
-                  [class.text-purple-800]="inspectionResult.inspectionType === 'Bin'"
-                >
-                  {{ inspectionResult.inspectionType ?? 'Location' }} Mode
+                <span class="text-[10px] uppercase font-mono bg-blue-100/80 text-blue-800 px-2 py-0.5 rounded-md">
+                  {{ checkIns.length }} Check-In(s) · {{ getTotalProductsCount() }} Line Item(s)
                 </span>
               </div>
 
-              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1 border-t border-slate-200/50">
-                <div><span class="text-slate-400">Bin Location:</span> <strong class="text-slate-800">{{ inspectionResult.binLocation || 'Not Checked In' }}</strong></div>
-                <div><span class="text-slate-400">Rack / Bay:</span> <strong class="text-slate-800">{{ inspectionResult.rack || '—' }} / {{ inspectionResult.bay || '—' }}</strong></div>
+              <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1.5 border-t border-blue-200/50">
+                <div><span class="text-slate-400">Rack:</span> <strong class="text-slate-800">{{ binInfo.rack || '—' }}</strong></div>
+                <div><span class="text-slate-400">Bay / Level:</span> <strong class="text-slate-800">{{ binInfo.bay || '—' }} / {{ binInfo.level || '—' }}</strong></div>
               </div>
             </div>
 
-            <!-- Items List -->
-            <div class="space-y-2">
+            <!-- Grouped Check-Ins List -->
+            <div class="space-y-3">
               <div class="flex items-center justify-between text-xs font-bold text-slate-700 uppercase tracking-wider px-1">
-                <span>Stored Items</span>
-                <span class="text-slate-400 font-normal">({{ (inspectionResult.items?.length ?? 0) }} total)</span>
+                <span>Checked-In Stock Batches</span>
               </div>
 
-              <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
-                @for (item of inspectionResult.items ?? []; track item.receivedProductId ?? $index) {
-                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3 text-xs">
-                    <div class="min-w-0 flex-1">
-                      <div class="font-bold text-slate-900 truncate">{{ item.productName || 'N/A' }}</div>
-                      <div class="text-[11px] text-slate-500 mt-0.5 truncate">
-                        {{ item.typeOfPackage || 'Unit' }} · Exp: <span class="font-mono text-amber-700 font-semibold">{{ formatDate(item.expirationDate) }}</span>
-                      </div>
-                    </div>
-                    
-                    <div class="text-right shrink-0">
-                      <span class="font-mono text-xs font-bold text-slate-800 bg-white border border-slate-200 px-2 py-1 rounded-md block">
-                        Qty: {{ item.quantity ?? 0 }}
-                      </span>
-                      @if (item.isPalletized && item.palletNumber) {
-                        <span class="text-[10px] text-emerald-700 font-mono font-semibold block mt-1">
-                          Pallet #{{ item.palletNumber }}
+              @if (checkIns.length === 0) {
+                <div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-slate-200">
+                  No active checked-in inventory found in this bin.
+                </div>
+              } @else {
+                <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
+                  @for (checkIn of checkIns; track checkIn.id) {
+                    <div class="p-3 bg-white border border-slate-200 rounded-xl shadow-sm space-y-2.5 text-xs">
+                      
+                      <!-- Batch Header (Pallet vs Loose) -->
+                      <div class="flex items-center justify-between gap-2 pb-1 border-b border-slate-100">
+                        <div class="flex items-center gap-1.5">
+                          @if (checkIn.palletNumber) {
+                            <span class="text-[10px] text-emerald-800 bg-emerald-100 border border-emerald-200 font-mono px-1.5 py-0.5 rounded font-bold">
+                              {{ checkIn.palletNumber }}
+                            </span>
+                          } @else {
+                            <span class="text-[10px] text-purple-800 bg-purple-100 border border-purple-200 font-mono px-1.5 py-0.5 rounded font-bold">
+                              LOOSE BATCH #{{ checkIn.id }}
+                            </span>
+                          }
+                          @if (checkIn.checkInType) {
+                            <span class="text-[10px] text-slate-400 font-mono">({{ checkIn.checkInType }})</span>
+                          }
+                        </div>
+
+                        <span class="text-[10px] text-slate-500">
+                          Date: <strong class="text-slate-700 font-medium">{{ formatDate(checkIn.checkInDate) }}</strong>
                         </span>
-                      }
-                    </div>
-                  </div>
-                }
+                      </div>
 
-                @if ((inspectionResult.items?.length ?? 0) === 0) {
-                  <div class="p-4 text-center text-slate-400 text-xs bg-slate-50 rounded-xl border border-slate-200">
-                    No stored inventory found at this location.
-                  </div>
-                }
-              </div>
+                      @if (checkIn.notes) {
+                        <div class="text-[11px] text-slate-500 italic bg-slate-50 px-2 py-1 rounded">
+                          Note: {{ checkIn.notes }}
+                        </div>
+                      }
+
+                      <!-- Received Products List inside Check-In -->
+                      <div class="space-y-1.5">
+                        @for (product of checkIn.receivedProducts ?? []; track product.id) {
+                          <div class="p-2 bg-slate-50/80 rounded-lg border border-slate-100 flex items-start justify-between gap-2">
+                            <div class="min-w-0 flex-1 space-y-0.5">
+                              <div class="font-bold text-slate-900 truncate">{{ product.name || 'N/A' }}</div>
+                              <div class="text-[10px] text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                <span>Pkg: <strong class="text-slate-700">{{ product.typeOfPackage || 'Unit' }}</strong></span>
+                                @if (product.receivingSeries) {
+                                  <span>Series: <strong class="font-mono text-slate-700">{{ product.receivingSeries }}</strong></span>
+                                }
+                                @if (product.expirationDate) {
+                                  <span>Exp: <strong class="text-amber-700 font-mono">{{ formatDate(product.expirationDate) }}</strong></span>
+                                }
+                                @if (product.shipper) {
+                                  <span>Shipper: <strong class="text-slate-700">{{ product.shipper }}</strong></span>
+                                }
+                                @if (product.containerName) {
+                                  <span>Container: <strong class="text-slate-700">{{ product.containerName }}</strong></span>
+                                }
+                              </div>
+                            </div>
+
+                            <div class="text-right shrink-0">
+                              <span class="font-mono text-xs font-bold text-slate-800 bg-white border border-slate-200 px-2 py-0.5 rounded shadow-sm inline-block">
+                                Qty: {{ product.quantity ?? 0 }}
+                              </span>
+                            </div>
+                          </div>
+                        }
+                      </div>
+
+                    </div>
+                  }
+                </div>
+              }
             </div>
 
           </div>

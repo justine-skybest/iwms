@@ -7,16 +7,16 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { BinDetailsDto } from '../../models/bin-details-dto';
+import type { DisplayCheckInProductsDto } from '../../models/display-check-in-products-dto';
 
-export interface GetBin$Params {
-  id: number;
+export interface GetBinStockById$Params {
+  BinId: number;
 }
 
-export function getBin(http: HttpClient, rootUrl: string, params: GetBin$Params, context?: HttpContext): Observable<StrictHttpResponse<BinDetailsDto>> {
-  const rb = new RequestBuilder(rootUrl, getBin.PATH, 'get');
+export function getBinStockById(http: HttpClient, rootUrl: string, params: GetBinStockById$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<DisplayCheckInProductsDto>>> {
+  const rb = new RequestBuilder(rootUrl, getBinStockById.PATH, 'get');
   if (params) {
-    rb.path('id', params.id, {});
+    rb.path('BinId', params.BinId, {});
   }
 
   return http.request(
@@ -24,9 +24,9 @@ export function getBin(http: HttpClient, rootUrl: string, params: GetBin$Params,
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BinDetailsDto>;
+      return r as StrictHttpResponse<Array<DisplayCheckInProductsDto>>;
     })
   );
 }
 
-getBin.PATH = '/bin/{id}';
+getBinStockById.PATH = '/bin/stock/id/{BinId}';

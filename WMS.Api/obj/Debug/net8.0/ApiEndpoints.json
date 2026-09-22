@@ -124,7 +124,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
     "RelativePath": "bin/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -147,7 +147,7 @@
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
-    "RelativePath": "bin/{id}",
+    "RelativePath": "bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -160,16 +160,25 @@
     ],
     "ReturnTypes": [
       {
+        "Type": "WMS.Api.Dtos.Bin.BinDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 404
       }
     ],
-    "EndpointName": "GetBin"
+    "EndpointName": "GetBin",
+    "Description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
+    "Summary": "Get bin details by ID"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
     "RelativePath": "bin/{id}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -196,7 +205,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
     "RelativePath": "bin/{id}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -274,7 +283,46 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
+    "RelativePath": "bin/hashcode/{hashCode:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetBinByHashCode",
+    "Description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
+    "Summary": "Get bin details by QR code hash"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
     "RelativePath": "bin/history/{BinId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -378,8 +426,8 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
-    "RelativePath": "bin/stock/id/{BinId}",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "RelativePath": "bin/stock/id/{BinId:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -392,13 +440,23 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "WMS.Api.Dtos.Receiving.CheckedInProductSumamryDto",
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.DisplayCheckInProductsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],
         "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
       }
-    ]
+    ],
+    "EndpointName": "GetBinStockById",
+    "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products over direct check-in products.",
+    "Summary": "Get available stock in a specific bin by ID"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
@@ -958,6 +1016,75 @@
     ]
   },
   {
+    "ContainingType": "WMS.Api.Endpoints.DashboardEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapDashboardEndpoints\u003Eb__0_0",
+    "RelativePath": "dashboard/summary",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Dashboard.DashboardSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 500
+      }
+    ],
+    "EndpointName": "GetDashboardSummary",
+    "Description": "Retrieves aggregated metrics, inventory health, activity trends, and warehouse breakdown for the dashboard.",
+    "Summary": "Get dashboard summary statistics"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.InventoryEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapInventoryEndpoints\u003Eb__0_0",
+    "RelativePath": "inventory/inspect/{code}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Endpoints.InventoryInspectionResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Inventory"
+    ],
+    "EndpointName": "InspectInventoryCode",
+    "Description": "Unified inventory inspector. Resolves Pallets or Bins and returns all items stored inside.",
+    "Summary": "Inspect inventory contents by scanning a Pallet or Bin QR code"
+  },
+  {
     "ContainingType": "WMS.Api.Endpoints.LevelEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapLevelEndpoints\u003Eb__0_0",
     "RelativePath": "level/",
@@ -1234,11 +1361,23 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
+        "Type": "WMS.Api.Dtos.Pallet.PalletSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
       }
-    ]
+    ],
+    "EndpointName": "CreatePallet",
+    "Description": "Creates a new pallet record in the system and returns its details.",
+    "Summary": "Create a new pallet"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
@@ -1286,9 +1425,24 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
       }
-    ]
+    ],
+    "EndpointName": "UpdatePallet",
+    "Description": "Updates all details of an existing pallet by its ID.",
+    "Summary": "Update an existing pallet"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
@@ -1564,8 +1718,18 @@
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Product.ProductDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
       }
-    ]
+    ],
+    "EndpointName": "CreateProduct",
+    "Description": "Creates a new product record and returns the created product details.",
+    "Summary": "Create a new product"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
@@ -1647,8 +1811,21 @@
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
       }
-    ]
+    ],
+    "EndpointName": "UpdateProduct",
+    "Description": "Updates all details of an existing product by its ID.",
+    "Summary": "Update an existing product"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
@@ -2199,6 +2376,164 @@
     ]
   },
   {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_0",
+    "RelativePath": "transfers-v2/bin",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferBinDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferBinContents",
+    "Description": "Transfers all checked-in pallets and individual items from a source bin into new check-in records at the destination bin.",
+    "Summary": "Transfer all contents from one bin to another"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_2",
+    "RelativePath": "transfers-v2/item",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferItemV2",
+    "Description": "Moves a single received product out of its current check-in into a new check-in at the destination bin.",
+    "Summary": "Transfer a single item to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_1",
+    "RelativePath": "transfers-v2/pallet",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferPalletDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferPalletV2",
+    "Description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin.",
+    "Summary": "Transfer a whole pallet to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_3",
+    "RelativePath": "transfers-v2/report",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "to",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Transfer.TransferLogDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "GetTransferReportV2",
+    "Description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+    "Summary": "Get a transfer log report"
+  },
+  {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapTransferEndpoints\u003Eb__0_3",
     "RelativePath": "transfers/item",
@@ -2220,6 +2555,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Transfers"
     ],
     "EndpointName": "TransferItem",
     "Description": "Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.",
@@ -2248,6 +2586,9 @@
         "StatusCode": 200
       }
     ],
+    "Tags": [
+      "Transfers"
+    ],
     "EndpointName": "GetItemsInBin",
     "Description": "Returns item-level (non-pallet) received products currently checked in to the given bin.",
     "Summary": "List individually checked-in items in a bin"
@@ -2275,8 +2616,11 @@
         "StatusCode": 200
       }
     ],
+    "Tags": [
+      "Transfers"
+    ],
     "EndpointName": "TransferPallet",
-    "Description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin, logging the transfer.",
+    "Description": "Moves a checked-in pallet and its contents from its current bin into a new check-in record at the destination bin, logging the transfer.",
     "Summary": "Transfer a whole pallet to a new bin"
   },
   {
@@ -2306,6 +2650,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Transfers"
     ],
     "EndpointName": "LocatePalletByNumber",
     "Description": "Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.",
@@ -2338,6 +2685,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Transfers"
     ],
     "EndpointName": "LocatePalletByQrCode",
     "Description": "Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.",
@@ -2375,6 +2725,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Transfers"
     ],
     "EndpointName": "GetTransferReport",
     "Description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",

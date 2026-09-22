@@ -21,7 +21,7 @@ import {
   PickedProductDetailsDto,
 } from '../../api/generated/models';
 import {
-  binStockIdBinIdGet,
+  getBinStockById,
   getCheckedInBinByQrCode,
   manualpickingPost,
 } from '../../api/generated/functions';
@@ -34,6 +34,7 @@ import { ToastService } from '../../lib/services/toast.service';
   templateUrl: './create-pick-order-modal.component.html',
 })
 export class CreatePickOrderModalComponent implements OnChanges {
+  protected readonly Math = Math;
   @Input() isOpen = false;
   @Output() closed = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
@@ -41,7 +42,7 @@ export class CreatePickOrderModalComponent implements OnChanges {
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
   public warehouseService = inject(WarehouseService);
-  private toastService = inject(ToastService)
+  private toastService = inject(ToastService);
 
   isSubmitting = false;
   isScanning = false;
@@ -54,6 +55,7 @@ export class CreatePickOrderModalComponent implements OnChanges {
 
   binItems: CheckedInProductSumamryDto[] = [];
   selectedItems: { item: CheckedInProductSumamryDto; quantity: number }[] = [];
+  isSelectAll = false;
 
   notes = '';
   pickingDate = this.today();
@@ -114,48 +116,95 @@ export class CreatePickOrderModalComponent implements OnChanges {
     }
   }
 
-async loadBinItems(binId: number): Promise<void> {
-  this.isLoadingItems = true;
-  this.cd.markForCheck();
+  async loadBinItems(binId: number): Promise<void> {
+    this.isLoadingItems = true;
+    this.cd.markForCheck();
 
-  try {
-    const response = await this.api.invoke(binStockIdBinIdGet, { BinId: binId });
-    const checkIns = (Array.isArray(response) ? response : response ? [response] : []) as any[];
+    try {
+      const response = await this.api.invoke(getBinStockById, { BinId: binId });
+      const checkIns = (Array.isArray(response) ? response : response ? [response] : []) as any[];
 
-    if (checkIns.length > 0) {
-      // 1. Capture checkInId from the root check-in object
-      this.selectedCheckInId = checkIns[0]?.id ?? null;
+      if (checkIns.length > 0) {
+        this.selectedCheckInId = checkIns[0]?.id ?? null;
+        const products = checkIns.flatMap((checkIn) => checkIn.receivedProducts || []);
 
-      // 2. Extract nested receivedProducts array from check-ins
-      const products = checkIns.flatMap(checkIn => checkIn.receivedProducts || []);
-
-      this.binItems = products;
-      this.selectedItems = this.binItems.map(item => ({
-        item,
-        quantity: 0,
-      }));
-    } else {
-      this.selectedCheckInId = null;
-      this.binItems = [];
-      this.selectedItems = [];
+        this.binItems = products;
+        this.selectedItems = this.binItems.map((item) => ({
+          item,
+          quantity: 0,
+        }));
+        this.isSelectAll = false;
+      } else {
+        this.selectedCheckInId = null;
+        this.binItems = [];
+        this.selectedItems = [];
+        this.isSelectAll = false;
+      }
+    } catch (err) {
+      console.error('Failed to load bin items:', err);
+      this.errorMessage = 'Failed to load items for the selected bin.';
+    } finally {
+      this.isLoadingItems = false;
+      this.cd.markForCheck();
     }
-  } catch (err) {
-    console.error('Failed to load bin items:', err);
-    this.errorMessage = 'Failed to load items for the selected bin.';
-  } finally {
-    this.isLoadingItems = false;
+  }
+
+  /**
+   * Toggles picking full quantities for all items in the bin
+   */
+  toggleSelectAll(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.isSelectAll = isChecked;
+
+    this.selectedItems.forEach((sel) => {
+      sel.quantity = isChecked ? (sel.item.quantity ?? 0) : 0;
+    });
+
     this.cd.markForCheck();
   }
-}
 
   onQuantityChange(index: number, event: Event): void {
     const value = Number((event.target as HTMLInputElement).value);
+    const maxQuantity = this.selectedItems[index].item.quantity ?? 0;
+
     if (!isNaN(value) && value >= 0) {
-      const maxQuantity = this.selectedItems[index].item.quantity ?? 0;
       this.selectedItems[index].quantity = Math.min(value, maxQuantity);
     } else {
       this.selectedItems[index].quantity = 0;
     }
+
+    this.updateSelectAllState();
+  }
+
+  incrementQuantity(index: number): void {
+    const item = this.selectedItems[index];
+    if (!item) return;
+    const maxQuantity = item.item.quantity ?? 0;
+    if (item.quantity < maxQuantity) {
+      item.quantity++;
+      this.updateSelectAllState();
+    }
+  }
+
+  decrementQuantity(index: number): void {
+    const item = this.selectedItems[index];
+    if (!item) return;
+    if (item.quantity > 0) {
+      item.quantity--;
+      this.updateSelectAllState();
+    }
+  }
+
+  private updateSelectAllState(): void {
+    if (this.selectedItems.length === 0) {
+      this.isSelectAll = false;
+      return;
+    }
+
+    this.isSelectAll = this.selectedItems.every(
+      (sel) => sel.quantity === (sel.item.quantity ?? 0) && (sel.item.quantity ?? 0) > 0
+    );
+    this.cd.markForCheck();
   }
 
   async submitCreatePickOrder(): Promise<void> {
@@ -171,10 +220,10 @@ async loadBinItems(binId: number): Promise<void> {
     this.cd.markForCheck();
 
     try {
-      const validItems = this.selectedItems.filter(sel => sel.quantity > 0);
+      const validItems = this.selectedItems.filter((sel) => sel.quantity > 0);
       const checkInId = this.selectedCheckInId ?? 0;
 
-      const pickedProducts: PickedProductDetailsDto[] = validItems.map(sel => ({
+      const pickedProducts: PickedProductDetailsDto[] = validItems.map((sel) => ({
         receivedProductId: sel.item.id,
         quantityPicked: sel.quantity,
         datePicked: this.pickingDate,
@@ -190,13 +239,13 @@ async loadBinItems(binId: number): Promise<void> {
       };
 
       await this.api.invoke(manualpickingPost, { body: dto });
-      this.toastService.success(`New Pick-order successfully submitted`)
+      this.toastService.success(`New Pick-order successfully submitted`);
       this.resetForm();
       this.created.emit();
       this.closed.emit();
     } catch (err) {
       this.errorMessage = 'Failed to create pick order. Please try again.';
-      this.toastService.error(`Failed to create pick order. Please try again.`)
+      this.toastService.error(`Failed to create pick order. Please try again.`);
       console.error('Failed to create pick order:', err);
     } finally {
       this.isSubmitting = false;
@@ -237,6 +286,7 @@ async loadBinItems(binId: number): Promise<void> {
     this.selectedCheckInId = null;
     this.binItems = [];
     this.selectedItems = [];
+    this.isSelectAll = false;
     this.notes = '';
     this.pickingDate = this.today();
   }

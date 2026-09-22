@@ -162,19 +162,19 @@ public static class BinEndpoint
         // -----------------------------------------------------------------------------
         group.MapGet("CheckedIn/{BinHashCode:int}/{WarehouseId:int}", async (int BinHashCode, int WarehouseId, WMSContext dbContext) =>
         {
-            // Load bin with related entities including CheckIns and their products
             var bin = await dbContext.Bins
-                .Include(b => b.Rack)
-                    .ThenInclude(r => r!.Warehouse)
-                .Include(b => b.Bay)
-                .Include(b => b.Level)
-                .Include(b => b.BinNames)
-                .Include(b => b.CheckIns)
-                    .ThenInclude(ci => ci.ReceivedProducts)
-                .Include(b => b.CheckIns)
-                    .ThenInclude(ci => ci.Pallet)
-                        .ThenInclude(p => p!.ReceivedProducts)
-                .FirstOrDefaultAsync(b => b.BinHashCode == BinHashCode && b.Rack!.WarehouseId == WarehouseId);
+            .Where(b => b.BinHashCode == BinHashCode && b.Rack!.WarehouseId == WarehouseId)
+            .Include(b => b.Rack)
+                .ThenInclude(r => r!.Warehouse)
+            .Include(b => b.Bay)
+            .Include(b => b.Level)
+            .Include(b => b.BinNames)
+            .Include(b => b.CheckIns)
+                .ThenInclude(ci => ci.ReceivedProducts)
+            .Include(b => b.CheckIns)
+                .ThenInclude(ci => ci.Pallet)
+                    .ThenInclude(p => p!.ReceivedProducts)
+            .FirstOrDefaultAsync();
 
             if (bin == null)
             {
@@ -192,22 +192,19 @@ public static class BinEndpoint
                     "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.Now));
             }
 
-            // Check if any CheckIn linked to this bin has unpicked quantity
+            // Check if any ReceivedProduct in this bin has remaining unpicked quantity
             bool anyUnpicked = false;
             foreach (var checkIn in bin.CheckIns)
             {
-                var products = checkIn.ReceivedProducts.Any()
-                    ? checkIn.ReceivedProducts
-                    : checkIn.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>();
+                var products = (checkIn.Pallet?.ReceivedProducts != null && checkIn.Pallet.ReceivedProducts.Any())
+                    ? checkIn.Pallet.ReceivedProducts
+                    : checkIn.ReceivedProducts;
 
                 foreach (var received in products)
                 {
+                    // Query picked quantity directly by ReceivedProductId (ignores previous check-in IDs)
                     var totalPicked = await dbContext.PickedProducts
-                        .Where(p =>
-                            p.ReceivedProductId == received.Id &&
-                            p.ManualPicking != null &&
-                            p.ManualPicking.CheckInId == checkIn.Id &&
-                            p.ManualPicking.BinId == bin.Id)
+                        .Where(p => p.ReceivedProductId == received.Id)
                         .SumAsync(p => (int?)p.QuantityPicked) ?? 0;
 
                     if (totalPicked < received.Quantity)
@@ -235,10 +232,10 @@ public static class BinEndpoint
         .Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
         group.MapGet("/QRCode/{binHashCode:int}/{warehouseId:int}", async (
-    int binHashCode,
-    int warehouseId,
-    WMSContext dbContext,
-    CancellationToken cancellationToken = default) =>
+            int binHashCode,
+            int warehouseId,
+            WMSContext dbContext,
+            CancellationToken cancellationToken = default) =>
         {
             var bin = await dbContext.Bins
                 .AsNoTracking()
@@ -264,12 +261,7 @@ public static class BinEndpoint
                 .AnyAsync(checkIn =>
                     checkIn.ReceivedProducts.Any(received =>
                         dbContext.PickedProducts
-                            .Where(p =>
-                                p.ReceivedProductId == received.Id &&
-                                p.ManualPicking != null &&
-                                p.ManualPicking.CheckInId == checkIn.Id &&
-                                checkIn.Bins.Any(b => b.Id == p.ManualPicking.BinId)
-                            )
+                            .Where(p => p.ReceivedProductId == received.Id)
                             .Sum(p => p.QuantityPicked) < received.Quantity
                     ), cancellationToken);
 
@@ -424,14 +416,44 @@ public static class BinEndpoint
         // -----------------------------------------------------------------------------
         // Standard Single Item & Operation Routes
         // -----------------------------------------------------------------------------
-        group.MapGet("/{id}", async (int id, WMSContext dbContext) =>
+        group.MapGet("/{id:int}", async (int id, WMSContext dbContext) =>
         {
             Bin? bin = await dbContext.Bins.FindAsync(id);
 
             return bin is null ? Results.NotFound() : Results.Ok(bin.ToDetailsDto());
-        }).WithName(GetBinEndpointName);
+        })
+        .WithName(GetBinEndpointName)
+        .WithSummary("Get bin details by ID")
+        .WithDescription("Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.")
+        .Produces<BinDetailsDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
 
-        group.MapGet("/stock/id/{BinId}", async (int BinId, WMSContext dbContext) =>
+        group.MapGet("/hashcode/{hashCode:int}/{warehouseId:int}", async (int hashCode, int warehouseId, WMSContext dbContext) =>
+        {
+            var bin = await dbContext.Bins
+                .Where(b => b.BinHashCode == hashCode && b.Rack!.WarehouseId == warehouseId)
+                .Include(b => b.Rack)
+                    .ThenInclude(r => r!.Warehouse)
+                .Include(b => b.Bay)
+                .Include(b => b.Level)
+                .Include(b => b.BinNames)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return bin is null
+                ? Results.NotFound($"Bin with Hash Code #{hashCode} not found in this warehouse.")
+                : Results.Ok(bin.ToSummaryDto());
+        })
+        .WithName("GetBinByHashCode")
+        .WithSummary("Get bin details by QR code hash")
+        .WithDescription("Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.")
+        .Produces<BinSummaryDto>(StatusCodes.Status200OK)
+        .Produces<string>(StatusCodes.Status404NotFound);
+
+        // -----------------------------------------------------------------------------
+        // Stock Query (Fixed: Query picks by ReceivedProductId directly)
+        // -----------------------------------------------------------------------------
+        group.MapGet("/stock/id/{BinId:int}", async (int BinId, WMSContext dbContext) =>
         {
             var bin = await dbContext.Bins.FindAsync(BinId);
             if (bin == null)
@@ -440,30 +462,43 @@ public static class BinEndpoint
             var checkIns = await dbContext.CheckIns
                 .Where(ci => ci.Bins.Any(b => b.Id == BinId))
                 .Include(ci => ci.ReceivedProducts)
-                    .ThenInclude(rp => rp.Receiving)
-                .Include(ci => ci.ReceivedProducts)
                     .ThenInclude(rp => rp.Product)
+                .Include(ci => ci.ReceivedProducts)
+                    .ThenInclude(rp => rp.Receiving)
                 .Include(ci => ci.Pallet)
+                    .ThenInclude(p => p!.ReceivedProducts!)
+                        .ThenInclude(rp => rp.Product)
+                .Include(ci => ci.Pallet)
+                    .ThenInclude(p => p!.ReceivedProducts!)
+                        .ThenInclude(rp => rp.Receiving)
+                .AsNoTracking()
                 .ToListAsync();
 
             if (!checkIns.Any())
                 return Results.Ok(new List<DisplayCheckInProductsDto>());
 
-            var checkInIds = checkIns.Select(ci => ci.Id).ToList();
+            // Collect all unique ReceivedProduct IDs across target check-ins/pallets
+            var receivedProductIds = checkIns
+                .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
+                    ? ci.Pallet.ReceivedProducts
+                    : ci.ReceivedProducts)
+                .Select(rp => rp.Id)
+                .Distinct()
+                .ToList();
 
+            // Query picked totals by ReceivedProductId to maintain history across transfers
             var pickedMap = await dbContext.PickedProducts
-                .Where(pp =>
-                    pp.ManualPicking != null &&
-                    pp.ManualPicking.CheckInId != null &&
-                    checkInIds.Contains(pp.ManualPicking.CheckInId.Value))
+                .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
                 .GroupBy(pp => pp.ReceivedProductId)
                 .ToDictionaryAsync(g => g.Key, g => g.Sum(pp => pp.QuantityPicked));
 
-            var result = checkIns.Select(ci => new DisplayCheckInProductsDto(
-                Id: ci.Id,
-                CheckInType: ci.CheckInType,
-                PalletNumber: ci.Pallet?.PalletNumber != null ? "Pallet #" + ci.Pallet.PalletNumber : "",
-                ReceivedProducts: ci.ReceivedProducts
+            var result = checkIns.Select(ci =>
+            {
+                var targetProducts = (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
+                    ? ci.Pallet.ReceivedProducts
+                    : ci.ReceivedProducts;
+
+                var mappedProducts = targetProducts
                     .Select(rp =>
                     {
                         var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
@@ -481,21 +516,33 @@ public static class BinEndpoint
                             ExpirationDate: rp.ExpirationDate,
                             Remarks: rp.Remarks,
                             ContainerName: rp.ContainerName,
-                            PalletId: rp.PalletId?.ToString(),
-                            ReceivingSeries: rp!.Receiving!.Series,
-                            Shipper: rp!.Receiving!.Shipper
+                            PalletId: rp.PalletId?.ToString() ?? ci.PalletId?.ToString(),
+                            ReceivingSeries: rp.Receiving?.Series,
+                            Shipper: rp.Receiving?.Shipper
                         );
                     })
                     .Where(rp => rp.Quantity > 0)
-                    .ToList(),
-                CheckInDate: ci.CheckInDate,
-                Notes: ci.Notes
-            ))
+                    .ToList();
+
+                return new DisplayCheckInProductsDto(
+                    Id: ci.Id,
+                    CheckInType: ci.CheckInType,
+                    PalletNumber: ci.Pallet?.PalletNumber != null ? "Pallet #" + ci.Pallet.PalletNumber : "",
+                    ReceivedProducts: mappedProducts,
+                    CheckInDate: ci.CheckInDate,
+                    Notes: ci.Notes
+                );
+            })
             .Where(dto => dto.ReceivedProducts.Any())
             .ToList();
 
             return Results.Ok(result);
-        }).Produces<CheckedInProductSumamryDto>(StatusCodes.Status200OK);
+        })
+        .WithName("GetBinStockById")
+        .WithSummary("Get available stock in a specific bin by ID")
+        .WithDescription("Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.")
+        .Produces<List<DisplayCheckInProductsDto>>(StatusCodes.Status200OK)
+        .Produces<string>(StatusCodes.Status404NotFound);
 
         group.MapGet("/history/{BinId}", async (int BinId, WMSContext dbContext) =>
         {

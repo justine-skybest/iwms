@@ -56,6 +56,7 @@ export type { RecentReceivingDto } from './models/recent-receiving-dto';
 export type { ToCheckInProducts } from './models/to-check-in-products';
 export type { ToCheckInProductsPaginatedResponse } from './models/to-check-in-products-paginated-response';
 export type { TopProductDto } from './models/top-product-dto';
+export type { TransferBinDto } from './models/transfer-bin-dto';
 export type { TransferItemDto } from './models/transfer-item-dto';
 export type { TransferLogDto } from './models/transfer-log-dto';
 export type { TransferPalletDto } from './models/transfer-pallet-dto';

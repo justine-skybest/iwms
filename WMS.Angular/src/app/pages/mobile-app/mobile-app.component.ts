@@ -9,7 +9,6 @@ import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-m
 import { WarehouseSwitcherComponent } from '../../shared/components/warehouse-switcher/warehouse-switcher.component';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { CreateTransferModalComponent } from './transfer-operation/create-transfer-modal.component';
-import { UnifiedTransferModalComponent } from './transfer-operation/unified-transfer-modal.component';
 import { InventoryCheckModalComponent } from './inventory-checker/inventory-check.component';
 
 export interface MobileAction {
@@ -37,7 +36,7 @@ interface RecentActivity {
     ReceivingCreateComponent,
     CreateCheckInModalComponent,
     CreatePickOrderModalComponent,
-    UnifiedTransferModalComponent,
+    CreateTransferModalComponent,
     WarehouseSwitcherComponent,
     InventoryCheckModalComponent
   ],

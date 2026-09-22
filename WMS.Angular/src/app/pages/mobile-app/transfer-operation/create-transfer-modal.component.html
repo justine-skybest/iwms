@@ -1,123 +1,278 @@
 @if (isOpen) {
   <div 
-    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden"
     (click)="closeModal()"
   >
     <div 
-      class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden flex flex-col my-auto"
+      class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150"
       (click)="$event.stopPropagation()"
     >
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-        <div>
-          <h2 class="text-base font-bold text-slate-900 m-0">Transfer Pallet</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Relocate a checked-in pallet to a new bin location</p>
+      <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
+        <div class="min-w-0 flex-1 pr-2">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 m-0 truncate">Transfer Bin Inventory</h2>
+          <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan Source Bin QR code to initiate transfer</p>
         </div>
         <button 
           type="button" 
           (click)="closeModal()" 
-          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+          class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors shrink-0"
           [disabled]="isSubmitting"
         >
           <app-icon name="x" class="w-5 h-5"></app-icon>
         </button>
       </div>
 
-      <div class="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
+      <!-- Scrollable Body Content -->
+      <div class="p-4 sm:p-6 space-y-4 flex-1 min-h-0 overflow-y-auto">
+        
         <!-- Error Alert -->
         @if (errorMessage) {
-          <div class="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700">
+          <div class="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in duration-100">
             <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
-            <span>{{ errorMessage }}</span>
+            <span class="leading-relaxed">{{ errorMessage }}</span>
           </div>
         }
 
-        <!-- STEP 1: Search or Scan Pallet -->
+        <!-- STEP 1: Source Bin Scanner -->
         <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              1. Search or Scan Pallet
-            </label>
-
-            <!-- Pallet Camera Scanner -->
-            <app-qr-scanner
-              buttonText="Scan Pallet QR"
-              modalTitle="Scan Pallet Barcode/QR Code"
-              (scanSuccess)="onPalletQrScanned($event)"
-            ></app-qr-scanner>
-          </div>
-
-          <app-searchable-select
-            placeholder="Type Pallet # or Hash Code..."
-            [searchFn]="searchPallets"
-            [selected]="selectedPalletOption"
-            (selectedChange)="onPalletSelectChange($event)"
-            [disabled]="isSubmitting"
-            [minChars]="1"
-          ></app-searchable-select>
-        </div>
-
-        <!-- Located Pallet Info Banner -->
-        @if (locatedPallet) {
-          <div class="p-3.5 bg-blue-50/80 border border-blue-200 rounded-xl space-y-1 text-xs">
-            <div class="flex items-center justify-between text-blue-900 font-semibold">
-              <span>Pallet #{{ locatedPallet.palletNumber }}</span>
-              <span class="font-mono text-[11px] text-blue-600">Hash: {{ locatedPallet.palletHashCode }}</span>
-            </div>
-            <div class="text-slate-600">
-              <span class="text-slate-400">Current Location: </span>
-              <strong class="text-slate-800">{{ locatedPallet.currentBinLocation || 'Not checked in' }}</strong>
-            </div>
-          </div>
-        }
-
-        <!-- STEP 2: Search or Scan Destination Bin -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-              2. Destination Bin Location
-            </label>
-
-            <!-- Bin Camera Scanner -->
-            <app-qr-scanner
-              buttonText="Scan Bin QR"
-              modalTitle="Scan Destination Bin QR Code"
-              (scanSuccess)="onBinQrScanned($event)"
-            ></app-qr-scanner>
-          </div>
-
-          <app-searchable-select
-            placeholder="Search Bin ID or Name..."
-            [searchFn]="searchBins"
-            [selected]="selectedBinOption"
-            (selectedChange)="onBinSelectChange($event)"
-            [disabled]="isSubmitting"
-            [minChars]="0"
-          ></app-searchable-select>
-        </div>
-
-        <!-- Notes Input -->
-        <div class="space-y-1">
-          <label for="notes" class="block text-xs font-medium text-slate-700">
-            Transfer Reason / Notes (Optional)
+          <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+            1. Source Bin Location
           </label>
-          <textarea
-            id="notes"
-            [(ngModel)]="notes"
-            rows="2"
-            placeholder="Reason for relocating this pallet..."
-            class="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            [disabled]="isSubmitting"
-          ></textarea>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div class="relative flex-1 min-w-0">
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (keyup.enter)="processSmartScan(searchQuery)"
+                placeholder="Scan Source Bin QR code or hash..."
+                class="w-full text-xs sm:text-sm px-3.5 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono transition-all"
+                [disabled]="isSubmitting || isLocating"
+              />
+            </div>
+
+            <!-- Scanner Action Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+              <app-qr-scanner
+                buttonText="Scan Bin QR"
+                modalTitle="Scan Source Bin QR Code"
+                (scanSuccess)="processSmartScan($event)"
+                class="flex-1 sm:flex-none"
+              ></app-qr-scanner>
+
+              <button
+                type="button"
+                (click)="processSmartScan(searchQuery)"
+                class="flex-1 sm:flex-none px-4 py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5"
+                [disabled]="isLocating || !searchQuery"
+              >
+                @if (isLocating) {
+                  <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+                  <span>Finding</span>
+                } @else {
+                  <span>Select</span>
+                }
+              </button>
+            </div>
+          </div>
         </div>
+
+        <!-- SOURCE BIN DETECTED CARD -->
+        @if (sourceType === 'BIN' && sourceBin) {
+          <div class="p-3.5 sm:p-4 bg-blue-50 border border-blue-200 rounded-2xl animate-in fade-in duration-150">
+            <div class="flex flex-wrap items-center justify-between gap-1 text-blue-900 font-bold text-xs mb-3">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                Source Bin: {{ sourceBin.warehouse }} / {{sourceBin.rack}} / Bay {{sourceBin.bay}} / Level {{sourceBin.level}} / {{sourceBin.binName}}
+              </span>
+            </div>
+
+            <!-- Transfer Mode Toggle Control -->
+            <div class="flex p-1 bg-blue-100/60 rounded-xl mb-3">
+              <button 
+                type="button"
+                (click)="setBinTransferMode('ALL')"
+                [class.bg-white]="binTransferMode === 'ALL'"
+                [class.shadow-sm]="binTransferMode === 'ALL'"
+                [class.text-blue-700]="binTransferMode === 'ALL'"
+                [class.text-blue-600/70]="binTransferMode !== 'ALL'"
+                class="flex-1 text-xs font-bold py-2 rounded-lg transition-all"
+              >
+                Bulk Transfer (All Contents)
+              </button>
+              <button 
+                type="button"
+                (click)="setBinTransferMode('BATCH')"
+                [class.bg-white]="binTransferMode === 'BATCH'"
+                [class.shadow-sm]="binTransferMode === 'BATCH'"
+                [class.text-blue-700]="binTransferMode === 'BATCH'"
+                [class.text-blue-600/70]="binTransferMode !== 'BATCH'"
+                class="flex-1 text-xs font-bold py-2 rounded-lg transition-all"
+              >
+                Specific Batch / Pallet
+              </button>
+            </div>
+
+            <!-- Bulk Mode Description -->
+            @if (binTransferMode === 'ALL') {
+              <div class="text-[11px] sm:text-xs text-blue-800 bg-white/60 p-3.5 rounded-xl border border-blue-200/50 leading-relaxed">
+                <app-icon name="info" class="w-4 h-4 inline-block mr-1 -mt-0.5"></app-icon>
+                <strong>Bulk Relocation:</strong> All pallets and loose item check-ins in this bin will be transferred together to the destination bin.
+              </div>
+            } 
+            
+            <!-- Check-In Batch Selection List -->
+            @else {
+              <div class="space-y-2 max-h-56 overflow-y-auto pr-1 pb-1">
+                @if (isLoadingItems) {
+                  <div class="p-4 text-center text-blue-400 text-xs bg-white/50 rounded-xl">
+                    <span class="animate-spin inline-block w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full mr-1.5"></span>
+                    Loading check-ins...
+                  </div>
+                } @else if (checkInsInBin.length === 0) {
+                  <div class="p-4 text-center text-blue-700 text-xs bg-white/60 rounded-xl border border-blue-200/50">
+                    No active checked-in inventory found in this bin.
+                  </div>
+                } @else {
+                  @for (checkIn of checkInsInBin; track checkIn.id) {
+                    <div 
+                      (click)="selectedCheckIn = checkIn"
+                      class="p-3 bg-white border rounded-xl cursor-pointer transition-all flex flex-col gap-2.5 text-xs shadow-sm touch-manipulation hover:border-blue-300"
+                      [class.border-blue-600]="selectedCheckIn?.id === checkIn.id"
+                      [class.ring-2]="selectedCheckIn?.id === checkIn.id"
+                      [class.ring-blue-500/20]="selectedCheckIn?.id === checkIn.id"
+                      [class.bg-blue-50/60]="selectedCheckIn?.id === checkIn.id"
+                      [class.border-slate-200]="selectedCheckIn?.id !== checkIn.id"
+                    >
+                      <!-- Check-In Batch Header -->
+                      <div class="flex items-start gap-2.5 min-w-0">
+                        <input 
+                          type="radio" 
+                          name="checkInChoice" 
+                          [checked]="selectedCheckIn?.id === checkIn.id"
+                          class="mt-0.5 text-blue-600 focus:ring-blue-500 shrink-0 pointer-events-none"
+                        />
+                        <div class="min-w-0 flex-1">
+                          <div class="font-bold text-slate-900 truncate flex items-center gap-1.5">
+                            @if (checkIn.palletNumber) {
+                              <span class="text-[10px] text-emerald-800 bg-emerald-100 border border-emerald-200 font-mono px-1.5 py-0.5 rounded">PALLET</span>
+                              <span>{{ checkIn.palletNumber }}</span>
+                            } @else {
+                              <span class="text-[10px] text-purple-800 bg-purple-100 border border-purple-200 font-mono px-1.5 py-0.5 rounded">LOOSE BATCH</span>
+                              <span>Check-In #{{ checkIn.id }}</span>
+                            }
+                          </div>
+                          @if (checkIn.checkInDate) {
+                            <div class="text-[10px] text-slate-500 truncate mt-0.5">
+                              Checked in: <span class="font-medium">{{ checkIn.checkInDate | date:'shortDate' }}</span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Batch Contents Preview -->
+                      <div class="ml-6 space-y-1">
+                        @for (item of checkIn.receivedProducts; track item.id) {
+                          <div class="flex items-center justify-between bg-slate-50/70 p-1.5 rounded-lg border border-slate-100">
+                            <div class="truncate pr-2">
+                              <span class="font-semibold text-slate-700">{{ item.name }}</span>
+                              @if (item.typeOfPackage) {
+                                <span class="text-[10px] text-slate-400 ml-1">({{ item.typeOfPackage }})</span>
+                              }
+                            </div>
+                            <span class="font-mono text-[10px] font-bold text-slate-800 shrink-0 bg-white px-1.5 py-0.5 rounded-md border border-slate-200 shadow-sm">
+                              Qty: {{ item.quantity }}
+                            </span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- STEP 2: DESTINATION BIN & NOTES -->
+        @if (sourceType === 'BIN' && (binTransferMode === 'ALL' || selectedCheckIn)) {
+          <div class="space-y-4 pt-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-150">
+            
+            <!-- Destination Bin Input Section -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  2. Destination Bin Location
+                </label>
+
+                <app-qr-scanner
+                  buttonText="Scan Bin QR"
+                  modalTitle="Scan Destination Bin QR Code"
+                  (scanSuccess)="onDestinationBinQrScanned($event)"
+                ></app-qr-scanner>
+              </div>
+
+              <!-- Searchable Select Input -->
+              <app-searchable-select
+                placeholder="Search Destination Bin ID or Name..."
+                [searchFn]="searchBins"
+                [selected]="selectedDestinationBinOption"
+                (selectedChange)="onDestinationBinSelectChange($event)"
+                [disabled]="isSubmitting"
+                [minChars]="0"
+              ></app-searchable-select>
+            </div>
+
+            <!-- PROMINENT DESTINATION BIN SUMMARY CARD -->
+            @if (selectedDestinationBinOption.length > 0 && selectedDestinationBinOption[0]) {
+              <div class="p-3.5 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl flex items-center justify-between gap-3 text-xs animate-in fade-in zoom-in-95 duration-150 shadow-sm">
+                <div class="space-y-0.5 min-w-0">
+                  <div class="flex items-center gap-1.5 font-bold text-emerald-950">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span class="truncate">Target: {{ selectedDestinationBinOption[0].label }}</span>
+                  </div>
+                  @if (selectedDestinationBinOption[0].sublabel) {
+                    <div class="text-[11px] text-emerald-700 font-medium pl-3.5">
+                      {{ selectedDestinationBinOption[0].sublabel }}
+                    </div>
+                  }
+                </div>
+
+                <button
+                  type="button"
+                  (click)="onDestinationBinSelectChange([])"
+                  class="text-emerald-700 hover:text-emerald-950 text-[11px] font-bold shrink-0 px-2.5 py-1.5 rounded-xl hover:bg-emerald-100 border border-emerald-200/60 bg-white/80 transition-colors shadow-2xs"
+                  [disabled]="isSubmitting"
+                >
+                  Change
+                </button>
+              </div>
+            }
+
+            <!-- Transfer Notes -->
+            <div class="space-y-1">
+              <label for="smartTransferNotes" class="block text-xs font-medium text-slate-700">
+                Transfer Notes <span class="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <textarea
+                id="smartTransferNotes"
+                [(ngModel)]="notes"
+                rows="2"
+                placeholder="Reason for relocating inventory..."
+                class="w-full text-xs p-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition-all"
+                [disabled]="isSubmitting"
+              ></textarea>
+            </div>
+          </div>
+        }
       </div>
 
       <!-- Modal Footer -->
-      <div class="flex items-center justify-end gap-2 px-6 py-3.5 bg-slate-50 border-t border-slate-100">
+      <div class="flex items-center justify-end gap-2 px-4 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-100 shrink-0">
         <button
           type="button"
           (click)="closeModal()"
-          class="px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+          class="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-colors"
           [disabled]="isSubmitting"
         >
           Cancel
@@ -126,8 +281,8 @@
         <button
           type="button"
           (click)="onSubmitTransfer()"
-          class="px-4 py-2 text-xs font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-          [disabled]="isSubmitting || !locatedPallet || !selectedToBinId"
+          class="px-5 py-2.5 text-xs font-semibold text-white bg-cyan-600 rounded-xl hover:bg-cyan-700 transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          [disabled]="isSubmitting || sourceType === 'NONE' || !selectedDestinationBinOption.length || (binTransferMode === 'BATCH' && !selectedCheckIn)"
         >
           @if (isSubmitting) {
             <span class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>

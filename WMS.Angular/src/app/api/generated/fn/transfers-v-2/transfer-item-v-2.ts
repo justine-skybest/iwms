@@ -7,16 +7,17 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { BinDetailsDto } from '../../models/bin-details-dto';
+import type { TransferItemDto } from '../../models/transfer-item-dto';
+import type { TransferResultDto } from '../../models/transfer-result-dto';
 
-export interface GetBin$Params {
-  id: number;
+export interface TransferItemV2$Params {
+      body: TransferItemDto
 }
 
-export function getBin(http: HttpClient, rootUrl: string, params: GetBin$Params, context?: HttpContext): Observable<StrictHttpResponse<BinDetailsDto>> {
-  const rb = new RequestBuilder(rootUrl, getBin.PATH, 'get');
+export function transferItemV2(http: HttpClient, rootUrl: string, params: TransferItemV2$Params, context?: HttpContext): Observable<StrictHttpResponse<TransferResultDto>> {
+  const rb = new RequestBuilder(rootUrl, transferItemV2.PATH, 'post');
   if (params) {
-    rb.path('id', params.id, {});
+    rb.body(params.body, 'application/json');
   }
 
   return http.request(
@@ -24,9 +25,9 @@ export function getBin(http: HttpClient, rootUrl: string, params: GetBin$Params,
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<BinDetailsDto>;
+      return r as StrictHttpResponse<TransferResultDto>;
     })
   );
 }
 
-getBin.PATH = '/bin/{id}';
+transferItemV2.PATH = '/transfers-v2/item';

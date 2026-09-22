@@ -50,9 +50,10 @@ app.MapCheckInEndpoints();
 app.MapPalletEndpoints();
 app.MapManualPickingEndpoints();
 app.MapTransferEndpoints();
+app.MapTransferV2Endpoints();
 app.MapDashboardEndpoints();
 app.MapInventoryEndpoints();
-// app.MigrateDb();
+ //app.MigrateDb();
 
 app.Run();
 

@@ -1,156 +1,237 @@
-<div *ngIf="isOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-  <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden border border-slate-200">
-    <!-- Header -->
-    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-      <h2 class="text-base font-bold font-display text-slate-900 m-0">New Pick Order</h2>
-      <button (click)="closeModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors">
-        <app-icon name="x" [size]="18"></app-icon>
+<div *ngIf="isOpen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden" (click)="closeModal()">
+  <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150" (click)="$event.stopPropagation()">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-slate-50/80 shrink-0">
+      <div class="min-w-0 flex-1 pr-2">
+        <h2 class="text-sm sm:text-base font-bold text-slate-900 m-0 truncate">New Pick Order</h2>
+        <p class="text-[11px] sm:text-xs text-slate-500 mt-0.5 truncate">Scan bin location QR and specify picking quantities</p>
+      </div>
+      <button 
+        type="button" 
+        (click)="closeModal()" 
+        class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-colors shrink-0"
+        [disabled]="isSubmitting"
+      >
+        <app-icon name="x" class="w-5 h-5"></app-icon>
       </button>
     </div>
 
-    <form (ngSubmit)="submitCreatePickOrder()" class="p-6 flex flex-col gap-4">
-      <!-- Error Message -->
-      <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-red-700 text-xs">
-        {{errorMessage}}
-      </div>
-
-      <!-- Warehouse Info (read‑only) -->
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 mb-1">Warehouse</label>
-        <p class="px-3 py-2 bg-slate-50 rounded-lg border border-slate-200/80 text-sm font-medium text-slate-800 m-0">
-          {{warehouseService.selectedWarehouseId() ? (warehouseService.activeWarehouse()?.name ?? 'Select a warehouse') : 'Select a warehouse'}}
-        </p>
-      </div>
-
-      <!-- Bin QR Scan -->
-      <div class="flex flex-col gap-1.5 relative">
-        <div class="flex items-center justify-between">
-          <label class="block text-xs font-semibold text-slate-700">Bin Location</label>
-          <app-qr-scanner
-            buttonText="Scan Bin QR"
-            modalTitle="Scan Bin QR Code"
-            (scanSuccess)="onBinQrScanned($event)"
-          ></app-qr-scanner>
+    <!-- Modal Form Body -->
+    <form (ngSubmit)="submitCreatePickOrder()" class="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div class="p-4 sm:p-6 space-y-4 flex-1 min-h-0 overflow-y-auto">
+        
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in duration-100">
+          <app-icon name="alert-circle" class="w-4 h-4 text-red-500 shrink-0 mt-0.5"></app-icon>
+          <span class="leading-relaxed">{{ errorMessage }}</span>
         </div>
 
-        <div *ngIf="scannedBin" class="bg-slate-50 rounded-lg p-3 border border-slate-200/80 text-xs text-slate-700">
-          <p class="m-0 mb-1"><strong>Bin Name:</strong> {{scannedBin.binName ?? 'Unnamed'}}</p>
-          <p class="m-0"><strong>Location:</strong> {{formatBinNumber(scannedBin)}}</p>
+        <!-- Warehouse Info (Read-only) -->
+        <div class="space-y-1">
+          <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">Warehouse</label>
+          <div class="px-3.5 py-2.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-2 text-xs font-semibold text-slate-800">
+            <app-icon name="warehouse" class="w-4 h-4 text-slate-400 shrink-0"></app-icon>
+            <span>{{ warehouseService.selectedWarehouseId() ? (warehouseService.activeWarehouse()?.name ?? 'Select a warehouse') : 'Select a warehouse' }}</span>
+          </div>
         </div>
 
-        <!-- Scanning Overlay -->
-        <div
-          *ngIf="isScanning"
-          class="absolute inset-0 bg-white/80 backdrop-blur-[1px] rounded-lg flex items-center justify-center gap-2 text-xs font-medium text-blue-700 z-10 border border-blue-200 shadow-sm"
-        >
-          <svg class="animate-spin h-4 w-4 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          <span>Locating bin...</span>
+        <!-- Bin QR Scanner & Selected Bin Card -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">Bin Location</label>
+            <app-qr-scanner
+              buttonText="Scan Bin QR"
+              modalTitle="Scan Bin QR Code"
+              (scanSuccess)="onBinQrScanned($event)"
+            ></app-qr-scanner>
+          </div>
+
+          <!-- Scanning Indicator -->
+          <div *ngIf="isScanning" class="p-3 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center gap-2 text-xs font-medium text-blue-700 animate-pulse">
+            <span class="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full"></span>
+            <span>Locating bin stock...</span>
+          </div>
+
+          <!-- Scanned Bin Details Card -->
+          <div *ngIf="scannedBin && !isScanning" class="p-3.5 bg-blue-50/90 border border-blue-200/90 rounded-2xl space-y-1 text-xs animate-in fade-in duration-150">
+            <div class="flex items-center justify-between gap-2 font-bold text-blue-950">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                Bin: {{ scannedBin.binName ?? 'Unnamed Bin' }}
+              </span>
+              <span class="text-[10px] font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded-md border border-blue-200/50">
+                ID #{{ scannedBin.id }}
+              </span>
+            </div>
+            <div class="text-[11px] text-blue-800/80 font-medium pl-3.5">
+              {{ scannedBin.warehouse }} / {{ scannedBin.rack }} / Bay {{ scannedBin.bay }} / Level {{ scannedBin.level }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading Stock State -->
+        <div *ngIf="isLoadingItems" class="p-6 text-center text-slate-400 text-xs bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+          <span class="animate-spin inline-block w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full mr-2"></span>
+          Loading available stock items...
+        </div>
+
+        <!-- Items Table Section -->
+        <div *ngIf="scannedBin && !isLoadingItems && binItems.length > 0" class="space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2 px-0.5">
+            <label class="block text-[11px] sm:text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Available Items
+            </label>
+
+            <!-- Pick All Control -->
+            <label class="inline-flex items-center gap-2 px-2.5 py-1 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/80 rounded-lg text-xs font-bold text-blue-700 cursor-pointer transition-colors select-none">
+              <input
+                type="checkbox"
+                [checked]="isSelectAll"
+                (change)="toggleSelectAll($event)"
+                class="rounded border-blue-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer"
+              />
+              <span>Pick All (Full Qty)</span>
+            </label>
+          </div>
+
+          <!-- Table Container -->
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-2xs bg-white">
+            <div class="max-h-60 overflow-y-auto">
+              <table class="w-full text-xs text-left border-collapse">
+                <thead class="bg-slate-50/90 text-slate-600 font-bold border-b border-slate-200 sticky top-0 backdrop-blur-xs text-[10px] uppercase tracking-wider">
+                  <tr>
+                    <th class="px-3 py-2.5">Product</th>
+                    <th class="px-2 py-2.5 text-center w-16">Stock</th>
+                    <th class="px-2 py-2.5 text-center w-40 sm:w-44">To Pick</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr
+                    *ngFor="let sel of selectedItems; let i = index"
+                    class="transition-colors hover:bg-slate-50/80"
+                    [class.bg-blue-50/30]="sel.quantity > 0"
+                  >
+                    <!-- Product Name & Metadata -->
+                    <td class="px-3 py-3 min-w-[120px]">
+                      <p class="font-bold text-slate-900 m-0 truncate max-w-[130px] sm:max-w-[180px]" [title]="sel.item.name || ''">
+                        {{ sel.item.name || 'Unnamed Product' }}
+                      </p>
+                      <div class="flex items-center gap-1.5 mt-0.5 text-[10px] text-slate-400">
+                        <span *ngIf="sel.item.typeOfPackage" class="bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium">
+                          {{ sel.item.typeOfPackage }}
+                        </span>
+                        <span *ngIf="sel.item.containerName" class="truncate max-w-[90px]">
+                          {{ sel.item.containerName }}
+                        </span>
+                      </div>
+                    </td>
+
+                    <!-- Available Stock Quantity -->
+                    <td class="px-2 py-3 text-center font-mono font-bold text-slate-700 text-xs">
+                      {{ sel.item.quantity ?? 0 }}
+                    </td>
+
+                    <!-- Touch-Optimized Stepper Input Cell -->
+                    <td class="px-2 py-2.5 text-center w-40 sm:w-44">
+                      <div class="flex items-center justify-center gap-1">
+                        <!-- Decrement Button -->
+                        <button
+                          type="button"
+                          (click)="decrementQuantity(i)"
+                          class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-bold text-base shrink-0 active:scale-95 transition-all touch-manipulation disabled:opacity-30 disabled:pointer-events-none"
+                          [disabled]="sel.quantity <= 0 || isSubmitting"
+                        >
+                          −
+                        </button>
+
+                        <!-- Main Input Field -->
+                        <input
+                          type="number"
+                          [min]="0"
+                          [max]="sel.item.quantity ?? 0"
+                          [(ngModel)]="sel.quantity"
+                          [name]="'itemQty_' + i"
+                          (input)="onQuantityChange(i, $event)"
+                          class="w-14 sm:w-16 h-8 sm:h-9 text-center font-mono font-bold text-sm sm:text-base border rounded-lg transition-all focus:outline-none focus:ring-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          [class.border-blue-500]="sel.quantity > 0"
+                          [class.bg-blue-50]="sel.quantity > 0"
+                          [class.text-blue-900]="sel.quantity > 0"
+                          [class.focus:ring-blue-500/20]="sel.quantity > 0"
+                          [class.border-slate-300]="sel.quantity === 0"
+                          [class.bg-white]="sel.quantity === 0"
+                          [class.text-slate-800]="sel.quantity === 0"
+                        />
+
+                        <!-- Increment Button -->
+                        <button
+                          type="button"
+                          (click)="incrementQuantity(i)"
+                          class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg bg-blue-100 hover:bg-blue-200 active:bg-blue-300 text-blue-800 font-bold text-base shrink-0 active:scale-95 transition-all touch-manipulation disabled:opacity-30 disabled:pointer-events-none"
+                          [disabled]="sel.quantity >= (sel.item.quantity ?? 0) || isSubmitting"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty Bin State -->
+        <div *ngIf="scannedBin && !isLoadingItems && binItems.length === 0" class="p-6 text-center border border-dashed border-slate-200 rounded-xl bg-slate-50/50 text-slate-400 text-xs">
+          No available stock items found in this bin.
+        </div>
+
+        <!-- Notes & Picking Date -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-700">Picking Date</label>
+            <input
+              type="date"
+              [(ngModel)]="pickingDate"
+              name="pickingDate"
+              class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono"
+              [disabled]="isSubmitting"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-slate-700">Notes <span class="text-slate-400 font-normal">(Optional)</span></label>
+            <input
+              type="text"
+              [(ngModel)]="notes"
+              name="notes"
+              placeholder="Order reference or note..."
+              class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              [disabled]="isSubmitting"
+            />
+          </div>
         </div>
       </div>
 
-      <!-- Loading Items State -->
-      <div *ngIf="isLoadingItems" class="py-6 text-center text-slate-400 text-xs flex items-center justify-center gap-2">
-        <svg class="animate-spin h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span>Loading stock details...</span>
-      </div>
-
-      <!-- Items in Bin Table -->
-      <div *ngIf="scannedBin && !isLoadingItems && binItems.length > 0" class="flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <label class="block text-xs font-semibold text-slate-700">Items in Bin</label>
-          <span class="text-xs text-slate-500 font-medium">{{binItems.length}} item(s) found</span>
-        </div>
-
-        <div class="overflow-y-auto max-h-[220px] border border-slate-200 rounded-lg">
-          <table class="w-full text-xs text-left">
-            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200 sticky top-0">
-              <tr>
-                <th class="px-3 py-2">Product</th>
-                <th class="px-3 py-2 text-center">Available</th>
-                <th class="px-3 py-2 text-center w-28">To Pick</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-              <tr *ngFor="let sel of selectedItems; let i = index" class="hover:bg-slate-50/50">
-                <td class="px-3 py-2">
-                  <p class="font-medium text-slate-900 m-0 truncate max-w-[180px]" [title]="sel.item.name || ''">
-                    {{sel.item.name || 'Unnamed Product'}}
-                  </p>
-                  <span *ngIf="sel.item.containerName || sel.item.typeOfPackage" class="text-[10px] text-slate-400 block mt-0.5">
-                    {{sel.item.containerName || sel.item.typeOfPackage}}
-                  </span>
-                </td>
-                <td class="px-3 py-2 text-center font-mono font-semibold text-slate-700">
-                  {{sel.item.quantity ?? 0}}
-                </td>
-                <td class="px-3 py-2 text-center">
-                  <input
-                    type="number"
-                    [min]="0"
-                    [max]="sel.item.quantity ?? 0"
-                    [(ngModel)]="sel.quantity"
-                    [name]="'itemQty_' + i"
-                    (input)="onQuantityChange(i, $event)"
-                    class="w-full px-2 py-1 text-xs border border-slate-200 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-mono"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- No Items Message -->
-      <div *ngIf="scannedBin && !isLoadingItems && binItems.length === 0" class="text-center py-6 border border-dashed border-slate-200 rounded-lg text-slate-400 text-xs">
-        No stock items found in this bin.
-      </div>
-
-      <!-- Notes -->
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 mb-1">Notes</label>
-        <textarea
-          [(ngModel)]="notes"
-          name="notes"
-          rows="2"
-          placeholder="Add optional notes..."
-          class="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
-        ></textarea>
-      </div>
-
-      <!-- Picking Date -->
-      <div>
-        <label class="block text-xs font-semibold text-slate-700 mb-1">Picking Date</label>
-        <input
-          type="date"
-          [(ngModel)]="pickingDate"
-          name="pickingDate"
-          class="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-        />
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 mt-1">
+      <!-- Sticky Modal Footer -->
+      <div class="flex items-center justify-end gap-2 px-4 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-100 shrink-0">
         <button
           type="button"
           (click)="closeModal()"
           [disabled]="isSubmitting || isScanning"
-          class="px-4 py-2 text-xs font-semibold text-slate-600 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
+          class="px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-100 transition-colors"
         >
           Cancel
         </button>
+
         <button
           type="submit"
           [disabled]="isSubmitting || isScanning || isLoadingItems || !scannedBin || totalSelectedQuantity === 0"
-          class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          class="px-5 py-2.5 bg-slate-900 text-white text-xs font-semibold rounded-xl hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 shadow-sm"
         >
-          <span *ngIf="isSubmitting">Saving...</span>
-          <span *ngIf="!isSubmitting">Create Pick Order ({{totalSelectedQuantity}} pcs)</span>
+          <span *ngIf="isSubmitting" class="animate-spin w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>
+          <span *ngIf="isSubmitting">Submitting...</span>
+          <span *ngIf="!isSubmitting">Create Pick Order ({{ totalSelectedQuantity }} pcs)</span>
         </button>
       </div>
     </form>

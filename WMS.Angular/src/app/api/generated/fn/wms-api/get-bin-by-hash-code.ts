@@ -7,16 +7,18 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { CheckedInProductSumamryDto } from '../../models/checked-in-product-sumamry-dto';
+import type { BinSummaryDto } from '../../models/bin-summary-dto';
 
-export interface BinStockIdBinIdGet$Params {
-  BinId: number;
+export interface GetBinByHashCode$Params {
+  hashCode: number;
+  warehouseId: number;
 }
 
-export function binStockIdBinIdGet(http: HttpClient, rootUrl: string, params: BinStockIdBinIdGet$Params, context?: HttpContext): Observable<StrictHttpResponse<CheckedInProductSumamryDto>> {
-  const rb = new RequestBuilder(rootUrl, binStockIdBinIdGet.PATH, 'get');
+export function getBinByHashCode(http: HttpClient, rootUrl: string, params: GetBinByHashCode$Params, context?: HttpContext): Observable<StrictHttpResponse<BinSummaryDto>> {
+  const rb = new RequestBuilder(rootUrl, getBinByHashCode.PATH, 'get');
   if (params) {
-    rb.path('BinId', params.BinId, {});
+    rb.path('hashCode', params.hashCode, {});
+    rb.path('warehouseId', params.warehouseId, {});
   }
 
   return http.request(
@@ -24,9 +26,9 @@ export function binStockIdBinIdGet(http: HttpClient, rootUrl: string, params: Bi
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<CheckedInProductSumamryDto>;
+      return r as StrictHttpResponse<BinSummaryDto>;
     })
   );
 }
 
-binStockIdBinIdGet.PATH = '/bin/stock/id/{BinId}';
+getBinByHashCode.PATH = '/bin/hashcode/{hashCode}/{warehouseId}';

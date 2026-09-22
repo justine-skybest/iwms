@@ -46,6 +46,432 @@
         }
       }
     },
+    "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Locate a pallet by its pallet number",
+        "description": "Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.",
+        "operationId": "LocatePalletByNumber",
+        "parameters": [
+          {
+            "name": "palletNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletLocationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/pallet/locate/qrcode/{hashCode}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Locate a pallet by its QR code hash",
+        "description": "Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.",
+        "operationId": "LocatePalletByQrCode",
+        "parameters": [
+          {
+            "name": "hashCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletLocationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/pallet": {
+      "post": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Transfer a whole pallet to a new bin",
+        "description": "Moves a checked-in pallet and its contents from its current bin into a new check-in record at the destination bin, logging the transfer.",
+        "operationId": "TransferPallet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferPalletDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/item": {
+      "post": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Transfer a single item to a new bin",
+        "description": "Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.",
+        "operationId": "TransferItem",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferItemDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/report": {
+      "get": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Get a transfer log report",
+        "description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+        "operationId": "GetTransferReport",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransferLogDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers/item/bin/{binId}": {
+      "get": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "List individually checked-in items in a bin",
+        "description": "Returns item-level (non-pallet) received products currently checked in to the given bin.",
+        "operationId": "GetItemsInBin",
+        "parameters": [
+          {
+            "name": "binId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemLocationSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers-v2/bin": {
+      "post": {
+        "tags": [
+          "Transfers V2"
+        ],
+        "summary": "Transfer all contents from one bin to another",
+        "description": "Transfers all checked-in pallets and individual items from a source bin into new check-in records at the destination bin.",
+        "operationId": "TransferBinContents",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferBinDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers-v2/pallet": {
+      "post": {
+        "tags": [
+          "Transfers V2"
+        ],
+        "summary": "Transfer a whole pallet to a new bin",
+        "description": "Moves a checked-in pallet (and all its contents) from its current bin into a new check-in record at the destination bin.",
+        "operationId": "TransferPalletV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferPalletDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers-v2/item": {
+      "post": {
+        "tags": [
+          "Transfers V2"
+        ],
+        "summary": "Transfer a single item to a new bin",
+        "description": "Moves a single received product out of its current check-in into a new check-in at the destination bin.",
+        "operationId": "TransferItemV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferItemDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/transfers-v2/report": {
+      "get": {
+        "tags": [
+          "Transfers V2"
+        ],
+        "summary": "Get a transfer log report",
+        "description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+        "operationId": "GetTransferReportV2",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransferLogDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/warehouse": {
       "get": {
         "tags": [
@@ -942,6 +1368,8 @@
         "tags": [
           "WMS.Api"
         ],
+        "summary": "Get bin details by ID",
+        "description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
         "operationId": "GetBin",
         "parameters": [
           {
@@ -956,7 +1384,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       },
@@ -1013,11 +1451,66 @@
         }
       }
     },
+    "/bin/hashcode/{hashCode}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Get bin details by QR code hash",
+        "description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
+        "operationId": "GetBinByHashCode",
+        "parameters": [
+          {
+            "name": "hashCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/bin/stock/id/{BinId}": {
       "get": {
         "tags": [
           "WMS.Api"
         ],
+        "summary": "Get available stock in a specific bin by ID",
+        "description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
+        "operationId": "GetBinStockById",
         "parameters": [
           {
             "name": "BinId",
@@ -1035,7 +1528,20 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CheckedInProductSumamryDto"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DisplayCheckInProductsDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -3079,243 +3585,6 @@
         }
       }
     },
-    "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Locate a pallet by its pallet number",
-        "description": "Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.",
-        "operationId": "LocatePalletByNumber",
-        "parameters": [
-          {
-            "name": "palletNumber",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "warehouseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PalletLocationDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transfers/pallet/locate/qrcode/{hashCode}/{warehouseId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Locate a pallet by its QR code hash",
-        "description": "Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.",
-        "operationId": "LocatePalletByQrCode",
-        "parameters": [
-          {
-            "name": "hashCode",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "warehouseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PalletLocationDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transfers/pallet": {
-      "post": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Transfer a whole pallet to a new bin",
-        "description": "Moves a checked-in pallet (and all its contents) from its current bin to a destination bin, logging the transfer.",
-        "operationId": "TransferPallet",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransferPalletDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransferResultDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transfers/item": {
-      "post": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Transfer a single item to a new bin",
-        "description": "Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.",
-        "operationId": "TransferItem",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TransferItemDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TransferResultDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transfers/report": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Get a transfer log report",
-        "description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
-        "operationId": "GetTransferReport",
-        "parameters": [
-          {
-            "name": "from",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "warehouseId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TransferLogDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/transfers/item/bin/{binId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "List individually checked-in items in a bin",
-        "description": "Returns item-level (non-pallet) received products currently checked in to the given bin.",
-        "operationId": "GetItemsInBin",
-        "parameters": [
-          {
-            "name": "binId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemLocationSummaryDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/dashboard/summary": {
       "get": {
         "tags": [
@@ -5312,6 +5581,24 @@
           "onHandQuantity": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferBinDto": {
+        "type": "object",
+        "properties": {
+          "fromBinId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "toBinId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

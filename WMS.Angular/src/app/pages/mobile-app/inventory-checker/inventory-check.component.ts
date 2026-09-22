@@ -12,10 +12,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../../api/generated/api';
-import { inspectInventoryCode } from '../../../api/generated/functions';
 import {
-  InventoryInspectionResultDto,
-  InventoryCheckItemDto,
+  getBinStockById,
+  getCheckedInBinByQrCode
+} from '../../../api/generated/functions';
+import {
+  BinSummaryDto,
+  DisplayCheckInProductsDto,
 } from '../../../api/generated/models';
 import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { ToastService } from '../../../lib/services/toast.service';
@@ -45,8 +48,10 @@ export class InventoryCheckModalComponent implements OnChanges {
 
   searchQuery = '';
   isLoading = false;
-  inspectionResult: InventoryInspectionResultDto | null = null;
   errorMessage = '';
+
+  binInfo: BinSummaryDto | null = null;
+  checkIns: DisplayCheckInProductsDto[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
@@ -56,7 +61,8 @@ export class InventoryCheckModalComponent implements OnChanges {
 
   resetModal(): void {
     this.searchQuery = '';
-    this.inspectionResult = null;
+    this.binInfo = null;
+    this.checkIns = [];
     this.errorMessage = '';
     this.isLoading = false;
     this.cd.markForCheck();
@@ -78,25 +84,38 @@ export class InventoryCheckModalComponent implements OnChanges {
       return;
     }
 
+    const numValue = Number(trimmed);
+    if (isNaN(numValue)) {
+      this.errorMessage = 'QR code / Bin hash code must be a valid numeric value.';
+      this.cd.markForCheck();
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
-    this.inspectionResult = null;
+    this.binInfo = null;
+    this.checkIns = [];
     this.cd.markForCheck();
 
     try {
-      const result = (await this.api.invoke(inspectInventoryCode, {
-        code: trimmed,
-        warehouseId: warehouseId,
-      })) as InventoryInspectionResultDto;
+      // 1. Resolve Bin by QR Hash Code
+      const binResponse = (await this.api.invoke(getCheckedInBinByQrCode, {
+        BinHashCode: numValue,
+        WarehouseId: warehouseId,
+      })) as BinSummaryDto;
 
-      if (result && result.found) {
-        this.inspectionResult = result;
-        this.toastService.success(
-          `Inspected ${result.inspectionType ?? 'Location'}: ${result.title ?? ''}`
-        );
+      if (binResponse?.id) {
+        this.binInfo = binResponse;
+
+        // 2. Fetch all checked-in stock for this bin
+        const res = (await this.api.invoke(getBinStockById, {
+          BinId: binResponse.id,
+        })) as any;
+
+        this.checkIns = (Array.isArray(res) ? res : [res]) as DisplayCheckInProductsDto[];
+        this.toastService.success(`Inspected Bin "${binResponse.binName || binResponse.id}"`);
       } else {
-        this.errorMessage =
-          result?.errorMessage || `No Pallet or Bin found matching "${trimmed}".`;
+        this.errorMessage = `No checked-in Bin found matching QR code "${trimmed}".`;
       }
     } catch (err: any) {
       console.error('Inventory inspection error:', err);
@@ -110,7 +129,8 @@ export class InventoryCheckModalComponent implements OnChanges {
 
   clearSearch(): void {
     this.searchQuery = '';
-    this.inspectionResult = null;
+    this.binInfo = null;
+    this.checkIns = [];
     this.errorMessage = '';
     this.cd.markForCheck();
   }
@@ -126,5 +146,9 @@ export class InventoryCheckModalComponent implements OnChanges {
     } catch {
       return dateStr;
     }
+  }
+
+  getTotalProductsCount(): number {
+    return this.checkIns.reduce((sum, ci) => sum + (ci.receivedProducts?.length ?? 0), 0);
   }
 }

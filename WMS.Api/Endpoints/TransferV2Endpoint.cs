@@ -8,35 +8,141 @@ using WMS.Api.Entities;
 
 namespace WMS.Api.Endpoints;
 
-public static class TransferEndpoint
+public static class TransferV2Endpoint
 {
-    public static RouteGroupBuilder MapTransferEndpoints(this WebApplication app)
+    public static RouteGroupBuilder MapTransferV2Endpoints(this WebApplication app)
     {
-        var group = app.MapGroup("transfers")
-            .WithTags("Transfers")
+        var group = app.MapGroup("transfers-v2")
+            .WithTags("Transfers V2")
             .WithParameterValidation();
 
         // -----------------------------------------------------------------------------
-        // Pallet Location Endpoints
+        // Bin-to-Bin Bulk Transfer Endpoint (Primary Warehouse Operation)
         // -----------------------------------------------------------------------------
-        group.MapGet("/pallet/locate/number/{palletNumber:int}/{warehouseId:int}", async (int palletNumber, int warehouseId, WMSContext dbContext) =>
-            await LocatePallet(dbContext, pallet => pallet.PalletNumber == palletNumber && pallet.WarehouseId == warehouseId)
-        )
-        .WithName("LocatePalletByNumber")
-        .WithSummary("Locate a pallet by its pallet number")
-        .WithDescription("Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.")
-        .Produces<PalletLocationDto>(StatusCodes.Status200OK);
+        group.MapPost("/bin", async (TransferBinDto request, WMSContext dbContext) =>
+        {
+            if (request.FromBinId == request.ToBinId)
+            {
+                return Results.Ok(new TransferResultDto(false, "Destination bin must be different from source bin."));
+            }
 
-        group.MapGet("/pallet/locate/qrcode/{hashCode:int}/{warehouseId:int}", async (int hashCode, int warehouseId, WMSContext dbContext) =>
-            await LocatePallet(dbContext, pallet => pallet.PalletHashCode == hashCode && pallet.WarehouseId == warehouseId)
-        )
-        .WithName("LocatePalletByQrCode")
-        .WithSummary("Locate a pallet by its QR code hash")
-        .WithDescription("Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.")
-        .Produces<PalletLocationDto>(StatusCodes.Status200OK);
+            var toBin = await dbContext.Bins
+                .Include(bin => bin.Rack)
+                .FirstOrDefaultAsync(bin => bin.Id == request.ToBinId);
+
+            if (toBin is null)
+            {
+                return Results.Ok(new TransferResultDto(false, "Destination bin location not found."));
+            }
+
+            // Retrieve all active check-ins currently located at the source bin
+            var checkIns = await dbContext.CheckIns
+                .Include(checkIn => checkIn.Bins)
+                .Include(checkIn => checkIn.ReceivedProducts)
+                .Where(checkIn => checkIn.Bins.Any(bin => bin.Id == request.FromBinId))
+                .ToListAsync();
+
+            if (!checkIns.Any())
+            {
+                return Results.Ok(new TransferResultDto(false, "Source bin has no active checked-in inventory to transfer."));
+            }
+
+            // Check if destination bin is occupied by other check-ins
+            if (await IsBinOccupied(dbContext, request.ToBinId))
+            {
+                return Results.Ok(new TransferResultDto(false, "The destination bin location is already occupied."));
+            }
+
+            int palletsMoved = 0;
+            int itemsMoved = 0;
+
+            foreach (var checkIn in checkIns)
+            {
+                // 1. Unlink Pallet & Received Products from the source check-in record
+                var palletId = checkIn.PalletId;
+                checkIn.PalletId = null;
+
+                var productsToMove = checkIn.ReceivedProducts.ToList();
+                foreach (var product in productsToMove)
+                {
+                    checkIn.ReceivedProducts.Remove(product);
+                }
+
+                var fromBin = checkIn.Bins.FirstOrDefault(bin => bin.Id == request.FromBinId);
+                if (fromBin is not null)
+                {
+                    checkIn.Bins.Remove(fromBin);
+                }
+
+                // 2. Create a new CheckIn entry at the destination Bin
+                var newCheckIn = new CheckIn
+                {
+                    CheckInType = string.IsNullOrWhiteSpace(checkIn.CheckInType)
+                        ? (palletId.HasValue ? "ByPallet" : "ByItem")
+                        : checkIn.CheckInType,
+                    PalletId = palletId,
+                    Bins = new List<Bin> { toBin },
+                    ReceivedProducts = productsToMove,
+                    CheckInDate = DateTime.Now,
+                    Notes = AppendTransferNote(null, request.Notes)
+                };
+
+                dbContext.CheckIns.Add(newCheckIn);
+
+                // 3. Log Transfer Audit Entries
+                if (palletId.HasValue)
+                {
+                    palletsMoved++;
+                    dbContext.TransferLogs.Add(new TransferLog
+                    {
+                        TransferType = "Pallet",
+                        WarehouseId = toBin.Rack!.WarehouseId,
+                        PalletId = palletId,
+                        FromBinId = request.FromBinId,
+                        ToBinId = request.ToBinId,
+                        TransferDate = DateTime.Now,
+                        Notes = request.Notes
+                    });
+                }
+                else
+                {
+                    foreach (var item in productsToMove)
+                    {
+                        itemsMoved++;
+                        dbContext.TransferLogs.Add(new TransferLog
+                        {
+                            TransferType = "Item",
+                            WarehouseId = toBin.Rack!.WarehouseId,
+                            ReceivedProductId = item.Id,
+                            FromBinId = request.FromBinId,
+                            ToBinId = request.ToBinId,
+                            TransferDate = DateTime.Now,
+                            Notes = request.Notes
+                        });
+                    }
+                }
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            var summary = (palletsMoved > 0, itemsMoved > 0) switch
+            {
+                (true, true) => $"{palletsMoved} pallet(s) and {itemsMoved} loose item(s) successfully transferred.",
+                (true, false) => $"{palletsMoved} pallet(s) successfully transferred.",
+                _ => $"{itemsMoved} item(s) successfully transferred."
+            };
+
+            return Results.Ok(new TransferResultDto(true, summary));
+        })
+        .WithName("TransferBinContents")
+        .WithSummary("Transfer all contents from one bin to another")
+        .WithDescription("Transfers all checked-in pallets and individual items from a source bin into new check-in records at the destination bin.")
+        .Accepts<TransferBinDto>("application/json")
+        .Produces<TransferResultDto>(StatusCodes.Status200OK)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         // -----------------------------------------------------------------------------
-        // Pallet & Item Transfer Operations
+        // Specific Pallet & Item Transfer Overrides
         // -----------------------------------------------------------------------------
         group.MapPost("/pallet", async (TransferPalletDto request, WMSContext dbContext) =>
         {
@@ -68,7 +174,7 @@ public static class TransferEndpoint
 
             var fromBinId = checkIn.Bins.First().Id;
 
-            // 1. Unlink the Pallet and its Received Products from the source CheckIn
+            // Unlink Pallet and Received Products from source CheckIn
             var palletId = checkIn.PalletId;
             checkIn.PalletId = null;
 
@@ -78,7 +184,13 @@ public static class TransferEndpoint
                 checkIn.ReceivedProducts.Remove(product);
             }
 
-            // 2. Create a brand new CheckIn entry for the destination Bin
+            var fromBin = checkIn.Bins.FirstOrDefault(bin => bin.Id == fromBinId);
+            if (fromBin is not null)
+            {
+                checkIn.Bins.Remove(fromBin);
+            }
+
+            // Create a new CheckIn entry at the destination Bin
             var newCheckIn = new CheckIn
             {
                 CheckInType = string.IsNullOrWhiteSpace(checkIn.CheckInType) ? "ByPallet" : checkIn.CheckInType,
@@ -91,7 +203,6 @@ public static class TransferEndpoint
 
             dbContext.CheckIns.Add(newCheckIn);
 
-            // 3. Log the Transfer
             dbContext.TransferLogs.Add(new TransferLog
             {
                 TransferType = "Pallet",
@@ -107,11 +218,12 @@ public static class TransferEndpoint
 
             return Results.Ok(new TransferResultDto(true, "Pallet successfully transferred."));
         })
-        .WithName("TransferPallet")
+        .WithName("TransferPalletV2")
         .WithSummary("Transfer a whole pallet to a new bin")
-        .WithDescription("Moves a checked-in pallet and its contents from its current bin into a new check-in record at the destination bin, logging the transfer.")
+        .WithDescription("Moves a checked-in pallet (and all its contents) from its current bin into a new check-in record at the destination bin.")
         .Accepts<TransferPalletDto>("application/json")
-        .Produces<TransferResultDto>(StatusCodes.Status200OK);
+        .Produces<TransferResultDto>(StatusCodes.Status200OK)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapPost("/item", async (TransferItemDto request, WMSContext dbContext) =>
         {
@@ -176,11 +288,12 @@ public static class TransferEndpoint
 
             return Results.Ok(new TransferResultDto(true, "Item successfully transferred."));
         })
-        .WithName("TransferItem")
+        .WithName("TransferItemV2")
         .WithSummary("Transfer a single item to a new bin")
-        .WithDescription("Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.")
+        .WithDescription("Moves a single received product out of its current check-in into a new check-in at the destination bin.")
         .Accepts<TransferItemDto>("application/json")
-        .Produces<TransferResultDto>(StatusCodes.Status200OK);
+        .Produces<TransferResultDto>(StatusCodes.Status200OK)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         // -----------------------------------------------------------------------------
         // Query & Report Endpoints
@@ -236,79 +349,13 @@ public static class TransferEndpoint
 
             return Results.Ok(result);
         })
-        .WithName("GetTransferReport")
+        .WithName("GetTransferReportV2")
         .WithSummary("Get a transfer log report")
         .WithDescription("Returns transfer log entries within a date range, optionally scoped to a single warehouse.")
-        .Produces<List<TransferLogDto>>(StatusCodes.Status200OK);
-
-        group.MapGet("/item/bin/{binId:int}", async (int binId, WMSContext dbContext) =>
-        {
-            var checkIns = await dbContext.CheckIns
-                .Where(checkIn => checkIn.Bins.Any(bin => bin.Id == binId))
-                .Include(checkIn => checkIn.ReceivedProducts)
-                    .ThenInclude(receivedProduct => receivedProduct.Product)
-                .Include(checkIn => checkIn.ReceivedProducts)
-                    .ThenInclude(receivedProduct => receivedProduct.Receiving)
-                .ToListAsync();
-
-            var items = checkIns
-                .SelectMany(checkIn => checkIn.ReceivedProducts.Select(receivedProduct => new ItemLocationSummaryDto(
-                    receivedProduct.Id,
-                    checkIn.Id,
-                    receivedProduct.Product!.Name,
-                    receivedProduct.Product!.TypeOfPackage,
-                    receivedProduct.Quantity,
-                    receivedProduct.Receiving!.Series
-                )))
-                .ToList();
-
-            return Results.Ok(items);
-        })
-        .WithName("GetItemsInBin")
-        .WithSummary("List individually checked-in items in a bin")
-        .WithDescription("Returns item-level (non-pallet) received products currently checked in to the given bin.")
-        .Produces<List<ItemLocationSummaryDto>>(StatusCodes.Status200OK);
+        .Produces<List<TransferLogDto>>(StatusCodes.Status200OK)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         return group;
-    }
-
-    private static async Task<IResult> LocatePallet(WMSContext dbContext, Expression<Func<Pallet, bool>> predicate)
-    {
-        var pallet = await dbContext.Pallets.FirstOrDefaultAsync(predicate);
-        if (pallet is null)
-        {
-            return Results.Ok(new PalletLocationDto(0, 0, 0, 0, null, null, null, "Pallet not found."));
-        }
-
-        var checkIn = await dbContext.CheckIns
-            .Include(checkIn => checkIn.Bins)
-                .ThenInclude(bin => bin.Rack)
-                    .ThenInclude(rack => rack!.Warehouse)
-            .Include(checkIn => checkIn.Bins)
-                .ThenInclude(bin => bin.Bay)
-            .Include(checkIn => checkIn.Bins)
-                .ThenInclude(bin => bin.Level)
-            .Include(checkIn => checkIn.Bins)
-                .ThenInclude(bin => bin.BinNames)
-            .FirstOrDefaultAsync(checkIn => checkIn.PalletId == pallet.Id);
-
-        if (checkIn is null || !checkIn.Bins.Any())
-        {
-            return Results.Ok(new PalletLocationDto(
-                pallet.Id, pallet.WarehouseId, pallet.PalletNumber, pallet.PalletHashCode,
-                null, null, null,
-                "This pallet is not currently checked in to any bin location."
-            ));
-        }
-
-        var bin = checkIn.Bins.First();
-
-        return Results.Ok(new PalletLocationDto(
-            pallet.Id, pallet.WarehouseId, pallet.PalletNumber, pallet.PalletHashCode,
-            checkIn.Id, bin.Id,
-            $"{bin.Rack!.Warehouse!.Name} / {bin.Rack.Name} / Bay {bin.Bay!.BayNumber} / Level {bin.Level!.LevelNumber} / {bin.BinNames!.BinName}",
-            null
-        ));
     }
 
     private static async Task<bool> IsBinOccupied(WMSContext dbContext, int binId, int? excludeCheckInId = null)
@@ -317,19 +364,39 @@ public static class TransferEndpoint
             .Where(checkIn => checkIn.Bins.Any(bin => bin.Id == binId))
             .Where(checkIn => excludeCheckInId == null || checkIn.Id != excludeCheckInId)
             .Include(checkIn => checkIn.ReceivedProducts)
+            .Include(checkIn => checkIn.Pallet)
+                .ThenInclude(pallet => pallet!.ReceivedProducts)
+            .AsNoTracking()
             .ToListAsync();
+
+        if (!checkIns.Any()) return false;
+
+        var receivedProductIds = checkIns
+            .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
+                ? ci.Pallet.ReceivedProducts
+                : ci.ReceivedProducts)
+            .Select(rp => rp.Id)
+            .Distinct()
+            .ToList();
+
+        if (!receivedProductIds.Any()) return false;
+
+        // Query total picked quantities globally by ReceivedProductId across all past check-ins
+        var pickedMap = await dbContext.PickedProducts
+            .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
+            .GroupBy(pp => pp.ReceivedProductId)
+            .ToDictionaryAsync(g => g.Key, g => g.Sum(pp => pp.QuantityPicked));
 
         foreach (var checkIn in checkIns)
         {
-            foreach (var receivedProduct in checkIn.ReceivedProducts)
-            {
-                var picked = await dbContext.PickedProducts
-                    .Where(pickedProduct => pickedProduct.ReceivedProductId == receivedProduct.Id &&
-                        pickedProduct.ManualPicking != null &&
-                        pickedProduct.ManualPicking.CheckInId == checkIn.Id)
-                    .SumAsync(pickedProduct => (int?)pickedProduct.QuantityPicked) ?? 0;
+            var products = (checkIn.Pallet?.ReceivedProducts != null && checkIn.Pallet.ReceivedProducts.Any())
+                ? checkIn.Pallet.ReceivedProducts
+                : checkIn.ReceivedProducts;
 
-                if (picked < receivedProduct.Quantity)
+            foreach (var receivedProduct in products)
+            {
+                var totalPicked = pickedMap.TryGetValue(receivedProduct.Id, out var qty) ? qty : 0;
+                if (totalPicked < receivedProduct.Quantity)
                 {
                     return true;
                 }
