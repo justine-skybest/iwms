@@ -96,6 +96,33 @@ public static class ReceivingEndpoint
         })
         .Produces<PaginatedResponse<ReceivingSummaryDto>>(StatusCodes.Status200OK);
 
+        group.MapGet("/shippers", async (
+            WMSContext dbContext,
+            int? warehouseId = null,
+            CancellationToken cancellationToken = default) =>
+                {
+                    var query = dbContext.Receivings
+                        .AsNoTracking()
+                        .Where(r => !string.IsNullOrWhiteSpace(r.Shipper));
+
+                    if (warehouseId.HasValue)
+                    {
+                        query = query.Where(r => r.WarehouseId == warehouseId.Value);
+                    }
+
+                    var shippers = await query
+                        .Select(r => r.Shipper!.Trim())
+                        .Distinct()
+                        .OrderBy(s => s)
+                        .ToListAsync(cancellationToken);
+
+                    return Results.Ok(shippers);
+                })
+        .WithName("GetAllShippersFromReceiving")
+        .WithSummary("Get all unique shippers from receiving receipts")
+        .WithDescription("Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.")
+        .Produces<List<string>>(StatusCodes.Status200OK);
+
         // -----------------------------------------------------------------------------
         // GET /warehouse/{WarehouseId} (v1)
         // -----------------------------------------------------------------------------

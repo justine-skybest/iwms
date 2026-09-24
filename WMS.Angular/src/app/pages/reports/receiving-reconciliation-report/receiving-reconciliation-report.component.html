@@ -1,0 +1,284 @@
+<app-page-header 
+  title="Receiving Reconciliation Report" 
+  subtitle="Select a Shipper to audit today's receiving line items against baseline incoming expectations"
+  [showDate]="false">
+  
+  <div class="flex items-center gap-2">
+    <button 
+      (click)="exportCsv()" 
+      [disabled]="!selectedShipper || receivings.length === 0"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 shadow-sm transition-colors">
+      <lucide-icon [img]="SummaryIcon" [size]="14"></lucide-icon>
+      Export CSV
+    </button>
+  </div>
+</app-page-header>
+
+<div class="flex flex-col gap-5 relative">
+  
+  <!-- 1. SHIPPER SELECTION TOOLBAR -->
+  <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+    <div class="flex-1 max-w-md">
+      <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+        <lucide-icon [img]="ShipperIcon" [size]="15" class="text-blue-600"></lucide-icon>
+        <span>Select Shipper / Exporter:</span>
+      </label>
+
+      <div class="relative">
+        <select
+          [(ngModel)]="selectedShipper"
+          (change)="onShipperChange()"
+          [disabled]="isLoadingShippers"
+          class="w-full text-xs pl-9 pr-8 py-2.5 border border-slate-300 rounded-lg bg-white font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer disabled:bg-slate-100"
+        >
+          <option value="" disabled>-- Choose Shipper --</option>
+          <option *ngFor="let s of shippers" [value]="s">{{ s }}</option>
+        </select>
+        <lucide-icon [img]="FilterIcon" [size]="15" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></lucide-icon>
+        <lucide-icon [img]="ChevronDownIcon" [size]="15" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></lucide-icon>
+      </div>
+    </div>
+
+    <!-- Quick Search within Loaded Shipper Dataset -->
+    <div class="flex-1 max-w-md" *ngIf="selectedShipper">
+      <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+        Filter Shipper Transactions:
+      </label>
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Filter by Series, Ref #, Driver, or Plate..."
+          class="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium"
+        />
+        <lucide-icon [img]="SearchIcon" [size]="15" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></lucide-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Error Banner -->
+  <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-xs flex items-center gap-2">
+    <lucide-icon [img]="AlertIcon" [size]="16" class="text-red-600 shrink-0"></lucide-icon>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- 2. EXECUTIVE RECONCILIATION SUMMARY CARDS -->
+  <div *ngIf="selectedShipper && !isLoadingReceivings" class="p-4 bg-slate-900 text-white rounded-xl shadow-md space-y-4">
+    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-3 gap-2">
+      <div class="flex items-center gap-2">
+        <lucide-icon [img]="SummaryIcon" [size]="18" class="text-amber-400"></lucide-icon>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">
+          Reconciliation Overview: <span class="text-amber-400 font-bold">{{ selectedShipper }}</span>
+        </h3>
+      </div>
+      
+      <div class="flex items-center gap-3 text-xs md:text-sm font-mono bg-slate-800/60 px-3 py-1.5 rounded-lg w-fit">
+        <span class="text-emerald-400 font-bold">{{ getOverallSummary().totalMatchedItems }} Items Matched</span>
+        <span class="text-slate-600">|</span>
+        <span class="text-amber-400 font-bold">{{ getOverallSummary().totalFlaggedItems }} Flagged Issue(s)</span>
+      </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+      <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Total Receipts</div>
+        <div class="text-lg font-bold font-mono text-white mt-1">
+          {{ getOverallSummary().totalReceipts }} 
+          <span class="text-xs font-normal text-amber-400 font-sans" *ngIf="getOverallSummary().discrepantReceiptsCount > 0">
+            ({{ getOverallSummary().discrepantReceiptsCount }} today)
+          </span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Today's Shortages</div>
+        <div class="text-lg font-bold font-mono text-amber-400 mt-1">
+          -{{ getOverallSummary().totalShortageUnits }} <span class="text-xs text-slate-400 font-sans">units</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Today's Excess</div>
+        <div class="text-lg font-bold font-mono text-blue-400 mt-1">
+          +{{ getOverallSummary().totalExcessUnits }} <span class="text-xs text-slate-400 font-sans">units</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Flagged Line Items</div>
+        <div class="text-lg font-bold font-mono text-red-400 mt-1">
+          {{ getOverallSummary().totalFlaggedItems }} / {{ getOverallSummary().totalLineItems }}
+        </div>
+      </div>
+
+      <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700 flex flex-col justify-center">
+        <div class="text-[10px] text-slate-400 uppercase tracking-wide">Delivery Accuracy</div>
+        <div class="text-lg font-bold font-mono text-emerald-400 mt-1">
+          {{ getOverallSummary().accuracyRate | number:'1.0-1' }}%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. UNPAGINATED TRANSACTIONS LIST WITH INLINE EXPANSION -->
+  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs whitespace-nowrap">
+        <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+          <tr>
+            <th class="p-3 text-center w-10"></th>
+            <th class="p-3">Series No.</th>
+            <th class="p-3">Shipper</th>
+            <th class="p-3">Date Received</th>
+            <th class="p-3">Ref / DR No.</th>
+            <th class="p-3">Transport Company</th>
+            <th class="p-3 text-center">Line Items</th>
+            <th class="p-3 text-center">Reconciliation Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <!-- Loading State -->
+          <tr *ngIf="isLoadingReceivings">
+            <td colspan="8" class="text-center py-12 text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <lucide-icon [img]="LoaderIcon" [size]="16" class="animate-spin text-blue-600"></lucide-icon>
+                <span>Fetching complete receiving transactions for {{ selectedShipper }}...</span>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="!isLoadingReceivings && filteredReceivings.length === 0">
+            <td colspan="8" class="text-center py-12 text-slate-400">
+              <span *ngIf="!selectedShipper">Please select a Shipper above to display reconciliation data.</span>
+              <span *ngIf="selectedShipper">No receiving transactions found for Shipper "{{ selectedShipper }}".</span>
+            </td>
+          </tr>
+
+          <!-- Receipt Rows -->
+          <ng-container *ngFor="let r of filteredReceivings">
+            <tr 
+              (click)="toggleRowExpansion(r.id!)"
+              class="hover:bg-slate-50 cursor-pointer transition-colors"
+              [ngClass]="{'bg-amber-50/40': isReceivingFromBaselineOnward(r) && getReceiptDiscrepancyCount(r) > 0}"
+            >
+              <td class="p-3 text-center">
+                <lucide-icon 
+                  [img]="ChevronRightIcon" 
+                  [size]="14" 
+                  class="text-slate-400 transition-transform duration-200 inline-block"
+                  [class.rotate-90]="isRowExpanded(r.id!)">
+                </lucide-icon>
+              </td>
+              <td class="p-3 font-mono font-bold text-blue-600">{{ r.series }}</td>
+              <td class="p-3 font-medium text-slate-800">{{ r.shipper }}</td>
+              <td class="p-3 font-mono text-slate-600">{{ formatDate(r.dateReceived) }}</td>
+              <td class="p-3 font-mono text-slate-600">{{ r.reference }}</td>
+              <td class="p-3 text-slate-700">{{ r.transportCompany || '—' }}</td>
+              <td class="p-3 text-center font-mono font-bold">{{ r.products?.length || 0 }}</td>
+              
+              <!-- Status Badge (Today vs Legacy) -->
+              <td class="p-3 text-center">
+                <!-- Legacy Receipt (Prior to Today) -->
+                <span *ngIf="!isReceivingFromBaselineOnward(r)" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-semibold border border-slate-200" title="Historical receiving record created prior to tracking baseline implementation">
+                  <lucide-icon [img]="ClockIcon" [size]="12"></lucide-icon>
+                  Legacy Entry
+                </span>
+
+                <!-- Today's Receipt: Fully Matched -->
+                <span *ngIf="isReceivingFromBaselineOnward(r) && getReceiptDiscrepancyCount(r) === 0" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300">
+                  <lucide-icon [img]="CheckIcon" [size]="12"></lucide-icon>
+                  Fully Matched
+                </span>
+
+                <!-- Today's Receipt: Flagged Discrepancy -->
+                <span *ngIf="isReceivingFromBaselineOnward(r) && getReceiptDiscrepancyCount(r) > 0" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300">
+                  <lucide-icon [img]="AlertIcon" [size]="12"></lucide-icon>
+                  {{ getReceiptDiscrepancyCount(r) }} Discrepancy(ies)
+                </span>
+              </td>
+            </tr>
+
+            <!-- Expanded Inline Discrepancies Table -->
+            <tr *ngIf="isRowExpanded(r.id!)" class="bg-slate-900 text-white">
+              <td colspan="8" class="p-4 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-2 gap-2">
+                  <div class="text-xs font-bold text-amber-400 flex items-center gap-2">
+                    <lucide-icon [img]="SummaryIcon" [size]="14"></lucide-icon>
+                    <span>Line Item Audit Breakdown — {{ r.series }}</span>
+                  </div>
+                  <div class="text-[11px] text-slate-400 font-mono">
+                    Driver: <strong>{{ r.driverName }}</strong> | Plate: <strong>{{ r.plateNumber }}</strong>
+                  </div>
+                </div>
+
+                <div class="border border-slate-800 rounded-lg overflow-x-auto">
+                  <table class="w-full text-xs text-left whitespace-nowrap">
+                    <thead class="bg-slate-800 text-slate-300 font-semibold border-b border-slate-700">
+                      <tr>
+                        <th class="p-2">Item Description</th>
+                        <th class="p-2 text-center">Qty (Exp / Act)</th>
+                        <th class="p-2 text-center">CBM (Exp / Act)</th>
+                        <th class="p-2 text-center">Weight (Exp / Act)</th>
+                        <th class="p-2 text-center">Expiry (Exp / Act)</th>
+                        <th class="p-2">Pallet</th>
+                        <th class="p-2">Discrepancy Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800">
+                      <tr *ngFor="let p of r.products" [ngClass]="{'bg-amber-500/10': hasItemDiscrepancy(p, r)}">
+                        <td class="p-2 font-medium">
+                          {{ p.name || '—' }}
+                          <div *ngIf="isReceivingFromBaselineOnward(r) && p.expectedProductName && p.expectedProductName !== p.name" class="text-[10px] text-amber-300 font-mono">
+                            Exp: {{ p.expectedProductName }}
+                          </div>
+                        </td>
+
+                        <td class="p-2 text-center font-mono">
+                          {{ isReceivingFromBaselineOnward(r) ? (p.expectedQuantity ?? p.quantity) : p.quantity }} / <strong>{{ p.quantity }}</strong>
+                          <span *ngIf="isReceivingFromBaselineOnward(r) && getVariance(p) !== 0" class="block text-[10px] font-bold" [ngClass]="{'text-amber-400': getVariance(p) < 0, 'text-blue-400': getVariance(p) > 0}">
+                            {{ getVariance(p) < 0 ? '(' + getVariance(p) + ' Short)' : '(+' + getVariance(p) + ' Excess)' }}
+                          </span>
+                        </td>
+
+                        <td class="p-2 text-center font-mono">
+                          {{ isReceivingFromBaselineOnward(r) ? (p.expectedCBM || '0') : '—' }} / {{ p.cbm || '0' }}
+                        </td>
+
+                        <td class="p-2 text-center font-mono">
+                          {{ isReceivingFromBaselineOnward(r) ? (p.expectedTotalWeight || '0') : '—' }} / {{ p.totalWeight || '0' }}
+                        </td>
+
+                        <td class="p-2 text-center font-mono">
+                          {{ formatDate(p.expirationDate!) }}
+                        </td>
+
+                        <td class="p-2 font-mono">
+                          <span *ngIf="p.palletId" class="text-blue-300 bg-blue-950 px-1.5 py-0.5 rounded border border-blue-800">
+                            #{{ p.palletId }}
+                          </span>
+                          <span *ngIf="!p.palletId" class="text-slate-500">—</span>
+                        </td>
+
+                        <td class="p-2 text-slate-300 max-w-xs truncate">
+                          {{ p.remarks || '—' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Unpaginated Footer Counter -->
+    <div *ngIf="selectedShipper && !isLoadingReceivings" class="px-4 py-3 border-t border-slate-200 text-xs text-slate-500 flex justify-between items-center bg-slate-50 font-mono">
+      <span>Showing all <strong>{{ filteredReceivings.length }}</strong> unpaginated receipt(s) for <strong>{{ selectedShipper }}</strong></span>
+      <span>100% Accuracy Audit Active</span>
+    </div>
+  </div>
+</div>

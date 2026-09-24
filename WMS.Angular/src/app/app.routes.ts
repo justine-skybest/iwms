@@ -54,6 +54,11 @@ export const routes: Routes = [
     title: 'Pick-Order'
   },
   {
+    path: 'reconcillation-report',
+    loadChildren: () => import("./pages/reports/receiving-reconciliation-report/receiving-reconciliation.routes").then((m) => m.reconcillationRoutes),
+    title: 'Pick-Order'
+  },
+  {
     path: 'mobile',
     component: MobileAppComponent,
     data: { hideLayout: true, breadcrumb: 'Mobile Operations' },

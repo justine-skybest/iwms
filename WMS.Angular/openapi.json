@@ -480,6 +480,41 @@
         }
       }
     },
+    "/receiving/shippers": {
+      "get": {
+        "tags": [
+          "Receiving"
+        ],
+        "summary": "Get all unique shippers from receiving receipts",
+        "description": "Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.",
+        "operationId": "GetAllShippersFromReceiving",
+        "parameters": [
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/receiving/warehouse/{WarehouseId}": {
       "get": {
         "tags": [
@@ -5826,7 +5861,7 @@
             "format": "date",
             "nullable": true
           },
-          "productName": {
+          "name": {
             "type": "string",
             "nullable": true
           },

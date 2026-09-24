@@ -23,6 +23,8 @@ export type { CreateReceiving$Params as CreateReceiving$Params } from './fn/rece
 export { createReceiving as createReceiving } from './fn/receiving/create-receiving';
 export type { ReceivingV2Get$Params as ReceivingV2Get$Params } from './fn/receiving/receiving-v-2-get';
 export { receivingV2Get as receivingV2Get } from './fn/receiving/receiving-v-2-get';
+export type { GetAllShippersFromReceiving$Params as GetAllShippersFromReceiving$Params } from './fn/receiving/get-all-shippers-from-receiving';
+export { getAllShippersFromReceiving as getAllShippersFromReceiving } from './fn/receiving/get-all-shippers-from-receiving';
 export type { ReceivingWarehouseWarehouseIdGet$Params as ReceivingWarehouseWarehouseIdGet$Params } from './fn/receiving/receiving-warehouse-warehouse-id-get';
 export { receivingWarehouseWarehouseIdGet as receivingWarehouseWarehouseIdGet } from './fn/receiving/receiving-warehouse-warehouse-id-get';
 export type { ReceivingSeriesGet$Params as ReceivingSeriesGet$Params } from './fn/receiving/receiving-series-get';

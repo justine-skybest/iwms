@@ -6,7 +6,7 @@ import { receivingV2Get } from '../../api/generated/functions';
 import { ReceivingSummaryDto, ReceivingSummaryDtoPaginatedResponse, ReceivedProductSummaryDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
-import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet, Clock } from 'lucide-angular';
 import { SignalRService } from '../../lib/services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
@@ -31,6 +31,10 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   readonly plus = PlusIcon;
   readonly AlertIcon = AlertTriangle;
   readonly SummaryIcon = FileSpreadsheet;
+  readonly ClockIcon = Clock;
+
+  // Fixed baseline tracking start date
+  readonly BASELINE_START_DATE = '2026-09-23';
 
   public formatDate = formatDate;
   public formatTime = formatTime;
@@ -145,17 +149,40 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
     void this.loadReceivings();
   }
 
-  // --- DISCREPANCY & SUMMARY HELPERS ---
+  // --- BASELINE DATE CHECK (SEPT 24, 2026 ONWARD) ---
+  isReceivingFromBaselineOnward(receiving?: ReceivingSummaryDto | null): boolean {
+    if (!receiving) return false;
+    const rawDate = receiving.dateReceived || receiving.dateAdded;
+    if (!rawDate) return false;
 
-  hasItemDiscrepancy(item: ReceivedProductSummaryDto): boolean {
-    return !!item.hasDiscrepancy;
+    try {
+      const receiptDateStr = new Date(rawDate).toISOString().split('T')[0];
+      return receiptDateStr >= this.BASELINE_START_DATE;
+    } catch {
+      return false;
+    }
   }
 
+  // --- DISCREPANCY & SUMMARY HELPERS ---
   getVariance(item?: { quantity?: number | null; expectedQuantity?: number | null }): number {
     if (!item || item.expectedQuantity === null || item.expectedQuantity === undefined) {
-      return 0; // No expected quantity baseline exists
+      return 0;
     }
     return (item.quantity ?? 0) - item.expectedQuantity;
+  }
+
+  hasItemDiscrepancy(item: ReceivedProductSummaryDto, parentReceiving?: ReceivingSummaryDto | null): boolean {
+    if (parentReceiving && !this.isReceivingFromBaselineOnward(parentReceiving)) {
+      return false;
+    }
+
+    const hasQtyVar = this.getVariance(item) !== 0;
+    const hasNameVar = !!item.expectedProductName && item.expectedProductName.trim().toLowerCase() !== item.name?.trim()?.toLowerCase();
+    const hasCbmVar = !!item.expectedCBM && item.expectedCBM !== item.cbm;
+    const hasWeightVar = !!item.expectedTotalWeight && item.expectedTotalWeight !== item.totalWeight;
+    const hasExpiryVar = !!item.expectedExpirationDate && item.expectedExpirationDate !== item.expirationDate;
+
+    return hasQtyVar || hasNameVar || hasCbmVar || hasWeightVar || hasExpiryVar;
   }
 
   getDiscrepancySummary(receiving: ReceivingSummaryDto | null) {
@@ -178,13 +205,17 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
 
     if (!receiving?.products) return summary;
 
+    if (!this.isReceivingFromBaselineOnward(receiving)) {
+      summary.matchedCount = summary.totalItems;
+      return summary;
+    }
+
     for (const item of receiving.products) {
-      if (!this.hasItemDiscrepancy(item)) {
+      if (!this.hasItemDiscrepancy(item, receiving)) {
         summary.matchedCount++;
       } else {
         summary.flaggedCount++;
 
-        // Track net quantity variance
         const variance = this.getVariance(item);
         if (variance < 0) {
           summary.totalQuantityShortage += Math.abs(variance);
@@ -194,21 +225,19 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
           summary.categoryCounts.QUANTITY++;
         }
 
-        // Tally categories based on exact field mismatches
-        if (item.expectedProductName && item.expectedProductName.trim().toLowerCase() !== (item.name)?.trim()?.toLowerCase()) {
-            summary.categoryCounts.DESCRIPTION++;
+        if (item.expectedProductName && item.expectedProductName.trim().toLowerCase() !== item.name?.trim()?.toLowerCase()) {
+          summary.categoryCounts.DESCRIPTION++;
         }
         if (item.expectedCBM && item.expectedCBM !== item.cbm) {
-            summary.categoryCounts.CBM++;
+          summary.categoryCounts.CBM++;
         }
         if (item.expectedTotalWeight && item.expectedTotalWeight !== item.totalWeight) {
-            summary.categoryCounts.WEIGHT++;
+          summary.categoryCounts.WEIGHT++;
         }
         if (item.expectedExpirationDate && item.expectedExpirationDate !== item.expirationDate) {
-            summary.categoryCounts.EXPIRY++;
+          summary.categoryCounts.EXPIRY++;
         }
 
-        // If explicitly flagged with tags via Remarks
         if (item.remarks?.includes('DAMAGED')) summary.categoryCounts.DAMAGED++;
         if (item.remarks?.includes('OTHER')) summary.categoryCounts.OTHER++;
       }

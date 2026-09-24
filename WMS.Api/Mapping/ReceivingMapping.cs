@@ -171,7 +171,7 @@ public static class ReceivingMapping
             ExpectedExpirationDate = entity.ExpectedExpirationDate,
 
             // Actual Counted Fields
-            ProductName = entity.Product?.Name ?? entity.ExpectedProductName,
+            Name = entity.Product?.Name ?? entity.ExpectedProductName,
             Quantity = entity.Quantity,
             CBM = entity.CBM,
             TotalWeight = entity.TotalWeight,

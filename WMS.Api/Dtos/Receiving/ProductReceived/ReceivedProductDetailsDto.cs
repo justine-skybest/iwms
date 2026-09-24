@@ -15,7 +15,7 @@ public record class ReceivedProductDetailsDto
     public DateOnly? ExpectedExpirationDate { get; init; }
 
     // --- Actual Counted / Received Fields ---
-    public string? ProductName { get; init; }
+    public string? Name { get; init; }
     public int Quantity { get; init; }
     public string CBM { get; init; } = "0";
     public string TotalWeight { get; init; } = "0";

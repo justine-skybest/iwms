@@ -20,8 +20,8 @@
       Main Menu
     </div>
     
-    <!-- Utilizing the globally defined .sidebar-link class from styles.scss -->
-    <a *ngFor="let item of navItems" 
+    <!-- Primary Operations Navigation -->
+    <a (click)="closeMenu()" *ngFor="let item of mainNavItems" 
        [routerLink]="item.path" 
        routerLinkActive="active" 
        class="sidebar-link">
@@ -29,27 +29,70 @@
       <span>{{ item.label }}</span>
     </a>
 
-    <!-- <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-4 pb-2">
-      Operations
+    <!-- Master Data Sub-Dropdown Toggle Header -->
+    <button 
+      type="button" 
+      (click)="toggleReports()" 
+      [class.active]="isReportDataActive()"
+      class="sidebar-link w-full text-left justify-between cursor-pointer border-none bg-transparent">
+      <div class="flex items-center gap-2">
+        <app-icon name="products" [size]="15"></app-icon>
+        <span>Reports</span>
+      </div>
+      <svg 
+        class="w-3.5 h-3.5 transition-transform duration-200 text-sidebar-text"
+        [class.rotate-180]="isReportDataOpen"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+
+        <!-- Report Data Collapsible Child Items -->
+    <div *ngIf="isReportDataOpen" class="flex flex-col gap-1 pl-3 border-l border-sidebar-border/60 ml-4 my-1">
+      <a (click)="closeMenu()" *ngFor="let item of reportItems" 
+         [routerLink]="item.path" 
+         routerLinkActive="active" 
+         class="sidebar-link text-xs">
+        <lucide-icon [img]="item.icon" [size]="14"></lucide-icon>
+        <span>{{ item.label }}</span>
+      </a>
     </div>
 
-    <a routerLink="/receiving" routerLinkActive="active" class="sidebar-link">
-      <app-icon name="truck" [size]="15"></app-icon>
-      <span>Item Receipt</span>
-      <span class="ml-auto text-[9px] bg-blue-500 text-white px-1.5 py-0.5 rounded-sm font-bold">NEW</span>
-    </a>
+    <!-- Master Data Sub-Dropdown Toggle Header -->
+    <button 
+      type="button" 
+      (click)="toggleMasterData()" 
+      [class.active]="isMasterDataActive()"
+      class="sidebar-link w-full text-left justify-between cursor-pointer border-none bg-transparent">
+      <div class="flex items-center gap-2">
+        <app-icon name="products" [size]="15"></app-icon>
+        <span>Master Data</span>
+      </div>
+      <svg 
+        class="w-3.5 h-3.5 transition-transform duration-200 text-sidebar-text"
+        [class.rotate-180]="isMasterDataOpen"
+        fill="none" 
+        stroke="currentColor" 
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
 
-    <a routerLink="/check-in" routerLinkActive="active" class="sidebar-link">
-      <app-icon name="scan" [size]="15"></app-icon>
-      <span>Check-In</span>
-    </a>
+    <!-- Master Data Collapsible Child Items -->
+    <div *ngIf="isMasterDataOpen" class="flex flex-col gap-1 pl-3 border-l border-sidebar-border/60 ml-4 my-1">
+      <a (click)="closeMenu()" *ngFor="let item of masterDataItems" 
+         [routerLink]="item.path" 
+         routerLinkActive="active" 
+         class="sidebar-link text-xs">
+        <app-icon [name]="item.icon" [size]="14"></app-icon>
+        <span>{{ item.label }}</span>
+      </a>
+    </div>
 
-    <a routerLink="/pick-order" routerLinkActive="active" class="sidebar-link">
-      <app-icon name="list" [size]="15"></app-icon>
-      <span>Pick Order</span>
-    </a> -->
-
-    <a routerLink="/mobile" target="_blank" routerLinkActive="active" class="sidebar-link">
+    <!-- External / App Operations -->
+    <a routerLink="/mobile" target="_blank" routerLinkActive="active" class="sidebar-link mt-2">
       <app-icon name="mobile" [size]="15"></app-icon>
       <span>Mobile Operations</span>
       <span class="ml-auto text-[9px] bg-accent text-white px-1.5 py-0.5 rounded-sm font-bold">APP</span>
