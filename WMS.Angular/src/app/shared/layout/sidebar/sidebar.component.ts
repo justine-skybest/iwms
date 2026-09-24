@@ -12,12 +12,13 @@ import { IconComponent } from '../../components/icon/icon.component';
 export class SidebarComponent {
   navItems = [
     { path: '/home', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/products', label: 'Products', icon: 'products' },
-    { path: '/warehouses', label: 'Warehouses', icon: 'warehouses' },
-    { path: '/pallets', label: 'Pallets', icon: 'pallets' },
+    { path: '/incoming', label: 'Incoming', icon: 'incoming' },
     { path: '/receiving', label: 'Receiving', icon: 'receiving' },
     { path: '/check-in', label: 'Check In', icon: 'checkIns' },
     { path: '/pick-order', label: 'Pick Order', icon: 'pickOrders' },
+    { path: '/products', label: 'Products', icon: 'products' },
+    { path: '/warehouses', label: 'Warehouses', icon: 'warehouses' },
+    { path: '/pallets', label: 'Pallets', icon: 'pallets' },
     { path: '/suppliers', label: 'Suppliers', icon: 'suppliers' },
     { path: '/customers', label: 'Customers', icon: 'customers' },
     { path: '/users', label: 'System Users', icon: 'users' },

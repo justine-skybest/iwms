@@ -34,6 +34,11 @@ export const routes: Routes = [
     title: 'Pallets'
   },
   {
+    path: 'incoming',
+    loadChildren: () => import("./pages/incoming/incoming.routes").then((m) => m.incomingRoutes),
+    title: 'Incoming'
+  },
+  {
     path: 'receiving',
     loadChildren: () => import("./pages/receiving/receiving.routes").then((m) => m.receivingRoutes),
     title: 'Receiving'

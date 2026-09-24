@@ -8,25 +8,26 @@ import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 import type { CreateReceivingDto } from '../../models/create-receiving-dto';
+import type { ReceivingDetailsDto } from '../../models/receiving-details-dto';
 
-export interface ReceivingPost$Params {
+export interface CreateReceiving$Params {
       body: CreateReceivingDto
 }
 
-export function receivingPost(http: HttpClient, rootUrl: string, params: ReceivingPost$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, receivingPost.PATH, 'post');
+export function createReceiving(http: HttpClient, rootUrl: string, params: CreateReceiving$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingDetailsDto>> {
+  const rb = new RequestBuilder(rootUrl, createReceiving.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<ReceivingDetailsDto>;
     })
   );
 }
 
-receivingPost.PATH = '/receiving';
+createReceiving.PATH = '/receiving';

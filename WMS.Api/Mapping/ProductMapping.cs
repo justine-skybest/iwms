@@ -11,6 +11,7 @@ public static class ProductMapping
         return new Product()
         {
             Name = product.Name,
+            Code = product.Code,
             TypeOfPackage = product.TypeOfPackage,
             Measurement = product.Measurement,
             Weight = product.Weight,
@@ -24,6 +25,7 @@ public static class ProductMapping
         {
             Id = id,
             Name = product.Name,
+            Code = product.Code,
             TypeOfPackage = product.TypeOfPackage,
             Measurement = product.Measurement,
             Weight = product.Weight,

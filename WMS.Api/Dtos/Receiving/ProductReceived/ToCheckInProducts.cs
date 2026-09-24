@@ -11,7 +11,7 @@ public record class ToCheckInProducts(
     decimal Quantity,
     string CBM,
     string TotalWeight,
-    DateOnly ExpirationDate,
+    DateOnly? ExpirationDate,
     string Remarks,
     string ContainerName,
     int ReceivingId,

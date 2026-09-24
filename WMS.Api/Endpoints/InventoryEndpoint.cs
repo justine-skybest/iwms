@@ -13,7 +13,7 @@ public record InventoryCheckItemDto(
     int Quantity,
     string? CBM,
     decimal TotalWeight,
-    DateOnly ExpirationDate,
+    DateOnly? ExpirationDate,
     string? ReceivingSeries,
     string? Remarks,
     bool IsPalletized,

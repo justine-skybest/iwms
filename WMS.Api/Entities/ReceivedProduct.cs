@@ -1,34 +1,28 @@
 using System;
+using WMS.Api.Interfaces;
 
 namespace WMS.Api.Entities;
 
-public class ReceivedProduct
+public class ReceivedProduct : IProductBase
 {
-    public int Id { get; set; }
-
     public int ReceivingId { get; set; }
-    
     public Receiving? Receiving { get; set; }
 
-    public int ProductId { get; set; }
+    // --- BASELINE EXPECTED VALUES (From Incoming Packing List) ---
+    public int? ExpectedQuantity { get; set; }
+    public string? ExpectedCBM { get; set; }
+    public string? ExpectedTotalWeight { get; set; }
+    public DateOnly? ExpectedExpirationDate { get; set; }
+    public string? ExpectedProductName { get; set; }
 
-    public Product? Product { get; set; }
-    
-    public int Quantity {get;set;}
+    /// <summary>
+    /// Computed quantity variance (Actual Received - Expected).
+    /// </summary>
+    public int Variance => Quantity - (ExpectedQuantity ?? 0);
 
-    public required string CBM {get; set;}
-
-    public required string TotalWeight {get; set;}
-
-    public DateOnly ExpirationDate { get; set; }
-
-    public required string Remarks {get;set;}
-
-    public required string ContainerName {get;set;}
-
-    public int? PalletId {get; set;}
-
-    public Pallet? Pallet {get;set;}
+    public required string ContainerName { get; set; }
+    public int? PalletId { get; set; }
+    public Pallet? Pallet { get; set; }
 
     public ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
 }

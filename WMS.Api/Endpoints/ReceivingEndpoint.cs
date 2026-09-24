@@ -15,7 +15,7 @@ public static class ReceivingEndpoint
 
     public static RouteGroupBuilder MapReceivingEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("receiving").WithParameterValidation();
+        var group = app.MapGroup("receiving").WithTags("Receiving").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)
@@ -140,16 +140,51 @@ public static class ReceivingEndpoint
         // -----------------------------------------------------------------------------
         // Mutation Endpoints
         // -----------------------------------------------------------------------------
-        group.MapPost("/", async (CreateReceivingDto NewReceiving, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
+        group.MapPost("/", async (
+            CreateReceivingDto newReceivingDto,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            CancellationToken cancellationToken) =>
         {
-            Receiving receiving = NewReceiving.ToEntity();
-            dbContext.Receivings.Add(receiving);
-            await dbContext.SaveChangesAsync();
+            // 1. Mandatory Incoming Record Lookup & Validation
+            var incoming = await dbContext.Incomings
+                .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId, cancellationToken);
 
+            if (incoming is null)
+            {
+                return Results.NotFound(new { Message = $"Incoming shipment record #{newReceivingDto.IncomingId} was not found." });
+            }
+
+            // Prevent receiving an incoming record that was already processed
+            if (incoming.Status == IncomingStatus.RECEIVED)
+            {
+                return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} has already been received." });
+            }
+
+            // 2. Update Incoming Status to RECEIVED
+            incoming.Status = IncomingStatus.RECEIVED;
+
+            // 3. Convert DTO to Receiving entity (maps all expected vs actual line item values)
+            Receiving receiving = newReceivingDto.ToEntity();
+            dbContext.Receivings.Add(receiving);
+
+            // 4. Save changes in a single atomic transaction
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            // 5. SignalR Real-time Notification
             await hubContext.Clients.All.ReceivingCreated();
 
-            return Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, receiving.ToReceivingDetailsDto());
-        });
+            return Results.CreatedAtRoute(
+                GetReceivingEndpoint,
+                new { id = receiving.Id },
+                receiving.ToReceivingDetailsDto());
+        })
+        .WithName("CreateReceiving")
+        .WithSummary("Create a new receiving receipt")
+        .WithDescription("Creates a receiving receipt linked to a valid Incoming shipment ID, captures all baseline expected vs actual line-item details, and automatically marks the Incoming status as RECEIVED.")
+        .Produces<ReceivingDetailsDto>(StatusCodes.Status201Created)
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .ProducesProblem(StatusCodes.Status404NotFound);
 
         group.MapPut("/{id:int}", async (int id, WMSContext dbContext, CreateReceivingDto updatedReceiving) =>
         {

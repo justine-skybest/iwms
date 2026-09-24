@@ -5,6 +5,7 @@ namespace WMS.Api.Dtos.Receiving;
 public record class ReceivingDetailsDto(
     int Id,
     int WarehouseId,
+    int? IncomingId,
     string Series,
     string TransportCompany,
     string Shipper,

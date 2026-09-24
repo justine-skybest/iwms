@@ -4,7 +4,7 @@
 export interface ToCheckInProducts {
   cbm?: string | null;
   containerName?: string | null;
-  expirationDate?: string;
+  expirationDate?: string | null;
   id?: number;
   measurement?: string | null;
   name?: string | null;

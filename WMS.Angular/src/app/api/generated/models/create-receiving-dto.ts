@@ -10,6 +10,7 @@ export interface CreateReceivingDto {
   dateReceived?: string;
   dateTime?: string;
   driverName?: string | null;
+  incomingId?: number;
   plateNumber?: string | null;
   products?: Array<ReceivedProductDetailsDto> | null;
   reference?: string | null;

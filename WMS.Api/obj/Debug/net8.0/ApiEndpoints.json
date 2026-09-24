@@ -1050,6 +1050,277 @@
     "Summary": "Get dashboard summary statistics"
   },
   {
+    "ContainingType": "WMS.Api.Endpoints.IncomingImportEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingImportEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming-import/import-excel",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 422
+      }
+    ],
+    "Tags": [
+      "IncomingImport"
+    ],
+    "EndpointName": "ImportIncomingFromExcel",
+    "Summary": "Import an incoming shipment from an Excel packing list"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingTemplateEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingTemplateEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming-template/template",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "IncomingImportTemplate"
+    ],
+    "EndpointName": "DownloadIncomingTemplate"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.Nullable\u00601[[WMS.Api.Entities.IncomingStatus, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Incoming.IncomingResponseDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "GetIncomings",
+    "Description": "Retrieves a paginated list of incoming shipments with optional filtering by warehouse, status, and search terms.",
+    "Summary": "Get paginated incoming shipments"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_2",
+    "RelativePath": "incoming/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Incoming.IncomingRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Incoming.IncomingResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "CreateIncoming",
+    "Description": "Creates a new planned incoming shipment with its associated line items.",
+    "Summary": "Create a new incoming shipment"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_1",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Incoming.IncomingResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "GetIncomingById",
+    "Description": "Retrieves a single incoming shipment record by its primary key.",
+    "Summary": "Get incoming shipment by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_3",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Incoming.IncomingRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "UpdateIncoming",
+    "Description": "Updates all details and line items for an existing incoming shipment record.",
+    "Summary": "Update an incoming shipment"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_4",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "DeleteIncoming",
+    "Description": "Deletes an incoming shipment record from the system.",
+    "Summary": "Delete an incoming shipment"
+  },
+  {
     "ContainingType": "WMS.Api.Endpoints.InventoryEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapInventoryEndpoints\u003Eb__0_0",
     "RelativePath": "inventory/inspect/{code}/{warehouseId:int}",
@@ -2189,6 +2460,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {
@@ -2200,20 +2474,40 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "NewReceiving",
+        "Name": "newReceivingDto",
         "Type": "WMS.Api.Dtos.Receiving.CreateReceivingDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Receiving.ReceivingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 404
       }
-    ]
+    ],
+    "Tags": [
+      "Receiving"
+    ],
+    "EndpointName": "CreateReceiving",
+    "Description": "Creates a receiving receipt linked to a valid Incoming shipment ID and automatically marks the Incoming status as RECEIVED.",
+    "Summary": "Create a new receiving receipt"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
@@ -2235,6 +2529,9 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ],
     "EndpointName": "GetReceiving"
   },
@@ -2265,6 +2562,9 @@
         ],
         "StatusCode": 400
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {
@@ -2287,6 +2587,9 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {
@@ -2303,6 +2606,9 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {
@@ -2349,6 +2655,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {
@@ -2373,6 +2682,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Receiving"
     ]
   },
   {

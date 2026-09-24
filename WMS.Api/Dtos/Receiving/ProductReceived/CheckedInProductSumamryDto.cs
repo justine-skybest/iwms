@@ -11,7 +11,7 @@ public record class CheckedInProductSumamryDto(
     decimal Quantity,
     string CBM,
     string TotalWeight,
-    DateOnly ExpirationDate,
+    DateOnly? ExpirationDate,
     string Remarks,
     string ContainerName,
     string? PalletId,

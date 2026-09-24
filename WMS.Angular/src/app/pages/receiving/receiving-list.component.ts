@@ -1,15 +1,19 @@
-import { ChangeDetectorRef, Component, OnInit, inject, effect, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, effect, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
 import { receivingV2Get } from '../../api/generated/functions';
-import { ReceivingSummaryDto, ReceivingSummaryDtoPaginatedResponse } from '../../api/generated/models';
+import { ReceivingSummaryDto, ReceivingSummaryDtoPaginatedResponse, ReceivedProductSummaryDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
-import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet } from 'lucide-angular';
 import { SignalRService } from '../../lib/services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
+import { formatDate } from '../../lib/utils/format-date';
+import { formatTime } from '../../lib/utils/format-time';
+
+export type DiscrepancyCategory = 'QUANTITY' | 'DESCRIPTION' | 'EXPIRY' | 'WEIGHT' | 'CBM' | 'DAMAGED' | 'OTHER';
 
 @Component({
   selector: 'app-receiving-list',
@@ -17,7 +21,7 @@ import { PageHeaderComponent } from '../../shared/layout/page-header/page-header
   imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent],
   templateUrl: './receiving-list.component.html',
 })
-export class ReceivingListComponent implements OnInit {
+export class ReceivingListComponent implements OnInit, OnDestroy {
   @Output() closed = new EventEmitter<void>();
   Math = Math;
   readonly chevronLeft = ChevronLeft;
@@ -25,6 +29,11 @@ export class ReceivingListComponent implements OnInit {
   readonly eyeIcon = EyeIcon;
   readonly searchIcon = SearchIcon;
   readonly plus = PlusIcon;
+  readonly AlertIcon = AlertTriangle;
+  readonly SummaryIcon = FileSpreadsheet;
+
+  public formatDate = formatDate;
+  public formatTime = formatTime;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
@@ -70,9 +79,9 @@ export class ReceivingListComponent implements OnInit {
     this.destroy$.complete();
   }
 
-    close(): void {
-      this.closed.emit();
-    }
+  close(): void {
+    this.closed.emit();
+  }
 
   async loadReceivings(): Promise<void> {
     this.isLoading = true;
@@ -136,29 +145,75 @@ export class ReceivingListComponent implements OnInit {
     void this.loadReceivings();
   }
 
-  formatDate(dateStr?: string): string {
-    if (!dateStr) return '—';
-    try {
-      return new Date(dateStr).toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric'
-      });
-    } catch {
-      return dateStr;
-    }
+  // --- DISCREPANCY & SUMMARY HELPERS ---
+
+  hasItemDiscrepancy(item: ReceivedProductSummaryDto): boolean {
+    return !!item.hasDiscrepancy;
   }
 
-  formatTime(timeStr?: string): string {
-  if (!timeStr) return '—';
-  try {
-    const date = new Date(timeStr);
-    if (!isNaN(date.getTime())) {
-      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  getVariance(item?: { quantity?: number | null; expectedQuantity?: number | null }): number {
+    if (!item || item.expectedQuantity === null || item.expectedQuantity === undefined) {
+      return 0; // No expected quantity baseline exists
     }
-    return timeStr;
-  } catch {
-    return timeStr;
+    return (item.quantity ?? 0) - item.expectedQuantity;
   }
-}
+
+  getDiscrepancySummary(receiving: ReceivingSummaryDto | null) {
+    const summary = {
+      matchedCount: 0,
+      flaggedCount: 0,
+      totalItems: receiving?.products?.length || 0,
+      totalQuantityShortage: 0,
+      totalQuantityExcess: 0,
+      categoryCounts: {
+        QUANTITY: 0,
+        DESCRIPTION: 0,
+        EXPIRY: 0,
+        WEIGHT: 0,
+        CBM: 0,
+        DAMAGED: 0,
+        OTHER: 0
+      } as Record<DiscrepancyCategory, number>
+    };
+
+    if (!receiving?.products) return summary;
+
+    for (const item of receiving.products) {
+      if (!this.hasItemDiscrepancy(item)) {
+        summary.matchedCount++;
+      } else {
+        summary.flaggedCount++;
+
+        // Track net quantity variance
+        const variance = this.getVariance(item);
+        if (variance < 0) {
+          summary.totalQuantityShortage += Math.abs(variance);
+          summary.categoryCounts.QUANTITY++;
+        } else if (variance > 0) {
+          summary.totalQuantityExcess += variance;
+          summary.categoryCounts.QUANTITY++;
+        }
+
+        // Tally categories based on exact field mismatches
+        if (item.expectedProductName && item.expectedProductName.trim().toLowerCase() !== (item.name)?.trim()?.toLowerCase()) {
+            summary.categoryCounts.DESCRIPTION++;
+        }
+        if (item.expectedCBM && item.expectedCBM !== item.cbm) {
+            summary.categoryCounts.CBM++;
+        }
+        if (item.expectedTotalWeight && item.expectedTotalWeight !== item.totalWeight) {
+            summary.categoryCounts.WEIGHT++;
+        }
+        if (item.expectedExpirationDate && item.expectedExpirationDate !== item.expirationDate) {
+            summary.categoryCounts.EXPIRY++;
+        }
+
+        // If explicitly flagged with tags via Remarks
+        if (item.remarks?.includes('DAMAGED')) summary.categoryCounts.DAMAGED++;
+        if (item.remarks?.includes('OTHER')) summary.categoryCounts.OTHER++;
+      }
+    }
+
+    return summary;
+  }
 }

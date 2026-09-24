@@ -13,7 +13,7 @@ public record class RecentReceivingDto(
 public record class ExpiringProductDto(
     string ProductName,
     string ReceivingSeries,
-    DateOnly ExpirationDate,
+    DateOnly? ExpirationDate,
     int Quantity,
     string Warehouse
 );

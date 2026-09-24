@@ -23,6 +23,7 @@ public class WMSContext(DbContextOptions<WMSContext> options)
     public DbSet<Product> Products => Set<Product>();
     
     public DbSet<Receiving> Receivings => Set<Receiving>();
+    public DbSet<Incoming> Incomings => Set<Incoming>();
 
     public DbSet<ReceivedProduct> ReceivedProducts => Set<ReceivedProduct>();
 
@@ -38,7 +39,28 @@ public class WMSContext(DbContextOptions<WMSContext> options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-      modelBuilder.Entity<Bay>().HasData(
+        // IncomingProduct Precision
+        modelBuilder.Entity<IncomingProduct>(builder =>
+        {
+            builder.Property(p => p.UnitPrice).HasPrecision(18, 2);
+            builder.Property(p => p.TotalAmount).HasPrecision(18, 2);
+            builder.Property(p => p.TotalWeight).HasPrecision(18, 2);
+            builder.Property(p => p.CBM).HasPrecision(18, 4);
+        });
+
+        modelBuilder.Entity<ReceivedProduct>(builder =>
+        {
+            builder.Property(p => p.TotalWeight).HasPrecision(18, 2);
+            builder.Property(p => p.CBM).HasPrecision(18, 4);
+        });
+
+        modelBuilder.Entity<Product>(builder =>
+        {
+            builder.Property(p => p.Weight).HasPrecision(18, 2);
+            builder.Property(p => p.Measurement).HasPrecision(18, 4);
+        });
+
+        modelBuilder.Entity<Bay>().HasData(
             new{Id = 1, BayNumber = 1},
             new{Id = 2, BayNumber = 2},
             new{Id = 3, BayNumber = 3},

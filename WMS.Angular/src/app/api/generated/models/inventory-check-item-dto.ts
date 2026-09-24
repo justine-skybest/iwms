@@ -3,7 +3,7 @@
 
 export interface InventoryCheckItemDto {
   cbm?: string | null;
-  expirationDate?: string;
+  expirationDate?: string | null;
   isPalletized?: boolean;
   measurement?: string | null;
   palletNumber?: number | null;

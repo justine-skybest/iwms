@@ -208,7 +208,7 @@ export class CreateCheckInModalComponent implements OnChanges {
       .filter((p): p is PalletToBeCheckInDto & { id: number } => p.id != null)
       .map((p) => ({
         id: p.id,
-        label: `Pallet #${p.palletNumber ?? p.id}`,
+        label: p.palletNumber!,
         sublabel: p.warehouse ?? undefined,
         raw: p,
       }));
@@ -275,8 +275,8 @@ export class CreateCheckInModalComponent implements OnChanges {
             .filter((b): b is BinSummaryDto & { id: number } => b.id != null)
             .map((b) => ({
               id: b.id,
-              label: b.binName ?? `Bin #${b.id}`,
-              sublabel: [b.rack, b.level, b.bay].filter(Boolean).join(' / '),
+              label: `${b.rack} / Bay ${b.bay} / Level ${b.level} / ${b.binName}`,
+              sublabel: '',
               raw: b,
             }))
         )

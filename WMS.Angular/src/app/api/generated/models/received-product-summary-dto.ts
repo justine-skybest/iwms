@@ -4,14 +4,22 @@
 export interface ReceivedProductSummaryDto {
   cbm?: string | null;
   containerName?: string | null;
-  expirationDate?: string;
+  expectedCBM?: string | null;
+  expectedExpirationDate?: string | null;
+  expectedProductName?: string | null;
+  expectedQuantity?: number | null;
+  expectedTotalWeight?: string | null;
+  expirationDate?: string | null;
+  hasDiscrepancy?: boolean;
   id?: number;
   measurement?: string | null;
   name?: string | null;
-  palletId?: string | null;
+  palletId?: number | null;
+  productId?: number;
   quantity?: number;
   remarks?: string | null;
   totalWeight?: string | null;
   typeOfPackage?: string | null;
+  variance?: number;
   weight?: number;
 }
