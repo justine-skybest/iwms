@@ -193,6 +193,73 @@
         }
       }
     },
+    "/incoming/unreceived": {
+      "get": {
+        "tags": [
+          "Incomings"
+        ],
+        "summary": "Get pending or partial incoming shipments with unreceived products",
+        "description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.",
+        "operationId": "GetUnreceivedIncomings",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingResponseDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/incoming/{id}": {
       "get": {
         "tags": [
@@ -370,7 +437,7 @@
           "Receiving"
         ],
         "summary": "Create a new receiving receipt",
-        "description": "Creates a receiving receipt linked to a valid Incoming shipment ID, captures all baseline expected vs actual line-item details, and automatically marks the Incoming status as RECEIVED.",
+        "description": "Creates a receiving receipt linked to an Incoming shipment, marks specific line items as received, and sets Incoming status to PARTIAL or RECEIVED.",
         "operationId": "CreateReceiving",
         "requestBody": {
           "content": {
@@ -4994,6 +5061,9 @@
             "type": "string",
             "nullable": true
           },
+          "received": {
+            "type": "boolean"
+          },
           "remarks": {
             "type": "string",
             "nullable": true
@@ -5025,6 +5095,7 @@
             "enum": [
               "PENDING",
               "RECEIVED",
+              "PARTIAL",
               "CANCELLED"
             ],
             "type": "string"
@@ -5069,6 +5140,7 @@
             "enum": [
               "PENDING",
               "RECEIVED",
+              "PARTIAL",
               "CANCELLED"
             ],
             "type": "string"

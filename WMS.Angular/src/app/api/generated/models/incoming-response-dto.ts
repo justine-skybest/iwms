@@ -7,7 +7,7 @@ export interface IncomingResponseDto {
   id?: number;
   products?: Array<IncomingProductResponseDto> | null;
   shipper: string;
-  status?: 'PENDING' | 'RECEIVED' | 'CANCELLED';
+  status?: 'PENDING' | 'RECEIVED' | 'PARTIAL' | 'CANCELLED';
   warehouseId?: number;
   warehouseName?: string | null;
 }

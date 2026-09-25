@@ -61,6 +61,7 @@ namespace WMS.Api.Mapping
                 TotalWeight = entity.TotalWeight,
                 ExpirationDate = entity.ExpirationDate,
                 Supplier = entity.Supplier,
+                Received = entity.Received,
                 Remarks = entity.Remarks
             };
         }

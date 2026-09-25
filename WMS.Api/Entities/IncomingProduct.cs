@@ -6,5 +6,6 @@ namespace WMS.Api.Entities
     {
         public int IncomingId { get; set; }
         public Incoming? Incoming { get; set; }
+        public bool Received { get; set; } = false;
     }
 }

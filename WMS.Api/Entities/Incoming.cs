@@ -6,6 +6,7 @@ namespace WMS.Api.Entities
     {
         PENDING = 1,
         RECEIVED,
+        PARTIAL,
         CANCELLED
     }
     public class Incoming : IIncomingShipment<IncomingProduct>

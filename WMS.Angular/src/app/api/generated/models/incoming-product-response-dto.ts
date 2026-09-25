@@ -9,6 +9,7 @@ export interface IncomingProductResponseDto {
   productId?: number;
   productName?: string | null;
   quantity?: number;
+  received?: boolean;
   remarks?: string | null;
   supplier?: string | null;
   totalAmount?: number | null;

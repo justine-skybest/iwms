@@ -9,6 +9,8 @@ export type { GetIncomings$Params as GetIncomings$Params } from './fn/incomings/
 export { getIncomings as getIncomings } from './fn/incomings/get-incomings';
 export type { CreateIncoming$Params as CreateIncoming$Params } from './fn/incomings/create-incoming';
 export { createIncoming as createIncoming } from './fn/incomings/create-incoming';
+export type { GetUnreceivedIncomings$Params as GetUnreceivedIncomings$Params } from './fn/incomings/get-unreceived-incomings';
+export { getUnreceivedIncomings as getUnreceivedIncomings } from './fn/incomings/get-unreceived-incomings';
 export type { GetIncomingById$Params as GetIncomingById$Params } from './fn/incomings/get-incoming-by-id';
 export { getIncomingById as getIncomingById } from './fn/incomings/get-incoming-by-id';
 export type { UpdateIncoming$Params as UpdateIncoming$Params } from './fn/incomings/update-incoming';

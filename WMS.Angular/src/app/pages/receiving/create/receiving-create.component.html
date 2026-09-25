@@ -1,12 +1,12 @@
 <div *ngIf="isOpen" class="fixed inset-0 z-50 flex justify-end">
-  <!-- Backdrop (Click to close & Blur effect) -->
+  <!-- Backdrop -->
   <div 
     class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm cursor-pointer transition-opacity" 
     (click)="onClose()"
     title="Click outside to close">
   </div>
 
-  <!-- Drawer Panel (Elevated with z-10 above backdrop) -->
+  <!-- Drawer Panel -->
   <div class="relative z-10 w-full max-w-6xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto pb-16">
     <div>
       <!-- Header -->
@@ -25,7 +25,7 @@
           <span>{{ validationError }}</span>
         </div>
 
-        <!-- 1. INCOMING SHIPMENT SELECTION -->
+        <!-- 1. INCOMING SHIPMENT SELECTION & PRODUCT COMBOBOX -->
         <div class="bg-blue-50/60 p-4 border border-blue-200 rounded-xl space-y-3">
           <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider">
             <span class="text-red-500">*</span> Select Incoming Shipment Record
@@ -36,8 +36,9 @@
               <input
                 type="text"
                 [(ngModel)]="incomingSearchQuery"
-                (input)="onIncomingSearchInput()"
-                (focus)="openIncomingDropdown()"
+                (input)="onIncomingSearchInput($event)"
+                (focus)="openIncomingDropdown($event)"
+                (click)="$event.stopPropagation()"
                 placeholder="Search by Incoming ID, Shipper, or Consignee..."
                 class="w-full text-xs pl-8 pr-8 py-2.5 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm font-medium"
               />
@@ -45,7 +46,7 @@
 
               <button
                 *ngIf="incomingSearchQuery"
-                (click)="clearIncomingSelection()"
+                (click)="clearIncomingSelection(); $event.stopPropagation()"
                 type="button"
                 class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
               >
@@ -56,6 +57,7 @@
             <!-- Incoming Combobox Dropdown -->
             <div
               *ngIf="isIncomingDropdownOpen"
+              (click)="$event.stopPropagation()"
               class="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-60 overflow-y-auto divide-y divide-slate-100"
             >
               <div *ngIf="isSearchingIncomings" class="p-3 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
@@ -69,11 +71,16 @@
                 class="p-3 hover:bg-blue-50 cursor-pointer flex items-center justify-between transition-colors"
               >
                 <div>
-                  <div class="text-xs font-bold text-slate-800">
-                    #{{ inc.id }} — {{ inc.shipper }}
+                  <div class="text-xs font-bold text-slate-800 flex items-center gap-2">
+                    <span>#{{ inc.id }} — {{ inc.shipper }}</span>
+                    <span 
+                      *ngIf="inc.status === 'PARTIAL'" 
+                      class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold border border-amber-300">
+                      PARTIAL
+                    </span>
                   </div>
                   <div class="text-[11px] text-slate-500">
-                    Consignee: {{ inc.consignee || '—' }} | Items: {{ inc.products?.length || 0 }}
+                    Consignee: {{ inc.consignee || '—' }} | Total Products: {{ inc.products?.length || 0 }}
                   </div>
                 </div>
                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
@@ -88,15 +95,105 @@
           </div>
 
           <!-- Selected Incoming Indicator -->
-          <div *ngIf="selectedIncoming" class="flex items-center justify-between bg-white p-2.5 border border-blue-200 rounded-lg text-xs">
+          <div *ngIf="selectedIncoming" class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-2.5 border border-blue-200 rounded-lg text-xs gap-2">
             <div class="flex items-center gap-3">
               <span class="font-mono font-bold text-blue-600">Incoming Shipment #{{ selectedIncoming.id }}</span>
               <span class="text-slate-600">Shipper: <strong>{{ selectedIncoming.shipper }}</strong></span>
-              <span class="text-slate-600">Items: <strong>{{ selectedIncoming.products?.length || 0 }}</strong></span>
             </div>
-            <button (click)="clearIncomingSelection()" class="text-red-600 hover:text-red-800 text-xs font-semibold">
-              Change
+            <button (click)="clearIncomingSelection()" class="text-red-600 hover:text-red-800 text-xs font-semibold px-1 self-end sm:self-auto">
+              Change Shipment
             </button>
+          </div>
+
+          <!-- INLINE PRODUCT SELECTION COMBOBOX -->
+          <div *ngIf="selectedIncoming" class="space-y-1.5 mt-3 pt-3 border-t border-blue-200/80">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider">
+                <span class="text-red-500">*</span> Select Line Items to Receive
+              </label>
+              <span class="text-[11px] text-slate-500 font-mono">
+                Staged: <strong>{{ stagedItems.length }}</strong> / {{ availableIncomingProducts.length }} products
+              </span>
+            </div>
+
+            <div class="relative">
+              <!-- Combobox Control Field -->
+              <div 
+                (click)="toggleProductDropdown($event)"
+                class="w-full text-xs px-3 py-2.5 border border-slate-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 cursor-pointer flex items-center justify-between shadow-sm"
+              >
+                <div class="flex items-center gap-2 truncate text-slate-700 font-medium">
+                  <lucide-icon [img]="PackageCheckIcon" [size]="15" class="text-blue-600 shrink-0"></lucide-icon>
+                  <span *ngIf="stagedItems.length === 0" class="text-slate-400">Click to select products from this shipment...</span>
+                  <span *ngIf="stagedItems.length > 0" class="truncate font-semibold text-slate-800">
+                    {{ stagedItems.length }} of {{ availableIncomingProducts.length }} Line Item(s) Selected
+                  </span>
+                </div>
+                <lucide-icon [img]="ChevronDownIcon" [size]="15" class="text-slate-400 shrink-0 transition-transform duration-200" [class.rotate-180]="isProductDropdownOpen"></lucide-icon>
+              </div>
+
+              <!-- Product Combobox Dropdown -->
+              <div 
+                *ngIf="isProductDropdownOpen"
+                (click)="$event.stopPropagation()"
+                class="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-64 overflow-y-auto divide-y divide-slate-100"
+              >
+                <!-- Combobox Header Actions -->
+                <div class="p-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10 gap-2">
+                  <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 shrink-0">
+                    <input 
+                      type="checkbox" 
+                      [checked]="isAllProductsSelected" 
+                      (change)="toggleSelectAllProducts($event)"
+                      class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer" 
+                    />
+                    <span>Select All Items</span>
+                  </label>
+
+                  <div class="relative flex-1 max-w-xs">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="productFilterQuery" 
+                      placeholder="Filter products..." 
+                      class="w-full text-[11px] pl-7 pr-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                    />
+                    <lucide-icon [img]="SearchIcon" [size]="12" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400"></lucide-icon>
+                  </div>
+                </div>
+
+                <!-- Product List -->
+                <div 
+                  *ngFor="let p of filteredAvailableProducts" 
+                  (click)="toggleProductSelection(p)"
+                  [ngClass]="{'bg-blue-50/60': p.selected, 'hover:bg-slate-50': !p.selected}"
+                  class="p-2.5 flex items-center justify-between cursor-pointer transition-colors text-xs"
+                >
+                  <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                    <input 
+                      type="checkbox" 
+                      [checked]="p.selected" 
+                      (click)="$event.stopPropagation(); toggleProductSelection(p)"
+                      class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer shrink-0"
+                    />
+                    <div class="min-w-0">
+                      <div class="font-bold text-slate-800 truncate">{{ p.productName }}</div>
+                      <div class="text-[10px] text-slate-500 truncate">
+                        Supplier: {{ p.supplier || '—' }} | Expiry: {{ formatDate(p.expirationDate!) }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-right font-mono shrink-0">
+                    <div class="font-bold text-blue-700">{{ p.quantity }} units</div>
+                    <div class="text-[10px] text-slate-400">{{ p.cbm }} CBM | {{ p.totalWeight }} Weight</div>
+                  </div>
+                </div>
+
+                <div *ngIf="filteredAvailableProducts.length === 0" class="p-4 text-center text-slate-400 text-xs">
+                  No matching line items found.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -175,7 +272,7 @@
 
         <hr class="border-slate-200" />
 
-        <!-- 5. STAGED ITEMS TABLE WITH LINE-ITEM VERIFICATION -->
+        <!-- 5. STAGED ITEMS TABLE WITH DISCREPANCY VERIFICATION -->
         <div>
           <div class="flex items-center justify-between mb-3">
             <div>
@@ -186,7 +283,7 @@
                   {{ getDiscrepancySummary().flaggedCount }} Flagged Discrepancy(ies)
                 </span>
               </h3>
-              <p class="text-[11px] text-slate-500">All fields are locked to expected baselines. Uncheck "Match" to enable inputs and record discrepancies.</p>
+              <p class="text-[11px] text-slate-500">Uncheck "Match" to enable inputs and record actual physical discrepancies.</p>
             </div>
           </div>
 
@@ -205,11 +302,15 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
+                <tr *ngIf="stagedItems.length === 0">
+                  <td colspan="8" class="p-8 text-center text-slate-400 text-xs">
+                    No products staged. Select an Incoming shipment above and use the product combobox to pick items.
+                  </td>
+                </tr>
+
                 <ng-container *ngFor="let item of stagedItems; let idx = index">
-                  <!-- Main Verification Row -->
+                  <!-- Main Row -->
                   <tr [ngClass]="{'bg-amber-50/60': !item.isMatched, 'hover:bg-slate-50': item.isMatched}" class="transition-colors">
-                    
-                    <!-- Match Checkbox Column (Default Checked) -->
                     <td class="p-2.5 text-center">
                       <input 
                         type="checkbox" 
@@ -220,7 +321,6 @@
                       />
                     </td>
 
-                    <!-- Product Description (Editable only when unchecked) -->
                     <td class="p-2.5 font-medium text-slate-800">
                       <input 
                         type="text" 
@@ -236,10 +336,8 @@
                       <div *ngIf="!item.isMatched && item.productName?.trim()?.toLowerCase() !== item.expectedProductName?.trim()?.toLowerCase()" class="text-[10px] text-amber-700 font-semibold mt-0.5">
                         Expected: {{ item.expectedProductName }}
                       </div>
-                      <div class="text-[10px] text-slate-400 font-mono mt-0.5" *ngIf="item.typeOfPackage">UOM: {{ item.typeOfPackage }}</div>
                     </td>
 
-                    <!-- Quantity (Editable only when unchecked) -->
                     <td class="p-2.5 text-center">
                       <div class="flex items-center justify-center gap-1.5">
                         <span class="text-[11px] font-mono font-semibold text-slate-400" title="Expected Baseline">
@@ -259,17 +357,15 @@
                           class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
                         />
                       </div>
-                      <!-- Per Line Item Quantity Variance Badge -->
                       <div class="text-[10px] font-bold font-mono mt-0.5" *ngIf="getVariance(item) !== 0">
                         <span *ngIf="getVariance(item) < 0" class="text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">({{ getVariance(item) }} Short)</span>
                         <span *ngIf="getVariance(item) > 0" class="text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">(+{{ getVariance(item) }} Excess)</span>
                       </div>
                     </td>
 
-                    <!-- CBM (Editable only when unchecked) -->
                     <td class="p-2.5 text-center">
                       <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-[10px] font-mono text-slate-400" title="Expected Baseline">{{ item.expectedCbm }}</span>
+                        <span class="text-[10px] font-mono text-slate-400">{{ item.expectedCbm }}</span>
                         <span class="text-slate-300">/</span>
                         <input 
                           type="text" 
@@ -283,15 +379,11 @@
                           class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
                         />
                       </div>
-                      <div *ngIf="!item.isMatched && item.cbm !== item.expectedCbm" class="text-[10px] text-amber-700 font-semibold font-mono mt-0.5">
-                        Diff Detected
-                      </div>
                     </td>
 
-                    <!-- Total Weight (Editable only when unchecked) -->
                     <td class="p-2.5 text-center">
                       <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-[10px] font-mono text-slate-400" title="Expected Baseline">{{ item.expectedTotalWeight }}</span>
+                        <span class="text-[10px] font-mono text-slate-400">{{ item.expectedTotalWeight }}</span>
                         <span class="text-slate-300">/</span>
                         <input 
                           type="text" 
@@ -305,12 +397,8 @@
                           class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
                         />
                       </div>
-                      <div *ngIf="!item.isMatched && item.totalWeight !== item.expectedTotalWeight" class="text-[10px] text-amber-700 font-semibold font-mono mt-0.5">
-                        Diff Detected
-                      </div>
                     </td>
 
-                    <!-- Expiration Date (Editable only when unchecked) -->
                     <td class="p-2.5 text-center">
                       <input 
                         type="date" 
@@ -323,12 +411,8 @@
                         }"
                         class="text-xs px-2 py-1 rounded border font-mono focus:outline-none" 
                       />
-                      <div *ngIf="!item.isMatched && item.expirationDate !== item.expectedExpirationDate" class="text-[10px] text-amber-700 font-semibold font-mono mt-0.5">
-                        Exp: {{ item.expectedExpirationDate }}
-                      </div>
                     </td>
 
-                    <!-- Assigned Pallet -->
                     <td class="p-2.5">
                       <button *ngIf="!item.palletId" (click)="openPalletModal(idx)" type="button" class="text-xs text-blue-600 hover:underline">
                         + Assign Pallet
@@ -338,13 +422,12 @@
                       </span>
                     </td>
 
-                    <!-- Remove Action -->
                     <td class="p-2.5 text-center">
                       <button (click)="removeProductItem(idx)" class="text-slate-400 hover:text-red-600 p-1">✕</button>
                     </td>
                   </tr>
 
-                  <!-- Discrepancy Breakdown Drawer Row (Appears when isMatched = false) -->
+                  <!-- Discrepancy Breakdown Drawer Row -->
                   <tr *ngIf="!item.isMatched" class="bg-amber-50/80 border-b-2 border-amber-200">
                     <td colspan="8" class="p-3 pl-12 space-y-2">
                       <div class="flex items-center gap-2 text-xs font-bold text-amber-900">
@@ -352,7 +435,6 @@
                         <span>Auto-Detected Discrepancy Tags for Line #{{ idx + 1 }}:</span>
                       </div>
 
-                      <!-- Multi-Select Category Badges -->
                       <div class="flex flex-wrap items-center gap-1.5">
                         <button
                           *ngFor="let opt of discrepancyOptions"
@@ -369,7 +451,6 @@
                         </button>
                       </div>
 
-                      <!-- Discrepancy Notes Input -->
                       <div>
                         <input 
                           type="text" 
@@ -385,7 +466,7 @@
             </table>
           </div>
 
-          <!-- 6. DISCREPANCIES SUMMARY SECTION -->
+          <!-- Discrepancy Summary Card -->
           <div *ngIf="stagedItems.length > 0" class="mt-4 p-4 bg-slate-900 text-white rounded-xl shadow-lg space-y-3">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
               <div class="flex items-center gap-2">
@@ -400,13 +481,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-              <!-- Total Items Metric -->
               <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
                 <div class="text-[10px] text-slate-400 uppercase">Total Line Items</div>
                 <div class="text-base font-bold font-mono text-white mt-0.5">{{ getDiscrepancySummary().totalItems }}</div>
               </div>
 
-              <!-- Quantity Shortage Metric -->
               <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
                 <div class="text-[10px] text-slate-400 uppercase">Total Shortage (Units)</div>
                 <div class="text-base font-bold font-mono text-amber-400 mt-0.5">
@@ -414,7 +493,6 @@
                 </div>
               </div>
 
-              <!-- Quantity Excess Metric -->
               <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
                 <div class="text-[10px] text-slate-400 uppercase">Total Excess (Units)</div>
                 <div class="text-base font-bold font-mono text-blue-400 mt-0.5">
@@ -422,37 +500,11 @@
                 </div>
               </div>
 
-              <!-- Reconciliation Match Rate -->
               <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
                 <div class="text-[10px] text-slate-400 uppercase">Match Accuracy</div>
                 <div class="text-base font-bold font-mono text-emerald-400 mt-0.5">
                   {{ (getDiscrepancySummary().totalItems > 0 ? (getDiscrepancySummary().matchedCount / getDiscrepancySummary().totalItems * 100) : 100) | number:'1.0-1' }}%
                 </div>
-              </div>
-            </div>
-
-            <!-- Tally of Discrepancies by Category -->
-            <div *ngIf="getDiscrepancySummary().flaggedCount > 0" class="pt-2 border-t border-slate-800">
-              <div class="text-[11px] font-semibold text-slate-400 mb-1.5">Flagged Issues Breakdown:</div>
-              <div class="flex flex-wrap gap-2 text-[11px]">
-                <span *ngIf="getDiscrepancySummary().categoryCounts.QUANTITY > 0" class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">
-                  Quantity Mismatches: <strong>{{ getDiscrepancySummary().categoryCounts.QUANTITY }}</strong>
-                </span>
-                <span *ngIf="getDiscrepancySummary().categoryCounts.DESCRIPTION > 0" class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">
-                  Spelling/Desc Mismatches: <strong>{{ getDiscrepancySummary().categoryCounts.DESCRIPTION }}</strong>
-                </span>
-                <span *ngIf="getDiscrepancySummary().categoryCounts.EXPIRY > 0" class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">
-                  Expiry Date Mismatches: <strong>{{ getDiscrepancySummary().categoryCounts.EXPIRY }}</strong>
-                </span>
-                <span *ngIf="getDiscrepancySummary().categoryCounts.WEIGHT > 0" class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">
-                  Weight Variances: <strong>{{ getDiscrepancySummary().categoryCounts.WEIGHT }}</strong>
-                </span>
-                <span *ngIf="getDiscrepancySummary().categoryCounts.CBM > 0" class="px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded">
-                  CBM Variances: <strong>{{ getDiscrepancySummary().categoryCounts.CBM }}</strong>
-                </span>
-                <span *ngIf="getDiscrepancySummary().categoryCounts.DAMAGED > 0" class="px-2 py-0.5 bg-red-500/20 text-red-300 border border-red-500/30 rounded">
-                  Damaged Items: <strong>{{ getDiscrepancySummary().categoryCounts.DAMAGED }}</strong>
-                </span>
               </div>
             </div>
           </div>
@@ -478,7 +530,7 @@
   </div>
 </div>
 
-<!-- PALLET SCANNING / LOOKUP MODAL -->
+<!-- PALLET SCANNING MODAL -->
 <div *ngIf="isPalletModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePalletModal()"></div>
   <div class="relative z-10 w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden p-5 space-y-4">

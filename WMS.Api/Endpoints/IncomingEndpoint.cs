@@ -81,6 +81,71 @@ namespace WMS.Api.Endpoints
             .WithDescription("Retrieves a paginated list of incoming shipments with optional filtering by warehouse, status, and search terms.")
             .Produces<PaginatedResponse<IncomingResponseDto>>(StatusCodes.Status200OK);
 
+            group.MapGet("/unreceived", async (
+                WMSContext dbContext,
+                string? search = null,
+                int? warehouseId = null,
+                int page = 1,
+                int pageSize = 50,
+                CancellationToken cancellationToken = default) =>
+            {
+                const int maxPageSize = 500;
+
+                page = Math.Max(page, 1);
+                pageSize = Math.Clamp(pageSize, 1, maxPageSize);
+
+                var query = dbContext.Incomings
+                    // Filter loaded child products to only those where Received is false
+                    .Include(inc => inc.Products.Where(p => !p.Received))
+                        .ThenInclude(p => p.Product)
+                    .Include(inc => inc.Warehouse)
+                    .AsNoTracking()
+                    // Restrict Incoming status to PENDING or PARTIAL
+                    .Where(inc => inc.Status == IncomingStatus.PENDING || inc.Status == IncomingStatus.PARTIAL)
+                    // Ensure we only retrieve Incomings that still have at least one unreceived product
+                    .Where(inc => inc.Products.Any(p => !p.Received));
+
+                if (warehouseId.HasValue)
+                {
+                    query = query.Where(inc => inc.WarehouseId == warehouseId.Value);
+                }
+
+                if (!string.IsNullOrWhiteSpace(search))
+                {
+                    query = query.Where(inc =>
+                        (inc.Shipper != null && inc.Shipper.Contains(search)) ||
+                        (inc.Consignee != null && inc.Consignee.Contains(search)) ||
+                        (inc.Warehouse != null && inc.Warehouse.Name.Contains(search)));
+                }
+
+                var totalCount = await query.CountAsync(cancellationToken);
+
+                var incomings = await query
+                    .OrderByDescending(inc => inc.Id)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken);
+
+                var items = incomings
+                    .Select(inc => inc.ToResponseDto())
+                    .ToList();
+
+                var response = new PaginatedResponse<IncomingResponseDto>
+                {
+                    Items = items,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalCount = totalCount,
+                    TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                };
+
+                return Results.Ok(response);
+            })
+            .WithName("GetUnreceivedIncomings")
+            .WithSummary("Get pending or partial incoming shipments with unreceived products")
+            .WithDescription("Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.")
+            .Produces<PaginatedResponse<IncomingResponseDto>>(StatusCodes.Status200OK);
+
             // GET: Get incoming by ID
             group.MapGet("/{id:int}", async (int id, WMSContext dbContext) =>
             {

@@ -175,6 +175,7 @@ public static class ReceivingEndpoint
         {
             // 1. Mandatory Incoming Record Lookup & Validation
             var incoming = await dbContext.Incomings
+                .Include(inc => inc.Products)
                 .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId, cancellationToken);
 
             if (incoming is null)
@@ -182,23 +183,44 @@ public static class ReceivingEndpoint
                 return Results.NotFound(new { Message = $"Incoming shipment record #{newReceivingDto.IncomingId} was not found." });
             }
 
-            // Prevent receiving an incoming record that was already processed
+            // Prevent receiving an incoming record that was already fully processed
             if (incoming.Status == IncomingStatus.RECEIVED)
             {
-                return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} has already been received." });
+                return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} has already been fully received." });
             }
 
-            // 2. Update Incoming Status to RECEIVED
-            incoming.Status = IncomingStatus.RECEIVED;
+            // 2. Identify received Product IDs from payload & update IncomingProduct flags
+            var receivedProductIds = newReceivingDto.Products
+                .Select(p => p.ProductId)
+                .Distinct()
+                .ToHashSet();
 
-            // 3. Convert DTO to Receiving entity (maps all expected vs actual line item values)
+            foreach (var incProduct in incoming.Products)
+            {
+                if (receivedProductIds.Contains(incProduct.ProductId))
+                {
+                    incProduct.Received = true;
+                }
+            }
+
+            // 3. Calculate overall Incoming status (RECEIVED if all products received, otherwise PARTIAL)
+            if (incoming.Products.Count > 0 && incoming.Products.All(p => p.Received))
+            {
+                incoming.Status = IncomingStatus.RECEIVED;
+            }
+            else if (incoming.Products.Any(p => p.Received))
+            {
+                incoming.Status = IncomingStatus.PARTIAL;
+            }
+
+            // 4. Convert DTO to Receiving entity (maps expected vs actual line-item details)
             Receiving receiving = newReceivingDto.ToEntity();
             dbContext.Receivings.Add(receiving);
 
-            // 4. Save changes in a single atomic transaction
+            // 5. Save changes in a single atomic transaction
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            // 5. SignalR Real-time Notification
+            // 6. SignalR Real-time Notification
             await hubContext.Clients.All.ReceivingCreated();
 
             return Results.CreatedAtRoute(
@@ -208,7 +230,7 @@ public static class ReceivingEndpoint
         })
         .WithName("CreateReceiving")
         .WithSummary("Create a new receiving receipt")
-        .WithDescription("Creates a receiving receipt linked to a valid Incoming shipment ID, captures all baseline expected vs actual line-item details, and automatically marks the Incoming status as RECEIVED.")
+        .WithDescription("Creates a receiving receipt linked to an Incoming shipment, marks specific line items as received, and sets Incoming status to PARTIAL or RECEIVED.")
         .Produces<ReceivingDetailsDto>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);

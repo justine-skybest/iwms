@@ -308,7 +308,7 @@ export class IncomingListComponent implements OnInit {
     void this.loadIncomings();
   }
 
-  getStatusColorClass(status: 'PENDING' | 'RECEIVED' | 'CANCELLED' | undefined): string {
+  getStatusColorClass(status: 'PENDING' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | undefined): string {
     switch (status) {
         case 'PENDING':
         return 'bg-amber-50 text-amber-700 border-amber-200';

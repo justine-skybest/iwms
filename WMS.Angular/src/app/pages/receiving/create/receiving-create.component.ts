@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, ChangeDetectorRef, ElementRef, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../../api/generated/api';
@@ -10,10 +10,11 @@ import {
   PalletLocationDto, 
   ReceivedProductDetailsDto 
 } from '../../../api/generated/models';
-import { createReceiving, getIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
+import { createReceiving, getUnreceivedIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck } from 'lucide-angular';
 import { ToastService } from '../../../lib/services/toast.service';
+import { formatDate } from '../../../lib/utils/format-date';
 
 export type DiscrepancyCategory = 
   | 'QUANTITY' 
@@ -29,16 +30,27 @@ export interface DiscrepancyOption {
   label: string;
 }
 
+export interface SelectableIncomingProduct {
+  productId: number;
+  productName?: string;
+  quantity?: number;
+  cbm?: string;
+  totalWeight?: string;
+  expirationDate?: string;
+  supplier?: string;
+  remarks?: string;
+  received?: boolean;
+  selected: boolean;
+}
+
 export type StagedProductItem = ReceivedProductDetailsDto & {
   productName?: string;
   typeOfPackage?: string;
   measurement?: string;
 
-  // --- Line Item Matching & Discrepancy State ---
-  isMatched: boolean;                    // Default: true (Disables inputs)
-  discrepancies: DiscrepancyCategory[];  // Active discrepancy tags
+  isMatched: boolean;
+  discrepancies: DiscrepancyCategory[];
   
-  // Baselines for verification matching & value resets
   expectedProductName?: string;
   expectedQuantity?: number;
   expectedCbm?: string;
@@ -74,12 +86,14 @@ export class ReceivingCreateComponent {
   readonly AlertIcon = AlertTriangle;
   readonly ShieldCheckIcon = ShieldCheck;
   readonly SummaryIcon = FileSpreadsheet;
+  readonly PackageCheckIcon = PackageCheck;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
-  private elementRef = inject(ElementRef);
   public warehouseService = inject(WarehouseService);
   private toastService = inject(ToastService);
+
+  public formatDate = formatDate;
 
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
@@ -101,12 +115,17 @@ export class ReceivingCreateComponent {
     { key: 'OTHER', label: 'Other Issue' }
   ];
 
-  // --- INCOMING COMBOBOX STATE ---
+  // --- INCOMING SHIPMENT SELECTION STATE ---
   incomingSearchQuery = '';
   searchedIncomings: IncomingResponseDto[] = [];
   isSearchingIncomings = false;
   isIncomingDropdownOpen = false;
   selectedIncoming: IncomingResponseDto | null = null;
+
+  // --- INLINE PRODUCT COMBOBOX STATE ---
+  isProductDropdownOpen = false;
+  productFilterQuery = '';
+  availableIncomingProducts: SelectableIncomingProduct[] = [];
 
   // --- PALLETIZATION MODAL STATE ---
   isPalletModalOpen = false;
@@ -118,11 +137,11 @@ export class ReceivingCreateComponent {
 
   private incomingSearchDebounce: any;
 
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isIncomingDropdownOpen = false;
-    }
+  // Global document click listener closes open dropdowns
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isIncomingDropdownOpen = false;
+    this.isProductDropdownOpen = false;
   }
 
   private generateDefaultSeries(): string {
@@ -155,14 +174,16 @@ export class ReceivingCreateComponent {
     };
   }
 
-  // --- INCOMING SEARCH & PRE-POPULATION ---
-  onIncomingSearchInput(): void {
+  // --- INCOMING SHIPMENT SELECTION ---
+  onIncomingSearchInput(event?: Event): void {
+    if (event) event.stopPropagation();
     this.isIncomingDropdownOpen = true;
     clearTimeout(this.incomingSearchDebounce);
     this.incomingSearchDebounce = setTimeout(() => { void this.searchIncomings(); }, 300);
   }
 
-  async openIncomingDropdown(): Promise<void> {
+  async openIncomingDropdown(event?: Event): Promise<void> {
+    if (event) event.stopPropagation();
     this.isIncomingDropdownOpen = true;
     if (this.searchedIncomings.length === 0) { await this.searchIncomings(); }
   }
@@ -173,10 +194,9 @@ export class ReceivingCreateComponent {
     const warehouseId = this.warehouseService.selectedWarehouseId();
 
     try {
-      const response = await this.api.invoke(getIncomings, {
+      const response = await this.api.invoke(getUnreceivedIncomings, {
         search: this.incomingSearchQuery.trim(),
         warehouseId: warehouseId ?? undefined,
-        status: "PENDING",
         pageSize: 15
       }) as IncomingResponseDtoPaginatedResponse;
 
@@ -201,26 +221,79 @@ export class ReceivingCreateComponent {
       this.newReceiving.warehouseId = incoming.warehouseId;
     }
 
-    // Pre-populate Staged Items with explicit Expected vs Actual baselines
-    if (incoming.products && incoming.products.length > 0) {
-      this.stagedItems = incoming.products.map(p => {
+    // Populate available unreceived products for inline combobox (Default to zero selected)
+    this.availableIncomingProducts = (incoming.products || [])
+      .filter(p => !p.received)
+      .map(p => ({
+        productId: p.productId!,
+        productName: p.productName || '',
+        quantity: p.quantity || 0,
+        cbm: p.cbm || '0',
+        totalWeight: p.totalWeight || '0',
+        expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
+        supplier: p.supplier || '',
+        remarks: p.remarks || '',
+        received: p.received || false,
+        selected: false
+      }));
+
+    this.syncStagedItemsFromSelection();
+  }
+
+  // --- INLINE PRODUCT COMBOBOX HANDLERS ---
+  toggleProductDropdown(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isProductDropdownOpen = !this.isProductDropdownOpen;
+  }
+
+  toggleProductSelection(product: SelectableIncomingProduct): void {
+    product.selected = !product.selected;
+    this.syncStagedItemsFromSelection();
+  }
+
+  toggleSelectAllProducts(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.availableIncomingProducts.forEach(p => p.selected = isChecked);
+    this.syncStagedItemsFromSelection();
+  }
+
+  get isAllProductsSelected(): boolean {
+    return this.availableIncomingProducts.length > 0 && this.availableIncomingProducts.every(p => p.selected);
+  }
+
+  get filteredAvailableProducts(): SelectableIncomingProduct[] {
+    if (!this.productFilterQuery.trim()) return this.availableIncomingProducts;
+    const query = this.productFilterQuery.toLowerCase().trim();
+    return this.availableIncomingProducts.filter(p => 
+      p.productName?.toLowerCase().includes(query) ||
+      p.supplier?.toLowerCase().includes(query)
+    );
+  }
+
+  syncStagedItemsFromSelection(): void {
+    const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
+
+    const updatedStagedItems: StagedProductItem[] = [];
+
+    for (const p of selectedProducts) {
+      const existing = this.stagedItems.find(s => s.productId === p.productId);
+      if (existing) {
+        updatedStagedItems.push(existing);
+      } else {
         const prodName = p.productName || '';
         const qty = p.quantity || 0;
         const cbmVal = p.cbm || '0';
         const weightVal = p.totalWeight || '0';
         const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
-        return {
-          productId: p.productId!,
-          
-          // Baseline Expected Fields (From Incoming Packing List)
+        updatedStagedItems.push({
+          productId: p.productId,
           expectedProductName: prodName,
           expectedQuantity: qty,
           expectedCbm: cbmVal,
           expectedTotalWeight: weightVal,
           expectedExpirationDate: expiryVal,
 
-          // Initial Actual Counted Values
           productName: prodName,
           quantity: qty,
           cbm: cbmVal,
@@ -234,12 +307,11 @@ export class ReceivingCreateComponent {
 
           isMatched: true,
           discrepancies: []
-        };
-      });
-    } else {
-      this.stagedItems = [];
+        });
+      }
     }
 
+    this.stagedItems = updatedStagedItems;
     this.newReceiving.products = this.stagedItems;
     this.cd.markForCheck();
   }
@@ -248,18 +320,20 @@ export class ReceivingCreateComponent {
     this.selectedIncoming = null;
     this.incomingSearchQuery = '';
     this.searchedIncomings = [];
+    this.availableIncomingProducts = [];
     this.isIncomingDropdownOpen = false;
+    this.isProductDropdownOpen = false;
+    this.productFilterQuery = '';
     this.stagedItems = [];
     this.newReceiving.products = [];
     this.cd.markForCheck();
   }
 
-  // --- MATCHING & AUTOMATIC DISCREPANCY DETECTION ---
+  // --- MATCHING & DISCREPANCY VERIFICATION ---
   toggleItemMatch(item: StagedProductItem): void {
     item.isMatched = !item.isMatched;
 
     if (item.isMatched) {
-      // Revert actual fields back to expected baseline
       item.quantity = item.expectedQuantity;
       item.cbm = item.expectedCbm;
       item.totalWeight = item.expectedTotalWeight;
@@ -444,7 +518,14 @@ export class ReceivingCreateComponent {
   }
 
   removeProductItem(index: number): void {
+    const removedItem = this.stagedItems[index];
     this.stagedItems.splice(index, 1);
+
+    if (removedItem) {
+      const target = this.availableIncomingProducts.find(p => p.productId === removedItem.productId);
+      if (target) target.selected = false;
+    }
+
     this.newReceiving.products = this.stagedItems;
     this.cd.markForCheck();
   }
@@ -460,12 +541,12 @@ export class ReceivingCreateComponent {
     if (!this.newReceiving.reference?.trim()) return 'Reference No. is required.';
     if (!this.newReceiving.plateNumber?.trim()) return 'Plate Number is required.';
     if (!this.newReceiving.driverName?.trim()) return 'Driver Name is required.';
-    if (!this.stagedItems || this.stagedItems.length === 0) return 'At least one received product item is required.';
+    if (!this.stagedItems || this.stagedItems.length === 0) return 'At least one received product item must be staged.';
 
     for (let i = 0; i < this.stagedItems.length; i++) {
       const item = this.stagedItems[i];
       if (!item.isMatched && item.discrepancies.length === 0 && !item.remarks?.trim()) {
-        return `Line Item #${i + 1} (${item.productName}) is marked as having discrepancies, but no discrepancy category or remark was provided.`;
+        return `Line Item #${i + 1} (${item.productName}) is marked as having discrepancies, but no category or remark was provided.`;
       }
     }
 
@@ -490,7 +571,6 @@ export class ReceivingCreateComponent {
     this.validationError = '';
     this.isSaving = true;
 
-    // Explicitly construct ReceivedProductDetailsDto objects with Expected vs Actual baselines
     const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
       let remarksText = item.remarks || '';
       if (!item.isMatched && item.discrepancies.length > 0) {
@@ -502,14 +582,12 @@ export class ReceivingCreateComponent {
         id: item.id || 0,
         productId: item.productId!,
 
-        // Baseline Expected Fields
         expectedProductName: item.expectedProductName,
         expectedQuantity: item.expectedQuantity,
         expectedCbm: item.expectedCbm,
         expectedTotalWeight: item.expectedTotalWeight,
         expectedExpirationDate: item.expectedExpirationDate as any,
 
-        // Actual Counted / Received Fields
         productName: item.productName,
         quantity: item.quantity ?? 0,
         cbm: item.cbm || '0',
