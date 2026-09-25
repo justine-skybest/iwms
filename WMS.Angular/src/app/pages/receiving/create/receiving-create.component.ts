@@ -329,7 +329,6 @@ export class ReceivingCreateComponent {
     this.cd.markForCheck();
   }
 
-  // --- MATCHING & DISCREPANCY VERIFICATION ---
   toggleItemMatch(item: StagedProductItem): void {
     item.isMatched = !item.isMatched;
 
