@@ -127,7 +127,7 @@
                 <lucide-icon [img]="eyeIcon" [size]="15"></lucide-icon>
               </button>
               <button 
-                [disabled]="item.status === 'RECEIVED'" 
+                [disabled]="item.status === 'RECEIVED' || item.status === 'PARTIAL'" 
                 (click)="confirmDelete(item.id!)" 
                 class="p-1.5 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent" 
                 [title]="item.status === 'RECEIVED'? 'Cannot delete received shipments' : 'Delete'">
