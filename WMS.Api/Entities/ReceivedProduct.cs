@@ -21,6 +21,9 @@ public class ReceivedProduct : IProductBase
     public int Variance => Quantity - (ExpectedQuantity ?? 0);
 
     public required string ContainerName { get; set; }
+
+    public string? LotNumber { get; set; }
+    public string? TypeOfPackage { get; set; }
     public int? PalletId { get; set; }
     public Pallet? Pallet { get; set; }
 

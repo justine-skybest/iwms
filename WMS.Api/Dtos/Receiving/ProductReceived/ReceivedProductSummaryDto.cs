@@ -4,6 +4,7 @@ public record class ReceivedProductSummaryDto(
     int Id,
     int ProductId,
     string Name,
+    string LotNumber,
     string TypeOfPackage,
     string Measurement,
     decimal Weight,

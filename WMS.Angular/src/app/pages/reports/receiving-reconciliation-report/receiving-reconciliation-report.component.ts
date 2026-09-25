@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../../api/generated/api';
 import { getAllShippersFromReceiving, receivingV2Get } from '../../../api/generated/functions';
-import { ReceivedProductSummaryDto, ReceivingSummaryDtoPaginatedResponse, ReceivingSummaryDto } from '../../../api/generated/models';
+import { ReceivedProductSummaryDto, ReceivingDetailsDtoPaginatedResponse, ReceivingSummaryDto } from '../../../api/generated/models';
 import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { PageHeaderComponent } from '../../../shared/layout/page-header/page-header.component';
 import { 
@@ -104,7 +104,7 @@ export class ReceivingReconciliationReportComponent implements OnInit {
     });
 
     try {
-      const response = await this.api.invoke(receivingV2Get, params) as ReceivingSummaryDtoPaginatedResponse;
+      const response = await this.api.invoke(receivingV2Get, params) as ReceivingDetailsDtoPaginatedResponse;
       this.receivings = response.items ?? [];
     } catch (err) {
       console.error('Failed to load receivings for shipper:', err);

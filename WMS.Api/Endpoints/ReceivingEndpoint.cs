@@ -4,6 +4,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
+using WMS.Api.Helpers;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
@@ -80,10 +81,10 @@ public static class ReceivingEndpoint
 
             // Map to DTOs in C# memory
             var items = receivings
-                .Select(receiving => receiving.ToReceivingSummaryDto())
+                .Select(receiving => receiving.ToReceivingDetailsDto())
                 .ToList();
 
-            var response = new PaginatedResponse<ReceivingSummaryDto>
+            var response = new PaginatedResponse<ReceivingDetailsDto>
             {
                 Items = items,
                 Page = page,
@@ -94,7 +95,7 @@ public static class ReceivingEndpoint
 
             return Results.Ok(response);
         })
-        .Produces<PaginatedResponse<ReceivingSummaryDto>>(StatusCodes.Status200OK);
+        .Produces<PaginatedResponse<ReceivingDetailsDto>>(StatusCodes.Status200OK);
 
         group.MapGet("/shippers", async (
             WMSContext dbContext,
@@ -159,10 +160,22 @@ public static class ReceivingEndpoint
             Receiving? receiving = await dbContext.Receivings
                 .Include(receiving => receiving.Products!)
                     .ThenInclude(product => product!.Product)
+                .Include(receiving => receiving.Warehouse)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(result => result.Id == id);
 
-            return receiving is null ? Results.NotFound() : Results.Ok(receiving.ToReceivingDetailsDto());
-        }).WithName(GetReceivingEndpoint);
+            if (receiving is null)
+            {
+                return Results.NotFound(new { Message = $"Receiving receipt #{id} was not found." });
+            }
+
+            return Results.Ok(receiving.ToReceivingDetailsDto());
+        })
+        .WithName(GetReceivingEndpoint)
+        .WithSummary("Get receiving transaction details")
+        .WithDescription("Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.")
+        .Produces<ReceivingDetailsDto>(StatusCodes.Status200OK)
+        .ProducesProblem(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
         // Mutation Endpoints
@@ -213,24 +226,50 @@ public static class ReceivingEndpoint
                 incoming.Status = IncomingStatus.PARTIAL;
             }
 
-            // 4. Convert DTO to Receiving entity (maps expected vs actual line-item details)
+            // 4. Convert DTO to Receiving entity
             Receiving receiving = newReceivingDto.ToEntity();
             dbContext.Receivings.Add(receiving);
 
-            // 5. Save changes in a single atomic transaction
+            // 5. Initial Save Changes to generate database-assigned receiving.Id
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            // 6. SignalR Real-time Notification
+            // 6. Generate Lot Number per received product using the generated Receiving Id
+            int sequenceIndex = 1;
+            if (receiving.Products != null && receiving.Products.Count > 0)
+            {
+                foreach (var product in receiving.Products)
+                {
+                    product.LotNumber = LotNumberGenerator.Generate(
+                        product.LotNumber,
+                        receiving.Id,
+                        product.ProductId,
+                        sequenceIndex++
+                    );
+                }
+
+                // Persist generated Lot Numbers
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
+
+            // 7. SignalR Real-time Notification
             await hubContext.Clients.All.ReceivingCreated();
+
+            // 8. Re-query hydrated entity to return complete DTO with Product and Warehouse metadata
+            var createdReceiving = await dbContext.Receivings
+                .Include(r => r.Warehouse)
+                .Include(r => r.Products!)
+                    .ThenInclude(p => p.Product)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == receiving.Id, cancellationToken);
 
             return Results.CreatedAtRoute(
                 GetReceivingEndpoint,
                 new { id = receiving.Id },
-                receiving.ToReceivingDetailsDto());
+                (createdReceiving ?? receiving).ToReceivingDetailsDto());
         })
         .WithName("CreateReceiving")
         .WithSummary("Create a new receiving receipt")
-        .WithDescription("Creates a receiving receipt linked to an Incoming shipment, marks specific line items as received, and sets Incoming status to PARTIAL or RECEIVED.")
+        .WithDescription("Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.")
         .Produces<ReceivingDetailsDto>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);
@@ -249,20 +288,32 @@ public static class ReceivingEndpoint
 
             dbContext.Entry(existingReceiving).CurrentValues.SetValues(updatedReceiving.ToUpdateEntity(id));
 
-            // Update related entities (ReceivedProducts)
+            // 1. Update existing or insert new ReceivedProducts
             foreach (var updatedProduct in updatedReceiving.Products)
             {
-                var existingProduct = existingReceiving.Products.FirstOrDefault(p => p.Id == updatedProduct.Id && p.ProductId == updatedProduct.ProductId);
+                var existingProduct = existingReceiving.Products?
+                    .FirstOrDefault(p => p.Id == updatedProduct.Id && p.ProductId == updatedProduct.ProductId);
+                int newProductSequence = (existingReceiving.Products?.Count ?? 0) + 1;
+                // Auto-generate or sanitize Lot Number
+                string assignedLotNumber = LotNumberGenerator.Generate(
+                    updatedProduct.LotNumber,
+                    id,
+                    updatedProduct.ProductId,
+                    newProductSequence++
+                );
+
                 if (existingProduct != null && existingProduct.Id != 0)
                 {
                     dbContext.Entry(existingProduct).CurrentValues.SetValues(updatedProduct);
+                    existingProduct.LotNumber = assignedLotNumber; // Ensure LotNumber is persisted
                 }
                 else
                 {
-                    existingReceiving.Products.Add(new ReceivedProduct
+                    existingReceiving.Products!.Add(new ReceivedProduct
                     {
                         ProductId = updatedProduct.ProductId,
                         Quantity = updatedProduct.Quantity,
+                        LotNumber = assignedLotNumber, // Assigned Generated Lot Number
                         CBM = updatedProduct.CBM,
                         TotalWeight = updatedProduct.TotalWeight,
                         Remarks = updatedProduct.Remarks,

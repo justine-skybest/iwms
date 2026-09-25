@@ -12,6 +12,7 @@ export interface ReceivedProductSummaryDto {
   expirationDate?: string | null;
   hasDiscrepancy?: boolean;
   id?: number;
+  lotNumber?: string | null;
   measurement?: string | null;
   name?: string | null;
   palletId?: number | null;

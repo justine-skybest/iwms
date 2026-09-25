@@ -19,11 +19,15 @@ public record class ReceivedProductDetailsDto
     public int Quantity { get; init; }
     public string CBM { get; init; } = "0";
     public string TotalWeight { get; init; } = "0";
+    public decimal TotalAmount { get; set; }
+    public decimal UnitPrice { get; set; }
     public DateOnly? ExpirationDate { get; init; }
 
     public string? Supplier { get; init; }
     public string? Remarks { get; init; }
     public string? ContainerName { get; init; }
+    public string? LotNumber { get; set; }
+    public string? TypeOfPackage { get; set; }
     public int? PalletId { get; init; }
 }
 

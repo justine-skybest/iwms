@@ -56,8 +56,8 @@ export type { RackSummaryDtoPaginatedResponse } from './models/rack-summary-dto-
 export type { ReceivedProductDetailsDto } from './models/received-product-details-dto';
 export type { ReceivedProductSummaryDto } from './models/received-product-summary-dto';
 export type { ReceivingDetailsDto } from './models/receiving-details-dto';
+export type { ReceivingDetailsDtoPaginatedResponse } from './models/receiving-details-dto-paginated-response';
 export type { ReceivingSummaryDto } from './models/receiving-summary-dto';
-export type { ReceivingSummaryDtoPaginatedResponse } from './models/receiving-summary-dto-paginated-response';
 export type { RecentReceivingDto } from './models/recent-receiving-dto';
 export type { ToCheckInProducts } from './models/to-check-in-products';
 export type { ToCheckInProductsPaginatedResponse } from './models/to-check-in-products-paginated-response';

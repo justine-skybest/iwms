@@ -7,7 +7,7 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { ReceivingSummaryDtoPaginatedResponse } from '../../models/receiving-summary-dto-paginated-response';
+import type { ReceivingDetailsDtoPaginatedResponse } from '../../models/receiving-details-dto-paginated-response';
 
 export interface ReceivingV2Get$Params {
   search?: string;
@@ -16,7 +16,7 @@ export interface ReceivingV2Get$Params {
   pageSize?: number;
 }
 
-export function receivingV2Get(http: HttpClient, rootUrl: string, params?: ReceivingV2Get$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingSummaryDtoPaginatedResponse>> {
+export function receivingV2Get(http: HttpClient, rootUrl: string, params?: ReceivingV2Get$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingDetailsDtoPaginatedResponse>> {
   const rb = new RequestBuilder(rootUrl, receivingV2Get.PATH, 'get');
   if (params) {
     rb.query('search', params.search, {});
@@ -30,7 +30,7 @@ export function receivingV2Get(http: HttpClient, rootUrl: string, params?: Recei
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<ReceivingSummaryDtoPaginatedResponse>;
+      return r as StrictHttpResponse<ReceivingDetailsDtoPaginatedResponse>;
     })
   );
 }

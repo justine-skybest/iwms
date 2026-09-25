@@ -11,11 +11,15 @@ export interface ReceivedProductDetailsDto {
   expectedTotalWeight?: string | null;
   expirationDate?: string | null;
   id?: number;
+  lotNumber?: string | null;
   name?: string | null;
   palletId?: number | null;
   productId?: number;
   quantity?: number;
   remarks?: string | null;
   supplier?: string | null;
+  totalAmount?: number;
   totalWeight?: string | null;
+  typeOfPackage?: string | null;
+  unitPrice?: number;
 }

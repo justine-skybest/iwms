@@ -73,10 +73,13 @@ public static class ReceivingMapping
             CBM = dto.CBM ?? "0",
             TotalWeight = dto.TotalWeight ?? "0",
             ExpirationDate = dto.ExpirationDate,
-
+            LotNumber = dto.LotNumber,
+            TypeOfPackage = dto.TypeOfPackage,
             Supplier = dto.Supplier,
             Remarks = dto.Remarks,
             ContainerName = dto.ContainerName ?? string.Empty,
+            TotalAmount = dto.TotalAmount,
+            UnitPrice = dto.UnitPrice,
             PalletId = dto.PalletId
         };
     }
@@ -111,6 +114,7 @@ public static class ReceivingMapping
             rp.Id,
             rp.ProductId,
             rp.Product?.Name ?? rp.ExpectedProductName ?? string.Empty,
+            rp.LotNumber!,
             rp.Product?.TypeOfPackage ?? string.Empty,
             rp.Product?.Measurement ?? string.Empty,
             rp.Product?.Weight ?? 0m,
@@ -121,6 +125,7 @@ public static class ReceivingMapping
             rp.ExpectedCBM,
             rp.ExpectedTotalWeight,
             rp.ExpectedExpirationDate,
+
 
             // Actual Counted / Received Fields
             rp.Quantity,
@@ -175,6 +180,10 @@ public static class ReceivingMapping
             Quantity = entity.Quantity,
             CBM = entity.CBM,
             TotalWeight = entity.TotalWeight,
+            TotalAmount = entity.TotalAmount ?? 0,
+            UnitPrice = entity.UnitPrice ?? 0,
+            LotNumber = entity.LotNumber,
+            TypeOfPackage = entity.TypeOfPackage,
             ExpirationDate = entity.ExpirationDate,
 
             Supplier = entity.Supplier,

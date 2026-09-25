@@ -14,5 +14,6 @@ export interface IncomingProductResponseDto {
   supplier?: string | null;
   totalAmount?: number | null;
   totalWeight: string;
+  typeOfPackage?: string | null;
   unitPrice?: number | null;
 }

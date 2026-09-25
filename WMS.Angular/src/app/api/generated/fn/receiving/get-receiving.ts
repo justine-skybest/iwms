@@ -7,23 +7,24 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import type { ReceivingDetailsDto } from '../../models/receiving-details-dto';
 
 export interface GetReceiving$Params {
   id: number;
 }
 
-export function getReceiving(http: HttpClient, rootUrl: string, params: GetReceiving$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+export function getReceiving(http: HttpClient, rootUrl: string, params: GetReceiving$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingDetailsDto>> {
   const rb = new RequestBuilder(rootUrl, getReceiving.PATH, 'get');
   if (params) {
     rb.path('id', params.id, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<ReceivingDetailsDto>;
     })
   );
 }

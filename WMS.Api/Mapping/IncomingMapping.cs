@@ -53,6 +53,7 @@ namespace WMS.Api.Mapping
                 Id = entity.Id,
                 ProductId = entity.ProductId,
                 ProductName = entity.Product?.Name,
+                TypeOfPackage = entity.Product?.TypeOfPackage!,
                 Code = entity.Product?.Code!,
                 UnitPrice = entity.UnitPrice!,
                 TotalAmount = entity.TotalAmount,

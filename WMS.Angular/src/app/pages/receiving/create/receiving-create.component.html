@@ -117,7 +117,6 @@
             </div>
 
             <div class="relative">
-              <!-- Combobox Control Field -->
               <div 
                 (click)="toggleProductDropdown($event)"
                 class="w-full text-xs px-3 py-2.5 border border-slate-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 cursor-pointer flex items-center justify-between shadow-sm"
@@ -138,7 +137,6 @@
                 (click)="$event.stopPropagation()"
                 class="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-64 overflow-y-auto divide-y divide-slate-100"
               >
-                <!-- Combobox Header Actions -->
                 <div class="p-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10 gap-2">
                   <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 shrink-0">
                     <input 
@@ -161,7 +159,6 @@
                   </div>
                 </div>
 
-                <!-- Product List -->
                 <div 
                   *ngFor="let p of filteredAvailableProducts" 
                   (click)="toggleProductSelection(p)"
@@ -272,7 +269,7 @@
 
         <hr class="border-slate-200" />
 
-        <!-- 5. STAGED ITEMS TABLE WITH DISCREPANCY VERIFICATION -->
+        <!-- 5. STAGED ITEMS TABLE -->
         <div>
           <div class="flex items-center justify-between mb-3">
             <div>
@@ -309,7 +306,6 @@
                 </tr>
 
                 <ng-container *ngFor="let item of stagedItems; let idx = index">
-                  <!-- Main Row -->
                   <tr [ngClass]="{'bg-amber-50/60': !item.isMatched, 'hover:bg-slate-50': item.isMatched}" class="transition-colors">
                     <td class="p-2.5 text-center">
                       <input 
@@ -466,7 +462,7 @@
             </table>
           </div>
 
-          <!-- Discrepancy Summary Card -->
+          <!-- Summary Card -->
           <div *ngIf="stagedItems.length > 0" class="mt-4 p-4 bg-slate-900 text-white rounded-xl shadow-lg space-y-3">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
               <div class="flex items-center gap-2">
@@ -526,6 +522,94 @@
           <span>{{ isSaving ? 'Saving...' : 'Save Receipt' }}</span>
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- THERMAL PALLET QR PRINT PROMPT MODAL -->
+<div *ngIf="isPrintModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePrintModal()"></div>
+  <div class="relative z-10 w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <lucide-icon [img]="PrinterIcon" [size]="18" class="text-blue-400"></lucide-icon>
+        <div>
+          <h3 class="text-sm font-bold">Print Pallet QR Labels</h3>
+          <p class="text-[11px] text-slate-400">Generated {{ generatedPalletLabels.length }} thermal label(s) for warehouse printer</p>
+        </div>
+      </div>
+      <button (click)="closePrintModal()" class="text-slate-400 hover:text-white">✕</button>
+    </div>
+
+    <!-- On-screen Label Preview Container (Added pb-16 to avoid clipping under footer) -->
+    <div class="p-4 pb-16 overflow-y-auto space-y-4 bg-slate-100 flex-1">
+      <div *ngFor="let lbl of generatedPalletLabels; let idx = index" class="p-4 bg-white border-2 border-slate-800 rounded-lg shadow-sm space-y-3 font-sans text-slate-900">
+        <div class="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
+          Pallet Label #{{ idx + 1 }} of {{ generatedPalletLabels.length }} ({{ lbl.palletNumber }})
+        </div>
+
+        <div class="flex justify-center">
+          <img [src]="lbl.qrUrl" alt="Pallet QR" class="w-28 h-28 border p-1 rounded" />
+        </div>
+
+        <div class="font-bold text-sm text-slate-900 border-b pb-1 leading-snug uppercase">
+          {{ lbl.productName }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+          <div><span class="font-normal text-slate-500">Code:</span> <strong>{{ lbl.code }}</strong></div>
+          <div><span class="font-normal text-slate-500">Weight:</span> <strong>{{ lbl.weight }} kg</strong></div>
+          <div><span class="font-normal text-slate-500">Qty:</span> <strong class="text-blue-600 font-bold">{{ lbl.quantity }}</strong></div>
+          <div><span class="font-normal text-slate-500">UoM:</span> <strong>{{ lbl.uom }}</strong></div>
+          <div><span class="font-normal text-slate-500">Lot:</span> <strong>{{ lbl.lotNumber }}</strong></div>
+          <div><span class="font-normal text-slate-500">Exp:</span> <strong>{{ lbl.expirationDate }}</strong></div>
+        </div>
+
+        <div class="text-[11px] font-mono text-slate-600 border-t pt-1">
+          Date Received: <strong>{{ lbl.dateReceived }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+      <span class="text-xs text-slate-500">Standard 4" x 6" Thermal Bluetooth Format</span>
+      <div class="flex items-center gap-2">
+        <button (click)="closePrintModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100">
+          Done
+        </button>
+        <button (click)="triggerPrint()" class="px-4 py-1.5 text-xs bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 flex items-center gap-1.5">
+          <lucide-icon [img]="PrinterIcon" [size]="14"></lucide-icon>
+          <span>Print All Labels</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
+<div #thermalPrintContainer class="hidden">
+  <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
+    <div style="text-align: center; margin-bottom: 4px;">
+      <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
+    </div>
+
+    <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
+      {{ lbl.productName }}
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
+      <div><strong>Code:</strong> {{ lbl.code }}</div>
+      <div style="display: flex; justify-content: space-between;">
+        <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
+        <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
+      </div>
+      <div><strong>UoM:</strong> {{ lbl.uom }}</div>
+      <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
+      <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
+      <strong>Date:</strong> {{ lbl.dateReceived }}
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, ChangeDetectorRef, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../../api/generated/api';
@@ -8,13 +8,15 @@ import {
   IncomingResponseDto, 
   IncomingResponseDtoPaginatedResponse, 
   PalletLocationDto, 
-  ReceivedProductDetailsDto 
+  ReceivedProductDetailsDto, 
+  ReceivingDetailsDto
 } from '../../../api/generated/models';
-import { createReceiving, getUnreceivedIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
+import { createReceiving, getReceiving, getUnreceivedIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer } from 'lucide-angular';
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
+import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
 
 export type DiscrepancyCategory = 
   | 'QUANTITY' 
@@ -39,11 +41,12 @@ export interface SelectableIncomingProduct {
   expirationDate?: string;
   supplier?: string;
   remarks?: string;
+  typeOfPackage?: string;
   received?: boolean;
   selected: boolean;
 }
 
-export type StagedProductItem = ReceivedProductDetailsDto & {
+export type StagedProductItem = {
   productName?: string;
   typeOfPackage?: string;
   measurement?: string;
@@ -56,6 +59,21 @@ export type StagedProductItem = ReceivedProductDetailsDto & {
   expectedCbm?: string;
   expectedTotalWeight?: string;
   expectedExpirationDate?: string;
+  cbm?: string | null;
+  containerName?: string | null;
+  expectedCBM?: string | null;
+  expirationDate?: string | null;
+  id?: number;
+  lotNumber?: string | null;
+  name?: string | null;
+  palletId?: number | null;
+  productId?: number;
+  quantity?: number;
+  remarks?: string | null;
+  supplier?: string | null;
+  totalAmount?: number;
+  totalWeight?: string | null;
+  unitPrice?: number;
 };
 
 export interface DiscrepancySummary {
@@ -67,11 +85,78 @@ export interface DiscrepancySummary {
   categoryCounts: Record<DiscrepancyCategory, number>;
 }
 
+export interface PalletLabelPrintData {
+  palletId: number;
+  palletNumber: string;
+  palletHashCode: number;
+  productName: string;
+  code: string;
+  quantity: number;
+  weight: string;
+  uom: string;
+  lotNumber: string;
+  expirationDate: string;
+  dateReceived: string;
+  qrUrl: string;
+}
+
 @Component({
   selector: 'app-receiving-create',
   standalone: true,
   imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent],
   templateUrl: './receiving-create.component.html',
+  styles: [`
+    @media print {
+      @page {
+        size: 4in 6in;
+        margin: 0 !important;
+      }
+
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+
+      body * {
+        visibility: hidden !important;
+      }
+
+      .printable-thermal-labels, .printable-thermal-labels * {
+        visibility: visible !important;
+      }
+
+      .printable-thermal-labels {
+        display: block !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 4in !important;
+        height: 6in !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 999999 !important;
+        background: #ffffff !important;
+      }
+
+      .thermal-label-page {
+        width: 4in !important;
+        height: 6in !important;
+        padding: 0.25in !important;
+        margin: 0 !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: Arial, sans-serif !important;
+        overflow: hidden !important;
+      }
+    }
+  `]
 })
 export class ReceivingCreateComponent {
   readonly TrashIcon = Trash2;
@@ -87,9 +172,11 @@ export class ReceivingCreateComponent {
   readonly ShieldCheckIcon = ShieldCheck;
   readonly SummaryIcon = FileSpreadsheet;
   readonly PackageCheckIcon = PackageCheck;
+  readonly PrinterIcon = Printer;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
+  private elementRef = inject(ElementRef);
   public warehouseService = inject(WarehouseService);
   private toastService = inject(ToastService);
 
@@ -98,6 +185,7 @@ export class ReceivingCreateComponent {
   @Input() isOpen = false;
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
+  @ViewChild('thermalPrintContainer') thermalPrintContainer!: ElementRef<HTMLDivElement>;
 
   isSaving = false;
   validationError = '';
@@ -121,7 +209,6 @@ export class ReceivingCreateComponent {
   isIncomingDropdownOpen = false;
   selectedIncoming: IncomingResponseDto | null = null;
 
-
   isProductDropdownOpen = false;
   productFilterQuery = '';
   availableIncomingProducts: SelectableIncomingProduct[] = [];
@@ -133,9 +220,11 @@ export class ReceivingCreateComponent {
   isLocatingPallet = false;
   palletError = '';
 
+  isPrintModalOpen = false;
+  generatedPalletLabels: PalletLabelPrintData[] = [];
+
   private incomingSearchDebounce: any;
 
-  // Global document click listener closes open dropdowns
   @HostListener('document:click')
   onDocumentClick(): void {
     this.isIncomingDropdownOpen = false;
@@ -172,7 +261,6 @@ export class ReceivingCreateComponent {
     };
   }
 
-  // --- INCOMING SHIPMENT SELECTION ---
   onIncomingSearchInput(event?: Event): void {
     if (event) event.stopPropagation();
     this.isIncomingDropdownOpen = true;
@@ -219,7 +307,6 @@ export class ReceivingCreateComponent {
       this.newReceiving.warehouseId = incoming.warehouseId;
     }
 
-    // Populate available unreceived products for inline combobox (Default to zero selected)
     this.availableIncomingProducts = (incoming.products || [])
       .filter(p => !p.received)
       .map(p => ({
@@ -231,6 +318,7 @@ export class ReceivingCreateComponent {
         expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
         supplier: p.supplier || '',
         remarks: p.remarks || '',
+        typeOfPackage: p.typeOfPackage || 'CS GLASS',
         received: p.received || false,
         selected: false
       }));
@@ -238,7 +326,6 @@ export class ReceivingCreateComponent {
     this.syncStagedItemsFromSelection();
   }
 
-  // --- INLINE PRODUCT COMBOBOX HANDLERS ---
   toggleProductDropdown(event?: Event): void {
     if (event) event.stopPropagation();
     this.isProductDropdownOpen = !this.isProductDropdownOpen;
@@ -270,7 +357,6 @@ export class ReceivingCreateComponent {
 
   syncStagedItemsFromSelection(): void {
     const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
-
     const updatedStagedItems: StagedProductItem[] = [];
 
     for (const p of selectedProducts) {
@@ -298,7 +384,7 @@ export class ReceivingCreateComponent {
           totalWeight: weightVal,
           expirationDate: expiryVal,
 
-          supplier: p.supplier || '',
+          typeOfPackage: p.typeOfPackage || 'CS GLASS',
           remarks: p.remarks || '',
           palletId: null,
           containerName: '',
@@ -446,7 +532,6 @@ export class ReceivingCreateComponent {
     return summary;
   }
 
-  // --- PALLET MODAL ---
   openPalletModal(rowIndex: number): void {
     this.activeRowIndexForPallet = rowIndex;
     this.isPalletModalOpen = true;
@@ -527,7 +612,6 @@ export class ReceivingCreateComponent {
     this.cd.markForCheck();
   }
 
-  // --- SAVE & VALIDATION ---
   private validateForm(): string | null {
     const warehouseId = this.warehouseService.selectedWarehouseId();
     if (!warehouseId) return 'Warehouse context is required.';
@@ -584,14 +668,16 @@ export class ReceivingCreateComponent {
         expectedCbm: item.expectedCbm,
         expectedTotalWeight: item.expectedTotalWeight,
         expectedExpirationDate: item.expectedExpirationDate as any,
+        typeOfPackage: item.typeOfPackage,
 
         productName: item.productName,
         quantity: item.quantity ?? 0,
         cbm: item.cbm || '0',
         totalWeight: item.totalWeight || '0',
         expirationDate: item.expirationDate as any,
+        totalAmount: item.totalAmount,
+        unitPrice: item.unitPrice,
 
-        supplier: item.supplier,
         remarks: remarksText,
         containerName: item.containerName || '',
         palletId: item.palletId
@@ -620,10 +706,19 @@ export class ReceivingCreateComponent {
     };
 
     try {
-      await this.api.invoke(createReceiving, { body: payload });
+      const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
       this.toastService.success(`Receiving ${payload.series} successfully submitted`);
       this.created.emit();
-      this.onClose();
+
+      const createdId = createdReceiving?.id;
+      const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
+
+      if (createdId && hasPalletizedItems) {
+        // Fetch server details to get exact server-generated Lot Numbers for thermal printing
+        await this.preparePalletLabelsForPrinting(createdId);
+      } else {
+        this.onClose();
+      }
     } catch (err) {
       console.error('Failed to create receiving:', err);
       this.toastService.error(`Failed to create receiving: ${err}`);
@@ -634,11 +729,195 @@ export class ReceivingCreateComponent {
     }
   }
 
+ private async preparePalletLabelsForPrinting(receivingId: number): Promise<void> {
+    try {
+      const receiving = await this.api.invoke(getReceiving, { id: receivingId }) as ReceivingDetailsDto;
+      const items = (receiving?.products || []).filter(p => !!p.palletId);
+
+      console.log(items)
+
+      if (items.length === 0) {
+        this.onClose();
+        return;
+      }
+
+      // 1. Group strongly-typed DTO items by Pallet ID
+      const groupedByPallet = new Map<number, ReceivedProductDetailsDto[]>();
+      for (const item of items) {
+        if (!item.palletId) continue;
+        if (!groupedByPallet.has(item.palletId)) {
+          groupedByPallet.set(item.palletId, []);
+        }
+        groupedByPallet.get(item.palletId)!.push(item);
+      }
+
+      const labels: PalletLabelPrintData[] = [];
+      const dateReceivedStr = this.formatDate(receiving.dateReceived || this.newReceiving.dateReceived);
+
+      for (const [palletId, groupItems] of groupedByPallet.entries()) {
+        const totalQty = groupItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
+        
+        // 2. Safe numeric weight sum
+        const totalWeightVal = groupItems.reduce((acc, curr) => {
+          const parsed = parseFloat(curr.totalWeight || '0');
+          return acc + (isNaN(parsed) ? 0 : parsed);
+        }, 0);
+
+        const firstItem = groupItems[0];
+
+        // 3. FIX: ReceivedProductDetailsDto uses `name` for Product Name
+        const primaryName = firstItem.name || firstItem.expectedProductName || '—';
+        const prodName = groupItems.length === 1 
+          ? primaryName 
+          : `${primaryName} (+${groupItems.length - 1} items)`;
+
+        // 4. FIX: Use Product ID for single SKU code instead of CBM
+        const codeVal = groupItems.length === 1 
+          ? (firstItem.productId ? `#${firstItem.productId}` : '—') 
+          : 'MULTI-SKU';
+
+        // 5. Clean server-generated Lot Number extraction
+        const lotVal = Array.from(
+          new Set(
+            groupItems
+              .map(i => i.lotNumber?.trim())
+              .filter((lot): lot is string => !!lot && lot !== '')
+          )
+        ).join(', ') || '—';
+
+        // 6. Aggregate up to 3 distinct UOMs (typeOfPackage)
+        const uomList = Array.from(
+          new Set(
+            groupItems
+              .map(i => i.typeOfPackage?.trim())
+              .filter((uom): uom is string => !!uom && uom !== '')
+          )
+        );
+        const uomVal = uomList.slice(0, 3).join(', ') || 'CS GLASS';
+
+        // 7. HashCode fallback
+        const hashCode = 100000 + palletId;
+        const qrDataUrl = await generateQrCodeDataUrl(hashCode, 180);
+
+        const formattedWeight = totalWeightVal > 0 
+          ? totalWeightVal.toFixed(2) 
+          : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
+
+        labels.push({
+          palletId: palletId,
+          palletNumber: `PAL-${palletId}`,
+          palletHashCode: hashCode,
+          productName: prodName,
+          code: codeVal,
+          quantity: totalQty,
+          weight: formattedWeight,
+          uom: uomVal,
+          lotNumber: lotVal,
+          expirationDate: this.formatDate(firstItem.expirationDate as string),
+          dateReceived: dateReceivedStr,
+          qrUrl: qrDataUrl
+        });
+      }
+
+      this.generatedPalletLabels = labels;
+      this.isPrintModalOpen = true;
+    } catch (err) {
+      console.error('Failed to fetch saved receiving details for label printing:', err);
+      this.toastService.error('Receipt saved, but failed to fetch server lot numbers for label printing.');
+      this.onClose();
+    }
+  }
+
+ triggerPrint(): void {
+    if (!this.thermalPrintContainer?.nativeElement) {
+      console.error('Thermal print container not found.');
+      return;
+    }
+
+    this.cd.detectChanges();
+    const printContents = this.thermalPrintContainer.nativeElement.innerHTML;
+
+    // Create a temporary hidden iframe at document root
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Pallet QR Thermal Print</title>
+          <style>
+            @page {
+              size: 4in 6in;
+              margin: 0 !important;
+            }
+            html, body {
+              width: 4in;
+              height: 6in;
+              margin: 0 !important;
+              padding: 0 !important;
+              background: #ffffff !important;
+              font-family: Arial, sans-serif !important;
+              color: #000000 !important;
+            }
+            .thermal-label-page {
+              width: 4in !important;
+              height: 6in !important;
+              padding: 0.25in !important;
+              margin: 0 !important;
+              page-break-after: always !important;
+              break-after: page !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+              display: flex !important;
+              flex-direction: column !important;
+              justify-content: space-between !important;
+              box-sizing: border-box !important;
+              background: #ffffff !important;
+              overflow: hidden !important;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContents}
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    // Trigger print after iframe renders images
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 500);
+    }, 200);
+  }
+
+  closePrintModal(): void {
+    this.isPrintModalOpen = false;
+    this.generatedPalletLabels = [];
+    this.onClose();
+  }
+
   onClose(): void {
     this.newReceiving = this.getInitialForm();
     this.stagedItems = [];
     this.clearIncomingSelection();
     this.closePalletModal();
+    this.isPrintModalOpen = false;
+    this.generatedPalletLabels = [];
     this.validationError = '';
     this.close.emit();
   }

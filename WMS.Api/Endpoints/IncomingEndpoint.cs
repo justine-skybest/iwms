@@ -121,6 +121,7 @@ namespace WMS.Api.Endpoints
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var incomings = await query
+                    .Include(inc => inc.Products)
                     .OrderByDescending(inc => inc.Id)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)

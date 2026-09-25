@@ -16,7 +16,7 @@ public class Pallet
 
     public string? PalletDimension {get; set;}
 
-    public decimal CapacityInKG {get;set;}  
+    public decimal CapacityInKG {get;set;}
     
     public decimal CapacityInCBM {get;set;}  
 

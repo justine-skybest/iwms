@@ -437,7 +437,7 @@
           "Receiving"
         ],
         "summary": "Create a new receiving receipt",
-        "description": "Creates a receiving receipt linked to an Incoming shipment, marks specific line items as received, and sets Incoming status to PARTIAL or RECEIVED.",
+        "description": "Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.",
         "operationId": "CreateReceiving",
         "requestBody": {
           "content": {
@@ -529,7 +529,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReceivingSummaryDtoPaginatedResponse"
+                  "$ref": "#/components/schemas/ReceivingDetailsDtoPaginatedResponse"
                 }
               }
             }
@@ -632,6 +632,8 @@
         "tags": [
           "Receiving"
         ],
+        "summary": "Get receiving transaction details",
+        "description": "Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.",
         "operationId": "GetReceiving",
         "parameters": [
           {
@@ -646,7 +648,24 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       },
@@ -5052,6 +5071,10 @@
             "minLength": 1,
             "type": "string"
           },
+          "typeOfPackage": {
+            "type": "string",
+            "nullable": true
+          },
           "expirationDate": {
             "type": "string",
             "format": "date",
@@ -5949,6 +5972,14 @@
             "type": "string",
             "nullable": true
           },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double"
+          },
           "expirationDate": {
             "type": "string",
             "format": "date",
@@ -5963,6 +5994,14 @@
             "nullable": true
           },
           "containerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "lotNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeOfPackage": {
             "type": "string",
             "nullable": true
           },
@@ -5986,6 +6025,10 @@
             "format": "int32"
           },
           "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lotNumber": {
             "type": "string",
             "nullable": true
           },
@@ -6143,6 +6186,35 @@
         },
         "additionalProperties": false
       },
+      "ReceivingDetailsDtoPaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivingDetailsDto"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "ReceivingSummaryDto": {
         "type": "object",
         "properties": {
@@ -6220,35 +6292,6 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ReceivingSummaryDtoPaginatedResponse": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReceivingSummaryDto"
-            },
-            "nullable": true
-          },
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
           }
         },
         "additionalProperties": false
