@@ -115,19 +115,17 @@ export class ReceivingCreateComponent {
     { key: 'OTHER', label: 'Other Issue' }
   ];
 
-  // --- INCOMING SHIPMENT SELECTION STATE ---
   incomingSearchQuery = '';
   searchedIncomings: IncomingResponseDto[] = [];
   isSearchingIncomings = false;
   isIncomingDropdownOpen = false;
   selectedIncoming: IncomingResponseDto | null = null;
 
-  // --- INLINE PRODUCT COMBOBOX STATE ---
+
   isProductDropdownOpen = false;
   productFilterQuery = '';
   availableIncomingProducts: SelectableIncomingProduct[] = [];
 
-  // --- PALLETIZATION MODAL STATE ---
   isPalletModalOpen = false;
   activeRowIndexForPallet: number | null = null;
   palletQrCodeInput = '';
