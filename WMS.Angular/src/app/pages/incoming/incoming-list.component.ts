@@ -2,15 +2,15 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { ReceivingCreateComponent } from "../receiving/create/receiving-create.component";
-import { ChevronLeft, ChevronRight, Download, EyeIcon, LucideAngularModule, PlusIcon, SearchIcon, TrashIcon, Upload } from "lucide-angular";
+import { ChevronLeft, ChevronRight, Download, EyeIcon, FileUp, LucideAngularModule, PencilIcon, PlusIcon, SearchIcon, TrashIcon, Upload } from "lucide-angular";
 import { PageHeaderComponent } from "../../shared/layout/page-header/page-header.component";
-import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { WarehouseService } from "../../lib/services/warehouse.service";
 import { SignalRService } from "../../lib/services/signalr.service";
 import { IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
 import { Api } from "../../api/generated/api";
-import { deleteIncoming, getIncomings, importIncomingFromExcel } from "../../api/generated/functions";
+import { deleteIncoming, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel } from "../../api/generated/functions";
 import { formatDate } from "../../lib/utils/format-date";
 import { formatTime } from "../../lib/utils/format-time";
 import { ToastService } from "../../lib/services/toast.service";
@@ -22,7 +22,7 @@ import { ConfirmDialogComponent } from "../../shared/components/dialog/confirm-d
   imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent, ConfirmDialogComponent],
   templateUrl: './incoming-list.component.html',
 })
-export class IncomingListComponent implements OnInit {
+export class IncomingListComponent implements OnInit, OnDestroy {
   @Output() closed = new EventEmitter<void>();
   Math = Math;
   private api = inject(Api);
@@ -42,12 +42,15 @@ export class IncomingListComponent implements OnInit {
   readonly downloadIcon = Download;
   readonly uploadIcon = Upload;
   readonly trashIcon = TrashIcon;
+  readonly fileUpIcon = FileUp;
 
   private destroy$ = new Subject<void>();
 
   incomings: IncomingResponseDto[] = [];
   isLoading = true;
   isImporting = false;
+  isRevising = false;
+  revisingIncomingId: number | null = null;
   isDownloadingTemplate = false;
   error = '';
   search = '';
@@ -93,7 +96,6 @@ export class IncomingListComponent implements OnInit {
   itemToDeleteId: number | null = null;
   isDeleting = false;
 
-  // Opens dialog and captures ID
   confirmDelete(id: number): void {
     this.itemToDeleteId = id;
     this.isConfirmDeleteOpen = true;
@@ -103,7 +105,6 @@ export class IncomingListComponent implements OnInit {
     this.isConfirmDeleteOpen = false;
     this.itemToDeleteId = null;
   }
-
 
   async loadIncomings(): Promise<void> {
     this.isLoading = true;
@@ -158,7 +159,7 @@ export class IncomingListComponent implements OnInit {
     });
   }
 
-  // --- EXCEL IMPORT LOGIC & VALIDATION ---
+  // --- EXCEL IMPORT LOGIC ---
   triggerFileInput(fileInput: HTMLInputElement): void {
     fileInput.click();
   }
@@ -170,14 +171,87 @@ export class IncomingListComponent implements OnInit {
 
     this.importErrors = [];
 
-    // 1. Frontend Pre-flight Validations
     const warehouseId = this.warehouseService.selectedWarehouseId();
     if (!warehouseId) {
-      this.showImportErrors(['Please select a active warehouse before importing.']);
+      this.showImportErrors(['Please select an active warehouse before importing.']);
       fileInput.value = '';
       return;
     }
 
+    if (!this.isValidExcelFile(file, fileInput)) return;
+
+    this.isImporting = true;
+    this.cd.markForCheck();
+
+    try {
+      await this.api.invoke(importIncomingFromExcel, {
+        warehouseId,
+        body: { file }
+      });
+
+      fileInput.value = '';
+      await this.loadIncomings();
+      this.toastService.success("Incoming imported successfully");
+    } catch (err: any) {
+      fileInput.value = '';
+      const errorMessages = this.extractErrorMessages(err, 'The uploaded Excel file contained invalid data or mismatched columns.');
+      this.showImportErrors(errorMessages);
+    } finally {
+      this.isImporting = false;
+      this.cd.markForCheck();
+    }
+  }
+
+  // --- EXCEL REVISION LOGIC ---
+  triggerRevisionInput(fileInput: HTMLInputElement, incomingId: number): void {
+    this.revisingIncomingId = incomingId;
+    fileInput.click();
+  }
+
+  async onRevisionFileSelected(event: Event, fileInput: HTMLInputElement): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (!file || !this.revisingIncomingId) {
+      fileInput.value = '';
+      this.revisingIncomingId = null;
+      return;
+    }
+
+    const targetId = this.revisingIncomingId;
+    this.importErrors = [];
+
+    if (!this.isValidExcelFile(file, fileInput)) {
+      this.revisingIncomingId = null;
+      return;
+    }
+
+    this.isRevising = true;
+    this.cd.markForCheck();
+
+    try {
+      await this.api.invoke(reviseIncomingFromExcel, {
+        incomingId: targetId,
+        body: { file }
+      });
+
+      fileInput.value = '';
+      this.revisingIncomingId = null;
+      await this.loadIncomings();
+      this.toastService.success(`Incoming transaction #${targetId} revised successfully.`);
+    } catch (err: any) {
+      fileInput.value = '';
+      const errorMessages = this.extractErrorMessages(err, 'An unexpected error occurred while processing the revision file.');
+      this.showImportErrors(errorMessages);
+    } finally {
+      this.isRevising = false;
+      this.revisingIncomingId = null;
+      this.cd.markForCheck();
+    }
+  }
+
+  // --- HELPER METHODS ---
+  private isValidExcelFile(file: File, fileInput: HTMLInputElement): boolean {
     const validExtensions = ['.xlsx', '.xls'];
     const fileName = file.name.toLowerCase();
     const isValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
@@ -185,58 +259,33 @@ export class IncomingListComponent implements OnInit {
     if (!isValidExtension) {
       this.showImportErrors(['Invalid file extension. Please upload an Excel packing list (.xlsx or .xls).']);
       fileInput.value = '';
-      return;
+      return false;
     }
 
     const maxSizeBytes = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSizeBytes) {
       this.showImportErrors(['File size exceeds the 10MB limit.']);
       fileInput.value = '';
-      return;
+      return false;
     }
 
-    // 2. Perform File Upload
-    this.isImporting = true;
-    this.cd.markForCheck();
+    return true;
+  }
 
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-        await this.api.invoke(importIncomingFromExcel, {
-            warehouseId,
-            body: {
-            file: file // File extends Blob in TypeScript/JavaScript
-            }
-        });
-
-      // Success
-      fileInput.value = '';
-      await this.loadIncomings();
-      this.toastService.success("Incoming Imported successfully")
-    } catch (err: any) {
-      fileInput.value = '';
-      let errorMessages: string[] = [];
-
-      if (err.status === 422 || err.status === 400) {
-        if (err.error?.errors && Array.isArray(err.error.errors)) {
-          errorMessages = err.error.errors;
-        } else if (typeof err.error === 'string') {
-          errorMessages = [err.error];
-        } else if (err.error?.message) {
-          errorMessages = [err.error.message];
-        } else {
-          errorMessages = ['The uploaded Excel file contained invalid data or mismatched columns.'];
-        }
-      } else {
-        errorMessages = ['An unexpected error occurred while processing the file. Please verify the template.'];
+  private extractErrorMessages(err: any, fallbackMessage: string): string[] {
+    if (err.status === 422 || err.status === 400) {
+      const errors = err.error?.errors || err.error?.Errors;
+      if (Array.isArray(errors) && errors.length > 0) {
+        return errors;
       }
-
-      this.showImportErrors(errorMessages);
-    } finally {
-      this.isImporting = false;
-      this.cd.markForCheck();
+      if (typeof err.error === 'string') {
+        return [err.error];
+      }
+      if (err.error?.message) {
+        return [err.error.message];
+      }
     }
+    return [fallbackMessage];
   }
 
   showImportErrors(errors: string[]): void {
@@ -255,7 +304,6 @@ export class IncomingListComponent implements OnInit {
     this.isViewOpen = true;
   }
 
-// Executes actual deletion when confirmed
   async handleExecuteDelete(): Promise<void> {
     if (!this.itemToDeleteId) return;
 
@@ -265,13 +313,13 @@ export class IncomingListComponent implements OnInit {
 
     try {
       await this.api.invoke(deleteIncoming, { id: this.itemToDeleteId });
-      this.toastService.success(`Incoming with id ${this.itemToDeleteId} deleted successfuly`)
+      this.toastService.success(`Incoming with id ${this.itemToDeleteId} deleted successfully`);
       this.isConfirmDeleteOpen = false;
       this.itemToDeleteId = null;
       await this.loadIncomings();
     } catch (err) {
       console.error('Failed to delete incoming shipment:', err);
-      this.toastService.error(`Unable to delete incoming transaction #${this.itemToDeleteId}.`)
+      this.toastService.error(`Unable to delete incoming transaction #${this.itemToDeleteId}.`);
       this.error = `Unable to delete incoming transaction #${this.itemToDeleteId}.`;
     } finally {
       this.isDeleting = false;
@@ -310,14 +358,14 @@ export class IncomingListComponent implements OnInit {
 
   getStatusColorClass(status: 'PENDING' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | undefined): string {
     switch (status) {
-        case 'PENDING':
+      case 'PENDING':
         return 'bg-amber-50 text-amber-700 border-amber-200';
-        case 'RECEIVED':
+      case 'RECEIVED':
         return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-        case 'CANCELLED':
+      case 'CANCELLED':
         return 'bg-rose-50 text-rose-700 border-rose-200';
-        default:
+      default:
         return 'bg-emerald-100 text-slate-700 border-slate-200';
     }
-    }
+  }
 }

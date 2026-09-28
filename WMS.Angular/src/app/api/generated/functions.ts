@@ -3,6 +3,8 @@
 
 export type { ImportIncomingFromExcel$Params as ImportIncomingFromExcel$Params } from './fn/incoming-import/import-incoming-from-excel';
 export { importIncomingFromExcel as importIncomingFromExcel } from './fn/incoming-import/import-incoming-from-excel';
+export type { ReviseIncomingFromExcel$Params as ReviseIncomingFromExcel$Params } from './fn/incoming-import/revise-incoming-from-excel';
+export { reviseIncomingFromExcel as reviseIncomingFromExcel } from './fn/incoming-import/revise-incoming-from-excel';
 export type { DownloadIncomingTemplate$Params as DownloadIncomingTemplate$Params } from './fn/incoming-import-template/download-incoming-template';
 export { downloadIncomingTemplate as downloadIncomingTemplate } from './fn/incoming-import-template/download-incoming-template';
 export type { GetIncomings$Params as GetIncomings$Params } from './fn/incomings/get-incomings';
@@ -57,6 +59,8 @@ export type { ReceivingIdDelete$Params as ReceivingIdDelete$Params } from './fn/
 export { receivingIdDelete as receivingIdDelete } from './fn/receiving/receiving-id-delete';
 export type { GetWarehouseOccupancyReport$Params as GetWarehouseOccupancyReport$Params } from './fn/reports/get-warehouse-occupancy-report';
 export { getWarehouseOccupancyReport as getWarehouseOccupancyReport } from './fn/reports/get-warehouse-occupancy-report';
+export type { ReportsTransactionSummaryGet$Params as ReportsTransactionSummaryGet$Params } from './fn/reports/reports-transaction-summary-get';
+export { reportsTransactionSummaryGet as reportsTransactionSummaryGet } from './fn/reports/reports-transaction-summary-get';
 export type { LocatePalletByNumber$Params as LocatePalletByNumber$Params } from './fn/transfers/locate-pallet-by-number';
 export { locatePalletByNumber as locatePalletByNumber } from './fn/transfers/locate-pallet-by-number';
 export type { LocatePalletByQrCode$Params as LocatePalletByQrCode$Params } from './fn/transfers/locate-pallet-by-qr-code';

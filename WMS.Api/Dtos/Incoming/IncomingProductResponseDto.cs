@@ -16,6 +16,7 @@
         public DateOnly? ExpirationDate { get; init; }
         public string? Supplier { get; init; }
         public bool Received { get; set; }
+        public DateTime? DateAdded { get; set; }
         public string? Remarks { get; init; }
     }
 }

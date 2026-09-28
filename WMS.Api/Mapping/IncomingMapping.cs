@@ -63,6 +63,7 @@ namespace WMS.Api.Mapping
                 ExpirationDate = entity.ExpirationDate,
                 Supplier = entity.Supplier,
                 Received = entity.Received,
+                DateAdded = entity.DateAdded!,
                 Remarks = entity.Remarks
             };
         }

@@ -4,12 +4,20 @@
   [showDate]="false">
   
 <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-  <!-- Hidden Excel file input -->
+  <!-- Hidden Initial Import File Input -->
   <input 
     #fileInput 
     type="file" 
     accept=".xlsx, .xls" 
     (change)="onFileSelected($event, fileInput)"
+    class="hidden" />
+
+  <!-- Hidden Revision File Input -->
+  <input 
+    #revisionFileInput 
+    type="file" 
+    accept=".xlsx, .xls" 
+    (change)="onRevisionFileSelected($event, revisionFileInput)"
     class="hidden" />
 
   <!-- Download Sample Template -->
@@ -126,11 +134,21 @@
               <button (click)="openView(item)" class="p-1.5 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors" title="View Details">
                 <lucide-icon [img]="eyeIcon" [size]="15"></lucide-icon>
               </button>
+              
+              <!-- Revise Incoming Excel Action -->
+              <button 
+                [disabled]="item.status === 'RECEIVED' || isRevising" 
+                (click)="triggerRevisionInput(revisionFileInput, item.id!)" 
+                class="p-1.5 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
+                [title]="item.status === 'CANCELLED' ? 'Cannot revise cancelled shipment' : 'Revise via Excel Upload'">
+                <lucide-icon [img]="fileUpIcon" [size]="15"></lucide-icon>
+              </button>
+
               <button 
                 [disabled]="item.status === 'RECEIVED' || item.status === 'PARTIAL'" 
                 (click)="confirmDelete(item.id!)" 
                 class="p-1.5 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent" 
-                [title]="item.status === 'RECEIVED'? 'Cannot delete received shipments' : 'Delete'">
+                [title]="item.status === 'RECEIVED' ? 'Cannot delete received shipments' : 'Delete'">
                 <lucide-icon [img]="trashIcon" [size]="15"></lucide-icon>
               </button>
             </td>
@@ -207,6 +225,7 @@
                   <th class="p-2.5 text-right">Total Weight</th>
                   <th class="p-2.5">Expiration Date</th>
                   <th class="p-2.5">Supplier</th>
+                  <th class="p-2.5">DateAdded</th>
                   <th class="p-2.5">Remarks</th>
                 </tr>
               </thead>
@@ -236,6 +255,7 @@
                   <td class="p-2.5 text-right font-mono text-slate-600">{{p.totalWeight}}</td>
                   <td class="p-2.5 font-mono text-slate-500">{{p.expirationDate || '—'}}</td>
                   <td class="p-2.5 text-slate-500 max-w-xs truncate">{{p.supplier || '—'}}</td>
+                  <td class="p-2.5 text-slate-500 max-w-xs truncate">{{formatDate(p.dateAdded!) || '—'}}</td>
                   <td class="p-2.5 text-slate-500 max-w-xs truncate">{{p.remarks || '—'}}</td>
                 </tr>
                 <tr *ngIf="!selectedIncoming?.products?.length">

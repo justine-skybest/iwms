@@ -4,6 +4,7 @@
 export interface IncomingProductResponseDto {
   cbm: string;
   code?: string | null;
+  dateAdded?: string | null;
   expirationDate?: string | null;
   id?: number;
   productId?: number;
