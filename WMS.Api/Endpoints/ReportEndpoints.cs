@@ -151,6 +151,15 @@ namespace WMS.Api.Endpoints
             .WithDescription("Calculates bin occupancy metrics with itemized bin check-ins and product details.")
             .Produces<OccupancyReportResponse>(StatusCodes.Status200OK);
 
+            group.MapGet("/transaction-summary", async (
+                WMSContext dbContext,
+                DateTime startDate,
+                DateTime endDate,
+                int? warehouseId = null) =>
+            {
+
+            });
+
             return group;
         }
     }

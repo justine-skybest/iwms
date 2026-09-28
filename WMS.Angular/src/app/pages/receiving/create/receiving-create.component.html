@@ -509,7 +509,14 @@
     </div>
 
     <!-- Drawer Footer Actions -->
+     <div class="p-5">
+       <div *ngIf="validationError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 font-medium flex items-center gap-2">
+         <lucide-icon [img]="AlertIcon" [size]="16" class="text-red-600 flex-shrink-0"></lucide-icon>
+         <span>{{ validationError }}</span>
+       </div>
+     </div>
     <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+      <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
       <div class="text-xs text-slate-500">
         Total Items: <strong>{{ stagedItems.length }}</strong> | Flagged Discrepancies: <strong class="text-amber-700">{{ getDiscrepancySummary().flaggedCount }}</strong>
       </div>

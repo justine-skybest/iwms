@@ -219,6 +219,7 @@ export class ReceivingCreateComponent {
   scannedPallet: PalletLocationDto | null = null;
   isLocatingPallet = false;
   palletError = '';
+  series = '';
 
   isPrintModalOpen = false;
   generatedPalletLabels: PalletLabelPrintData[] = [];
@@ -231,10 +232,12 @@ export class ReceivingCreateComponent {
     this.isProductDropdownOpen = false;
   }
 
-  private generateDefaultSeries(): string {
-    const currentYearSuffix = new Date().getFullYear().toString().slice(-2);
-    return `SLCWH-00001-${currentYearSuffix}`;
-  }
+private generateSeries(externalId: number): string {
+  const currentYearSuffix = new Date().getFullYear().toString().slice(-2);
+  const formattedId = String(externalId).padStart(5, '0');
+
+  return `SLCWH-INC${formattedId}-${currentYearSuffix}`;
+}
 
   private getInitialForm(): CreateReceivingDto {
     const now = new Date();
@@ -242,7 +245,7 @@ export class ReceivingCreateComponent {
     const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
 
     return {
-      series: this.generateDefaultSeries(),
+      series: this.series,
       driverName: '',
       plateNumber: '',
       warehouseId: this.warehouseService.selectedWarehouseId() ?? undefined,
@@ -300,6 +303,7 @@ export class ReceivingCreateComponent {
     this.selectedIncoming = incoming;
     this.incomingSearchQuery = `#${incoming.id} — ${incoming.shipper}`;
     this.isIncomingDropdownOpen = false;
+    this.newReceiving.series = this.generateSeries(incoming.id!);
 
     this.newReceiving.shipper = incoming.shipper || '';
     this.newReceiving.consignee = incoming.consignee || '';
@@ -626,6 +630,9 @@ export class ReceivingCreateComponent {
 
     for (let i = 0; i < this.stagedItems.length; i++) {
       const item = this.stagedItems[i];
+      if(!item.palletId) {
+        return `Each item should be assign to a specific pallet`;
+      }
       if (!item.isMatched && item.discrepancies.length === 0 && !item.remarks?.trim()) {
         return `Line Item #${i + 1} (${item.productName}) is marked as having discrepancies, but no category or remark was provided.`;
       }

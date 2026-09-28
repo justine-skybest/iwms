@@ -6,7 +6,7 @@ namespace WMS.Api.Dtos.Receiving;
 public record class CreateReceivingDto(      
     [Required] int WarehouseId,
     [Required] int IncomingId,
-    [Required][StringLength(15)] string Series,
+    [Required][StringLength(25)] string Series,
     [Required][StringLength(85)] string TransportCompany,
     [Required][StringLength(85)] string Shipper,
     [StringLength(85)] string Consignee,

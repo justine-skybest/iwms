@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit {
 
   reportItems = [
     { path: '/transaction-summary', label: 'Transaction Summary', icon: ArrowLeftRight },
-    { path: '/pallet-locations', label: 'Pallet Location Audit', icon: Locate },
+    // { path: '/pallet-locations', label: 'Pallet Location Audit', icon: Locate },
     { path: '/warehouse-occupancy', label: 'Warehouse Occupancy', icon: Warehouse },
     { path: '/reconcillation-report', label: 'Receiving Reconciliation', icon: Warehouse }
   ];
