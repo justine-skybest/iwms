@@ -12,23 +12,39 @@ public static class RackEndpoint
 
     public static RouteGroupBuilder MapRackEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("rack").WithParameterValidation();
+        var group = app.MapGroup("rack").WithTags("Racks").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)
         // -----------------------------------------------------------------------------
-        group.MapGet("/", async (WMSContext dbContext) =>
-            await dbContext.Racks
+        group.MapGet("/", async (
+            WMSContext dbContext,
+            int? warehouseId,
+            CancellationToken cancellationToken) =>
+        {
+            var query = dbContext.Racks.AsNoTracking();
+
+            if (warehouseId.HasValue)
+            {
+                query = query.Where(rack => rack.WarehouseId == warehouseId.Value);
+            }
+
+            var racks = await query
                 .Include(rack => rack.Warehouse)
                 .Include(rack => rack.Bay)
                 .Include(rack => rack.Level)
                 .Include(rack => rack.RackFloorMapObject)
-                .OrderBy(rack => rack.Warehouse)
+                .OrderBy(rack => rack.WarehouseId)
                 .ThenBy(rack => rack.Name)
                 .Select(rack => rack.ToRackSummaryDto())
-                .AsNoTracking()
-                .ToListAsync()
-        );
+                .ToListAsync(cancellationToken);
+
+            return TypedResults.Ok(racks);
+        })
+        .WithName("GetRacks")
+        .WithSummary("Get racks list")
+        .WithDescription("Retrieves all racks with optional filtering by warehouse.")
+        .Produces<IEnumerable<RackSummaryDto>>(StatusCodes.Status200OK);
 
         group.MapGet("/v2", async (
             WMSContext dbContext,

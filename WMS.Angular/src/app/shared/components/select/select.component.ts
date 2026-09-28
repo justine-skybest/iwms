@@ -7,12 +7,13 @@ import {
   Output,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, from } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { IconComponent } from '../../../../shared/components/icon/icon.component';
+import { IconComponent } from '../icon/icon.component';
 
 export interface SelectOption<T = unknown> {
   id: number;
@@ -21,21 +22,6 @@ export interface SelectOption<T = unknown> {
   raw: T;
 }
 
-/**
- * Generic async searchable select. Supports single or multi selection.
- *
- * Usage:
- * <app-searchable-select
- *   label="Pallet"
- *   [searchFn]="searchPallets"
- *   [selected]="selectedPallet"
- *   (selectedChange)="selectedPallet = $event"
- * ></app-searchable-select>
- *
- * `searchFn` is called with the current query string and must resolve to
- * SelectOption[]. It's the caller's job to decide whether that means an API
- * call (server-side search) or filtering a locally cached list.
- */
 @Component({
   selector: 'app-searchable-select',
   standalone: true,
@@ -63,6 +49,8 @@ export class SearchableSelectComponent<T = unknown> {
 
   @Output() selectedChange = new EventEmitter<SelectOption<T>[]>();
 
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+
   private _selected: SelectOption<T>[] = [];
 
   query = '';
@@ -86,7 +74,6 @@ export class SearchableSelectComponent<T = unknown> {
         })
       )
       .subscribe((result) => {
-        // Ignore stale responses from a previous, superseded query.
         if (result.token !== this.searchToken) {
           return;
         }
@@ -103,6 +90,32 @@ export class SearchableSelectComponent<T = unknown> {
     } catch (err) {
       console.error('Searchable select: search failed', err);
       return { options: [], token };
+    }
+  }
+
+  openDropdown(event?: Event): void {
+    if (this.disabled) {
+      return;
+    }
+
+    // Ignore container clicks if clicking actionable inner buttons (like 'x' clear)
+    if (event) {
+      const target = event.target as HTMLElement;
+      if (target.closest('button')) {
+        return;
+      }
+    }
+
+    this.isOpen = true;
+    this.cd.markForCheck();
+
+    // Focus input on next tick once *ngIf renders it
+    setTimeout(() => {
+      this.searchInput?.nativeElement.focus();
+    });
+
+    if (this.query.length >= this.minChars) {
+      this.query$.next(this.query);
     }
   }
 
@@ -141,7 +154,6 @@ export class SearchableSelectComponent<T = unknown> {
       this.selectedChange.emit(this._selected);
       this.query = '';
       this.isOpen = false;
-      this.options = [];
     }
   }
 
@@ -157,6 +169,7 @@ export class SearchableSelectComponent<T = unknown> {
     this._selected = [];
     this.query = '';
     this.selectedChange.emit([]);
+    this.openDropdown();
   }
 
   @HostListener('document:click', ['$event'])

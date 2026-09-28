@@ -77,6 +77,7 @@ app.MapInventoryEndpoints();
 app.MapIncomingEndpoints();
 app.MapIncomingImportEndpoints();
 app.MapIncomingTemplateEndpoints();
+app.MapReportEndpoints();
 
 // app.MigrateDb();
 

@@ -9,12 +9,14 @@ import { RequestBuilder } from '../../request-builder';
 
 import type { RackSummaryDto } from '../../models/rack-summary-dto';
 
-export interface RackGet$Params {
+export interface GetRacks$Params {
+  warehouseId?: number;
 }
 
-export function rackGet(http: HttpClient, rootUrl: string, params?: RackGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<RackSummaryDto>>> {
-  const rb = new RequestBuilder(rootUrl, rackGet.PATH, 'get');
+export function getRacks(http: HttpClient, rootUrl: string, params?: GetRacks$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<RackSummaryDto>>> {
+  const rb = new RequestBuilder(rootUrl, getRacks.PATH, 'get');
   if (params) {
+    rb.query('warehouseId', params.warehouseId, {});
   }
 
   return http.request(
@@ -27,4 +29,4 @@ export function rackGet(http: HttpClient, rootUrl: string, params?: RackGet$Para
   );
 }
 
-rackGet.PATH = '/rack';
+getRacks.PATH = '/rack';

@@ -59,6 +59,11 @@ export const routes: Routes = [
     title: 'Pick-Order'
   },
   {
+    path: 'warehouse-occupancy',
+    loadChildren: () => import("./pages/reports/warehouse-occupancy/warehouse-occupancy.routes").then((m) => m.warehouseOccupancyRoutes),
+    title: 'Warehouse Occupancy'
+  },
+  {
     path: 'mobile',
     component: MobileAppComponent,
     data: { hideLayout: true, breadcrumb: 'Mobile Operations' },

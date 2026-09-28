@@ -32,7 +32,7 @@ import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { ToastService } from '../../../lib/services/toast.service';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { SearchableSelectComponent, SelectOption } from '../../check-in/components/select/select.component';
+import { SearchableSelectComponent, SelectOption } from '../../../shared/components/select/select.component';
 
 export type SourceType = 'BIN' | 'NONE';
 export type BinTransferMode = 'ALL' | 'BATCH';

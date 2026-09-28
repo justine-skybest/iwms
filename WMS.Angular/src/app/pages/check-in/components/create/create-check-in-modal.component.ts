@@ -30,7 +30,7 @@ import {
   locatePalletByQrCode,
   binQrCodeBinHashCodeWarehouseIdGet,
 } from '../../../../api/generated/functions';
-import { SearchableSelectComponent, SelectOption } from '../select/select.component';
+import { SearchableSelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
 import { ToastService } from '../../../../lib/services/toast.service';
 
 type CheckInType = 'Pallet' | 'Item';
