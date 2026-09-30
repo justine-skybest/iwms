@@ -1,0 +1,3711 @@
+[
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuditLogEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuditLogEndpoints\u003Eb__0_0",
+    "RelativePath": "api/audit-logs/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "entityName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "action",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "userEmail",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fromDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "toDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Endpoints.AuditLogPagedResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Audit Logs"
+    ],
+    "Description": "Retrieves a filtered, paginated list of system audit history.",
+    "Summary": "Get paginated audit logs"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuditLogEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuditLogEndpoints\u003Eb__0_1",
+    "RelativePath": "api/audit-logs/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Entities.AuditLog",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Audit Logs"
+    ],
+    "Description": "Retrieves complete audit log details including OldValues and NewValues diff payloads.",
+    "Summary": "Get audit log details by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuditLogEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuditLogEndpoints\u003Eb__0_2",
+    "RelativePath": "api/audit-logs/entity-names",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Audit Logs"
+    ],
+    "Description": "Returns distinct entity names recorded in audit logs to populate UI filter dropdowns.",
+    "Summary": "Get list of audited entity names"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEndpoints\u003Eb__0_1",
+    "RelativePath": "api/auth/google",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RETURNURL",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 302
+      }
+    ],
+    "Tags": [
+      "Authentication"
+    ],
+    "Description": "Redirects client to Google OAuth 2.0 authentication flow.",
+    "Summary": "Initiate Google OAuth login"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEndpoints\u003Eb__0_2",
+    "RelativePath": "api/auth/google/callback",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "returnUrl",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 302
+      }
+    ],
+    "Tags": [
+      "Authentication"
+    ],
+    "Description": "Processes external Google login, validates @skybest.com.ph domain, sets identity cookie, and redirects to frontend.",
+    "Summary": "Google OAuth callback"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEndpoints\u003Eb__0_0",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.User.LoginRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.User.UserResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ],
+    "Tags": [
+      "Authentication"
+    ],
+    "Description": "Authenticates user credentials against ASP.NET Core Identity and sets the authentication cookie.",
+    "Summary": "Log in with email and password"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEndpoints\u003Eb__0_3",
+    "RelativePath": "api/auth/logout",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Authentication"
+    ],
+    "Description": "Clears current user authentication cookie and terminates session.",
+    "Summary": "Log out current user"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEndpoints\u003Eb__0_4",
+    "RelativePath": "api/auth/me",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.User.UserResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ],
+    "Tags": [
+      "Authentication"
+    ],
+    "Description": "Returns current user details derived from the active Identity principal.",
+    "Summary": "Get current user profile"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BayEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBayEndpoints\u003Eb__0_0",
+    "RelativePath": "bay/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.BayDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BayEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBayEndpoints\u003Eb__0_2",
+    "RelativePath": "bay/lessOrEqual/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.BayDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BayEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBayEndpoints\u003Eb__0_1",
+    "RelativePath": "bay/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.BayDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BayEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBayEndpoints\u003Eb__0_3",
+    "RelativePath": "bay/v2/lessOrEqual/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.BayDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_0",
+    "RelativePath": "bin/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
+    "RelativePath": "bin/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newBin",
+        "Type": "WMS.Api.Dtos.Bin.CreateBinDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
+    "RelativePath": "bin/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetBin",
+    "Description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
+    "Summary": "Get bin details by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "RelativePath": "bin/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedBin",
+        "Type": "WMS.Api.Dtos.Bin.UpdateBinDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
+    "RelativePath": "bin/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_2",
+    "RelativePath": "bin/AvailableBin/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_4",
+    "RelativePath": "bin/CheckedIn/{BinHashCode:int}/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BinHashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetCheckedInBinByQrCode",
+    "Description": "Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.",
+    "Summary": "Locate Checked-In Bin by QR Code"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
+    "RelativePath": "bin/hashcode/{hashCode:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetBinByHashCode",
+    "Description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
+    "Summary": "Get bin details by QR code hash"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "RelativePath": "bin/history/{BinId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BinId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_5",
+    "RelativePath": "bin/QRCode/{binHashCode:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "binHashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
+    "RelativePath": "bin/rack/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
+    "RelativePath": "bin/rack/{rackId}/bay/{bayId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "RelativePath": "bin/stock/id/{BinId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BinId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.DisplayCheckInProductsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetBinStockById",
+    "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
+    "Summary": "Get available stock in a specific bin by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_1",
+    "RelativePath": "bin/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_3",
+    "RelativePath": "bin/v2/AvailableBin/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
+    "RelativePath": "bin/v2/rack/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
+    "RelativePath": "bin/v2/rack/{rackId}/bay/{bayId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_0",
+    "RelativePath": "binnames/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_6",
+    "RelativePath": "binnames/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_2",
+    "RelativePath": "binnames/rack/{rackId}/bay/{bayId}/level/{levelId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "levelId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_4",
+    "RelativePath": "binnames/rack/{rackId}/bay/{bayId}/level/{levelId}/binName/{binNameId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "levelId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "binNameId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_1",
+    "RelativePath": "binnames/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_3",
+    "RelativePath": "binnames/v2/rack/{rackId}/bay/{bayId}/level/{levelId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "levelId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinNamesEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinNameEndpoints\u003Eb__0_5",
+    "RelativePath": "binnames/v2/rack/{rackId}/bay/{bayId}/level/{levelId}/binName/{binNameId}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "rackId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "bayId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "levelId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "binNameId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.BinNamesDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_0",
+    "RelativePath": "checkin/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.CheckInSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_5",
+    "RelativePath": "checkin/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newCheckIn",
+        "Type": "WMS.Api.Dtos.CheckIn.CreateCheckInDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_4",
+    "RelativePath": "checkin/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetCheckIn"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_2",
+    "RelativePath": "checkin/Bin/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.DisplayCheckInProductsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_1",
+    "RelativePath": "checkin/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.CheckIn.CheckInSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_3",
+    "RelativePath": "checkin/v2/Bin/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.CheckIn.DisplayCheckInProductsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.DashboardEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapDashboardEndpoints\u003Eb__0_0",
+    "RelativePath": "dashboard/summary",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Dashboard.DashboardSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 500
+      }
+    ],
+    "EndpointName": "GetDashboardSummary",
+    "Description": "Retrieves aggregated metrics, inventory health, activity trends, and warehouse breakdown for the dashboard.",
+    "Summary": "Get dashboard summary statistics"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingImportEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingImportEndpoints\u003Eb__0_1",
+    "RelativePath": "incoming-import/{incomingId:int}/revision-excel",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "incomingId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 422
+      }
+    ],
+    "Tags": [
+      "IncomingImport"
+    ],
+    "EndpointName": "ReviseIncomingFromExcel",
+    "Summary": "Revise an existing incoming shipment using an updated Excel packing list"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingImportEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingImportEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming-import/import-excel",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 422
+      }
+    ],
+    "Tags": [
+      "IncomingImport"
+    ],
+    "EndpointName": "ImportIncomingFromExcel",
+    "Summary": "Import an incoming shipment from an Excel packing list"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingTemplateEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingTemplateEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming-template/template",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "IncomingImportTemplate"
+    ],
+    "EndpointName": "DownloadIncomingTemplate"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_0",
+    "RelativePath": "incoming/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.Nullable\u00601[[WMS.Api.Entities.IncomingStatus, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Incoming.IncomingResponseDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "GetIncomings",
+    "Description": "Retrieves a paginated list of incoming shipments with optional filtering by warehouse, status, and search terms.",
+    "Summary": "Get paginated incoming shipments"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_3",
+    "RelativePath": "incoming/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Incoming.IncomingRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Incoming.IncomingResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "CreateIncoming",
+    "Description": "Creates a new planned incoming shipment with its associated line items.",
+    "Summary": "Create a new incoming shipment"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_2",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Incoming.IncomingResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "GetIncomingById",
+    "Description": "Retrieves a single incoming shipment record by its primary key.",
+    "Summary": "Get incoming shipment by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_4",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Incoming.IncomingRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "UpdateIncoming",
+    "Description": "Updates all details and line items for an existing incoming shipment record.",
+    "Summary": "Update an incoming shipment"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_5",
+    "RelativePath": "incoming/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "DeleteIncoming",
+    "Description": "Deletes an incoming shipment record from the system.",
+    "Summary": "Delete an incoming shipment"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_1",
+    "RelativePath": "incoming/unreceived",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Incoming.IncomingResponseDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "GetUnreceivedIncomings",
+    "Description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.",
+    "Summary": "Get pending or partial incoming shipments with unreceived products"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.InventoryEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapInventoryEndpoints\u003Eb__0_0",
+    "RelativePath": "inventory/inspect/{code}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Endpoints.InventoryInspectionResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Inventory"
+    ],
+    "EndpointName": "InspectInventoryCode",
+    "Description": "Unified inventory inspector. Resolves Pallets or Bins and returns all items stored inside.",
+    "Summary": "Inspect inventory contents by scanning a Pallet or Bin QR code"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.LevelEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapLevelEndpoints\u003Eb__0_0",
+    "RelativePath": "level/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.LevelDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.LevelEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapLevelEndpoints\u003Eb__0_2",
+    "RelativePath": "level/lessOrEqual/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.LevelDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.LevelEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapLevelEndpoints\u003Eb__0_1",
+    "RelativePath": "level/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.LevelDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.LevelEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapLevelEndpoints\u003Eb__0_3",
+    "RelativePath": "level/v2/lessOrEqual/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.LevelDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_0",
+    "RelativePath": "manualpicking/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.ManualPicking.ManualPickingSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_3",
+    "RelativePath": "manualpicking/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newManualPicking",
+        "Type": "WMS.Api.Dtos.ManualPicking.CreateManualPickingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_4",
+    "RelativePath": "manualpicking/",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_5",
+    "RelativePath": "manualpicking/",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_2",
+    "RelativePath": "manualpicking/{Id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetPick"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_1",
+    "RelativePath": "manualpicking/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.ManualPicking.ManualPickingSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_0",
+    "RelativePath": "pallet/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Pallet.PalletSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_8",
+    "RelativePath": "pallet/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newPallet",
+        "Type": "WMS.Api.Dtos.Pallet.CreatePalletDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Pallet.PalletSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "EndpointName": "CreatePallet",
+    "Description": "Creates a new pallet record in the system and returns its details.",
+    "Summary": "Create a new pallet"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_5",
+    "RelativePath": "pallet/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetPallet"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_10",
+    "RelativePath": "pallet/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedPallet",
+        "Type": "WMS.Api.Dtos.Pallet.CreatePalletDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "EndpointName": "UpdatePallet",
+    "Description": "Updates all details of an existing pallet by its ID.",
+    "Summary": "Update an existing pallet"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_11",
+    "RelativePath": "pallet/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_9",
+    "RelativePath": "pallet/autocreate/{WarehouseId:int}",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_7",
+    "RelativePath": "pallet/number/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_6",
+    "RelativePath": "pallet/QRCode/{palletHashCode:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "palletHashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_3",
+    "RelativePath": "pallet/ToBeCheckIn/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Pallet.PalletToBeCheckInDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_1",
+    "RelativePath": "pallet/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Pallet.PalletSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_4",
+    "RelativePath": "pallet/v2/ToBeCheckIn/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Pallet.PalletToBeCheckInDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_2",
+    "RelativePath": "pallet/Warehouse/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Pallet.PalletSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_0",
+    "RelativePath": "product/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Product.ProductSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_4",
+    "RelativePath": "product/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newProduct",
+        "Type": "WMS.Api.Dtos.Product.CreateProductDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Product.ProductDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      }
+    ],
+    "EndpointName": "CreateProduct",
+    "Description": "Creates a new product record and returns the created product details.",
+    "Summary": "Create a new product"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_2",
+    "RelativePath": "product/{FilterText}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FilterText",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Product.ProductDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_3",
+    "RelativePath": "product/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetProduct"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_5",
+    "RelativePath": "product/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedProduct",
+        "Type": "WMS.Api.Dtos.Product.UpdateProductDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "UpdateProduct",
+    "Description": "Updates all details of an existing product by its ID.",
+    "Summary": "Update an existing product"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_6",
+    "RelativePath": "product/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapProductEndpoints\u003Eb__0_1",
+    "RelativePath": "product/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Product.ProductSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_0",
+    "RelativePath": "rack/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[WMS.Api.Dtos.RackSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ],
+    "EndpointName": "GetRacks",
+    "Description": "Retrieves all racks with optional filtering by warehouse.",
+    "Summary": "Get racks list"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_6",
+    "RelativePath": "rack/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newRack",
+        "Type": "WMS.Api.Dtos.CreateRackDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_4",
+    "RelativePath": "rack/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ],
+    "EndpointName": "GetRack"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_7",
+    "RelativePath": "rack/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedRack",
+        "Type": "WMS.Api.Dtos.UpdateRackDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_8",
+    "RelativePath": "rack/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_5",
+    "RelativePath": "rack/bin/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_1",
+    "RelativePath": "rack/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.RackSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_3",
+    "RelativePath": "rack/v2/warehouse/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.RackSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapRackEndpoints\u003Eb__1_2",
+    "RelativePath": "rack/warehouse/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.RackSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Racks"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivedProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivedProductEndpoints\u003Eb__1_0",
+    "RelativePath": "receivedProduct/ToCheckInProducts/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Receiving.ToCheckInProducts, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivedProductEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivedProductEndpoints\u003Eb__1_1",
+    "RelativePath": "receivedProduct/v2/ToCheckInProducts/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Receiving.ToCheckInProducts, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_0",
+    "RelativePath": "receiving/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Receiving.ReceivingSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_6",
+    "RelativePath": "receiving/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newReceivingDto",
+        "Type": "WMS.Api.Dtos.Receiving.CreateReceivingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Receiving.ReceivingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ],
+    "EndpointName": "CreateReceiving",
+    "Description": "Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.",
+    "Summary": "Create a new receiving receipt"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_5",
+    "RelativePath": "receiving/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Receiving.ReceivingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ],
+    "EndpointName": "GetReceiving",
+    "Description": "Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.",
+    "Summary": "Get receiving transaction details"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_7",
+    "RelativePath": "receiving/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedReceiving",
+        "Type": "WMS.Api.Dtos.Receiving.CreateReceivingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_8",
+    "RelativePath": "receiving/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_4",
+    "RelativePath": "receiving/series",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_2",
+    "RelativePath": "receiving/shippers",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ],
+    "EndpointName": "GetAllShippersFromReceiving",
+    "Description": "Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.",
+    "Summary": "Get all unique shippers from receiving receipts"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_1",
+    "RelativePath": "receiving/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Receiving.ReceivingDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReceivingEndpoints\u003Eb__1_3",
+    "RelativePath": "receiving/warehouse/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Receiving.ReceivingSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Receiving"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_1",
+    "RelativePath": "reports/transaction-summary",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_0",
+    "RelativePath": "reports/warehouse-occupancy",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "rackId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Endpoints.OccupancyReportResponse",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ],
+    "EndpointName": "GetWarehouseOccupancyReport",
+    "Description": "Calculates bin occupancy metrics with itemized bin check-ins and product details.",
+    "Summary": "Get warehouse bin occupancy statistics"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_0",
+    "RelativePath": "transfers-v2/bin",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferBinDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferBinContents",
+    "Description": "Transfers all checked-in pallets and individual items from a source bin into new check-in records at the destination bin.",
+    "Summary": "Transfer all contents from one bin to another"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_2",
+    "RelativePath": "transfers-v2/item",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferItemV2",
+    "Description": "Moves a single received product out of its current check-in into a new check-in at the destination bin.",
+    "Summary": "Transfer a single item to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_1",
+    "RelativePath": "transfers-v2/pallet",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferPalletDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "TransferPalletV2",
+    "Description": "Moves a checked-in pallet (and all its contents) from its current bin into a new check-in record at the destination bin.",
+    "Summary": "Transfer a whole pallet to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_3",
+    "RelativePath": "transfers-v2/report",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "to",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Transfer.TransferLogDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Transfers V2"
+    ],
+    "EndpointName": "GetTransferReportV2",
+    "Description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+    "Summary": "Get a transfer log report"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_3",
+    "RelativePath": "transfers/item",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferItemDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "TransferItem",
+    "Description": "Moves a single received product out of its current check-in and into a new check-in at the destination bin, logging the transfer.",
+    "Summary": "Transfer a single item to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_5",
+    "RelativePath": "transfers/item/bin/{binId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "binId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Transfer.ItemLocationSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "GetItemsInBin",
+    "Description": "Returns item-level (non-pallet) received products currently checked in to the given bin.",
+    "Summary": "List individually checked-in items in a bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_2",
+    "RelativePath": "transfers/pallet",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Transfer.TransferPalletDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.TransferResultDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "TransferPallet",
+    "Description": "Moves a checked-in pallet and its contents from its current bin into a new check-in record at the destination bin, logging the transfer.",
+    "Summary": "Transfer a whole pallet to a new bin"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_0",
+    "RelativePath": "transfers/pallet/locate/number/{palletNumber:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "palletNumber",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.PalletLocationDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "LocatePalletByNumber",
+    "Description": "Finds a pallet by pallet number within a warehouse and returns its current bin location, if checked in.",
+    "Summary": "Locate a pallet by its pallet number"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_1",
+    "RelativePath": "transfers/pallet/locate/qrcode/{hashCode:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hashCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.PalletLocationDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "LocatePalletByQrCode",
+    "Description": "Finds a pallet by its QR code hash within a warehouse and returns its current bin location, if checked in.",
+    "Summary": "Locate a pallet by its QR code hash"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_4",
+    "RelativePath": "transfers/report",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "to",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Transfer.TransferLogDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "GetTransferReport",
+    "Description": "Returns transfer log entries within a date range, optionally scoped to a single warehouse.",
+    "Summary": "Get a transfer log report"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_0",
+    "RelativePath": "warehouse/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.WarehouseDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_3",
+    "RelativePath": "warehouse/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newWarehouse",
+        "Type": "WMS.Api.Dtos.CreateWarehouseDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_2",
+    "RelativePath": "warehouse/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetWarehouse"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_4",
+    "RelativePath": "warehouse/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedWarehouse",
+        "Type": "WMS.Api.Dtos.UpdateWarehouseDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_5",
+    "RelativePath": "warehouse/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_1",
+    "RelativePath": "warehouse/v2",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.WarehouseDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
