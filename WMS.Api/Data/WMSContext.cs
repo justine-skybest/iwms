@@ -179,7 +179,7 @@ public class WMSContext(
             entity.Property(u => u.LastName).HasMaxLength(100);
             entity.Property(u => u.ProfileImageUrl).HasMaxLength(500);
             entity.Property(u => u.IsActive).HasDefaultValue(true);
-            entity.Property(u => u.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            entity.Property(u => u.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
         });
 
         // IncomingProduct Precision
