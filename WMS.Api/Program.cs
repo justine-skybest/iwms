@@ -9,6 +9,7 @@ using WMS.Api.Entities;
 using WMS.Api.Hubs;
 using WMS.Api.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 DotNetEnv.Env.Load();
 
@@ -143,6 +144,17 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// 1. Configure Forwarded Headers to trust local Apache proxy
+var forwardedHeadersOptions = new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+};
+forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownProxies.Clear();
+
+// 2. Apply BEFORE CORS, Authentication, and Authorization
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 // 9. Seed Roles & System Admin
 await IdentityDataSeeder.SeedRolesAndAdminAsync(app.Services, app.Configuration);
