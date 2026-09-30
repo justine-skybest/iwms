@@ -17,7 +17,7 @@ namespace WMS.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.31")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -50,6 +50,189 @@ namespace WMS.Api.Data.Migrations
                     b.HasIndex("ReceivedProductId");
 
                     b.ToTable("CheckInReceivedProduct");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("ExecutionTimeMs")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PrimaryKey")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("UserRole")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Bay", b =>
@@ -3757,7 +3940,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 1,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7815),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5754),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Ube-Filled Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -3766,7 +3953,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 2,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7817),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5756),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Chocolate Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -3775,7 +3966,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 3,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7818),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5757),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Toasted Garlic 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -3784,7 +3979,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 4,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7819),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5758),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -3793,7 +3992,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 5,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7820),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5758),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -3802,7 +4005,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 6,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7822),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5759),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Buttered Toast 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -3811,7 +4018,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 7,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7823),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5760),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Miggos Sweet Corn Tortilla Chips L28g",
                             TypeOfPackage = "Carton",
@@ -3820,7 +4031,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 8,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7823),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5760),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Chocolate Cream Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -3829,7 +4044,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 9,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7824),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5761),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Mango Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -3838,7 +4057,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 10,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7825),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5764),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Ube Marshmallow OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -3847,7 +4070,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 11,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7827),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5765),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Onion Rings L-16gx100",
                             TypeOfPackage = "Carton",
@@ -3856,7 +4083,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 12,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7828),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5766),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Prawn Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -3865,7 +4096,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 13,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7829),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5767),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries BBQ LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -3874,7 +4109,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 14,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7830),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5768),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries Cheese LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -3883,7 +4122,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 15,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7831),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5768),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Potato Fries Tomato Ketchup LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -3892,7 +4135,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 16,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7831),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5769),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Fishda Fish Kropeck LF-22gx100",
                             TypeOfPackage = "Carton",
@@ -3901,7 +4148,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 17,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7832),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5770),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Fish Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -3910,7 +4161,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 18,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7833),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5770),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Mango Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -3919,7 +4174,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 19,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7834),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5771),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -3928,7 +4187,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 20,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7836),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5772),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange-Mango Blends 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -3937,7 +4200,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 21,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7836),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5772),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES BBQ 50gX50",
                             TypeOfPackage = "Carton",
@@ -3946,7 +4213,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 22,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7837),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5773),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES CHEESE 50gX50",
                             TypeOfPackage = "Carton",
@@ -3955,7 +4226,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 23,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7838),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5774),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES KETCHUP FLAVOR 50gX50",
                             TypeOfPackage = "Carton",
@@ -3964,7 +4239,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 24,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7839),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5777),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "OISHI PILLOWS CHOCOLATE CRACKERS 150gX20",
                             TypeOfPackage = "Carton",
@@ -3973,7 +4252,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 25,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7841),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5778),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "MIGGOS NACHO CHEESE TORTILLA CHIPS L28gX100",
                             TypeOfPackage = "Carton",
@@ -3982,7 +4265,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 26,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7842),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5779),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "SELECTA MOO MILK",
                             TypeOfPackage = "Carton",
@@ -3991,7 +4278,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 27,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7843),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5779),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "SKYFLAKES",
                             TypeOfPackage = "Carton",
@@ -4000,7 +4291,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 28,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7843),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5780),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "ISDALICIOUS FISH CRACKER",
                             TypeOfPackage = "Carton",
@@ -4009,7 +4304,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 29,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7844),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5781),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 24 X 40",
                             Name = "RICE & CORN CHEESE",
                             TypeOfPackage = "Carton",
@@ -4018,7 +4317,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 30,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7848),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5785),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE RING 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4027,7 +4330,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 31,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7848),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5785),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE BALL 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4036,7 +4343,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 32,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7850),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5786),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "71 X 42 X 13",
                             Name = "GOLDEN SWEET CORN 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4045,7 +4356,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 33,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7852),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5787),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "60 X 46 X 46",
                             Name = "FAN MOTOR 24V 10' FAN BASE 10' FAN BLADE",
                             TypeOfPackage = "PCS",
@@ -4054,7 +4369,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 34,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7853),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5787),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "62 X 28 X 16",
                             Name = "CIRCUIT BOARD TS26F CONTROLLER NEW SENSORS CPR WITH O RING FUSE DETECTION BOARD",
                             TypeOfPackage = "PCS",
@@ -4063,7 +4382,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 35,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7854),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5788),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 32 X 21",
                             Name = "COPPER HOSE BENDABLE",
                             TypeOfPackage = "PCS",
@@ -4072,7 +4395,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 36,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7854),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5789),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 29 X 20",
                             Name = "RECEIVER DRIER 15NF RECEIVER DRIER 20NF",
                             TypeOfPackage = "PCS",
@@ -4081,7 +4408,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 37,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7857),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5790),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "100 X 6 X 4",
                             Name = "CURTAIN ROD",
                             TypeOfPackage = "PCS",
@@ -4090,7 +4421,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 38,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7857),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5791),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 38 X 23",
                             Name = "PLASTIC CURTAIN",
                             TypeOfPackage = "PCS",
@@ -4099,7 +4434,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 39,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7860),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5791),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 38 X 23",
                             Name = "ELIMINATOR FILTER DRIER",
                             TypeOfPackage = "PCS",
@@ -4108,7 +4447,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 40,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7861),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5792),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 29 X 20",
                             Name = "THERMOSTATIC EXPANSION VALVE 15NF THERMOSTATIC EXPANSION VALVE 20NF",
                             TypeOfPackage = "PCS",
@@ -4117,7 +4460,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 41,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7862),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5792),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE STRAWBERRY 144/19G",
                             TypeOfPackage = "Carton",
@@ -4126,7 +4473,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 42,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7862),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5793),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4135,7 +4486,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 43,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7863),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5794),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE I.TEA LEMON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4144,7 +4499,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 44,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7864),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5794),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE GRAPE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4153,7 +4512,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 45,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7864),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5795),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE 12/12/19G",
                             TypeOfPackage = "Carton",
@@ -4162,7 +4525,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 46,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7865),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5796),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4171,7 +4538,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 47,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7867),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5797),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4180,7 +4551,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 48,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7868),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5797),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 40 X 63",
                             Name = "OISHI FISH CRACKERS UA 90gX30",
                             TypeOfPackage = "Sack",
@@ -4189,7 +4564,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 49,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7868),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5798),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 49 X 66",
                             Name = "Miggos Sweet Corn Tortilla Chips UA 105gX30",
                             TypeOfPackage = "Sack",
@@ -4198,7 +4577,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 50,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7869),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5799),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "60.5 X 43 X 17.5",
                             Name = "DL-2000A DC12V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4207,7 +4590,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 51,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7870),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5799),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2000F1 DC12V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4216,7 +4603,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 52,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7870),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5800),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "61 X 42 X 27",
                             Name = "DL-2600A1 DC24V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4225,7 +4616,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 53,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7871),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5800),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2600F DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4234,7 +4629,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 54,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7872),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5802),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "78 X 50 X 32",
                             Name = "DL-2600FT-BY DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4243,7 +4642,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 55,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7872),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5802),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800 DC12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4252,7 +4655,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 56,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7873),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5803),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800BY DC24V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4261,7 +4668,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 57,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7874),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5803),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800-12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4270,7 +4681,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 58,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7875),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5804),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 23 X 17",
                             Name = "Zesto Big 250 Grapes",
                             TypeOfPackage = "Carton",
@@ -4279,7 +4694,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 59,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7875),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5805),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4288,7 +4707,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 60,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7876),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5806),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4297,7 +4720,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 61,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7877),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5806),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "25 X 36 X 28",
                             Name = "KOPIKO BLANCA POUCH 24X10X30G",
                             TypeOfPackage = "Carton",
@@ -4306,7 +4733,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 62,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7877),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5807),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "24 X 43 X 28",
                             Name = "KOPIKO BLACK 3IN1 POUCH 24X1024X 10 X 30G",
                             TypeOfPackage = "Carton",
@@ -4315,7 +4746,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 63,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7878),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5808),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 50 X 20",
                             Name = "JUMBO PUSH POP 24 X 12 X 30G",
                             TypeOfPackage = "Carton",
@@ -4324,7 +4759,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 64,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7879),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5809),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "17 X 52 X 26",
                             Name = "PUSH POP LOLLIPOP 20 X 20 X 14G",
                             TypeOfPackage = "Carton",
@@ -4333,7 +4772,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 65,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7881),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5809),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "21 X 24 X 19",
                             Name = "KOJIE SL CLASSIC SOAP 135G X 24 X 20",
                             TypeOfPackage = "Carton",
@@ -4342,7 +4785,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 66,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7882),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5810),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "18 X 16 X 32",
                             Name = "AJI CRISPY FRY ORIG 24/238G",
                             TypeOfPackage = "Carton",
@@ -4351,7 +4798,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 67,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7883),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5811),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "18 X 16 X 32",
                             Name = "MODESS BODY ADAPT LONGS UT 24/4S",
                             TypeOfPackage = "Carton",
@@ -4360,7 +4811,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 68,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7883),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5811),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 18 X 37",
                             Name = "MODESS C.SFT LONG W 24/8'S",
                             TypeOfPackage = "Carton",
@@ -4369,7 +4824,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 69,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7884),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5812),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "35 X 18 X 27",
                             Name = "DM PINEAPPLE SLICES 24/432G",
                             TypeOfPackage = "Carton",
@@ -4378,7 +4837,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 70,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7885),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5813),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "24 X 18 X 29",
                             Name = "MODESS ALL NIGHT W 24/4'S",
                             TypeOfPackage = "Carton",
@@ -4387,7 +4850,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 71,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7886),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5814),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "48 X 31 X 24",
                             Name = "MODESS C.SFT REG MAXI W 12/32/1S",
                             TypeOfPackage = "Carton",
@@ -4396,7 +4863,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 72,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7886),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5814),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE LYCHEE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4405,7 +4876,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 73,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7887),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5815),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "17 X 48 X 32",
                             Name = "FIESTA FRT COCKTL 6/3033G",
                             TypeOfPackage = "Carton",
@@ -4414,7 +4889,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 74,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7888),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5816),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE APPLE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4423,7 +4902,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 75,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7888),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5817),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE-MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4432,7 +4915,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 76,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7889),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5817),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH TSOKOLATE 30/10",
                             TypeOfPackage = "Carton",
@@ -4441,7 +4928,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 77,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7890),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5818),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH CONDENSADA 30/10",
                             TypeOfPackage = "Carton",
@@ -4450,7 +4941,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 78,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7892),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5819),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "33 X 13 X 17",
                             Name = "SELECTA MOO MILK CHOCO 24/245ML",
                             TypeOfPackage = "Carton",
@@ -4459,7 +4954,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 79,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7892),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5819),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "33 X 22 X 27",
                             Name = "SNOWTIME ICE POPS 15/8/90ML",
                             TypeOfPackage = "Carton",
@@ -4468,7 +4967,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 80,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7893),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5820),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 70 X 40",
                             Name = "PARTY PACK SUPER CRUNCH CHEESE RINGS 370G X 12S",
                             TypeOfPackage = "Carton",
@@ -4477,7 +4980,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 81,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7894),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5821),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 30 X 39",
                             Name = "MUNCHER KID'S CHOICE GREEN PEAS CHICKEN",
                             TypeOfPackage = "Carton",
@@ -4486,7 +4993,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 82,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7895),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5822),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 19 X 20",
                             Name = "Muncher G. Peas Orig 70gX10packsX10pcs",
                             TypeOfPackage = "Carton",
@@ -4495,7 +5006,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 83,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7895),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5822),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "72 X 40 X 17",
                             Name = "Super Q Golden Bihon 15x1KG",
                             TypeOfPackage = "Carton",
@@ -4504,7 +5019,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 84,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7896),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5823),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O ORANGE 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4513,7 +5032,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 85,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7924),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5823),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O MANGO 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4522,7 +5045,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 86,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7925),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5824),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "84 X 36 X 13",
                             Name = "Cheese Ring Snack Cheese 25x60g",
                             TypeOfPackage = "Carton",
@@ -4531,7 +5058,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 87,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7926),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5825),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "78 X 33 X 13",
                             Name = "Snacku Vegetable Snack 30/50G",
                             TypeOfPackage = "Carton",
@@ -4540,7 +5071,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 88,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7926),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5826),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 34 X 21",
                             Name = "Maya Cornstarch 12x1kg",
                             TypeOfPackage = "Carton",
@@ -4549,7 +5084,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 89,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7927),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5826),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 30 X 21",
                             Name = "American Gumball 24x40",
                             TypeOfPackage = "Carton",
@@ -4558,7 +5097,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 90,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7928),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5827),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "86 X 51 X 39",
                             Name = "Ordinary Mattress 4x36x75",
                             TypeOfPackage = "Carton",
@@ -4567,7 +5110,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 91,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7929),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5828),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "164 X 61 X 33",
                             Name = "Ordinary Mattress 4x54x75",
                             TypeOfPackage = "Carton",
@@ -4576,7 +5123,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 92,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7931),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5829),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "54 X 98 X 77",
                             Name = "Jumbo Rack 4 layer",
                             TypeOfPackage = "Carton",
@@ -4585,7 +5136,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 93,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7932),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5830),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4594,7 +5149,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 94,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7932),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5830),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4603,7 +5162,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 95,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7933),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5831),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY DALANDAN 40/50S",
                             TypeOfPackage = "Carton",
@@ -4612,7 +5175,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 96,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7934),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5832),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY CHERRY 40/50S",
                             TypeOfPackage = "Carton",
@@ -4621,7 +5188,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 97,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7934),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5832),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "48 X 31 X 17",
                             Name = "TODAY'S MIXED FRUIT 6/2.9L",
                             TypeOfPackage = "Carton",
@@ -4630,7 +5201,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 98,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7935),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5833),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "43 X 29 X 26",
                             Name = "965 COL.MONAMI STRAW CRM 40/50'S",
                             TypeOfPackage = "Carton",
@@ -4639,7 +5214,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 99,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7936),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5834),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 15 X 28",
                             Name = "ABSOLUTE DISTILLED WATER 3/5000ML",
                             TypeOfPackage = "Carton",
@@ -4648,7 +5227,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 100,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7936),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5835),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 13 X 33",
                             Name = "ABSOLUTE DISTILLED WATER 3/6000ML",
                             TypeOfPackage = "Carton",
@@ -4657,7 +5240,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 101,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7937),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5835),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 24 X 30",
                             Name = "ABSOLUTE DISTILLED WATER 4/4000ML",
                             TypeOfPackage = "Carton",
@@ -4666,7 +5253,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 102,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7938),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5836),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 22 X 17",
                             Name = "AJINAMOTO GINISA MIX 48/100G",
                             TypeOfPackage = "Carton",
@@ -4675,7 +5266,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 103,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7938),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5837),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 25 X 24",
                             Name = "AJINAMOTO GINISA MIX 54/16/8G",
                             TypeOfPackage = "Carton",
@@ -4684,7 +5279,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 104,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7939),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5838),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 28 X 15",
                             Name = "AJINAMOTO VETSIN BLUE 48/250G",
                             TypeOfPackage = "Carton",
@@ -4693,7 +5292,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 105,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7942),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5839),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "35 X 22 X 18",
                             Name = "AJINAMOTO VETSIN RED 8X12X100G",
                             TypeOfPackage = "Carton",
@@ -4702,7 +5305,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 106,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7943),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5839),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "77 X 31 X 13",
                             Name = "CHEESE RING SNACK CHEESE 30/25G",
                             TypeOfPackage = "Carton",
@@ -4711,7 +5318,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 107,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7943),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5840),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 30 X 32",
                             Name = "DATU PUTI VINEGAR PCON 4/1GAL",
                             TypeOfPackage = "Carton",
@@ -4720,7 +5331,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 108,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7944),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5840),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 24 X 31",
                             Name = "DATU PUTI VINEGAR 8/1.893",
                             TypeOfPackage = "Carton",
@@ -4729,7 +5344,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 109,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7945),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5875),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -4738,7 +5357,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 110,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7945),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5876),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -4747,7 +5370,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 111,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7946),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5877),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "51 X 38 X 82",
                             Name = "FITA CRACKER SINGLES 20/15/30G",
                             TypeOfPackage = "Carton",
@@ -4756,7 +5383,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 112,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7947),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5877),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "48 X 24 X 31",
                             Name = "HAPPY TIME BISCUIT ASSORTMENT 4/1.5K",
                             TypeOfPackage = "Carton",
@@ -4765,7 +5396,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 113,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7947),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5878),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "25 X 25 X 20",
                             Name = "KNR MIX SNGNG ORIG 12/12/22G",
                             TypeOfPackage = "Carton",
@@ -4774,7 +5409,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 114,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7948),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5878),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 14 X 20",
                             Name = "KNR SOUP CRAB & CORN 72/37G",
                             TypeOfPackage = "Carton",
@@ -4783,7 +5422,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 115,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7949),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5879),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -4792,7 +5435,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 116,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7950),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5880),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -4801,7 +5448,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 117,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7951),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5882),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "18 X 14 X 12",
                             Name = "MCCORMICK BLACK PEPPER GRND 12/35G",
                             TypeOfPackage = "Carton",
@@ -4810,7 +5461,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 118,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7953),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5883),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "55 X 41 X 19",
                             Name = "OISHI CHEESE CLUBS 100X23G",
                             TypeOfPackage = "Carton",
@@ -4819,7 +5474,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 119,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7954),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5884),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS CHOCO 100/38G",
                             TypeOfPackage = "Carton",
@@ -4828,7 +5487,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 120,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7954),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5884),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS UBE 100/38G",
                             TypeOfPackage = "Carton",
@@ -4837,7 +5500,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 121,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7955),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5885),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 18 X 26",
                             Name = "OREO SND.CKIE CHOCO 12/9/27G",
                             TypeOfPackage = "Carton",
@@ -4846,7 +5513,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 122,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7956),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5886),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 14 X 17",
                             Name = "QUEEN BAKING SODA 48/125G",
                             TypeOfPackage = "Carton",
@@ -4855,7 +5526,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 123,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7956),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5886),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -4864,7 +5539,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 124,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7957),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5887),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -4873,7 +5552,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 125,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7958),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5888),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 26 X 19",
                             Name = "VIVA CARAMEL CANDY 20/100'S",
                             TypeOfPackage = "Carton",
@@ -4882,7 +5565,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 126,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7959),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5890),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 25 X 21",
                             Name = "UFC BANANA CATSUP 24/320G",
                             TypeOfPackage = "Carton",
@@ -4891,7 +5578,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 127,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7959),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5891),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 18 X 69",
                             Name = "SUPER Q GOLDEN BIHON 60/227G",
                             TypeOfPackage = "Carton",
@@ -4900,7 +5591,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 128,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7960),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5891),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "69 X 38 X 18",
                             Name = "SUPER Q GOLDEN BIHON 30/500 G",
                             TypeOfPackage = "Carton",
@@ -4909,7 +5604,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 129,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7961),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5892),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O STRAW WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -4918,7 +5617,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 130,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7961),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5892),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O UBE WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -4927,7 +5630,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 131,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7963),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5896),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O CHOCO WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -4936,7 +5643,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 132,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7964),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5897),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "27 X 26 X 29",
                             Name = "ROYAL SPAGHETTI 18/900G",
                             TypeOfPackage = "Carton",
@@ -4945,7 +5656,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 133,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7965),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5898),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 37 X 28",
                             Name = "SKYFLAKES REG 30/10/25G",
                             TypeOfPackage = "Carton",
@@ -4954,7 +5669,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 134,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7965),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5899),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 20 X 17",
                             Name = "STIK-O CHOCO WAFER MINI 30/60G",
                             TypeOfPackage = "Carton",
@@ -4963,7 +5682,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 135,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7966),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5899),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "43 X 18 X 54",
                             Name = "OISHI PRAWN CRACKER 100/24G",
                             TypeOfPackage = "Carton",
@@ -4972,7 +5695,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 136,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7967),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5900),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "68 X 37 X 28",
                             Name = "OISHI PRAWN CRACKER 30/95G",
                             TypeOfPackage = "Carton",
@@ -4981,7 +5708,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 137,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7967),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5900),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 35 X 40",
                             Name = "OISHI PRAWN CRACKER 50/60G",
                             TypeOfPackage = "Carton",
@@ -4990,7 +5721,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 138,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7968),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5902),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 20 X 17",
                             Name = "SNACKU VEGETABLE SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -4999,7 +5734,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 139,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7969),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5904),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "73 X 33 X 13",
                             Name = "SWEET CORN SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5008,7 +5747,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 140,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7969),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5906),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 13 X 70",
                             Name = "SWEET CORN SNACK 30/25",
                             TypeOfPackage = "Carton",
@@ -5017,7 +5760,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 141,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7970),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5907),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FRSH SCNT 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5026,7 +5773,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 142,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7971),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5909),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH ORIGINAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5035,7 +5786,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 143,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7971),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5909),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FLORAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5044,7 +5799,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 144,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7972),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5910),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH COLORSAFE 24/900ML",
                             TypeOfPackage = "Carton",
@@ -5053,7 +5812,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 145,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7974),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5911),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 26 X 32",
                             Name = "MENTOS CANDY TROPICAL MIX 40/50",
                             TypeOfPackage = "Carton",
@@ -5062,7 +5825,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 146,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7975),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5911),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "29 X 15 X 23",
                             Name = "KJSN SOAP SKIN LGHTNNG 24/2/135G",
                             TypeOfPackage = "Carton",
@@ -5071,7 +5838,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 147,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7976),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5912),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 30 X 11",
                             Name = "TIDE BAR NAT FRSH 36/380G",
                             TypeOfPackage = "Carton",
@@ -5080,7 +5851,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 148,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7976),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5912),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "31 X 22 X 15",
                             Name = "SURF BAR W/FBCN BLOSFRSH",
                             TypeOfPackage = "Carton",
@@ -5089,7 +5864,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 149,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7977),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5913),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "22 X 19 X 24",
                             Name = "KJSN SOAP SKIN LGHTNNG 48/2/65G",
                             TypeOfPackage = "Carton",
@@ -5098,7 +5877,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 150,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7978),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5913),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET NW 36X8",
                             TypeOfPackage = "Carton",
@@ -5107,7 +5890,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 151,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7978),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5914),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET W 36X8",
                             TypeOfPackage = "Carton",
@@ -5116,7 +5903,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 152,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7979),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5915),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L PURE",
                             TypeOfPackage = "Carton",
@@ -5125,7 +5916,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 153,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7980),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5915),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L DISTILLED",
                             TypeOfPackage = "Carton",
@@ -5134,7 +5929,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 154,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7980),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5916),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 41 X 19",
                             Name = "KENDI MINT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5143,7 +5942,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 155,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7981),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5916),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY ORIGINAL 13/14/62",
                             TypeOfPackage = "Carton",
@@ -5152,7 +5955,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 156,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7982),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5917),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 22 X 34",
                             Name = "MIRINDA ORANGE PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5161,7 +5968,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 157,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7982),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5918),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "35 X 26 X 22",
                             Name = "108080 SPRITE REG PET BOT 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5170,7 +5981,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 158,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7983),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5922),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 30 X 15",
                             Name = "AJINAMOTO GINISA MIX 120/40G",
                             TypeOfPackage = "Carton",
@@ -5179,7 +5994,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 159,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7985),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5922),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 22 X 34",
                             Name = "PEPSI REG PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5188,7 +6007,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 160,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7986),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5926),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 30 X 24",
                             Name = "MENTOS CANDY MINT BAG 40/50",
                             TypeOfPackage = "Carton",
@@ -5197,7 +6020,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 161,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7987),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5926),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 41 X 19",
                             Name = "VIVA CARAMEL CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5206,7 +6033,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 162,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7987),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5927),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 22 X 34",
                             Name = "MOUNTAIN DEW PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5215,7 +6046,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 163,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7988),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5928),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "33 X 16 X 21",
                             Name = "STING ENERGY DRINK STRAWBERRY 24/320",
                             TypeOfPackage = "Carton",
@@ -5224,7 +6059,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 164,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7989),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5928),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 23 X 22",
                             Name = "PEPSI REG PET BOT 24/500ML",
                             TypeOfPackage = "Carton",
@@ -5233,7 +6072,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 165,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7990),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5929),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "72 X 40 X 17",
                             Name = "SUPER Q PALABOK 12/500G",
                             TypeOfPackage = "Carton",
@@ -5242,7 +6085,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 166,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7990),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5930),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "33 X 27 X 29",
                             Name = "LORINS PATIS PLASTIC 12/1000ML",
                             TypeOfPackage = "Carton",
@@ -5251,7 +6098,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 167,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7991),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5930),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 26 X 19",
                             Name = "LORINS PATIS PLASTIC 24/350ML",
                             TypeOfPackage = "Carton",
@@ -5260,7 +6111,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 168,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7992),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5931),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY GARLIC 13/14/62G",
                             TypeOfPackage = "Carton",
@@ -5269,7 +6124,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 169,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7992),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5932),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 41 X 19",
                             Name = "WHITE RABBIT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5278,7 +6137,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 170,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7993),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5933),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 31 X 21",
                             Name = "RICOA FLAT TOPS 12/100",
                             TypeOfPackage = "Carton",
@@ -5287,7 +6150,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 171,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7994),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5934),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 22 X 17",
                             Name = "SURF BAR KALAMANSI 36/360G",
                             TypeOfPackage = "Carton",
@@ -5296,7 +6163,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 172,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7996),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5935),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 APPLE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5305,7 +6176,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 173,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7997),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5935),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 GRAPE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5314,7 +6189,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 174,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7997),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5936),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 ORANGE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5323,7 +6202,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 175,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7998),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5936),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG MANGO 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5332,7 +6215,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 176,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7999),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5937),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 1KG",
                             TypeOfPackage = "Carton",
@@ -5341,7 +6228,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 177,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7999),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5938),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 500G",
                             TypeOfPackage = "Carton",
@@ -5350,7 +6241,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 178,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8000),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5938),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP SINIGANG MIX 20G",
                             TypeOfPackage = "Carton",
@@ -5359,7 +6254,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 179,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8001),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5939),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5368,7 +6267,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 180,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8001),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5940),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5377,7 +6280,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 181,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8002),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5940),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "33 X 19 X 15",
                             Name = "LASAP SINIGANG MIX W/GABI 22G",
                             TypeOfPackage = "Carton",
@@ -5386,7 +6293,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 182,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8003),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5941),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP OYSTER SAUCE 170 G",
                             TypeOfPackage = "Carton",
@@ -5395,7 +6306,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 183,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8004),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5941),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP KARE KARE MIX 75G",
                             TypeOfPackage = "Carton",
@@ -5404,7 +6319,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 184,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8004),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5942),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP TOCINO MIX",
                             TypeOfPackage = "Carton",
@@ -5413,7 +6332,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 185,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8005),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5944),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP BBQ MIX 50G",
                             TypeOfPackage = "Carton",
@@ -5422,7 +6345,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 186,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8006),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5945),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT TEMPURA SHRIMP 25/100G",
                             TypeOfPackage = "Carton",
@@ -5431,7 +6358,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 187,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8006),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5946),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT LABSTER 25/100G",
                             TypeOfPackage = "Carton",
@@ -5440,7 +6371,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 188,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8007),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5946),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT ISDALICIOUS 25/85G",
                             TypeOfPackage = "Carton",
@@ -5449,7 +6384,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 189,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8008),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5947),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT UBE CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5458,7 +6397,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 190,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8008),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5947),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT SAND CAKE MELON 8/10S",
                             TypeOfPackage = "Carton",
@@ -5467,7 +6410,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 191,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8009),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5949),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT MOCHA CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5476,7 +6423,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 192,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8010),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5949),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE UBE CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5485,7 +6436,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 193,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8010),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5950),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHOKORETO CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5494,7 +6449,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 194,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8011),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5950),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHEESECAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5503,7 +6462,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 195,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8012),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5952),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI MANGO 240G",
                             TypeOfPackage = "Carton",
@@ -5512,7 +6475,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 196,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8013),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5953),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI UBE 240 G",
                             TypeOfPackage = "Carton",
@@ -5521,7 +6488,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 197,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8013),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5953),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT BUKO PANDAN 240G",
                             TypeOfPackage = "Carton",
@@ -5530,7 +6501,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 198,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8014),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5954),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI ASSORTED",
                             TypeOfPackage = "Carton",
@@ -5539,7 +6514,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 199,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8041),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5954),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5548,7 +6527,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 200,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8041),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5955),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5557,7 +6540,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 201,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8042),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5956),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SEAWEED 60G",
                             TypeOfPackage = "Carton",
@@ -5566,7 +6553,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 202,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8044),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5956),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SAL VINEGAR 60G",
                             TypeOfPackage = "Carton",
@@ -5575,7 +6566,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 203,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8044),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5957),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S CHEESE",
                             TypeOfPackage = "Carton",
@@ -5584,7 +6579,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 204,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8045),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5958),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 21 X 18",
                             Name = "POTATO CRACKERS",
                             TypeOfPackage = "Carton",
@@ -5593,7 +6592,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 205,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8046),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5958),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "61 X 39 X 41",
                             Name = "KING CRAB",
                             TypeOfPackage = "Carton",
@@ -5602,7 +6605,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 206,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8046),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5959),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "60 X 30 X 33",
                             Name = "GOLDEN SWEET CORN",
                             TypeOfPackage = "Carton",
@@ -5611,7 +6618,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 207,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8047),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5963),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING JALAPENO",
                             TypeOfPackage = "Carton",
@@ -5620,7 +6631,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 208,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8048),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5964),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING CHEESE",
                             TypeOfPackage = "Carton",
@@ -5629,7 +6644,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 209,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8048),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5965),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "61 X 39 X 41",
                             Name = "FRENCH FRIES",
                             TypeOfPackage = "Carton",
@@ -5638,7 +6657,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 210,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8049),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5965),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "61 X 39 X 41",
                             Name = "SHRIMP FRITTERS",
                             TypeOfPackage = "Carton",
@@ -5647,7 +6670,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 211,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8050),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5966),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "54 X 35 X 38",
                             Name = "MOBY CARAMEL 90G",
                             TypeOfPackage = "Carton",
@@ -5656,7 +6683,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 212,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8053),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5966),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "64 X 46 X 18",
                             Name = "CHEESE IT CHEESE 60G",
                             TypeOfPackage = "Carton",
@@ -5665,7 +6696,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 213,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8054),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5967),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE CHIPS 60G",
                             TypeOfPackage = "Carton",
@@ -5674,7 +6709,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 214,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8055),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5968),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL PUFFS 60G",
                             TypeOfPackage = "Carton",
@@ -5683,7 +6722,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 215,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8056),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5969),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE 25G",
                             TypeOfPackage = "Carton",
@@ -5692,7 +6735,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 216,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8056),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5969),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL 25G",
                             TypeOfPackage = "Carton",
@@ -5701,7 +6748,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 217,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8057),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5970),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCO CUM CHOC BU",
                             TypeOfPackage = "Carton",
@@ -5710,7 +6761,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 218,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8058),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5970),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED CHOCO FILLED 65G",
                             TypeOfPackage = "Carton",
@@ -5719,7 +6774,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 219,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8058),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5971),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED WHITE CHOCO 65G",
                             TypeOfPackage = "Carton",
@@ -5728,7 +6787,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 220,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8059),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5972),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5737,7 +6800,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 221,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8060),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5972),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5746,7 +6813,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 222,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8060),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5973),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5755,7 +6826,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 223,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8061),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5997),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5764,7 +6839,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 224,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8062),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5998),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -5773,7 +6852,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 225,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8063),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6001),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -5782,7 +6865,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 226,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8065),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6002),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT STRAWBERRY CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -5791,7 +6878,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 227,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8065),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6003),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT PANDAN CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -5800,7 +6891,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 228,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8066),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6003),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT ASSORTED CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -5809,7 +6904,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 229,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8067),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6004),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT BANANA CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5818,7 +6917,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 230,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8067),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6004),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN WAFFLE 30G",
                             TypeOfPackage = "Carton",
@@ -5827,7 +6930,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 231,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8068),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6005),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -5836,7 +6943,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 232,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8069),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6006),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -5845,7 +6956,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 233,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8070),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6006),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE MACAPUNO 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5854,7 +6969,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 234,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8070),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6007),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE JACKFRUIT 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5863,7 +6982,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 235,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8071),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6008),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE KAONG RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5872,7 +6995,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 236,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8072),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6008),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO WHITE 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5881,7 +7008,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 237,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8072),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6009),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO GREEN 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5890,7 +7021,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 238,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8073),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6011),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5899,7 +7034,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 240,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8075),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6012),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE JACKFRUIT 24X12OZ",
                             TypeOfPackage = "Carton",
@@ -5908,7 +7047,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 241,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8076),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6012),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5917,7 +7060,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 242,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8077),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6013),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -5926,7 +7073,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 243,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8077),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6014),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO WHITE 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -5935,7 +7086,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 244,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8078),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6014),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO GREEN 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -5944,7 +7099,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 245,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8079),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6015),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO RED 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -5953,7 +7112,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 246,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8080),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6016),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE SALTED SHRIMP 24/340G",
                             TypeOfPackage = "Carton",
@@ -5962,7 +7125,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 247,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8080),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6016),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SWEET",
                             TypeOfPackage = "Carton",
@@ -5971,7 +7138,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 248,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8081),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6017),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP REGULAR",
                             TypeOfPackage = "Carton",
@@ -5980,7 +7151,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 249,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8082),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6018),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SPICY",
                             TypeOfPackage = "Carton",
@@ -5989,7 +7164,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 250,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8082),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6018),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "39 X 28 X 13",
                             Name = "FLORENCE BAGOONG BALAYAN",
                             TypeOfPackage = "Carton",
@@ -5998,7 +7177,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 251,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8083),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6019),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR CHOCO",
                             TypeOfPackage = "Carton",
@@ -6007,7 +7190,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 252,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8084),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6019),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR MATHCA",
                             TypeOfPackage = "Carton",
@@ -6016,7 +7203,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 253,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8084),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6022),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR STRAWBERRY",
                             TypeOfPackage = "Carton",
@@ -6025,7 +7216,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 254,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8087),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6022),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6034,7 +7229,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 255,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8087),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6023),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6043,7 +7242,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 256,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8088),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6023),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 80G",
                             TypeOfPackage = "Carton",
@@ -6052,7 +7255,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 257,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8089),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6024),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "53 X 34 X 30",
                             Name = "COCONUT ENERGY BAR NUTS 24/400",
                             TypeOfPackage = "Carton",
@@ -6061,7 +7268,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 258,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8089),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6025),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6070,7 +7281,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 259,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8090),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6025),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM STRAWBERRY 24/300",
                             TypeOfPackage = "Carton",
@@ -6079,7 +7294,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 260,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8091),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6026),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "54 X 36 X 16",
                             Name = "COCO CREAM BAR CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6088,7 +7307,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 261,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8091),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6027),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 APPLE",
                             TypeOfPackage = "Carton",
@@ -6097,7 +7320,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 262,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8092),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6027),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 GRAPE",
                             TypeOfPackage = "Carton",
@@ -6106,7 +7333,11 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 263,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(8093),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(6028),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 ORANGE",
                             TypeOfPackage = "Carton",
@@ -6156,7 +7387,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 1,
                             BayId = 3,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7246),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5233),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 3,
                             Name = "Metal Shelving 1",
@@ -6166,7 +7401,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 2,
                             BayId = 1,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7263),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5250),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 5,
                             Name = "Metal Shelving 2",
@@ -6176,7 +7415,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 3,
                             BayId = 3,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7264),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5251),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 1",
@@ -6186,7 +7429,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 4,
                             BayId = 6,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7266),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5251),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 2",
@@ -6196,7 +7443,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 5,
                             BayId = 3,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7267),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5252),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 3",
@@ -6206,7 +7457,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 6,
                             BayId = 2,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7267),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5252),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 1",
@@ -6216,7 +7471,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 7,
                             BayId = 2,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7268),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5253),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 2",
@@ -6226,7 +7485,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 8,
                             BayId = 2,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7269),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5254),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 3",
@@ -6236,7 +7499,11 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 9,
                             BayId = 1,
+<<<<<<< HEAD
                             DateAdded = new DateTime(2026, 9, 28, 15, 9, 56, 754, DateTimeKind.Local).AddTicks(7269),
+=======
+                            DateAdded = new DateTime(2026, 9, 30, 14, 21, 40, 981, DateTimeKind.Local).AddTicks(5254),
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 4",
@@ -12765,6 +14032,99 @@ namespace WMS.Api.Data.Migrations
                     b.ToTable("TransferLogs");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Warehouse", b =>
                 {
                     b.Property<int>("Id")
@@ -12834,6 +14194,57 @@ namespace WMS.Api.Data.Migrations
                     b.HasOne("WMS.Api.Entities.ReceivedProduct", null)
                         .WithMany()
                         .HasForeignKey("ReceivedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

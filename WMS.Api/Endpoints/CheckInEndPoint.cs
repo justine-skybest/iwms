@@ -3,6 +3,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -13,7 +14,7 @@ public static class CheckInEndPoint
 
     public static RouteGroupBuilder MapCheckInEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("checkin").WithParameterValidation();
+        var group = app.MapGroup("checkin").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)
@@ -84,7 +85,8 @@ public static class CheckInEndPoint
             var totalCount = await query.CountAsync(cancellationToken);
 
             var items = await query
-                .OrderBy(ci => ci.Id)
+                .OrderByDescending(ci => ci.CheckInDate)
+                .ThenByDescending(ci => ci.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(ci => ci.ToCheckInSummaryDto())

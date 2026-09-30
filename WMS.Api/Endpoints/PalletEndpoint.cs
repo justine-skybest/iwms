@@ -4,6 +4,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Pallet;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
@@ -14,7 +15,7 @@ public static class PalletEndpoint
     public static RouteGroupBuilder MapPalletEndpoints(this WebApplication app)
     {
         const string GetPalletEndpointName = "GetPallet";
-        var group = app.MapGroup("pallet").WithParameterValidation();
+        var group = app.MapGroup("pallet").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)

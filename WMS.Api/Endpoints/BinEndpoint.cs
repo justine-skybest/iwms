@@ -5,6 +5,7 @@ using WMS.Api.Dtos.Bin;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -15,7 +16,7 @@ public static class BinEndpoint
 
     public static RouteGroupBuilder MapBinEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("bin").WithParameterValidation();
+        var group = app.MapGroup("bin").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)

@@ -4,6 +4,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Helpers;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
@@ -16,7 +17,7 @@ public static class ReceivingEndpoint
 
     public static RouteGroupBuilder MapReceivingEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("receiving").WithTags("Receiving").WithParameterValidation();
+        var group = app.MapGroup("receiving").WithTags("Receiving").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WMS.Api.Data;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints
 {
@@ -13,7 +14,7 @@ namespace WMS.Api.Endpoints
         {
             var group = app.MapGroup("incoming-import")
                 .WithTags("IncomingImport")
-                .WithParameterValidation();
+                .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
             // ------------------------------------------------------------------
             // 1. IMPORT INITIAL EXCEL
@@ -83,20 +84,34 @@ namespace WMS.Api.Endpoints
 
                 var errors = new List<string>();
 
+<<<<<<< HEAD
                 // Separate existing DB items by received status
+=======
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                 var existingDbItems = existingIncoming.Products ?? new List<IncomingProduct>();
                 var receivedItems = existingDbItems.Where(p => p.Received).ToList();
                 var unreceivedItems = existingDbItems.Where(p => !p.Received).ToList();
 
+<<<<<<< HEAD
                 // Build lookup for parsed excel items by Product ID
                 var excelItemMap = new Dictionary<int, IncomingProduct>();
+=======
+                // BUILD LOOKUP: Use Composite Key (ProductId_ExpirationDate) to support same product with different expiries
+                var excelItemMap = new Dictionary<string, IncomingProduct>(StringComparer.OrdinalIgnoreCase);
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                 var newParsedItemsWithoutId = new List<IncomingProduct>();
 
                 foreach (var item in parseResult.IncomingProducts)
                 {
                     if (item.ProductId > 0)
                     {
+<<<<<<< HEAD
                         excelItemMap[item.ProductId] = item;
+=======
+                        string expKey = item.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                        string compositeKey = $"{item.ProductId}_{expKey}";
+                        excelItemMap[compositeKey] = item;
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                     }
                     else
                     {
@@ -108,6 +123,7 @@ namespace WMS.Api.Endpoints
                 foreach (var recItem in receivedItems)
                 {
                     string prodName = recItem.Product?.Name ?? $"Product #{recItem.ProductId}";
+<<<<<<< HEAD
 
                     if (!excelItemMap.TryGetValue(recItem.ProductId, out var incomingExcelItem))
                     {
@@ -116,14 +132,32 @@ namespace WMS.Api.Endpoints
                     }
 
                     // Check if properties of a received item were altered in the revised Excel
+=======
+                    string recExpKey = recItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                    string compositeKey = $"{recItem.ProductId}_{recExpKey}";
+
+                    if (!excelItemMap.TryGetValue(compositeKey, out var incomingExcelItem))
+                    {
+                        errors.Add($"Cannot remove or alter expiration date for item '{prodName}' (Exp: {recExpKey}) because it has already been received.");
+                        continue;
+                    }
+
+                    // ExpirationDate is identical (because the dictionary key matched), so check remaining properties
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                     if (recItem.Quantity != incomingExcelItem.Quantity ||
                         recItem.UnitPrice != incomingExcelItem.UnitPrice ||
                         recItem.TotalAmount != incomingExcelItem.TotalAmount ||
                         recItem.CBM != incomingExcelItem.CBM ||
+<<<<<<< HEAD
                         recItem.TotalWeight != incomingExcelItem.TotalWeight ||
                         recItem.ExpirationDate != incomingExcelItem.ExpirationDate)
                     {
                         errors.Add($"Cannot modify details for item '{prodName}' because it has already been received.");
+=======
+                        recItem.TotalWeight != incomingExcelItem.TotalWeight)
+                    {
+                        errors.Add($"Cannot modify details for item '{prodName}' (Exp: {recExpKey}) because it has already been received.");
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                     }
                 }
 
@@ -134,6 +168,7 @@ namespace WMS.Api.Endpoints
 
                 // APPLY REVISIONS TO UNRECEIVED ITEMS:
                 existingIncoming.Products ??= new List<IncomingProduct>();
+<<<<<<< HEAD
                 var processedProductIds = new HashSet<int>();
 
                 foreach (var dbItem in unreceivedItems)
@@ -141,11 +176,24 @@ namespace WMS.Api.Endpoints
                     if (excelItemMap.TryGetValue(dbItem.ProductId, out var excelItem))
                     {
                         // ITEM EDITED: Update existing unreceived entry
+=======
+                var processedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var dbItem in unreceivedItems)
+                {
+                    string dbExpKey = dbItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                    string compositeKey = $"{dbItem.ProductId}_{dbExpKey}";
+
+                    if (excelItemMap.TryGetValue(compositeKey, out var excelItem))
+                    {
+                        // ITEM EDITED: Update properties (Expiry remains identical due to map match)
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                         dbItem.Quantity = excelItem.Quantity;
                         dbItem.UnitPrice = excelItem.UnitPrice;
                         dbItem.TotalAmount = excelItem.TotalAmount;
                         dbItem.CBM = excelItem.CBM;
                         dbItem.TotalWeight = excelItem.TotalWeight;
+<<<<<<< HEAD
                         dbItem.ExpirationDate = excelItem.ExpirationDate;
                         dbItem.Supplier = excelItem.Supplier;
                         dbItem.Remarks = excelItem.Remarks;
@@ -155,6 +203,16 @@ namespace WMS.Api.Endpoints
                     else
                     {
                         // ITEM REMOVED: Item present in DB but absent in revised Excel
+=======
+                        dbItem.Supplier = excelItem.Supplier;
+                        dbItem.Remarks = excelItem.Remarks;
+
+                        processedKeys.Add(compositeKey);
+                    }
+                    else
+                    {
+                        // ITEM REMOVED (Or its Expiry Date changed): Remove from DB, it will be re-inserted as new below if it was a date change
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                         dbContext.Remove(dbItem);
                     }
                 }
@@ -162,11 +220,21 @@ namespace WMS.Api.Endpoints
                 // ITEM ADDED: Existing product IDs present in Excel but not in DB unreceived list
                 foreach (var kvp in excelItemMap)
                 {
+<<<<<<< HEAD
                     int prodId = kvp.Key;
                     var excelItem = kvp.Value;
 
                     // Skip received items and items already processed
                     if (receivedItems.Any(r => r.ProductId == prodId) || processedProductIds.Contains(prodId))
+=======
+                    string compositeKey = kvp.Key;
+                    var excelItem = kvp.Value;
+
+                    // Check if this exact combination was already received or processed
+                    bool isReceived = receivedItems.Any(r => $"{r.ProductId}_{r.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE"}" == compositeKey);
+
+                    if (isReceived || processedKeys.Contains(compositeKey))
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                     {
                         continue;
                     }
@@ -303,7 +371,13 @@ namespace WMS.Api.Endpoints
                 .ToDictionary(g => g.Key, g => g.First().Id, StringComparer.OrdinalIgnoreCase);
 
             var newProductsDict = new Dictionary<string, Product>(StringComparer.OrdinalIgnoreCase);
+<<<<<<< HEAD
             var seenProductNamesInFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+=======
+
+            // TRACK UNIQUENESS BY PRODUCT + EXPIRY
+            var seenProductKeysInFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
 
             var errors = new List<string>();
             var incomingProducts = new List<IncomingProduct>();
@@ -345,10 +419,26 @@ namespace WMS.Api.Endpoints
                     continue;
                 }
 
+<<<<<<< HEAD
                 // RULE 2: Prevent item duplicates inside the file
                 if (!seenProductNamesInFile.Add(productName))
                 {
                     errors.Add($"Row {excelRowNum}: Duplicate item '{productName}' found in Excel file.");
+=======
+                DateOnly? expiryDate = null;
+                if (DateTime.TryParse(row[7]?.ToString()?.Trim(), out DateTime parsedDate))
+                {
+                    expiryDate = DateOnly.FromDateTime(parsedDate);
+                }
+
+                // RULE 2: Prevent duplicates inside the file IF they have the exact same expiration date
+                string expKeyString = expiryDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                string productUniqueKey = $"{productName}_{expKeyString}";
+
+                if (!seenProductKeysInFile.Add(productUniqueKey))
+                {
+                    errors.Add($"Row {excelRowNum}: Duplicate item '{productName}' with identical expiration date ({expKeyString}) found in Excel file.");
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                     continue;
                 }
 
@@ -387,12 +477,15 @@ namespace WMS.Api.Endpoints
                 string supplier = row[12]?.ToString()?.Trim() ?? "";
                 string remarks = row[13]?.ToString()?.Trim() ?? "";
 
+<<<<<<< HEAD
                 DateOnly? expiryDate = null;
                 if (DateTime.TryParse(row[7]?.ToString()?.Trim(), out DateTime parsedDate))
                 {
                     expiryDate = DateOnly.FromDateTime(parsedDate);
                 }
 
+=======
+>>>>>>> a5420f2 (added identity user and login with google capability. Added Audit logs to capture all granular entity updates.)
                 var incomingProduct = new IncomingProduct
                 {
                     Quantity = quantity,

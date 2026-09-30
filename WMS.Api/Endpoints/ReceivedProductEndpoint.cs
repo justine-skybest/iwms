@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Receiving;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -12,7 +13,7 @@ public static class ReceivedProductEndpoint
 
     public static RouteGroupBuilder MapReceivedProductEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("receivedProduct").WithParameterValidation();
+        var group = app.MapGroup("receivedProduct").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET /ToCheckInProducts/{WarehouseId} (v1 & v2)

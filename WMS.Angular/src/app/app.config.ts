@@ -5,13 +5,14 @@ import { routes } from './app.routes';
 import { provideApiConfiguration } from './api/generated/api-configuration';
 import { environment } from './lib/config/app-env';
 import { cacheInterceptor } from './lib/interceptors/cache-interceptor';
+import { authInterceptor } from './lib/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(
-      withInterceptors([cacheInterceptor])
+      withInterceptors([authInterceptor, cacheInterceptor])
     ),
     provideApiConfiguration(environment.apiUrl)
   ]

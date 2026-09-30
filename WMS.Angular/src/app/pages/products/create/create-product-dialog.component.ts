@@ -33,7 +33,6 @@ export class CreateProductDialogComponent implements OnChanges {
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
-
   private toastService = inject(ToastService);
 
   isSubmitting = false;
@@ -42,6 +41,7 @@ export class CreateProductDialogComponent implements OnChanges {
   isEditMode = false;
 
   // Form Fields
+  code = '';
   name = '';
   typeOfPackage = '';
   measurement = '';
@@ -61,6 +61,7 @@ export class CreateProductDialogComponent implements OnChanges {
   private populateFormForEdit(): void {
     if (!this.productToEdit) return;
 
+    this.code = (this.productToEdit as any).code ?? '';
     this.name = this.productToEdit.name ?? '';
     this.typeOfPackage = this.productToEdit.typeOfPackage ?? '';
     this.measurement = this.productToEdit.measurement ?? '';
@@ -68,6 +69,7 @@ export class CreateProductDialogComponent implements OnChanges {
   }
 
   resetForm(): void {
+    this.code = '';
     this.name = '';
     this.typeOfPackage = '';
     this.measurement = '';
@@ -87,11 +89,12 @@ export class CreateProductDialogComponent implements OnChanges {
     this.errorMessage = '';
     this.validationErrors = {};
 
+    const trimmedCode = this.code.trim();
     const trimmedName = this.name.trim();
     const trimmedType = this.typeOfPackage.trim();
     const trimmedMeasurement = this.measurement.trim();
 
-    // Field-level Validation
+    // Field-level Validation (Product Code is optional)
     if (!trimmedName) {
       this.validationErrors['name'] = 'Product Name is required';
     }
@@ -114,36 +117,37 @@ export class CreateProductDialogComponent implements OnChanges {
     }
 
     this.isSubmitting = true;
-  this.cd.markForCheck();
-
-  try {
-    const payload: CreateProductDto & UpdateProductDto = {
-      name: trimmedName,
-      typeOfPackage: trimmedType,
-      measurement: trimmedMeasurement,
-      weight: this.weight!,
-      dateAdded: this.isEditMode && this.productToEdit?.dateAdded 
-        ? this.productToEdit.dateAdded 
-        : new Date().toISOString(),
-    };
-
-    if (this.isEditMode && this.productToEdit?.id !== undefined) {
-      await this.api.invoke(updateProduct, { id: this.productToEdit.id, body: payload });
-      this.toastService.success(`Product "${trimmedName}" updated successfully.`);
-    } else {
-      await this.api.invoke(createProduct, { body: payload });
-      this.toastService.success(`Product "${trimmedName}" created successfully.`);
-    }
-
-    this.created.emit();
-    this.closeModal();
-  } catch (err: any) {
-    console.error('Failed to save product:', err);
-    this.errorMessage = err?.message || 'Failed to save product.';
-    this.toastService.error(this.errorMessage, 'Submission Failed');
-  } finally {
-    this.isSubmitting = false;
     this.cd.markForCheck();
-  }
+
+    try {
+      const payload: CreateProductDto & UpdateProductDto = {
+        code: trimmedCode || null,
+        name: trimmedName,
+        typeOfPackage: trimmedType,
+        measurement: trimmedMeasurement,
+        weight: this.weight!,
+        dateAdded: this.isEditMode && this.productToEdit?.dateAdded 
+          ? this.productToEdit.dateAdded 
+          : new Date().toISOString(),
+      };
+
+      if (this.isEditMode && this.productToEdit?.id !== undefined) {
+        await this.api.invoke(updateProduct, { id: this.productToEdit.id, body: payload });
+        this.toastService.success(`Product "${trimmedName}" updated successfully.`);
+      } else {
+        await this.api.invoke(createProduct, { body: payload });
+        this.toastService.success(`Product "${trimmedName}" created successfully.`);
+      }
+
+      this.created.emit();
+      this.closeModal();
+    } catch (err: any) {
+      console.error('Failed to save product:', err);
+      this.errorMessage = err?.message || 'Failed to save product.';
+      this.toastService.error(this.errorMessage, 'Submission Failed');
+    } finally {
+      this.isSubmitting = false;
+      this.cd.markForCheck();
+    }
   }
 }

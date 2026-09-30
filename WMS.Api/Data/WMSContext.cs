@@ -1,11 +1,22 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Security.Claims;
+using System.Text.Json;
 using WMS.Api.Entities;
+using WMS.Api.Services;
 
 namespace WMS.Api.Data;
 
-public class WMSContext(DbContextOptions<WMSContext> options) 
-    : DbContext(options)
+public class WMSContext(
+        DbContextOptions<WMSContext> options,
+        ICurrentUserService? currentUserService = null,
+        IHttpContextAccessor? httpContextAccessor = null)
+        : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
+    private readonly ICurrentUserService? _currentUserService = currentUserService;
+    private readonly IHttpContextAccessor? _httpContextAccessor = httpContextAccessor;
     public DbSet<Warehouse>  Warehouses => Set<Warehouse>();
 
     public DbSet<Rack> Racks => Set<Rack>();
@@ -37,8 +48,140 @@ public class WMSContext(DbContextOptions<WMSContext> options)
 
     public DbSet<TransferLog> TransferLogs => Set<TransferLog>();
 
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var httpContext = _httpContextAccessor?.HttpContext;
+        var stopwatch = Stopwatch.StartNew();
+
+        // 1. Collect pending entity audit entries before writing to DB
+        var auditEntries = OnBeforeSaveChanges();
+
+        // 2. Perform database write
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        stopwatch.Stop();
+
+        // 3. Attach execution metrics and save audit logs
+        if (auditEntries.Count > 0)
+        {
+            var statusCode = httpContext?.Response.StatusCode ?? StatusCodes.Status200OK;
+            var executionTimeMs = stopwatch.ElapsedMilliseconds;
+
+            foreach (var log in auditEntries)
+            {
+                log.StatusCode = statusCode;
+                log.ExecutionTimeMs = executionTimeMs;
+            }
+
+            AuditLogs.AddRange(auditEntries);
+            await base.SaveChangesAsync(cancellationToken);
+        }
+
+        return result;
+    }
+
+    private List<AuditLog> OnBeforeSaveChanges()
+    {
+        ChangeTracker.DetectChanges();
+        var auditEntries = new List<AuditLog>();
+        var httpContext = _httpContextAccessor?.HttpContext;
+
+        // Extract HTTP Context Details
+        var traceId = httpContext?.TraceIdentifier;
+        var userRole = httpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+        var ipAddress = httpContext?.Connection.RemoteIpAddress?.ToString();
+
+        // Resolve email across Identity / Cookie / Google claims
+        var userEmail = _currentUserService?.Email
+            ?? httpContext?.User.FindFirst(ClaimTypes.Email)?.Value
+            ?? httpContext?.User.FindFirst("email")?.Value
+            ?? httpContext?.User.Identity?.Name;
+
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Added ||
+                        e.State == EntityState.Modified ||
+                        e.State == EntityState.Deleted)
+            .ToList();
+
+        foreach (var entry in entries)
+        {
+            // CRITICAL: Prevent infinite recursion on AuditLog itself
+            if (entry.Entity is AuditLog) continue;
+
+            var entityName = entry.Entity.GetType().Name;
+            var primaryKey = entry.Properties.FirstOrDefault(p => p.Metadata.IsPrimaryKey())?.CurrentValue?.ToString() ?? "Unknown";
+
+            var oldValues = new Dictionary<string, object?>();
+            var newValues = new Dictionary<string, object?>();
+
+            foreach (var prop in entry.Properties)
+            {
+                if (prop.Metadata.IsPrimaryKey() || prop.IsTemporary) continue;
+
+                string propertyName = prop.Metadata.Name;
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        newValues[propertyName] = prop.CurrentValue;
+                        break;
+
+                    case EntityState.Deleted:
+                        oldValues[propertyName] = prop.OriginalValue;
+                        break;
+
+                    case EntityState.Modified:
+                        if (prop.IsModified && !Equals(prop.OriginalValue, prop.CurrentValue))
+                        {
+                            oldValues[propertyName] = prop.OriginalValue;
+                            newValues[propertyName] = prop.CurrentValue;
+                        }
+                        break;
+                }
+            }
+
+            if (oldValues.Count > 0 || newValues.Count > 0)
+            {
+                auditEntries.Add(new AuditLog
+                {
+                    // WHO & LINK
+                    TraceId = traceId,
+                    UserId = _currentUserService?.UserId,
+                    UserEmail = userEmail,
+                    UserRole = userRole,
+                    IpAddress = ipAddress,
+
+                    // WHAT
+                    EntityName = entityName,
+                    Action = entry.State.ToString(),
+                    PrimaryKey = primaryKey,
+                    OldValues = oldValues.Count > 0 ? JsonSerializer.Serialize(oldValues) : null,
+                    NewValues = newValues.Count > 0 ? JsonSerializer.Serialize(newValues) : null,
+
+                    // WHEN
+                    Timestamp = DateTime.UtcNow
+                });
+            }
+        }
+
+        return auditEntries;
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.Property(u => u.FirstName).HasMaxLength(100);
+            entity.Property(u => u.LastName).HasMaxLength(100);
+            entity.Property(u => u.ProfileImageUrl).HasMaxLength(500);
+            entity.Property(u => u.IsActive).HasDefaultValue(true);
+            entity.Property(u => u.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+        });
+
         // IncomingProduct Precision
         modelBuilder.Entity<IncomingProduct>(builder =>
         {

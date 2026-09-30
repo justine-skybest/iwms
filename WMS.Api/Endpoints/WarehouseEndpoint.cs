@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -11,7 +12,7 @@ public static class WarehouseEndpoint
     public static RouteGroupBuilder MapWarehouseEndpoints(this WebApplication app)
     {
         const string GetWarehouseEndpointName = "GetWarehouse";
-        var group = app.MapGroup("warehouse").WithParameterValidation();
+        var group = app.MapGroup("warehouse").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)

@@ -1,9 +1,10 @@
-﻿using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Dashboard;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints;
 
@@ -11,7 +12,7 @@ public static class DashboardEndpoint
 {
     public static RouteGroupBuilder MapDashboardEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("dashboard");
+        var group = app.MapGroup("dashboard").AddEndpointFilter<AuditLoggingFilter>();
 
         group.MapGet("/summary", async (int? warehouseId, WMSContext dbContext) =>
         {

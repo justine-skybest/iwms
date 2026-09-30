@@ -1,9 +1,10 @@
-using System;
 using Microsoft.EntityFrameworkCore;
+using System;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.ManualPicking;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -14,7 +15,7 @@ public static class PickingEndpoint
 
     public static RouteGroupBuilder MapManualPickingEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("manualpicking").WithParameterValidation();
+        var group = app.MapGroup("manualpicking").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)
@@ -74,7 +75,7 @@ public static class PickingEndpoint
             var totalCount = await query.CountAsync(cancellationToken);
 
             var items = await query
-                .OrderBy(picking => picking.Id)
+                .OrderByDescending(picking => picking.PickingDate)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(picking => picking.ToSummaryDto())

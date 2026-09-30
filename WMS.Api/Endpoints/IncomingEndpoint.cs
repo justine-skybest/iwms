@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Incoming;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints
@@ -13,7 +14,7 @@ namespace WMS.Api.Endpoints
         {
             var group = app.MapGroup("incoming")
                 .WithTags("Incomings")
-                .WithParameterValidation();
+                .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
             group.MapGet("/", async (
                 WMSContext dbContext,

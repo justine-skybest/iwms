@@ -1,10 +1,11 @@
-﻿using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Transfer;
 using WMS.Api.Entities;
+using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints;
 
@@ -14,7 +15,7 @@ public static class TransferEndpoint
     {
         var group = app.MapGroup("transfers")
             .WithTags("Transfers")
-            .WithParameterValidation();
+            .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
 
         // -----------------------------------------------------------------------------
         // Pallet Location Endpoints

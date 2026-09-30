@@ -25,11 +25,11 @@
        [routerLink]="item.path" 
        routerLinkActive="active" 
        class="sidebar-link">
-      <app-icon [name]="item.icon" [size]="15"></app-icon>
+      <lucide-icon [img]="item.icon" [size]="14"></lucide-icon>
       <span>{{ item.label }}</span>
     </a>
 
-    <!-- Master Data Sub-Dropdown Toggle Header -->
+    <!-- Reports Sub-Dropdown Toggle Header -->
     <button 
       type="button" 
       (click)="toggleReports()" 
@@ -49,7 +49,7 @@
       </svg>
     </button>
 
-        <!-- Report Data Collapsible Child Items -->
+    <!-- Report Data Collapsible Child Items -->
     <div *ngIf="isReportDataOpen" class="flex flex-col gap-1 pl-3 border-l border-sidebar-border/60 ml-4 my-1">
       <a (click)="closeMenu()" *ngFor="let item of reportItems" 
          [routerLink]="item.path" 
@@ -99,17 +99,39 @@
     </a>
   </nav>
 
-  <!-- User Info Footer -->
-  <div class="px-3.5 py-3 border-t border-sidebar-border">
+  <!-- User Info Footer (Bound to Current User Stream) -->
+  <div class="px-3.5 py-3 border-t border-sidebar-border" *ngIf="authService.currentUser$ | async as user">
     <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 bg-sidebar-active rounded-full flex items-center justify-center shrink-0 border-2 border-accent">
-        <span class="font-display font-bold text-[13px] text-accent-light">AJ</span>
+      
+      <!-- Profile Picture or Initials Avatar -->
+      <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-accent flex items-center justify-center bg-sidebar-active">
+        <img 
+          *ngIf="user.profileImageUrl; else initialsTemplate" 
+          [src]="user.profileImageUrl" 
+          [alt]="getUserName(user)" 
+          class="w-full h-full object-cover" />
+        <ng-template #initialsTemplate>
+          <span class="font-display font-bold text-[13px] text-accent-light">
+            {{ getUserInitials(user) }}
+          </span>
+        </ng-template>
       </div>
+
+      <!-- Name & Email Display -->
       <div class="flex-1 min-w-0">
-        <div class="text-[13px] font-semibold text-sidebar-text-active truncate">Admin User</div>
-        <div class="text-[11px] text-sidebar-text truncate">admin&#64;skybest.com</div>
+        <div class="text-[13px] font-semibold text-sidebar-text-active truncate">
+          {{ getUserName(user) }}
+        </div>
+        <div class="text-[11px] text-sidebar-text truncate">
+          {{ user.email }}
+        </div>
       </div>
-      <button (click)="logout()" class="bg-transparent border-none cursor-pointer text-sidebar-text p-1 rounded hover:text-white transition-colors" title="Sign out">
+
+      <!-- Logout Button -->
+      <button 
+        (click)="logout()" 
+        class="bg-transparent border-none cursor-pointer text-sidebar-text p-1 rounded hover:text-white transition-colors" 
+        title="Sign out">
         <app-icon name="logout" [size]="15"></app-icon>
       </button>
     </div>

@@ -4,7 +4,10 @@ import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../components/icon/icon.component';
 import { filter } from 'rxjs/operators';
 import { LayoutService } from '../../../lib/services/layout.service';
-import { ArrowLeftRight, Locate, LucideAngularModule, Warehouse } from 'lucide-angular';
+import { AuthService } from '../../../lib/services/auth.service';
+import { ArrowLeftRight, Download, FileCheck, AArrowUp, House, Inbox, LogsIcon, LucideAngularModule, Warehouse, ListOrdered, RotateCcwIcon, PackageSearch } from 'lucide-angular';
+import { UserResponseDto } from '../../../api/generated/models';
+import { LayersPlusIcon } from 'lucide-angular/src/icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,13 +17,16 @@ import { ArrowLeftRight, Locate, LucideAngularModule, Warehouse } from 'lucide-a
 })
 export class SidebarComponent implements OnInit {
   public layoutService = inject(LayoutService);
-  
+  public authService = inject(AuthService);
+  private router = inject(Router);
+
   mainNavItems = [
-    { path: '/home', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/incoming', label: 'Incoming', icon: 'incoming' },
-    { path: '/receiving', label: 'Receiving', icon: 'receiving' },
-    { path: '/check-in', label: 'Check In', icon: 'checkIns' },
-    { path: '/pick-order', label: 'Pick Order', icon: 'pickOrders' },
+    { path: '/home', label: 'Dashboard', icon: House },
+    { path: '/incoming', label: 'Incoming', icon: Download },
+    { path: '/receiving', label: 'Receiving', icon: Inbox },
+    { path: '/check-in', label: 'Check In', icon: FileCheck },
+    { path: '/pick-order', label: 'Pick Order', icon: PackageSearch },
+    { path: '/audit-logs', label: 'Audit Logs', icon: RotateCcwIcon }
   ];
 
   masterDataItems = [
@@ -34,7 +40,6 @@ export class SidebarComponent implements OnInit {
 
   reportItems = [
     { path: '/transaction-summary', label: 'Transaction Summary', icon: ArrowLeftRight },
-    // { path: '/pallet-locations', label: 'Pallet Location Audit', icon: Locate },
     { path: '/warehouse-occupancy', label: 'Warehouse Occupancy', icon: Warehouse },
     { path: '/reconcillation-report', label: 'Receiving Reconciliation', icon: Warehouse }
   ];
@@ -42,26 +47,29 @@ export class SidebarComponent implements OnInit {
   isMasterDataOpen = false;
   isReportDataOpen = false;
 
-  constructor(private router: Router) {}
-
   ngOnInit(): void {
     this.checkActiveRoute();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.checkActiveRoute());
+
+    // Fetch user info on load if state is empty
+    if (!this.authService.currentUserValue) {
+      this.authService.getCurrentUser().subscribe();
+    }
   }
 
   toggleMasterData(): void {
     this.isMasterDataOpen = !this.isMasterDataOpen;
   }
 
+  toggleReports(): void {
+    this.isReportDataOpen = !this.isReportDataOpen;
+  }
+
   isReportDataActive(): boolean {
     const currentUrl = this.router.url;
     return this.reportItems.some(item => currentUrl.startsWith(item.path));
-  }
-
-  toggleReports(): void {
-    this.isReportDataOpen = !this.isReportDataOpen;
   }
 
   isMasterDataActive(): boolean {
@@ -75,8 +83,27 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  logout() {
-    this.router.navigate(['/login']);
+  getUserName(user: UserResponseDto | null): string {
+    if (!user) return 'User';
+    if (user.firstName || user.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return user?.email!.split('@')[0];
+  }
+
+  getUserInitials(user: UserResponseDto | null): string {
+    if (!user) return 'U';
+    if (user.firstName && user.lastName) {
+      return (user.firstName[0] + user.lastName[0]).toUpperCase();
+    }
+    if (user.firstName) {
+      return user.firstName.substring(0, 2).toUpperCase();
+    }
+    return user?.email!.substring(0, 2).toUpperCase();
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe();
   }
 
   protected closeMenu(): void {
