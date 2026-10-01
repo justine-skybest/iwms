@@ -26,6 +26,7 @@ import {
   apiAuditLogsCategoriesGet
 } from '../../api/generated/functions';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
+import { formatPhilippineTime } from '../../lib/utils/format-ph-time';
 
 @Component({
   selector: 'app-audit-logs',
@@ -37,6 +38,8 @@ export class AuditLogsComponent implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   private readonly apiUrl = environment.apiUrl || '';
+
+  public formatPhTime = formatPhilippineTime;
 
   // Data State
   logs: AuditLogItem[] = [];

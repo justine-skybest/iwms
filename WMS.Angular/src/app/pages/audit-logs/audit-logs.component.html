@@ -134,7 +134,7 @@
         <tr *ngFor="let item of logs" class="hover:bg-slate-50/80 transition-colors">
           
           <td class="py-3 px-4 whitespace-nowrap font-mono text-[11px] text-slate-500">
-            {{ item.timestamp | date:'MMM d, y, HH:mm:ss' }}
+            {{ formatPhTime(item.timestamp, true) }}
           </td>
 
           <td class="py-3 px-4 whitespace-nowrap">
