@@ -258,7 +258,7 @@
                   <th class="p-2.5 text-center">CBM (Exp / Act)</th>
                   <th class="p-2.5 text-center">Weight (Exp / Act)</th>
                   <th class="p-2.5 text-center">Expiry Date (Exp / Act)</th>
-                  <th class="p-2.5">Pallet</th>
+                  <th class="p-2.5">Pallet Id</th>
                   <th class="p-2.5">Lot Number</th>
                   <th class="p-2.5">Remarks</th>
                 </tr>
@@ -294,7 +294,7 @@
 
                   <td class="p-2.5 font-mono">
                     <span *ngIf="p.palletId" class="bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded text-[11px] font-bold">
-                      #{{ p.palletId }}
+                      {{ p.palletId }}
                     </span>
                     <span *ngIf="!p.palletId" class="text-slate-400">—</span>
                   </td>
