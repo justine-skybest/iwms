@@ -3,7 +3,6 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -14,7 +13,7 @@ public static class CheckInEndPoint
 
     public static RouteGroupBuilder MapCheckInEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("checkin").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("checkin").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)

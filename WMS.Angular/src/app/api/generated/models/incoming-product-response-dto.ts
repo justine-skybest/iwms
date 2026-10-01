@@ -10,8 +10,10 @@ export interface IncomingProductResponseDto {
   productId?: number;
   productName?: string | null;
   quantity?: number;
-  received?: boolean;
+  receivedQuantity?: number;
+  remainingQuantity?: number;
   remarks?: string | null;
+  status?: 'UNRECEIVED' | 'PARTIAL' | 'RECEIVED' | 'CLOSED_SHORT';
   supplier?: string | null;
   totalAmount?: number | null;
   totalWeight: string;

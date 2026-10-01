@@ -11,6 +11,7 @@ import type { AuditLogPagedResponseDto } from '../../models/audit-log-paged-resp
 
 export interface ApiAuditLogsGet$Params {
   search?: string;
+  category?: string;
   entityName?: string;
   action?: string;
   userEmail?: string;
@@ -24,6 +25,7 @@ export function apiAuditLogsGet(http: HttpClient, rootUrl: string, params?: ApiA
   const rb = new RequestBuilder(rootUrl, apiAuditLogsGet.PATH, 'get');
   if (params) {
     rb.query('search', params.search, {});
+    rb.query('category', params.category, {});
     rb.query('entityName', params.entityName, {});
     rb.query('action', params.action, {});
     rb.query('userEmail', params.userEmail, {});

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
-using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints;
 
@@ -39,7 +38,7 @@ public static class InventoryEndpoint
 {
     public static RouteGroupBuilder MapInventoryEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("inventory").WithTags("Inventory").AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("inventory").WithTags("Inventory");
 
         group.MapGet("/inspect/{code}/{warehouseId:int}", async (string code, int warehouseId, WMSContext dbContext) =>
         {

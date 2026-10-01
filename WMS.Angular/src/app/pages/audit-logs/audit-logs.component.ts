@@ -5,12 +5,25 @@ import { HttpClient } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { environment } from '../../lib/config/app-env';
 
-// Generated OpenAPI Imports
-import { AuditLog, AuditLogPagedResponseDto } from '../../api/generated/models';
+export interface AuditLogItem {
+  id?: string;
+  traceId?: string | null;
+  userId?: string | null;
+  userEmail?: string | null;
+  userRole?: string | null;
+  ipAddress?: string | null;
+  category?: string;
+  action?: string;
+  description?: string;
+  detailsJson?: string | null;
+  timestamp?: string;
+  statusCode?: number;
+}
+
 import {
   apiAuditLogsGet,
   apiAuditLogsIdGet,
-  apiAuditLogsEntityNamesGet
+  apiAuditLogsCategoriesGet
 } from '../../api/generated/functions';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 
@@ -26,8 +39,8 @@ export class AuditLogsComponent implements OnInit {
   private readonly apiUrl = environment.apiUrl || '';
 
   // Data State
-  logs: AuditLog[] = [];
-  entityNames: string[] = [];
+  logs: AuditLogItem[] = [];
+  categories: string[] = [];
   totalCount = 0;
   totalPages = 0;
   page = 1;
@@ -36,31 +49,30 @@ export class AuditLogsComponent implements OnInit {
 
   // Filter State
   search = '';
-  selectedEntity = '';
+  selectedCategory = '';
   selectedAction = '';
   userEmail = '';
   fromDate = '';
   toDate = '';
 
   // Detail Modal State
-  selectedLog: AuditLog | null = null;
+  selectedLog: AuditLogItem | null = null;
   isDetailOpen = false;
   loadingDetail = false;
-  parsedOldValues: any = null;
-  parsedNewValues: any = null;
+  parsedDetails: any = null;
 
   ngOnInit(): void {
-    this.loadEntityNames();
+    this.loadCategories();
     this.loadLogs();
   }
 
-  loadEntityNames(): void {
-    apiAuditLogsEntityNamesGet(this.http, this.apiUrl).subscribe({
+  loadCategories(): void {
+    apiAuditLogsCategoriesGet(this.http, this.apiUrl).subscribe({
       next: (res) => {
-        this.entityNames = res.body || [];
+        this.categories = res.body || [];
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load entity names:', err)
+      error: (err) => console.error('Failed to load categories:', err)
     });
   }
 
@@ -73,17 +85,16 @@ export class AuditLogsComponent implements OnInit {
 
     apiAuditLogsGet(this.http, this.apiUrl, {
       search: this.search?.trim() || undefined,
-      entityName: this.selectedEntity || undefined,
+      category: this.selectedCategory || undefined,
       action: this.selectedAction || undefined,
       userEmail: this.userEmail?.trim() || undefined,
       fromDate: this.toSafeIsoDate(this.fromDate),
       toDate: this.toSafeIsoDate(this.toDate),
       page: this.page,
       pageSize: this.pageSize
-    })
+    } as any)
     .pipe(
       finalize(() => {
-        // ALWAYS executes when observable completes or errors out
         this.loading = false;
         this.cdr.detectChanges();
       })
@@ -92,7 +103,6 @@ export class AuditLogsComponent implements OnInit {
       next: (res) => {
         const data = (res.body || {}) as any;
         
-        // Support both camelCase and PascalCase JSON responses
         this.logs = data.items || data.Items || [];
         this.totalCount = data.totalCount ?? data.TotalCount ?? 0;
         this.totalPages = data.totalPages ?? data.TotalPages ?? 0;
@@ -106,11 +116,16 @@ export class AuditLogsComponent implements OnInit {
     });
   }
 
+  filterByTraceId(traceId?: string | null): void {
+    if (!traceId) return;
+    this.search = traceId;
+    this.loadLogs(true);
+  }
+
   openDetail(logId: string): void {
     this.isDetailOpen = true;
     this.loadingDetail = true;
-    this.parsedOldValues = null;
-    this.parsedNewValues = null;
+    this.parsedDetails = null;
 
     apiAuditLogsIdGet(this.http, this.apiUrl, { id: logId })
       .pipe(
@@ -121,21 +136,13 @@ export class AuditLogsComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.selectedLog = res.body || null;
+          this.selectedLog = (res.body || null) as AuditLogItem;
 
-          if (this.selectedLog?.oldValues) {
+          if (this.selectedLog?.detailsJson) {
             try {
-              this.parsedOldValues = JSON.parse(this.selectedLog.oldValues);
+              this.parsedDetails = JSON.parse(this.selectedLog.detailsJson);
             } catch {
-              this.parsedOldValues = this.selectedLog.oldValues;
-            }
-          }
-
-          if (this.selectedLog?.newValues) {
-            try {
-              this.parsedNewValues = JSON.parse(this.selectedLog.newValues);
-            } catch {
-              this.parsedNewValues = this.selectedLog.newValues;
+              this.parsedDetails = this.selectedLog.detailsJson;
             }
           }
         },
@@ -152,7 +159,7 @@ export class AuditLogsComponent implements OnInit {
 
   resetFilters(): void {
     this.search = '';
-    this.selectedEntity = '';
+    this.selectedCategory = '';
     this.selectedAction = '';
     this.userEmail = '';
     this.fromDate = '';
@@ -167,18 +174,65 @@ export class AuditLogsComponent implements OnInit {
     }
   }
 
+  // --- DYNAMIC NON-JSON FORMATTING HELPERS ---
+
+  isPrimitive(val: any): boolean {
+    return val === null || val === undefined || typeof val !== 'object';
+  }
+
+  getDetailProperties(details: any): { key: string; label: string; value: any }[] {
+    if (!details || typeof details !== 'object' || Array.isArray(details)) return [];
+    return Object.keys(details)
+      .filter(key => !Array.isArray(details[key]) && (details[key] === null || typeof details[key] !== 'object'))
+      .map(key => ({
+        key,
+        label: this.formatLabel(key),
+        value: details[key]
+      }));
+  }
+
+  getDetailArrays(details: any): { key: string; label: string; items: any[] }[] {
+    if (!details || typeof details !== 'object' || Array.isArray(details)) return [];
+    return Object.keys(details)
+      .filter(key => Array.isArray(details[key]) && details[key].length > 0)
+      .map(key => ({
+        key,
+        label: this.formatLabel(key),
+        items: details[key]
+      }));
+  }
+
+  getItemHeaders(items: any[]): string[] {
+    if (!items || items.length === 0) return [];
+    const headersSet = new Set<string>();
+    items.forEach(item => {
+      if (item && typeof item === 'object') {
+        Object.keys(item).forEach(k => headersSet.add(k));
+      }
+    });
+    return Array.from(headersSet);
+  }
+
+  formatLabel(key: string): string {
+    if (!key) return '';
+    return key
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
+  }
+
   getActionBadgeClass(action?: string | null): string {
     const act = (action || '').toUpperCase();
     switch (act) {
+      case 'CREATED':
+      case 'REGISTER':
       case 'ADDED':
-      case 'POST':
         return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      case 'MODIFIED':
-      case 'PUT':
-      case 'PATCH':
+      case 'LOGIN':
+      case 'EXCELIMPORT':
+      case 'UPDATED':
         return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'DELETED':
-      case 'DELETE':
         return 'bg-rose-50 text-rose-700 border-rose-200';
       default:
         return 'bg-slate-100 text-slate-700 border-slate-200';

@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using Microsoft.AspNetCore.Http;
-using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints
 {
@@ -10,7 +9,7 @@ namespace WMS.Api.Endpoints
         {
             var group = app.MapGroup("incoming-template")
                 .WithTags("IncomingImportTemplate")
-                .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+                .WithParameterValidation();
 
             // GET: Download Standardized Excel Template
             group.MapGet("/template", () =>

@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Transfer;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints;
 
@@ -15,7 +14,7 @@ public static class TransferEndpoint
     {
         var group = app.MapGroup("transfers")
             .WithTags("Transfers")
-            .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+            .WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // Pallet Location Endpoints

@@ -27,5 +27,9 @@ public class ReceivedProduct : IProductBase
     public int? PalletId { get; set; }
     public Pallet? Pallet { get; set; }
 
+    // Direct link to the source Incoming line item
+    public int? IncomingProductId { get; set; }
+    public IncomingProduct? IncomingProduct { get; set; }
+
     public ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
 }

@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { ReceivingCreateComponent } from "../receiving/create/receiving-create.component";
-import { ChevronLeft, ChevronRight, Download, EyeIcon, FileUp, LucideAngularModule, PencilIcon, PlusIcon, SearchIcon, TrashIcon, Upload } from "lucide-angular";
+import { AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, CircleAlertIcon, Download, EyeIcon, FileUp, LucideAngularModule, PlusIcon, SearchIcon, TrashIcon, Upload } from "lucide-angular";
 import { PageHeaderComponent } from "../../shared/layout/page-header/page-header.component";
 import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
@@ -10,7 +10,7 @@ import { WarehouseService } from "../../lib/services/warehouse.service";
 import { SignalRService } from "../../lib/services/signalr.service";
 import { IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
 import { Api } from "../../api/generated/api";
-import { deleteIncoming, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel } from "../../api/generated/functions";
+import { deleteIncoming, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel, shortCloseIncoming } from "../../api/generated/functions";
 import { formatDate } from "../../lib/utils/format-date";
 import { formatTime } from "../../lib/utils/format-time";
 import { ToastService } from "../../lib/services/toast.service";
@@ -19,7 +19,13 @@ import { ConfirmDialogComponent } from "../../shared/components/dialog/confirm-d
 @Component({
   selector: 'app-incoming-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent, ConfirmDialogComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    LucideAngularModule, 
+    PageHeaderComponent, 
+    ConfirmDialogComponent
+  ],
   templateUrl: './incoming-list.component.html',
 })
 export class IncomingListComponent implements OnInit, OnDestroy {
@@ -43,10 +49,14 @@ export class IncomingListComponent implements OnInit, OnDestroy {
   readonly uploadIcon = Upload;
   readonly trashIcon = TrashIcon;
   readonly fileUpIcon = FileUp;
+  readonly alertIcon = AlertTriangle;
+  readonly checkCircleIcon = CheckCircle;
 
   private destroy$ = new Subject<void>();
 
   incomings: IncomingResponseDto[] = [];
+  selectedIncoming: IncomingResponseDto | null = null;
+
   isLoading = true;
   isImporting = false;
   isRevising = false;
@@ -58,6 +68,21 @@ export class IncomingListComponent implements OnInit, OnDestroy {
   pageSize = 10;
   totalCount = 0;
   totalPages = 0;
+
+  // Drawer & Modal states
+  isViewOpen = false;
+  isCreateOpen = false;
+  isErrorModalOpen = false;
+  importErrors: string[] = [];
+
+  isConfirmShortCloseOpen = false;
+  isShortClosing = false;
+  itemToShortClose: IncomingResponseDto | null = null;
+  shortCloseMessage = '';
+
+  isConfirmDeleteOpen = false;
+  itemToDeleteId: number | null = null;
+  isDeleting = false;
 
   constructor() {
     effect(() => {
@@ -84,17 +109,6 @@ export class IncomingListComponent implements OnInit, OnDestroy {
   close(): void {
     this.closed.emit();
   }
-
-  // Drawer & Modal states
-  isViewOpen = false;
-  isCreateOpen = false;
-  isErrorModalOpen = false;
-  importErrors: string[] = [];
-  selectedIncoming: IncomingResponseDto | null = null;
-
-  isConfirmDeleteOpen = false;
-  itemToDeleteId: number | null = null;
-  isDeleting = false;
 
   confirmDelete(id: number): void {
     this.itemToDeleteId = id;
@@ -132,6 +146,66 @@ export class IncomingListComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.cd.markForCheck();
     }
+  }
+
+  /**
+   * Permanently short-closes an incoming shipment with missing/lost balance
+   */
+async handleExecuteShortClose(): Promise<void> {
+    if (!this.itemToShortClose?.id) return;
+
+    const targetId = this.itemToShortClose.id;
+    this.isShortClosing = true;
+    this.error = '';
+    this.cd.markForCheck();
+
+    try {
+      await this.api.invoke(shortCloseIncoming, { id: targetId });
+      this.toastService.success(`Incoming shipment #${targetId} short-closed successfully.`);
+
+      // Update status locally for immediate UI update
+      if (this.itemToShortClose) {
+        this.itemToShortClose.status = 'CLOSED_SHORT' as any;
+      }
+      if (this.selectedIncoming && this.selectedIncoming.id === targetId) {
+        this.selectedIncoming.status = 'CLOSED_SHORT' as any;
+      }
+
+      this.cancelShortClose();
+      await this.loadIncomings();
+    } catch (err: any) {
+      console.error('Failed to short-close incoming shipment:', err);
+      const msg = err.error?.message || err.message || 'Failed to short-close incoming shipment.';
+      this.toastService.error(msg);
+      this.error = msg;
+    } finally {
+      this.isShortClosing = false;
+      this.cd.markForCheck();
+    }
+  }
+
+  confirmShortClose(incoming: IncomingResponseDto): void {
+    if (!incoming.id) return;
+
+    const totalRemaining = (incoming.products || [])
+      .reduce((sum, p) => sum + (p.remainingQuantity ?? 0), 0);
+
+    this.itemToShortClose = incoming;
+    this.shortCloseMessage = `Are you sure you want to SHORT-CLOSE Incoming Shipment #${incoming.id}? ` +
+      `The remaining balance of ${totalRemaining} unit(s) will be permanently recorded as lost/unfulfilled and removed from active picklists.`;
+    
+    this.isConfirmShortCloseOpen = true;
+    this.cd.markForCheck();
+  }
+
+  /**
+   * Cancels/closes the Short Close dialog
+   */
+  cancelShortClose(): void {
+    this.isConfirmShortCloseOpen = false;
+    this.itemToShortClose = null;
+    this.shortCloseMessage = '';
+    this.cd.markForCheck();
   }
 
   // --- EXCEL TEMPLATE DOWNLOAD ---
@@ -356,16 +430,34 @@ export class IncomingListComponent implements OnInit, OnDestroy {
     void this.loadIncomings();
   }
 
-  getStatusColorClass(status: 'PENDING' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | undefined): string {
+  getStatusColorClass(status: 'PENDING' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | 'CLOSED_SHORT' | string | undefined): string {
     switch (status) {
       case 'PENDING':
         return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'PARTIAL':
+        return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'RECEIVED':
         return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'CLOSED_SHORT':
+        return 'bg-purple-50 text-purple-700 border-purple-200';
       case 'CANCELLED':
         return 'bg-rose-50 text-rose-700 border-rose-200';
       default:
-        return 'bg-emerald-100 text-slate-700 border-slate-200';
+        return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
+  }
+
+  getItemStatusBadgeClass(status?: 'UNRECEIVED' | 'PARTIAL' | 'RECEIVED' | 'CLOSED_SHORT' | string): string {
+    switch (status) {
+      case 'RECEIVED':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+      case 'PARTIAL':
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'CLOSED_SHORT':
+        return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'UNRECEIVED':
+      default:
+        return 'bg-slate-100 text-slate-600 border-slate-200';
     }
   }
 }

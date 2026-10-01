@@ -4,10 +4,10 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Helpers;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints;
 
@@ -17,16 +17,16 @@ public static class ReceivingEndpoint
 
     public static RouteGroupBuilder MapReceivingEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("receiving").WithTags("Receiving").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("receiving").WithTags("Receiving").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1)
         // -----------------------------------------------------------------------------
         group.MapGet("/", async (WMSContext dbContext) =>
             await dbContext.Receivings
-                   .Include(receiving => receiving.Products)
+                   .Include(receiving => receiving.Products!)
                         .ThenInclude(receivedProduct => receivedProduct.Product)
-                   .Include(receiving => receiving.Products)
+                   .Include(receiving => receiving.Products!)
                         .ThenInclude(receivedProduct => receivedProduct.Pallet)
                    .Include(receiving => receiving.Warehouse)
                   .Select(receiving => receiving.ToReceivingSummaryDto())
@@ -51,9 +51,9 @@ public static class ReceivingEndpoint
             pageSize = Math.Clamp(pageSize, 1, maxPageSize);
 
             var query = dbContext.Receivings
-                .Include(receiving => receiving.Products)
+                .Include(receiving => receiving.Products!)
                     .ThenInclude(receivedProduct => receivedProduct.Product)
-                .Include(receiving => receiving.Products)
+                .Include(receiving => receiving.Products!)
                     .ThenInclude(receivedProduct => receivedProduct.Pallet)
                 .Include(receiving => receiving.Warehouse)
                 .AsNoTracking();
@@ -73,14 +73,17 @@ public static class ReceivingEndpoint
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            // Fetch entities from MySQL first
             var receivings = await query
                 .OrderByDescending(receiving => receiving.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync(cancellationToken);
 
-            // Map to DTOs in C# memory
+            foreach (var r in receivings)
+            {
+                EnsureExpectedQuantities(r, dbContext);
+            }
+
             var items = receivings
                 .Select(receiving => receiving.ToReceivingDetailsDto())
                 .ToList();
@@ -102,27 +105,26 @@ public static class ReceivingEndpoint
             WMSContext dbContext,
             int? warehouseId = null,
             CancellationToken cancellationToken = default) =>
-                {
-                    var query = dbContext.Receivings
-                        .AsNoTracking()
-                        .Where(r => !string.IsNullOrWhiteSpace(r.Shipper));
+        {
+            var query = dbContext.Receivings
+                .AsNoTracking()
+                .Where(r => !string.IsNullOrWhiteSpace(r.Shipper));
 
-                    if (warehouseId.HasValue)
-                    {
-                        query = query.Where(r => r.WarehouseId == warehouseId.Value);
-                    }
+            if (warehouseId.HasValue)
+            {
+                query = query.Where(r => r.WarehouseId == warehouseId.Value);
+            }
 
-                    var shippers = await query
-                        .Select(r => r.Shipper!.Trim())
-                        .Distinct()
-                        .OrderBy(s => s)
-                        .ToListAsync(cancellationToken);
+            var shippers = await query
+                .Select(r => r.Shipper!.Trim())
+                .Distinct()
+                .OrderBy(s => s)
+                .ToListAsync(cancellationToken);
 
-                    return Results.Ok(shippers);
-                })
+            return Results.Ok(shippers);
+        })
         .WithName("GetAllShippersFromReceiving")
         .WithSummary("Get all unique shippers from receiving receipts")
-        .WithDescription("Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.")
         .Produces<List<string>>(StatusCodes.Status200OK);
 
         // -----------------------------------------------------------------------------
@@ -131,9 +133,9 @@ public static class ReceivingEndpoint
         group.MapGet("/warehouse/{WarehouseId:int}", async (int WarehouseId, WMSContext dbContext) =>
             await dbContext.Receivings
                     .Where(receiving => receiving.WarehouseId == WarehouseId)
-                   .Include(receiving => receiving.Products)
+                   .Include(receiving => receiving.Products!)
                         .ThenInclude(receivedProduct => receivedProduct.Product)
-                   .Include(receiving => receiving.Products)
+                   .Include(receiving => receiving.Products!)
                         .ThenInclude(receivedProduct => receivedProduct.Pallet)
                    .Include(receiving => receiving.Warehouse)
                   .Select(receiving => receiving.ToReceivingSummaryDto())
@@ -170,26 +172,29 @@ public static class ReceivingEndpoint
                 return Results.NotFound(new { Message = $"Receiving receipt #{id} was not found." });
             }
 
+            EnsureExpectedQuantities(receiving, dbContext);
+
             return Results.Ok(receiving.ToReceivingDetailsDto());
         })
         .WithName(GetReceivingEndpoint)
         .WithSummary("Get receiving transaction details")
-        .WithDescription("Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.")
         .Produces<ReceivingDetailsDto>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
-        // Mutation Endpoints
+        // POST / - UPSERT RECEIVING (CREATE OR ACCUMULATE ON EXISTING RECEIPT)
         // -----------------------------------------------------------------------------
         group.MapPost("/", async (
             CreateReceivingDto newReceivingDto,
             WMSContext dbContext,
             IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
-            // 1. Mandatory Incoming Record Lookup & Validation
+            // 1. Mandatory Incoming Record Lookup
             var incoming = await dbContext.Incomings
-                .Include(inc => inc.Products)
+                .Include(inc => inc.Products!)
+                    .ThenInclude(p => p.Product)
                 .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId, cancellationToken);
 
             if (incoming is null)
@@ -197,44 +202,102 @@ public static class ReceivingEndpoint
                 return Results.NotFound(new { Message = $"Incoming shipment record #{newReceivingDto.IncomingId} was not found." });
             }
 
-            // Prevent receiving an incoming record that was already fully processed
             if (incoming.Status == IncomingStatus.RECEIVED)
             {
                 return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} has already been fully received." });
             }
 
-            // 2. Identify received Product IDs from payload & update IncomingProduct flags
-            var receivedProductIds = newReceivingDto.Products
-                .Select(p => p.ProductId)
-                .Distinct()
-                .ToHashSet();
+            // 2. Check if a Receiving entry ALREADY EXISTS for this IncomingId
+            var existingReceiving = await dbContext.Receivings
+                .Include(r => r.Products!)
+                    .ThenInclude(p => p.Product)
+                .FirstOrDefaultAsync(r => r.IncomingId == newReceivingDto.IncomingId, cancellationToken);
 
-            foreach (var incProduct in incoming.Products)
+            Receiving receiving;
+            bool isNewReceiving = existingReceiving is null;
+
+            if (isNewReceiving)
             {
-                if (receivedProductIds.Contains(incProduct.ProductId))
+                // CREATE NEW RECEIVING RECORD
+                receiving = newReceivingDto.ToEntity();
+                dbContext.Receivings.Add(receiving);
+                await dbContext.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                // UPDATE / ACCUMULATE ON EXISTING RECEIVING RECORD
+                receiving = existingReceiving!;
+                receiving.Shipper = newReceivingDto.Shipper;
+                receiving.Consignee = newReceivingDto.Consignee;
+                receiving.TransportCompany = newReceivingDto.TransportCompany;
+                receiving.PlateNumber = newReceivingDto.PlateNumber;
+                receiving.DriverName = newReceivingDto.DriverName;
+                receiving.WarehouseId = newReceivingDto.WarehouseId;
+
+                receiving.Products ??= new List<ReceivedProduct>();
+
+                foreach (var incomingProductDto in newReceivingDto.Products)
                 {
-                    incProduct.Received = true;
+                    string expKey = FormatDateKey(incomingProductDto.ExpirationDate);
+
+                    // Look for existing row matching IncomingProductId (or ProductId + Expiry) + PalletId
+                    var matchInExisting = receiving.Products.FirstOrDefault(p =>
+                        ((incomingProductDto.IncomingProductId.HasValue && p.IncomingProductId == incomingProductDto.IncomingProductId.Value) ||
+                         (p.ProductId == incomingProductDto.ProductId && FormatDateKey(p.ExpirationDate) == expKey)) &&
+                        p.PalletId == incomingProductDto.PalletId);
+
+                    if (matchInExisting != null)
+                    {
+                        // Scenario A: Same Pallet ID -> Accumulate quantity
+                        matchInExisting.Quantity += incomingProductDto.Quantity;
+                        matchInExisting.UnitPrice = incomingProductDto.UnitPrice != 0 ? incomingProductDto.UnitPrice : matchInExisting.UnitPrice;
+                        matchInExisting.TotalAmount = incomingProductDto.TotalAmount != 0 ? incomingProductDto.TotalAmount : matchInExisting.TotalAmount;
+                        matchInExisting.Supplier = !string.IsNullOrWhiteSpace(incomingProductDto.Supplier) ? incomingProductDto.Supplier : matchInExisting.Supplier;
+                        if (!string.IsNullOrWhiteSpace(incomingProductDto.TypeOfPackage))
+                        {
+                            matchInExisting.TypeOfPackage = incomingProductDto.TypeOfPackage;
+                        }
+                        matchInExisting.CBM = incomingProductDto.CBM;
+                        matchInExisting.TotalWeight = incomingProductDto.TotalWeight;
+                    }
+                    else
+                    {
+                        // Scenario B: Different Pallet ID -> Create distinct received row
+                        receiving.Products.Add(new ReceivedProduct
+                        {
+                            ReceivingId = receiving.Id,
+                            ProductId = incomingProductDto.ProductId,
+                            IncomingProductId = incomingProductDto.IncomingProductId, // ✅ Set foreign key
+                            Quantity = incomingProductDto.Quantity,
+
+                            ExpectedQuantity = (incomingProductDto.ExpectedQuantity.HasValue && incomingProductDto.ExpectedQuantity.Value > 0)
+                                ? incomingProductDto.ExpectedQuantity.Value
+                                : incomingProductDto.Quantity,
+
+                            ExpectedCBM = incomingProductDto.ExpectedCBM ?? incomingProductDto.CBM,
+                            ExpectedTotalWeight = incomingProductDto.ExpectedTotalWeight ?? incomingProductDto.TotalWeight,
+                            ExpectedExpirationDate = incomingProductDto.ExpectedExpirationDate ?? incomingProductDto.ExpirationDate,
+                            ExpectedProductName = incomingProductDto.ExpectedProductName,
+
+                            UnitPrice = incomingProductDto.UnitPrice,
+                            TotalAmount = incomingProductDto.TotalAmount,
+                            Supplier = incomingProductDto.Supplier,
+                            TypeOfPackage = incomingProductDto.TypeOfPackage,
+                            LotNumber = incomingProductDto.LotNumber,
+                            CBM = incomingProductDto.CBM,
+                            TotalWeight = incomingProductDto.TotalWeight,
+                            Remarks = incomingProductDto.Remarks,
+                            ExpirationDate = incomingProductDto.ExpirationDate,
+                            ContainerName = incomingProductDto.ContainerName ?? "N/A",
+                            PalletId = incomingProductDto.PalletId
+                        });
+                    }
                 }
+
+                await dbContext.SaveChangesAsync(cancellationToken);
             }
 
-            // 3. Calculate overall Incoming status (RECEIVED if all products received, otherwise PARTIAL)
-            if (incoming.Products.Count > 0 && incoming.Products.All(p => p.Received))
-            {
-                incoming.Status = IncomingStatus.RECEIVED;
-            }
-            else if (incoming.Products.Any(p => p.Received))
-            {
-                incoming.Status = IncomingStatus.PARTIAL;
-            }
-
-            // 4. Convert DTO to Receiving entity
-            Receiving receiving = newReceivingDto.ToEntity();
-            dbContext.Receivings.Add(receiving);
-
-            // 5. Initial Save Changes to generate database-assigned receiving.Id
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            // 6. Generate Lot Number per received product using the generated Receiving Id
+            // 3. Generate Lot Numbers for any unassigned products
             int sequenceIndex = 1;
             if (receiving.Products != null && receiving.Products.Count > 0)
             {
@@ -247,15 +310,71 @@ public static class ReceivingEndpoint
                         sequenceIndex++
                     );
                 }
-
-                // Persist generated Lot Numbers
-                await dbContext.SaveChangesAsync(cancellationToken);
             }
 
-            // 7. SignalR Real-time Notification
+            // 4. Recalculate baseline ExpectedQuantities sequentially across pallet line items
+            RecalculateExpectedQuantities(receiving, incoming);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS
+            var allReceivedProducts = await dbContext.Receivings
+                .Where(r => r.IncomingId == incoming.Id)
+                .SelectMany(r => r.Products!)
+                .ToListAsync(cancellationToken);
+
+            var receivedPool = allReceivedProducts
+                .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(p => p.Quantity),
+                    StringComparer.OrdinalIgnoreCase
+                );
+
+            foreach (var incProduct in incoming.Products!)
+            {
+                string key = $"{incProduct.ProductId}_{FormatDateKey(incProduct.ExpirationDate)}";
+
+                int allocatedToThisRow = 0;
+                if (receivedPool.TryGetValue(key, out int poolQty) && poolQty > 0)
+                {
+                    allocatedToThisRow = Math.Min(incProduct.Quantity, poolQty);
+                    receivedPool[key] = poolQty - allocatedToThisRow;
+                }
+
+                if (allocatedToThisRow <= 0)
+                {
+                    incProduct.Status = IncomingProductStatus.UNRECEIVED;
+                }
+                else if (allocatedToThisRow >= incProduct.Quantity)
+                {
+                    incProduct.Status = IncomingProductStatus.RECEIVED;
+                }
+                else
+                {
+                    incProduct.Status = IncomingProductStatus.PARTIAL;
+                }
+            }
+
+            // Update overall Incoming Shipment Status
+            if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED))
+            {
+                incoming.Status = IncomingStatus.RECEIVED;
+            }
+            else if (incoming.Products.Any(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.PARTIAL))
+            {
+                incoming.Status = IncomingStatus.PARTIAL;
+            }
+            else
+            {
+                incoming.Status = IncomingStatus.PENDING;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            // 6. SignalR Notification
             await hubContext.Clients.All.ReceivingCreated();
 
-            // 8. Re-query hydrated entity to return complete DTO with Product and Warehouse metadata
+            // 7. Return Hydrated Response & Audit Log
             var createdReceiving = await dbContext.Receivings
                 .Include(r => r.Warehouse)
                 .Include(r => r.Products!)
@@ -263,19 +382,55 @@ public static class ReceivingEndpoint
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == receiving.Id, cancellationToken);
 
-            return Results.CreatedAtRoute(
-                GetReceivingEndpoint,
-                new { id = receiving.Id },
-                (createdReceiving ?? receiving).ToReceivingDetailsDto());
+            if (createdReceiving != null)
+            {
+                RecalculateExpectedQuantities(createdReceiving, incoming);
+            }
+
+            var resultDto = (createdReceiving ?? receiving).ToReceivingDetailsDto();
+
+            await auditLogService.LogAsync(
+                category: "Receiving",
+                action: isNewReceiving ? "Created" : "Updated",
+                description: isNewReceiving
+                    ? $"Created receiving receipt '{resultDto.Series}' (linked to Incoming ID {incoming.Id}) with {resultDto.Products.Count} line item(s)."
+                    : $"Updated existing receiving receipt '{resultDto.Series}' for Incoming ID {incoming.Id}. Overall Incoming status is now '{incoming.Status}'.",
+                details: new
+                {
+                    ReceivingId = resultDto.Id,
+                    resultDto.Series,
+                    resultDto.Shipper,
+                    LinkedIncomingId = incoming.Id,
+                    ResultingIncomingStatus = incoming.Status.ToString(),
+                    Products = resultDto.Products.Select(p => new
+                    {
+                        p.Name,
+                        p.Quantity,
+                        p.LotNumber,
+                        Expiration = FormatDateKey(p.ExpirationDate),
+                    })
+                }
+            );
+
+            return isNewReceiving
+                ? Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, resultDto)
+                : Results.Ok(resultDto);
         })
         .WithName("CreateReceiving")
-        .WithSummary("Create a new receiving receipt")
-        .WithDescription("Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.")
+        .WithSummary("Create or update a receiving receipt")
+        .Produces<ReceivingDetailsDto>(StatusCodes.Status200OK)
         .Produces<ReceivingDetailsDto>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);
 
-        group.MapPut("/{id:int}", async (int id, WMSContext dbContext, CreateReceivingDto updatedReceiving) =>
+        // -----------------------------------------------------------------------------
+        // PUT /{id:int} - Direct Receiving Edit
+        // -----------------------------------------------------------------------------
+        group.MapPut("/{id:int}", async (
+            int id,
+            WMSContext dbContext,
+            CreateReceivingDto updatedReceiving,
+            IAuditLogService auditLogService) =>
         {
             var existingReceiving = await dbContext.Receivings
                 .Include(receiving => receiving.Products!)
@@ -287,15 +442,17 @@ public static class ReceivingEndpoint
                 return Results.NotFound();
             }
 
+            var oldSeries = existingReceiving.Series;
+
             dbContext.Entry(existingReceiving).CurrentValues.SetValues(updatedReceiving.ToUpdateEntity(id));
 
-            // 1. Update existing or insert new ReceivedProducts
             foreach (var updatedProduct in updatedReceiving.Products)
             {
                 var existingProduct = existingReceiving.Products?
                     .FirstOrDefault(p => p.Id == updatedProduct.Id && p.ProductId == updatedProduct.ProductId);
+
                 int newProductSequence = (existingReceiving.Products?.Count ?? 0) + 1;
-                // Auto-generate or sanitize Lot Number
+
                 string assignedLotNumber = LotNumberGenerator.Generate(
                     updatedProduct.LotNumber,
                     id,
@@ -306,7 +463,7 @@ public static class ReceivingEndpoint
                 if (existingProduct != null && existingProduct.Id != 0)
                 {
                     dbContext.Entry(existingProduct).CurrentValues.SetValues(updatedProduct);
-                    existingProduct.LotNumber = assignedLotNumber; // Ensure LotNumber is persisted
+                    existingProduct.LotNumber = assignedLotNumber;
                 }
                 else
                 {
@@ -314,7 +471,7 @@ public static class ReceivingEndpoint
                     {
                         ProductId = updatedProduct.ProductId,
                         Quantity = updatedProduct.Quantity,
-                        LotNumber = assignedLotNumber, // Assigned Generated Lot Number
+                        LotNumber = assignedLotNumber,
                         CBM = updatedProduct.CBM,
                         TotalWeight = updatedProduct.TotalWeight,
                         Remarks = updatedProduct.Remarks,
@@ -325,7 +482,7 @@ public static class ReceivingEndpoint
                 }
             }
 
-            foreach (var existingProduct in existingReceiving.Products.ToList())
+            foreach (var existingProduct in existingReceiving.Products!.ToList())
             {
                 if (!updatedReceiving.Products.Any(p => p.Id == existingProduct.Id && p.ProductId == existingProduct.ProductId))
                 {
@@ -334,10 +491,37 @@ public static class ReceivingEndpoint
             }
 
             await dbContext.SaveChangesAsync();
+
+            await auditLogService.LogAsync(
+                category: "Receiving",
+                action: "Updated",
+                description: $"Updated receiving receipt '{existingReceiving.Series}' (ID: {id}) containing {existingReceiving.Products.Count} product(s).",
+                details: new
+                {
+                    ReceivingId = id,
+                    OldSeries = oldSeries,
+                    NewSeries = existingReceiving.Series,
+                    existingReceiving.Shipper,
+                    Products = existingReceiving.Products.Select(p => new
+                    {
+                        p.ProductId,
+                        p.Quantity,
+                        p.LotNumber,
+                        Expiration = FormatDateKey(p.ExpirationDate)
+                    })
+                }
+            );
+
             return Results.NoContent();
         });
 
-        group.MapDelete("/{id:int}", async (int id, WMSContext dbContext) =>
+        // -----------------------------------------------------------------------------
+        // DELETE /{id:int}
+        // -----------------------------------------------------------------------------
+        group.MapDelete("/{id:int}", async (
+            int id,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
             var existingReceiving = await dbContext.Receivings
                 .Include(receiving => receiving.Products)
@@ -348,13 +532,130 @@ public static class ReceivingEndpoint
                 return Results.NotFound();
             }
 
-            dbContext.ReceivedProducts.RemoveRange(existingReceiving.Products);
+            var snapshotSeries = existingReceiving.Series;
+            var snapshotProductsCount = existingReceiving.Products?.Count ?? 0;
+
+            if (existingReceiving.Products != null)
+            {
+                dbContext.ReceivedProducts.RemoveRange(existingReceiving.Products);
+            }
             dbContext.Receivings.Remove(existingReceiving);
 
             await dbContext.SaveChangesAsync();
+
+            await auditLogService.LogAsync(
+                category: "Receiving",
+                action: "Deleted",
+                description: $"Deleted receiving receipt '{snapshotSeries}' (ID: {id}) containing {snapshotProductsCount} product(s).",
+                details: new
+                {
+                    DeletedId = id,
+                    Series = snapshotSeries,
+                    Shipper = existingReceiving.Shipper,
+                    TotalProductsRemoved = snapshotProductsCount
+                }
+            );
+
             return Results.NoContent();
         });
 
         return group;
+    }
+
+    // -----------------------------------------------------------------------------
+    // DATE KEY NORMALIZER HELPER
+    // -----------------------------------------------------------------------------
+    private static string FormatDateKey(DateOnly? date) => date?.ToString("yyyy-MM-dd") ?? "NONE";
+
+    // -----------------------------------------------------------------------------
+    // WATERFALL EXPECTED QUANTITY ALLOCATION HELPER (PRESERVES INDIVIDUAL LINE BASELINES)
+    // -----------------------------------------------------------------------------
+    private static void RecalculateExpectedQuantities(Receiving receiving, Incoming incoming)
+    {
+        if (receiving.Products == null || incoming.Products == null) return;
+
+        // Group INCOMING products by ProductId + ExpirationDate ordered sequentially
+        var incomingGroups = incoming.Products
+            .GroupBy(p => $"{p.ProductId}_{FormatDateKey(p.ExpirationDate)}")
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(p => p.Id).ToList(),
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        // Group RECEIVED products by ProductId + ExpirationDate
+        var receivedGroups = receiving.Products
+            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+            .ToList();
+
+        foreach (var group in receivedGroups)
+        {
+            if (!incomingGroups.TryGetValue(group.Key, out var incList) || incList.Count == 0)
+            {
+                continue;
+            }
+
+            var receivedItems = group.OrderBy(rp => rp.Id).ToList();
+
+            int incIdx = 0;
+            int currentIncRemaining = incList[0].Quantity;
+
+            for (int rIdx = 0; rIdx < receivedItems.Count; rIdx++)
+            {
+                var rp = receivedItems[rIdx];
+                var currentInc = incList[Math.Min(incIdx, incList.Count - 1)];
+
+                // Populate baseline metadata from matching incoming row
+                rp.ExpectedCBM = currentInc.CBM;
+                rp.ExpectedTotalWeight = currentInc.TotalWeight;
+                rp.ExpectedExpirationDate = currentInc.ExpirationDate;
+                rp.ExpectedProductName = currentInc.Product?.Name;
+                if (string.IsNullOrWhiteSpace(rp.TypeOfPackage))
+                {
+                    rp.TypeOfPackage = currentInc.Product?.TypeOfPackage;
+                }
+
+                int unallocatedPalletQty = rp.Quantity;
+                int allocatedExpectedForPallet = 0;
+
+                // Waterfall allocation across multiple planned line items
+                while (unallocatedPalletQty > 0 && incIdx < incList.Count)
+                {
+                    int alloc = Math.Min(unallocatedPalletQty, currentIncRemaining);
+                    allocatedExpectedForPallet += alloc;
+                    unallocatedPalletQty -= alloc;
+                    currentIncRemaining -= alloc;
+
+                    if (currentIncRemaining == 0)
+                    {
+                        incIdx++;
+                        if (incIdx < incList.Count)
+                        {
+                            currentIncRemaining = incList[incIdx].Quantity;
+                        }
+                    }
+                }
+
+                // Assign allocated baseline expectation
+                rp.ExpectedQuantity = allocatedExpectedForPallet > 0 ? allocatedExpectedForPallet : rp.Quantity;
+            }
+        }
+    }
+
+    private static void EnsureExpectedQuantities(Receiving receiving, WMSContext dbContext)
+    {
+        if (receiving.IncomingId.HasValue && receiving.Products != null && receiving.Products.Count > 0)
+        {
+            var incoming = dbContext.Incomings
+                .Include(inc => inc.Products!)
+                    .ThenInclude(p => p.Product)
+                .AsNoTracking()
+                .FirstOrDefault(inc => inc.Id == receiving.IncomingId.Value);
+
+            if (incoming != null)
+            {
+                RecalculateExpectedQuantities(receiving, incoming);
+            }
+        }
     }
 }

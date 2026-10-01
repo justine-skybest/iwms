@@ -3,13 +3,11 @@
 
 export interface AuditLog {
   action?: string | null;
-  entityName?: string | null;
-  executionTimeMs?: number;
+  category?: string | null;
+  description?: string | null;
+  detailsJson?: string | null;
   id?: string;
   ipAddress?: string | null;
-  newValues?: string | null;
-  oldValues?: string | null;
-  primaryKey?: string | null;
   statusCode?: number;
   timestamp?: string;
   traceId?: string | null;

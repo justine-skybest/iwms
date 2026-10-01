@@ -11,10 +11,17 @@
           "Audit Logs"
         ],
         "summary": "Get paginated audit logs",
-        "description": "Retrieves a filtered, paginated list of system audit history.",
+        "description": "Retrieves a filtered, paginated list of system activity logs.",
         "parameters": [
           {
             "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
             "in": "query",
             "schema": {
               "type": "string"
@@ -96,7 +103,7 @@
           "Audit Logs"
         ],
         "summary": "Get audit log details by ID",
-        "description": "Retrieves complete audit log details including OldValues and NewValues diff payloads.",
+        "description": "Retrieves complete audit log details including narrative description and structured JSON details payload.",
         "parameters": [
           {
             "name": "id",
@@ -125,13 +132,36 @@
         }
       }
     },
+    "/api/audit-logs/categories": {
+      "get": {
+        "tags": [
+          "Audit Logs"
+        ],
+        "summary": "Get list of audit categories",
+        "description": "Returns distinct categories recorded in audit logs to populate UI filter dropdowns.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/audit-logs/entity-names": {
       "get": {
         "tags": [
           "Audit Logs"
         ],
-        "summary": "Get list of audited entity names",
-        "description": "Returns distinct entity names recorded in audit logs to populate UI filter dropdowns.",
+        "summary": "Get list of audit categories (alias)",
         "responses": {
           "200": {
             "description": "OK",
@@ -526,8 +556,8 @@
         "tags": [
           "Incomings"
         ],
-        "summary": "Get pending or partial incoming shipments with unreceived products",
-        "description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.",
+        "summary": "Get pending or partial incoming shipments with unreceived or partial products",
+        "description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including calculated remaining balances.",
         "operationId": "GetUnreceivedIncomings",
         "parameters": [
           {
@@ -560,7 +590,7 @@
             "schema": {
               "type": "integer",
               "format": "int32",
-              "default": 50
+              "default": 15
             }
           }
         ],
@@ -588,13 +618,37 @@
         }
       }
     },
+    "/incoming/{id}/short-close": {
+      "post": {
+        "tags": [
+          "Incomings"
+        ],
+        "summary": "Permanently close an incoming shipment with missing/lost items",
+        "operationId": "ShortCloseIncoming",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/incoming/{id}": {
       "get": {
         "tags": [
           "Incomings"
         ],
         "summary": "Get incoming shipment by ID",
-        "description": "Retrieves a single incoming shipment record by its primary key.",
         "operationId": "GetIncomingById",
         "parameters": [
           {
@@ -1052,8 +1106,7 @@
         "tags": [
           "Receiving"
         ],
-        "summary": "Create a new receiving receipt",
-        "description": "Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.",
+        "summary": "Create or update a receiving receipt",
         "operationId": "CreateReceiving",
         "requestBody": {
           "content": {
@@ -1066,6 +1119,16 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingDetailsDto"
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -1169,7 +1232,6 @@
           "Receiving"
         ],
         "summary": "Get all unique shippers from receiving receipts",
-        "description": "Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.",
         "operationId": "GetAllShippersFromReceiving",
         "parameters": [
           {
@@ -1249,7 +1311,6 @@
           "Receiving"
         ],
         "summary": "Get receiving transaction details",
-        "description": "Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.",
         "operationId": "GetReceiving",
         "parameters": [
           {
@@ -4551,7 +4612,7 @@
             "type": "string",
             "nullable": true
           },
-          "entityName": {
+          "category": {
             "type": "string",
             "nullable": true
           },
@@ -4559,15 +4620,11 @@
             "type": "string",
             "nullable": true
           },
-          "primaryKey": {
+          "description": {
             "type": "string",
             "nullable": true
           },
-          "oldValues": {
-            "type": "string",
-            "nullable": true
-          },
-          "newValues": {
+          "detailsJson": {
             "type": "string",
             "nullable": true
           },
@@ -4578,10 +4635,6 @@
           "statusCode": {
             "type": "integer",
             "format": "int32"
-          },
-          "executionTimeMs": {
-            "type": "integer",
-            "format": "int64"
           }
         },
         "additionalProperties": false
@@ -5684,6 +5737,14 @@
             "type": "integer",
             "format": "int32"
           },
+          "receivedQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remainingQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
           "cbm": {
             "minLength": 1,
             "type": "string"
@@ -5705,8 +5766,14 @@
             "type": "string",
             "nullable": true
           },
-          "received": {
-            "type": "boolean"
+          "status": {
+            "enum": [
+              "UNRECEIVED",
+              "PARTIAL",
+              "RECEIVED",
+              "CLOSED_SHORT"
+            ],
+            "type": "string"
           },
           "dateAdded": {
             "type": "string",
@@ -5745,7 +5812,8 @@
               "PENDING",
               "RECEIVED",
               "PARTIAL",
-              "CANCELLED"
+              "CANCELLED",
+              "CLOSED_SHORT"
             ],
             "type": "string"
           },
@@ -5790,7 +5858,8 @@
               "PENDING",
               "RECEIVED",
               "PARTIAL",
-              "CANCELLED"
+              "CANCELLED",
+              "CLOSED_SHORT"
             ],
             "type": "string"
           },
@@ -6614,6 +6683,11 @@
           "productId": {
             "type": "integer",
             "format": "int32"
+          },
+          "incomingProductId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "expectedProductName": {
             "type": "string",

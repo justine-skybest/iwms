@@ -11,6 +11,7 @@ export interface ReceivedProductDetailsDto {
   expectedTotalWeight?: string | null;
   expirationDate?: string | null;
   id?: number;
+  incomingProductId?: number | null;
   lotNumber?: string | null;
   name?: string | null;
   palletId?: number | null;

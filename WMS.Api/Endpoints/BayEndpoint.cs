@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -11,7 +10,7 @@ public static class BayEndpoint
 {
     public static RouteGroupBuilder MapBayEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("bay").AddEndpointFilter<AuditLoggingFilter>(); ;
+        var group = app.MapGroup("bay");
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)

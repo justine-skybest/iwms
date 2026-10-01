@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Incoming;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints
 {
@@ -14,8 +14,11 @@ namespace WMS.Api.Endpoints
         {
             var group = app.MapGroup("incoming")
                 .WithTags("Incomings")
-                .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+                .WithParameterValidation();
 
+            // -----------------------------------------------------------------------------
+            // GET / - Paginated Incomings
+            // -----------------------------------------------------------------------------
             group.MapGet("/", async (
                 WMSContext dbContext,
                 string? search = null,
@@ -31,7 +34,7 @@ namespace WMS.Api.Endpoints
                 pageSize = Math.Clamp(pageSize, 1, maxPageSize);
 
                 var query = dbContext.Incomings
-                    .Include(inc => inc.Products)
+                    .Include(inc => inc.Products!)
                         .ThenInclude(p => p.Product)
                     .Include(inc => inc.Warehouse)
                     .AsNoTracking();
@@ -62,9 +65,24 @@ namespace WMS.Api.Endpoints
                     .Take(pageSize)
                     .ToListAsync(cancellationToken);
 
-                var items = incomings
-                    .Select(inc => inc.ToResponseDto())
-                    .ToList();
+                // Fetch linked Receivings to calculate already-received quantities
+                var incomingIds = incomings.Select(i => i.Id).ToList();
+                var existingReceivings = await dbContext.Receivings
+                    .Include(r => r.Products)
+                    .Where(r => r.IncomingId.HasValue && incomingIds.Contains(r.IncomingId.Value))
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                // Map strongly-typed DTOs with calculated Received and Remaining balances
+                var items = incomings.Select(inc =>
+                {
+                    var linkedProducts = existingReceivings
+                        .Where(r => r.IncomingId == inc.Id)
+                        .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
+                        .ToList();
+
+                    return inc.ToResponseDto(linkedProducts);
+                }).ToList();
 
                 var response = new PaginatedResponse<IncomingResponseDto>
                 {
@@ -82,29 +100,23 @@ namespace WMS.Api.Endpoints
             .WithDescription("Retrieves a paginated list of incoming shipments with optional filtering by warehouse, status, and search terms.")
             .Produces<PaginatedResponse<IncomingResponseDto>>(StatusCodes.Status200OK);
 
+            // -----------------------------------------------------------------------------
+            // GET /unreceived - Pending or Partial Incomings containing UNRECEIVED products
+            // -----------------------------------------------------------------------------
             group.MapGet("/unreceived", async (
-                WMSContext dbContext,
-                string? search = null,
-                int? warehouseId = null,
-                int page = 1,
-                int pageSize = 50,
-                CancellationToken cancellationToken = default) =>
+               WMSContext dbContext,
+               string? search = null,
+               int? warehouseId = null,
+               int page = 1,
+               int pageSize = 15,
+               CancellationToken cancellationToken = default) =>
             {
-                const int maxPageSize = 500;
-
-                page = Math.Max(page, 1);
-                pageSize = Math.Clamp(pageSize, 1, maxPageSize);
-
                 var query = dbContext.Incomings
-                    // Filter loaded child products to only those where Received is false
-                    .Include(inc => inc.Products.Where(p => !p.Received))
+                    .Where(inc => inc.Status != IncomingStatus.RECEIVED && inc.Status != IncomingStatus.CLOSED_SHORT)
+                    .Include(inc => inc.Products!)
                         .ThenInclude(p => p.Product)
                     .Include(inc => inc.Warehouse)
-                    .AsNoTracking()
-                    // Restrict Incoming status to PENDING or PARTIAL
-                    .Where(inc => inc.Status == IncomingStatus.PENDING || inc.Status == IncomingStatus.PARTIAL)
-                    // Ensure we only retrieve Incomings that still have at least one unreceived product
-                    .Where(inc => inc.Products.Any(p => !p.Received));
+                    .AsNoTracking();
 
                 if (warehouseId.HasValue)
                 {
@@ -122,15 +134,29 @@ namespace WMS.Api.Endpoints
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var incomings = await query
-                    .Include(inc => inc.Products)
                     .OrderByDescending(inc => inc.Id)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync(cancellationToken);
 
-                var items = incomings
-                    .Select(inc => inc.ToResponseDto())
-                    .ToList();
+                // ✅ Fetch all linked received products for these incoming shipments
+                var incomingIds = incomings.Select(i => i.Id).ToList();
+                var existingReceivings = await dbContext.Receivings
+                    .Include(r => r.Products)
+                    .Where(r => r.IncomingId.HasValue && incomingIds.Contains(r.IncomingId.Value))
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                // ✅ Map response DTOs with hydrated ReceivedProduct history
+                var items = incomings.Select(inc =>
+                {
+                    var linkedProducts = existingReceivings
+                        .Where(r => r.IncomingId == inc.Id)
+                        .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
+                        .ToList();
+
+                    return inc.ToResponseDto(linkedProducts);
+                }).ToList();
 
                 var response = new PaginatedResponse<IncomingResponseDto>
                 {
@@ -144,32 +170,91 @@ namespace WMS.Api.Endpoints
                 return Results.Ok(response);
             })
             .WithName("GetUnreceivedIncomings")
-            .WithSummary("Get pending or partial incoming shipments with unreceived products")
-            .WithDescription("Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.")
+            .WithSummary("Get pending or partial incoming shipments with unreceived or partial products")
+            .WithDescription("Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including calculated remaining balances.")
             .Produces<PaginatedResponse<IncomingResponseDto>>(StatusCodes.Status200OK);
 
-            // GET: Get incoming by ID
+            group.MapPost("/{id:int}/short-close", async (
+                int id,
+                WMSContext dbContext,
+                IAuditLogService auditLogService,
+                CancellationToken cancellationToken) =>
+            {
+                var incoming = await dbContext.Incomings
+                    .Include(inc => inc.Products)
+                    .FirstOrDefaultAsync(inc => inc.Id == id, cancellationToken);
+
+                if (incoming is null)
+                {
+                    return Results.NotFound(new { Message = $"Incoming shipment #{id} not found." });
+                }
+
+                if (incoming.Status == IncomingStatus.RECEIVED || incoming.Status == IncomingStatus.CLOSED_SHORT)
+                {
+                    return Results.BadRequest(new { Message = $"Incoming shipment #{id} is already completed or closed." });
+                }
+
+                // Mark all unfulfilled or partial line items as CLOSED_SHORT
+                foreach (var product in incoming.Products!)
+                {
+                    if (product.Status != IncomingProductStatus.RECEIVED)
+                    {
+                        product.Status = IncomingProductStatus.CLOSED_SHORT;
+                    }
+                }
+
+                incoming.Status = IncomingStatus.CLOSED_SHORT;
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                await auditLogService.LogAsync(
+                    category: "Incoming",
+                    action: "ShortClosed",
+                    description: $"Shipment #{id} was short-closed by management. Remaining expected stock marked as lost/short.",
+                    details: new { IncomingId = id, NewStatus = incoming.Status.ToString() }
+                );
+
+                return Results.Ok(new { Message = $"Shipment #{id} has been short-closed successfully." });
+            })
+            .WithName("ShortCloseIncoming")
+            .WithSummary("Permanently close an incoming shipment with missing/lost items");
+
+            // -----------------------------------------------------------------------------
+            // GET /{id:int} - Get incoming by ID
+            // -----------------------------------------------------------------------------
             group.MapGet("/{id:int}", async (int id, WMSContext dbContext) =>
             {
                 var incoming = await dbContext.Incomings
                     .Include(inc => inc.Warehouse)
-                    .Include(inc => inc.Products)
+                    .Include(inc => inc.Products!)
                         .ThenInclude(p => p.Product)
                     .AsNoTracking()
                     .FirstOrDefaultAsync(inc => inc.Id == id);
 
-                return incoming is not null
-                    ? Results.Ok(incoming.ToResponseDto())
-                    : Results.NotFound();
+                if (incoming is null)
+                {
+                    return Results.NotFound();
+                }
+
+                var linkedProducts = await dbContext.Receivings
+                    .Where(r => r.IncomingId == id)
+                    .SelectMany(r => r.Products!)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return Results.Ok(incoming.ToResponseDto(linkedProducts));
             })
             .WithName("GetIncomingById")
             .WithSummary("Get incoming shipment by ID")
-            .WithDescription("Retrieves a single incoming shipment record by its primary key.")
             .Produces<IncomingResponseDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
-            // POST: Create a new incoming record
-            group.MapPost("/", async (IncomingRequestDto dto, WMSContext dbContext) =>
+            // -----------------------------------------------------------------------------
+            // POST / - Create a new incoming record
+            // -----------------------------------------------------------------------------
+            group.MapPost("/", async (
+                IncomingRequestDto dto,
+                WMSContext dbContext,
+                IAuditLogService auditLogService) =>
             {
                 var entity = dto.ToEntity();
 
@@ -185,6 +270,28 @@ namespace WMS.Api.Endpoints
 
                 var responseDto = createdEntity?.ToResponseDto() ?? entity.ToResponseDto();
 
+                // --- ADD AUDIT LOG ENTRY ---
+                await auditLogService.LogAsync(
+                    category: "Incoming",
+                    action: "Created",
+                    description: $"Created incoming shipment ID {entity.Id} (Shipper: '{entity.Shipper ?? "N/A"}') with {entity.Products.Count} line item(s).",
+                    details: new
+                    {
+                        IncomingId = entity.Id,
+                        WarehouseId = entity.WarehouseId,
+                        Shipper = entity.Shipper,
+                        Consignee = entity.Consignee,
+                        Status = entity.Status.ToString(),
+                        Products = responseDto.Products.Select(p => new
+                        {
+                            p.ProductName,
+                            p.Quantity,
+                            p.ExpirationDate,
+                            Status = p.Status.ToString()
+                        })
+                    }
+                );
+
                 return Results.Created($"/incoming/{entity.Id}", responseDto);
             })
             .WithName("CreateIncoming")
@@ -193,8 +300,14 @@ namespace WMS.Api.Endpoints
             .Produces<IncomingResponseDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
-            // PUT: Update an existing incoming record
-            group.MapPut("/{id:int}", async (int id, IncomingRequestDto dto, WMSContext dbContext) =>
+            // -----------------------------------------------------------------------------
+            // PUT /{id:int} - Update an existing incoming record
+            // -----------------------------------------------------------------------------
+            group.MapPut("/{id:int}", async (
+                int id,
+                IncomingRequestDto dto,
+                WMSContext dbContext,
+                IAuditLogService auditLogService) =>
             {
                 var existingEntity = await dbContext.Incomings
                     .Include(inc => inc.Products)
@@ -205,16 +318,50 @@ namespace WMS.Api.Endpoints
                     return Results.NotFound();
                 }
 
+                var oldShipper = existingEntity.Shipper;
+                var oldStatus = existingEntity.Status;
+
                 existingEntity.WarehouseId = dto.WarehouseId;
                 existingEntity.Shipper = dto.Shipper;
                 existingEntity.Consignee = dto.Consignee;
                 existingEntity.Status = dto.Status;
 
-                // Use dbContext.RemoveRange directly instead of dbContext.IncomingProducts.RemoveRange
                 dbContext.RemoveRange(existingEntity.Products);
                 existingEntity.Products = dto.Products.Select(p => p.ToEntity()).ToList();
 
                 await dbContext.SaveChangesAsync();
+
+                var updatedEntity = await dbContext.Incomings
+                    .Include(inc => inc.Warehouse)
+                    .Include(inc => inc.Products)
+                        .ThenInclude(p => p.Product)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(inc => inc.Id == id);
+
+                var responseDto = updatedEntity?.ToResponseDto();
+
+                // --- ADD AUDIT LOG ENTRY ---
+                await auditLogService.LogAsync(
+                    category: "Incoming",
+                    action: "Updated",
+                    description: $"Updated incoming shipment ID {id} (Shipper: '{existingEntity.Shipper ?? "N/A"}') with {existingEntity.Products.Count} line item(s).",
+                    details: new
+                    {
+                        IncomingId = id,
+                        OldShipper = oldShipper,
+                        NewShipper = existingEntity.Shipper,
+                        OldStatus = oldStatus.ToString(),
+                        NewStatus = existingEntity.Status.ToString(),
+                        TotalProducts = existingEntity.Products.Count,
+                        Products = responseDto?.Products.Select(p => new
+                        {
+                            p.ProductName,
+                            p.Quantity,
+                            p.ExpirationDate,
+                            Status = p.Status.ToString()
+                        })
+                    }
+                );
 
                 return Results.NoContent();
             })
@@ -225,16 +372,45 @@ namespace WMS.Api.Endpoints
             .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);
 
-            // DELETE: Remove an incoming record
-            group.MapDelete("/{id:int}", async (int id, WMSContext dbContext) =>
+            // -----------------------------------------------------------------------------
+            // DELETE /{id:int} - Remove an incoming record
+            // -----------------------------------------------------------------------------
+            group.MapDelete("/{id:int}", async (
+                int id,
+                WMSContext dbContext,
+                IAuditLogService auditLogService) =>
             {
-                var rowsAffected = await dbContext.Incomings
-                    .Where(inc => inc.Id == id)
-                    .ExecuteDeleteAsync();
+                var existingIncoming = await dbContext.Incomings
+                    .Include(inc => inc.Products)
+                    .FirstOrDefaultAsync(inc => inc.Id == id);
 
-                return rowsAffected > 0
-                    ? Results.NoContent()
-                    : Results.NotFound();
+                if (existingIncoming is null)
+                {
+                    return Results.NotFound();
+                }
+
+                var snapshotShipper = existingIncoming.Shipper;
+                var snapshotConsignee = existingIncoming.Consignee;
+                var snapshotProductCount = existingIncoming.Products?.Count ?? 0;
+
+                dbContext.Incomings.Remove(existingIncoming);
+                await dbContext.SaveChangesAsync();
+
+                // --- ADD AUDIT LOG ENTRY ---
+                await auditLogService.LogAsync(
+                    category: "Incoming",
+                    action: "Deleted",
+                    description: $"Deleted incoming shipment ID {id} (Shipper: '{snapshotShipper ?? "N/A"}') containing {snapshotProductCount} line item(s).",
+                    details: new
+                    {
+                        DeletedId = id,
+                        Shipper = snapshotShipper,
+                        Consignee = snapshotConsignee,
+                        TotalProductsRemoved = snapshotProductCount
+                    }
+                );
+
+                return Results.NoContent();
             })
             .WithName("DeleteIncoming")
             .WithSummary("Delete an incoming shipment")

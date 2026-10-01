@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WMS.Api.Data;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints
 {
@@ -14,7 +14,7 @@ namespace WMS.Api.Endpoints
         {
             var group = app.MapGroup("incoming-import")
                 .WithTags("IncomingImport")
-                .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+                .WithParameterValidation();
 
             // ------------------------------------------------------------------
             // 1. IMPORT INITIAL EXCEL
@@ -23,6 +23,7 @@ namespace WMS.Api.Endpoints
                 IFormFile file,
                 int warehouseId,
                 WMSContext dbContext,
+                IAuditLogService auditLogService,
                 CancellationToken cancellationToken) =>
             {
                 var parseResult = await ParseExcelAsync(file, dbContext, cancellationToken);
@@ -39,6 +40,40 @@ namespace WMS.Api.Endpoints
 
                 dbContext.Incomings.Add(incoming);
                 await dbContext.SaveChangesAsync(cancellationToken);
+
+                // --- ADD AUDIT LOG ENTRY ---
+                await auditLogService.LogAsync(
+                    category: "Incoming Import",
+                    action: "Created",
+                    description: $"Imported new incoming shipment '{file.FileName}' with {parseResult.IncomingProducts.Count} product(s) ({parseResult.NewProductsDict.Count} newly auto-created).",
+                    details: new
+                    {
+                        IncomingId = incoming.Id,
+                        FileName = file.FileName,
+                        WarehouseId = warehouseId,
+                        Shipper = parseResult.Shipper,
+                        Consignee = parseResult.Consignee,
+                        TotalProducts = parseResult.IncomingProducts.Count,
+                        AutoCreatedProductsCount = parseResult.NewProductsDict.Count,
+
+                        Products = parseResult.IncomingProducts.Select(p =>
+                        {
+                            var (name, unit) = GetProductInfo(p, parseResult.ProductInfoMap);
+                            return new
+                            {
+                                ProductName = name,
+                                Quantity = p.Quantity,
+                                Unit = unit,
+                                UnitPrice = p.UnitPrice,
+                                TotalAmount = p.TotalAmount,
+                                Expiration = p.ExpirationDate?.ToString("yyyy-MM-dd") ?? "None",
+                                Supplier = string.IsNullOrWhiteSpace(p.Supplier) ? "—" : p.Supplier,
+                                Status = p.Status.ToString(),
+                                Remarks = string.IsNullOrWhiteSpace(p.Remarks) ? "—" : p.Remarks
+                            };
+                        })
+                    }
+                );
 
                 return Results.Created($"/incoming/{incoming.Id}", new
                 {
@@ -62,6 +97,7 @@ namespace WMS.Api.Endpoints
                             int incomingId,
                             IFormFile file,
                             WMSContext dbContext,
+                            IAuditLogService auditLogService,
                             CancellationToken cancellationToken) =>
             {
                 var existingIncoming = await dbContext.Incomings
@@ -85,48 +121,37 @@ namespace WMS.Api.Endpoints
                 var errors = new List<string>();
 
                 var existingDbItems = existingIncoming.Products ?? new List<IncomingProduct>();
-                var receivedItems = existingDbItems.Where(p => p.Received).ToList();
-                var unreceivedItems = existingDbItems.Where(p => !p.Received).ToList();
 
-                // BUILD LOOKUP: Use Composite Key (ProductId_ExpirationDate) to support same product with different expiries
-                var excelItemMap = new Dictionary<string, IncomingProduct>(StringComparer.OrdinalIgnoreCase);
-                var newParsedItemsWithoutId = new List<IncomingProduct>();
+                // Separate partially or fully received items from unreceived items
+                var receivedOrPartialItems = existingDbItems.Where(p => p.Status != IncomingProductStatus.UNRECEIVED).ToList();
+                var unreceivedItems = existingDbItems.Where(p => p.Status == IncomingProductStatus.UNRECEIVED).ToList();
 
-                foreach (var item in parseResult.IncomingProducts)
-                {
-                    if (item.ProductId > 0)
-                    {
-                        string expKey = item.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
-                        string compositeKey = $"{item.ProductId}_{expKey}";
-                        excelItemMap[compositeKey] = item;
-                    }
-                    else
-                    {
-                        newParsedItemsWithoutId.Add(item);
-                    }
-                }
+                var incomingExcelList = parseResult.IncomingProducts.ToList();
 
-                // RULE 1: Prevent Removal or Modification of Received Items
-                foreach (var recItem in receivedItems)
+                // RULE 1: Ensure already received or partially received items remain intact in the updated Excel file
+                foreach (var recItem in receivedOrPartialItems)
                 {
                     string prodName = recItem.Product?.Name ?? $"Product #{recItem.ProductId}";
                     string recExpKey = recItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
-                    string compositeKey = $"{recItem.ProductId}_{recExpKey}";
 
-                    if (!excelItemMap.TryGetValue(compositeKey, out var incomingExcelItem))
+                    var matchIndex = incomingExcelList.FindIndex(excelItem =>
+                        excelItem.ProductId == recItem.ProductId &&
+                        (excelItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE") == recExpKey &&
+                        (excelItem.Supplier ?? "NONE").Trim().Equals((recItem.Supplier ?? "NONE").Trim(), StringComparison.OrdinalIgnoreCase) &&
+                        excelItem.UnitPrice == recItem.UnitPrice &&
+                        excelItem.Quantity == recItem.Quantity &&
+                        excelItem.TotalAmount == recItem.TotalAmount &&
+                        excelItem.CBM == recItem.CBM &&
+                        excelItem.TotalWeight == recItem.TotalWeight
+                    );
+
+                    if (matchIndex == -1)
                     {
-                        errors.Add($"Cannot remove or alter expiration date for item '{prodName}' (Exp: {recExpKey}) because it has already been received.");
-                        continue;
+                        errors.Add($"Cannot remove or alter partially/fully received item '{prodName}' (Exp: {recExpKey}, Status: {recItem.Status}). Ensure it exists exactly as originally recorded in the updated Excel file.");
                     }
-
-                    // ExpirationDate is identical (because the dictionary key matched), so check remaining properties
-                    if (recItem.Quantity != incomingExcelItem.Quantity ||
-                        recItem.UnitPrice != incomingExcelItem.UnitPrice ||
-                        recItem.TotalAmount != incomingExcelItem.TotalAmount ||
-                        recItem.CBM != incomingExcelItem.CBM ||
-                        recItem.TotalWeight != incomingExcelItem.TotalWeight)
+                    else
                     {
-                        errors.Add($"Cannot modify details for item '{prodName}' (Exp: {recExpKey}) because it has already been received.");
+                        incomingExcelList.RemoveAt(matchIndex);
                     }
                 }
 
@@ -135,63 +160,53 @@ namespace WMS.Api.Endpoints
                     return Results.UnprocessableEntity(new { Errors = errors });
                 }
 
-                // APPLY REVISIONS TO UNRECEIVED ITEMS:
-                existingIncoming.Products ??= new List<IncomingProduct>();
-                var processedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
+                // APPLY REVISIONS: Clear existing UNRECEIVED items and append newly parsed unreceived line items
+                int removedCount = unreceivedItems.Count;
                 foreach (var dbItem in unreceivedItems)
                 {
-                    string dbExpKey = dbItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
-                    string compositeKey = $"{dbItem.ProductId}_{dbExpKey}";
-
-                    if (excelItemMap.TryGetValue(compositeKey, out var excelItem))
-                    {
-                        // ITEM EDITED: Update properties (Expiry remains identical due to map match)
-                        dbItem.Quantity = excelItem.Quantity;
-                        dbItem.UnitPrice = excelItem.UnitPrice;
-                        dbItem.TotalAmount = excelItem.TotalAmount;
-                        dbItem.CBM = excelItem.CBM;
-                        dbItem.TotalWeight = excelItem.TotalWeight;
-                        dbItem.Supplier = excelItem.Supplier;
-                        dbItem.Remarks = excelItem.Remarks;
-
-                        processedKeys.Add(compositeKey);
-                    }
-                    else
-                    {
-                        // ITEM REMOVED (Or its Expiry Date changed): Remove from DB, it will be re-inserted as new below if it was a date change
-                        dbContext.Remove(dbItem);
-                    }
+                    dbContext.Remove(dbItem);
                 }
 
-                // ITEM ADDED: Existing product IDs present in Excel but not in DB unreceived list
-                foreach (var kvp in excelItemMap)
+                int addedCount = incomingExcelList.Count;
+                foreach (var newExcelItem in incomingExcelList)
                 {
-                    string compositeKey = kvp.Key;
-                    var excelItem = kvp.Value;
-
-                    // Check if this exact combination was already received or processed
-                    bool isReceived = receivedItems.Any(r => $"{r.ProductId}_{r.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE"}" == compositeKey);
-
-                    if (isReceived || processedKeys.Contains(compositeKey))
-                    {
-                        continue;
-                    }
-
-                    existingIncoming.Products.Add(excelItem);
+                    existingIncoming.Products!.Add(newExcelItem);
                 }
 
-                // ITEM ADDED: Completely new products auto-created from Excel
-                foreach (var newExcelItem in newParsedItemsWithoutId)
-                {
-                    existingIncoming.Products.Add(newExcelItem);
-                }
-
-                // Update metadata if changed
                 if (!string.IsNullOrWhiteSpace(parseResult.Shipper)) existingIncoming.Shipper = parseResult.Shipper;
                 if (!string.IsNullOrWhiteSpace(parseResult.Consignee)) existingIncoming.Consignee = parseResult.Consignee;
 
                 await dbContext.SaveChangesAsync(cancellationToken);
+
+                // --- ADD AUDIT LOG ENTRY ---
+                await auditLogService.LogAsync(
+                    category: "Incoming Import",
+                    action: "Updated",
+                    description: $"Revised incoming shipment ID {existingIncoming.Id} via '{file.FileName}'. Removed {removedCount} unreceived item(s) and inserted {addedCount} updated item(s).",
+                    details: new
+                    {
+                        IncomingId = existingIncoming.Id,
+                        FileName = file.FileName,
+                        AddedItemsCount = addedCount,
+                        RemovedItemsCount = removedCount,
+                        TotalFinalItems = existingIncoming.Products!.Count,
+
+                        FinalProducts = existingIncoming.Products.Select(p =>
+                        {
+                            var (name, unit) = GetProductInfo(p, parseResult.ProductInfoMap);
+                            return new
+                            {
+                                ProductName = name,
+                                Quantity = p.Quantity,
+                                Unit = unit,
+                                UnitPrice = p.UnitPrice,
+                                Expiration = p.ExpirationDate?.ToString("yyyy-MM-dd") ?? "None",
+                                Supplier = string.IsNullOrWhiteSpace(p.Supplier) ? "—" : p.Supplier,
+                                Status = p.Status.ToString()
+                            };
+                        })
+                    }
+                );
 
                 return Results.Ok(new
                 {
@@ -213,6 +228,26 @@ namespace WMS.Api.Endpoints
         }
 
         // ====================================================================
+        // HELPER METHOD TO RESOLVE PRODUCT NAME & UNIT
+        // ====================================================================
+        private static (string Name, string Unit) GetProductInfo(
+            IncomingProduct p,
+            Dictionary<int, (string Name, string Unit)> productInfoMap)
+        {
+            if (p.Product != null && !string.IsNullOrWhiteSpace(p.Product.Name))
+            {
+                return (p.Product.Name, p.Product.TypeOfPackage);
+            }
+
+            if (p.ProductId > 0 && productInfoMap.TryGetValue(p.ProductId, out var info))
+            {
+                return info;
+            }
+
+            return ($"Product #{p.ProductId}", "N/A");
+        }
+
+        // ====================================================================
         // SHARED EXCEL PARSING HELPER METHOD
         // ====================================================================
         private record ParseResult(
@@ -220,22 +255,25 @@ namespace WMS.Api.Endpoints
             string Shipper,
             string Consignee,
             List<IncomingProduct> IncomingProducts,
-            Dictionary<string, Product> NewProductsDict);
+            Dictionary<string, Product> NewProductsDict,
+            Dictionary<int, (string Name, string Unit)> ProductInfoMap);
 
         private static async Task<ParseResult> ParseExcelAsync(
             IFormFile file,
             WMSContext dbContext,
             CancellationToken cancellationToken)
         {
+            var emptyMap = new Dictionary<int, (string Name, string Unit)>();
+
             if (file is null || file.Length == 0)
             {
-                return new ParseResult(Results.BadRequest("An Excel file (.xlsx) is required."), "", "", [], []);
+                return new ParseResult(Results.BadRequest("An Excel file (.xlsx) is required."), "", "", [], [], emptyMap);
             }
 
             if (!file.FileName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) &&
                 !file.FileName.EndsWith(".xls", StringComparison.OrdinalIgnoreCase))
             {
-                return new ParseResult(Results.BadRequest("Only Excel files (.xlsx / .xls) are supported."), "", "", [], []);
+                return new ParseResult(Results.BadRequest("Only Excel files (.xlsx / .xls) are supported."), "", "", [], [], emptyMap);
             }
 
             using var stream = file.OpenReadStream();
@@ -243,7 +281,6 @@ namespace WMS.Api.Endpoints
 
             var dataSet = reader.AsDataSet();
 
-            // 1. DYNAMIC SHEET SELECTION
             DataTable? table = dataSet.Tables.Cast<DataTable>()
                 .FirstOrDefault(t => t.TableName.Equals("PACKING LIST", StringComparison.OrdinalIgnoreCase));
 
@@ -263,10 +300,9 @@ namespace WMS.Api.Endpoints
 
             if (table.Rows.Count < 5)
             {
-                return new ParseResult(Results.BadRequest("Invalid Excel format. Selected sheet contains insufficient rows."), "", "", [], []);
+                return new ParseResult(Results.BadRequest("Invalid Excel format. Selected sheet contains insufficient rows."), "", "", [], [], emptyMap);
             }
 
-            // 2. DYNAMIC METADATA & HEADER DETECTION
             string shipper = string.Empty;
             string consignee = string.Empty;
             int headerRowIndex = -1;
@@ -302,17 +338,17 @@ namespace WMS.Api.Endpoints
 
             var existingProductsList = await dbContext.Products
                 .AsNoTracking()
-                .Select(p => new { p.Id, Name = p.Name.Trim() })
+                .Select(p => new { p.Id, Name = p.Name.Trim(), p.TypeOfPackage })
                 .ToListAsync(cancellationToken);
 
             var existingProductsDict = existingProductsList
                 .GroupBy(p => p.Name, StringComparer.OrdinalIgnoreCase)
                 .ToDictionary(g => g.Key, g => g.First().Id, StringComparer.OrdinalIgnoreCase);
 
-            var newProductsDict = new Dictionary<string, Product>(StringComparer.OrdinalIgnoreCase);
+            var productInfoMap = existingProductsList
+                .ToDictionary(p => p.Id, p => (p.Name, p.TypeOfPackage));
 
-            // TRACK UNIQUENESS BY PRODUCT + EXPIRY
-            var seenProductKeysInFile = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var newProductsDict = new Dictionary<string, Product>(StringComparer.OrdinalIgnoreCase);
 
             var errors = new List<string>();
             var incomingProducts = new List<IncomingProduct>();
@@ -360,15 +396,11 @@ namespace WMS.Api.Endpoints
                     expiryDate = DateOnly.FromDateTime(parsedDate);
                 }
 
-                // RULE 2: Prevent duplicates inside the file IF they have the exact same expiration date
-                string expKeyString = expiryDate?.ToString("yyyy-MM-dd") ?? "NONE";
-                string productUniqueKey = $"{productName}_{expKeyString}";
+                string supplier = row[12]?.ToString()?.Trim() ?? "";
 
-                if (!seenProductKeysInFile.Add(productUniqueKey))
-                {
-                    errors.Add($"Row {excelRowNum}: Duplicate item '{productName}' with identical expiration date ({expKeyString}) found in Excel file.");
-                    continue;
-                }
+                decimal? unitPrice = decimal.TryParse(row[5]?.ToString(), out decimal parsedUnitPrice)
+                    ? Math.Round(parsedUnitPrice, 2, MidpointRounding.AwayFromZero)
+                    : null;
 
                 if (!decimal.TryParse(colQtyStr, out decimal parsedQty) || parsedQty <= 0)
                 {
@@ -379,10 +411,6 @@ namespace WMS.Api.Endpoints
 
                 string uom = row[3]?.ToString()?.Trim() ?? "UNIT";
                 if (string.IsNullOrWhiteSpace(uom)) uom = "UNIT";
-
-                decimal? unitPrice = decimal.TryParse(row[5]?.ToString(), out decimal parsedUnitPrice)
-                    ? Math.Round(parsedUnitPrice, 2, MidpointRounding.AwayFromZero)
-                    : null;
 
                 decimal? totalAmount = decimal.TryParse(row[6]?.ToString(), out decimal parsedTotalAmount)
                     ? Math.Round(parsedTotalAmount, 2, MidpointRounding.AwayFromZero)
@@ -402,7 +430,6 @@ namespace WMS.Api.Endpoints
                     ? Math.Round(parsedWeight, 2, MidpointRounding.AwayFromZero)
                     : 0m;
 
-                string supplier = row[12]?.ToString()?.Trim() ?? "";
                 string remarks = row[13]?.ToString()?.Trim() ?? "";
 
                 var incomingProduct = new IncomingProduct
@@ -415,10 +442,10 @@ namespace WMS.Api.Endpoints
                     ExpirationDate = expiryDate,
                     Supplier = string.IsNullOrWhiteSpace(supplier) ? null : supplier,
                     Remarks = string.IsNullOrWhiteSpace(remarks) ? null : remarks,
+                    Status = IncomingProductStatus.UNRECEIVED,
                     DateAdded = DateTime.UtcNow
                 };
 
-                // Resolve Product (Existing vs Auto-Create)
                 if (existingProductsDict.TryGetValue(productName, out int existingProductId))
                 {
                     incomingProduct.ProductId = existingProductId;
@@ -448,15 +475,15 @@ namespace WMS.Api.Endpoints
 
             if (errors.Any())
             {
-                return new ParseResult(Results.UnprocessableEntity(new { Errors = errors }), "", "", [], []);
+                return new ParseResult(Results.UnprocessableEntity(new { Errors = errors }), "", "", [], [], emptyMap);
             }
 
             if (!incomingProducts.Any())
             {
-                return new ParseResult(Results.BadRequest("No valid numbered line items were found in the file."), "", "", [], []);
+                return new ParseResult(Results.BadRequest("No valid numbered line items were found in the file."), "", "", [], [], emptyMap);
             }
 
-            return new ParseResult(null, shipper, consignee, incomingProducts, newProductsDict);
+            return new ParseResult(null, shipper, consignee, incomingProducts, newProductsDict, productInfoMap);
         }
     }
 }

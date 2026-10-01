@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -10,7 +9,7 @@ public static class LevelEndpoint
 {
     public static RouteGroupBuilder MapLevelEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("level").AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("level");
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)

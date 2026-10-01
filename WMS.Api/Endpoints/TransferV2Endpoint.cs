@@ -5,7 +5,6 @@ using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Transfer;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints;
 
@@ -15,7 +14,7 @@ public static class TransferV2Endpoint
     {
         var group = app.MapGroup("transfers-v2")
             .WithTags("Transfers V2")
-            .WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+            .WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // Bin-to-Bin Bulk Transfer Endpoint (Primary Warehouse Operation)

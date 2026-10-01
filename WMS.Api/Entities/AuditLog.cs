@@ -3,7 +3,6 @@
     public class AuditLog
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-
         public string? TraceId { get; set; }
 
         // WHO
@@ -13,17 +12,15 @@
         public string? IpAddress { get; set; }
 
         // WHAT
-        public string EntityName { get; set; } = string.Empty; // e.g. "Product", "Warehouse"
-        public string Action { get; set; } = string.Empty;     // "Added", "Modified", "Deleted"
-        public string PrimaryKey { get; set; } = string.Empty; // e.g. Entity ID
-        public string? OldValues { get; set; }                 // JSON of changed properties before update
-        public string? NewValues { get; set; }                 // JSON of changed properties after update
+        public string Category { get; set; } = string.Empty;   // "Identity", "Receiving", "Import", "Inventory"
+        public string Action { get; set; } = string.Empty;     // "Login", "ExcelImport", "CreateReceiving", "DeleteIncoming"
+
+        // NARRATIVE & CONTEXT
+        public string Description { get; set; } = string.Empty; // "User A performed an incoming import with 45 items"
+        public string? DetailsJson { get; set; }                // Rich JSON snapshot (e.g., list of imported product names & quantities)
 
         // WHEN
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
-
-        // RESULT
-        public int StatusCode { get; set; }
-        public long ExecutionTimeMs { get; set; }
+        public int StatusCode { get; set; } = 200;
     }
 }

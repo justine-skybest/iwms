@@ -5,8 +5,8 @@ using WMS.Api.Dtos.Bin;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
+using WMS.Api.Services; // Ensure IAuditLogService is imported
 
 namespace WMS.Api.Endpoints;
 
@@ -16,7 +16,7 @@ public static class BinEndpoint
 
     public static RouteGroupBuilder MapBinEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("bin").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("bin").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)
@@ -193,7 +193,6 @@ public static class BinEndpoint
                     "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.Now));
             }
 
-            // Check if any ReceivedProduct in this bin has remaining unpicked quantity
             bool anyUnpicked = false;
             foreach (var checkIn in bin.CheckIns)
             {
@@ -203,7 +202,6 @@ public static class BinEndpoint
 
                 foreach (var received in products)
                 {
-                    // Query picked quantity directly by ReceivedProductId (ignores previous check-in IDs)
                     var totalPicked = await dbContext.PickedProducts
                         .Where(p => p.ReceivedProductId == received.Id)
                         .SumAsync(p => (int?)p.QuantityPicked) ?? 0;
@@ -452,7 +450,7 @@ public static class BinEndpoint
         .Produces<string>(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
-        // Stock Query (Fixed: Query picks by ReceivedProductId directly)
+        // Stock Query
         // -----------------------------------------------------------------------------
         group.MapGet("/stock/id/{BinId:int}", async (int BinId, WMSContext dbContext) =>
         {
@@ -478,7 +476,6 @@ public static class BinEndpoint
             if (!checkIns.Any())
                 return Results.Ok(new List<DisplayCheckInProductsDto>());
 
-            // Collect all unique ReceivedProduct IDs across target check-ins/pallets
             var receivedProductIds = checkIns
                 .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
                     ? ci.Pallet.ReceivedProducts
@@ -487,7 +484,6 @@ public static class BinEndpoint
                 .Distinct()
                 .ToList();
 
-            // Query picked totals by ReceivedProductId to maintain history across transfers
             var pickedMap = await dbContext.PickedProducts
                 .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
                 .GroupBy(pp => pp.ReceivedProductId)
@@ -588,31 +584,133 @@ public static class BinEndpoint
             return Results.Ok(history);
         });
 
-        group.MapPost("/", async (CreateBinDto newBin, WMSContext dbContext) =>
+        // -----------------------------------------------------------------------------
+        // MUTATION ENDPOINTS (CREATE / UPDATE / DELETE) WITH AUDIT LOGGING
+        // -----------------------------------------------------------------------------
+        group.MapPost("/", async (
+            CreateBinDto newBin,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
             Bin bin = newBin.ToEntity();
             dbContext.Bins.Add(bin);
             await dbContext.SaveChangesAsync();
 
-            return Results.CreatedAtRoute(GetBinEndpointName, new { id = bin.Id }, bin.ToDetailsDto());
+            // Re-query created bin with navigation metadata for clean audit log summary
+            var createdBin = await dbContext.Bins
+                .Include(b => b.Rack)
+                    .ThenInclude(r => r!.Warehouse)
+                .Include(b => b.Bay)
+                .Include(b => b.Level)
+                .Include(b => b.BinNames)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == bin.Id);
+
+            var details = (createdBin ?? bin).ToSummaryDto();
+
+            await auditLogService.LogAsync(
+                category: "Warehouse Structure",
+                action: "Created",
+                description: $"Created new Bin location '{details.BinName}' (Hash Code: {details.BinHashCode}, ID: {bin.Id}).",
+                details: new
+                {
+                    BinId = bin.Id,
+                    BinName = details.BinName,
+                    BinHashCode = details.BinHashCode,
+                    RackId = bin.RackId,
+                    BayId = bin.BayId,
+                    LevelId = bin.LevelId,
+                    BinNamesId = bin.BinNamesId
+                }
+            );
+
+            return Results.CreatedAtRoute(GetBinEndpointName, new { id = bin.Id }, details);
         });
 
-        group.MapPut("/{id}", async (int id, UpdateBinDto updatedBin, WMSContext dbContext) =>
+        group.MapPut("/{id:int}", async (
+            int id,
+            UpdateBinDto updatedBin,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
-            var existingBin = await dbContext.Bins.FindAsync(id);
+            var existingBin = await dbContext.Bins
+                .Include(b => b.Rack)
+                .Include(b => b.Bay)
+                .Include(b => b.Level)
+                .Include(b => b.BinNames)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
             if (existingBin is null)
             {
                 return Results.NotFound();
             }
 
+            var oldDetails = existingBin.ToSummaryDto();
+
             dbContext.Entry(existingBin).CurrentValues.SetValues(updatedBin.ToEntity(id));
             await dbContext.SaveChangesAsync();
+
+            var updatedBinHydrated = await dbContext.Bins
+                .Include(b => b.Rack)
+                .Include(b => b.Bay)
+                .Include(b => b.Level)
+                .Include(b => b.BinNames)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            var newDetails = (updatedBinHydrated ?? existingBin).ToSummaryDto();
+
+            await auditLogService.LogAsync(
+                category: "Warehouse Structure",
+                action: "Updated",
+                description: $"Updated Bin location ID {id} ('{oldDetails.BinName}' -> '{newDetails.BinName}').",
+                details: new
+                {
+                    BinId = id,
+                    OldBinName = oldDetails.BinName,
+                    NewBinName = newDetails.BinName,
+                    OldBinHashCode = oldDetails.BinHashCode,
+                    NewBinHashCode = newDetails.BinHashCode
+                }
+            );
+
             return Results.NoContent();
         });
 
-        group.MapDelete("/{id}", async (int id, WMSContext dbContext) =>
+        group.MapDelete("/{id:int}", async (
+            int id,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
-            await dbContext.Bins.Where(bin => bin.Id == id).ExecuteDeleteAsync();
+            var existingBin = await dbContext.Bins
+                .Include(b => b.Rack)
+                .Include(b => b.Bay)
+                .Include(b => b.Level)
+                .Include(b => b.BinNames)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (existingBin is null)
+            {
+                return Results.NotFound();
+            }
+
+            var snapshotDetails = existingBin.ToSummaryDto();
+
+            dbContext.Bins.Remove(existingBin);
+            await dbContext.SaveChangesAsync();
+
+            await auditLogService.LogAsync(
+                category: "Warehouse Structure",
+                action: "Deleted",
+                description: $"Deleted Bin location '{snapshotDetails.BinName}' (Hash Code: {snapshotDetails.BinHashCode}, ID: {id}).",
+                details: new
+                {
+                    DeletedBinId = id,
+                    BinName = snapshotDetails.BinName,
+                    BinHashCode = snapshotDetails.BinHashCode
+                }
+            );
+
             return Results.NoContent();
         });
 

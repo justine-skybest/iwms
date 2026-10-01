@@ -1,8 +1,7 @@
 <app-page-header 
   title="Audit Logs" 
-  subtitle="Track system mutations, user activities, and data diff history."
-  [showDate]="false"
-  >
+  subtitle="Track activity summaries, system operations, and user actions."
+  [showDate]="false">
     <button 
       (click)="loadLogs()" 
       class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer self-start sm:self-auto">
@@ -13,286 +12,354 @@
     </button>
 </app-page-header>
 
-  <!-- Filter Bar -->
-  <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      
-      <!-- Search -->
-      <div class="lg:col-span-2">
-        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Search Keyword</label>
-        <div class="relative">
-          <input 
-            type="text" 
-            [(ngModel)]="search" 
-            (keyup.enter)="loadLogs(true)"
-            placeholder="Search email, entity, key..." 
-            class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
-          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- Entity Dropdown -->
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Entity</label>
-        <select 
-          [(ngModel)]="selectedEntity" 
-          (change)="loadLogs(true)"
-          class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all cursor-pointer">
-          <option value="">All Entities</option>
-          <option *ngFor="let name of entityNames" [value]="name">{{ name }}</option>
-        </select>
-      </div>
-
-      <!-- Action Dropdown -->
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Action</label>
-        <select 
-          [(ngModel)]="selectedAction" 
-          (change)="loadLogs(true)"
-          class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all cursor-pointer">
-          <option value="">All Actions</option>
-          <option value="Added">Added / POST</option>
-          <option value="Modified">Modified / PUT</option>
-          <option value="Deleted">Deleted / DELETE</option>
-        </select>
-      </div>
-
-      <!-- From Date -->
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">From Date</label>
+<!-- Filter Bar -->
+<div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+    
+    <!-- Search Keyword -->
+    <div class="lg:col-span-2">
+      <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Search Description / Trace ID</label>
+      <div class="relative">
         <input 
-          type="date" 
-          [(ngModel)]="fromDate" 
-          (change)="loadLogs(true)"
-          class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 transition-all" />
-      </div>
-
-      <!-- To Date -->
-      <div>
-        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">To Date</label>
-        <input 
-          type="date" 
-          [(ngModel)]="toDate" 
-          (change)="loadLogs(true)"
-          class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 transition-all" />
+          type="text" 
+          [(ngModel)]="search" 
+          (keyup.enter)="loadLogs(true)"
+          placeholder="Search email, description, trace id..." 
+          class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all" />
+        <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
       </div>
     </div>
 
-    <div class="flex items-center justify-between pt-1 border-t border-slate-100">
-      <span class="text-xs text-slate-500 font-medium">Found <strong class="text-slate-900">{{ totalCount }}</strong> log records</span>
+    <!-- Category Dropdown -->
+    <div>
+      <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Category</label>
+      <select 
+        [(ngModel)]="selectedCategory" 
+        (change)="loadLogs(true)"
+        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all cursor-pointer">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <!-- Action Dropdown -->
+    <div>
+      <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Action</label>
+      <select 
+        [(ngModel)]="selectedAction" 
+        (change)="loadLogs(true)"
+        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all cursor-pointer">
+        <option value="">All Actions</option>
+        <option value="Created">Created</option>
+        <option value="Updated">Updated</option>
+        <option value="Deleted">Deleted</option>
+        <option value="Login">Login</option>
+        <option value="Register">Register</option>
+        <option value="ExcelImport">Excel Import</option>
+      </select>
+    </div>
+
+    <!-- From Date -->
+    <div>
+      <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">From Date</label>
+      <input 
+        type="date" 
+        [(ngModel)]="fromDate" 
+        (change)="loadLogs(true)"
+        class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 transition-all" />
+    </div>
+
+    <!-- To Date -->
+    <div>
+      <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">To Date</label>
+      <input 
+        type="date" 
+        [(ngModel)]="toDate" 
+        (change)="loadLogs(true)"
+        class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 outline-none focus:bg-white focus:border-blue-600 transition-all" />
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+    <span class="text-xs text-slate-500 font-medium">Found <strong class="text-slate-900">{{ totalCount }}</strong> activity logs</span>
+    <button 
+      (click)="resetFilters()" 
+      class="text-xs text-blue-600 font-semibold hover:underline cursor-pointer bg-transparent border-none">
+      Clear All Filters
+    </button>
+  </div>
+</div>
+
+<!-- Data Table -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider select-none">
+          <th class="py-3 px-4">Timestamp</th>
+          <th class="py-3 px-4">User</th>
+          <th class="py-3 px-4">Category</th>
+          <th class="py-3 px-4">Action</th>
+          <th class="py-3 px-4">Activity Description</th>
+          <th class="py-3 px-4">Trace ID</th>
+          <th class="py-3 px-4">Status</th>
+          <th class="py-3 px-4 text-right">Details</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+        
+        <!-- Loading State -->
+        <tr *ngIf="loading">
+          <td colspan="8" class="py-12 text-center text-slate-400">
+            <div class="inline-flex items-center gap-2">
+              <svg class="animate-spin h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Loading activity logs...</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Empty State -->
+        <tr *ngIf="!loading && logs.length === 0">
+          <td colspan="8" class="py-12 text-center text-slate-400">
+            No audit logs found matching your selected criteria.
+          </td>
+        </tr>
+
+        <!-- Rows -->
+        <tr *ngFor="let item of logs" class="hover:bg-slate-50/80 transition-colors">
+          
+          <td class="py-3 px-4 whitespace-nowrap font-mono text-[11px] text-slate-500">
+            {{ item.timestamp | date:'MMM d, y, HH:mm:ss' }}
+          </td>
+
+          <td class="py-3 px-4 whitespace-nowrap">
+            <div class="font-semibold text-slate-900 truncate max-w-[180px]">{{ item.userEmail || 'System / Anonymous' }}</div>
+            <div class="text-[10px] text-slate-400 font-mono" *ngIf="item.ipAddress">{{ item.ipAddress }}</div>
+          </td>
+
+          <td class="py-3 px-4 whitespace-nowrap">
+            <span class="font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded font-mono text-[11px]">
+              {{ item.category || 'General' }}
+            </span>
+          </td>
+
+          <td class="py-3 px-4 whitespace-nowrap">
+            <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border tracking-wider" [ngClass]="getActionBadgeClass(item.action)">
+              {{ item.action || 'UNKNOWN' }}
+            </span>
+          </td>
+
+          <!-- Activity Description Sentence -->
+          <td class="py-3 px-4 max-w-[360px]">
+            <span class="font-medium text-slate-900 leading-relaxed block truncate" [title]="item.description">
+              {{ item.description || 'Action completed' }}
+            </span>
+          </td>
+
+          <!-- Clickable Trace ID -->
+          <td class="py-3 px-4 whitespace-nowrap">
+            <button 
+              *ngIf="item.traceId; else noTrace"
+              (click)="filterByTraceId(item.traceId)"
+              title="Click to filter by Trace ID"
+              class="font-mono text-[11px] text-blue-600 hover:text-blue-800 hover:underline bg-blue-50/60 hover:bg-blue-100 px-2 py-0.5 rounded border border-blue-200 transition-colors cursor-pointer border-none">
+              {{ item.traceId }}
+            </button>
+            <ng-template #noTrace>
+              <span class="text-slate-400 font-mono text-[11px]">—</span>
+            </ng-template>
+          </td>
+
+          <td class="py-3 px-4 whitespace-nowrap">
+            <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded" [ngClass]="getStatusBadgeClass(item.statusCode)">
+              {{ item.statusCode || 200 }}
+            </span>
+          </td>
+
+          <td class="py-3 px-4 whitespace-nowrap text-right">
+            <button 
+              *ngIf="item.id"
+              (click)="openDetail(item.id)" 
+              class="px-2.5 py-1 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors cursor-pointer bg-transparent border-none">
+              Inspect
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+    <div>
+      Showing page <strong class="text-slate-900">{{ page }}</strong> of <strong class="text-slate-900">{{ totalPages }}</strong>
+    </div>
+    <div class="flex items-center gap-1.5">
       <button 
-        (click)="resetFilters()" 
-        class="text-xs text-blue-600 font-semibold hover:underline cursor-pointer bg-transparent border-none">
-        Clear All Filters
+        [disabled]="page <= 1" 
+        (click)="onPageChange(page - 1)" 
+        class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 font-semibold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
+        Previous
+      </button>
+      <button 
+        [disabled]="page >= totalPages" 
+        (click)="onPageChange(page + 1)" 
+        class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 font-semibold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
+        Next
       </button>
     </div>
   </div>
+</div>
 
-  <!-- Data Table -->
-  <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider select-none">
-            <th class="py-3 px-4">Timestamp</th>
-            <th class="py-3 px-4">User</th>
-            <th class="py-3 px-4">Entity</th>
-            <th class="py-3 px-4">Trace Id</th>
-            <th class="py-3 px-4">Action</th>
-            <th class="py-3 px-4">Target Key</th>
-            <th class="py-3 px-4">Status</th>
-            <th class="py-3 px-4">Duration</th>
-            <th class="py-3 px-4 text-right">Details</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
-          
-          <!-- Loading State -->
-          <tr *ngIf="loading">
-            <td colspan="8" class="py-12 text-center text-slate-400">
-              <div class="inline-flex items-center gap-2">
-                <svg class="animate-spin h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Loading audit logs...</span>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Empty State -->
-          <tr *ngIf="!loading && logs.length === 0">
-            <td colspan="8" class="py-12 text-center text-slate-400">
-              No audit logs found matching your selected criteria.
-            </td>
-          </tr>
-
-          <!-- Rows -->
-          <tr *ngFor="let item of logs" class="hover:bg-slate-50/80 transition-colors">
-            
-            <td class="py-3 px-4 whitespace-nowrap font-mono text-[11px] text-slate-500">
-              {{ item.timestamp | date:'MMM d, y, HH:mm:ss' }}
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap">
-              <div class="font-semibold text-slate-900 truncate max-w-[180px]">{{ item.userEmail || 'System / Anonymous' }}</div>
-              <div class="text-[10px] text-slate-400 font-mono" *ngIf="item.ipAddress">{{ item.ipAddress }}</div>
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap">
-              <span class="font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded font-mono text-[11px]">
-                {{ item.entityName || 'N/A' }}
-              </span>
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap">
-              <span class="font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded font-mono text-[11px]">
-                {{ item.traceId || 'N/A' }}
-              </span>
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap">
-              <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border tracking-wider" [ngClass]="getActionBadgeClass(item.action)">
-                {{ item.action || 'UNKNOWN' }}
-              </span>
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap font-mono text-[11px] text-slate-600 truncate max-w-[140px]" [title]="item.primaryKey">
-              {{ item.primaryKey || '—' }}
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap">
-              <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded" [ngClass]="getStatusBadgeClass(item.statusCode)">
-                {{ item.statusCode || 200 }}
-              </span>
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap font-mono text-[11px] text-slate-500">
-              {{ item.executionTimeMs }} ms
-            </td>
-
-            <td class="py-3 px-4 whitespace-nowrap text-right">
-              <button 
-                *ngIf="item.id"
-                (click)="openDetail(item.id)" 
-                class="px-2.5 py-1 text-xs font-semibold text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors cursor-pointer bg-transparent border-none">
-                Inspect
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Pagination Footer -->
-    <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-600">
+<!-- Inspector Slide-Over / Modal -->
+<div *ngIf="isDetailOpen" class="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/40 backdrop-blur-xs">
+  <div class="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 animate-slideLeft">
+    
+    <!-- Modal Header -->
+    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
       <div>
-        Showing page <strong class="text-slate-900">{{ page }}</strong> of <strong class="text-slate-900">{{ totalPages }}</strong>
+        <h2 class="text-lg font-bold text-slate-900 m-0">Activity Log Details</h2>
+        <p class="text-xs text-slate-500 mt-0.5 font-mono" *ngIf="selectedLog?.id">ID: {{ selectedLog?.id }}</p>
       </div>
-      <div class="flex items-center gap-1.5">
-        <button 
-          [disabled]="page <= 1" 
-          (click)="onPageChange(page - 1)" 
-          class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 font-semibold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
-          Previous
-        </button>
-        <button 
-          [disabled]="page >= totalPages" 
-          (click)="onPageChange(page + 1)" 
-          class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-700 font-semibold hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
-          Next
-        </button>
-      </div>
+      <button (click)="closeDetail()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg bg-transparent border-none cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </div>
-  </div>
 
-  <!-- Detail Slide-Over / Modal -->
-  <div *ngIf="isDetailOpen" class="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/40 backdrop-blur-xs">
-    <div class="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col border-l border-slate-200 animate-slideLeft">
+    <!-- Modal Body -->
+    <div class="flex-1 p-6 overflow-y-auto space-y-6">
       
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 m-0">Audit Entry Details</h2>
-          <p class="text-xs text-slate-500 mt-0.5 font-mono" *ngIf="selectedLog?.id">ID: {{ selectedLog?.id }}</p>
-        </div>
-        <button (click)="closeDetail()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg bg-transparent border-none cursor-pointer">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
+      <div *ngIf="loadingDetail" class="text-center py-12 text-slate-400">
+        Loading details...
       </div>
 
-      <!-- Modal Body -->
-      <div class="flex-1 p-6 overflow-y-auto space-y-6">
+      <div *ngIf="!loadingDetail && selectedLog" class="space-y-6">
         
-        <div *ngIf="loadingDetail" class="text-center py-12 text-slate-400">
-          Loading detailed payload...
+        <!-- Activity Narrative Banner -->
+        <div *ngIf="selectedLog?.description" class="p-4 bg-blue-50/80 border border-blue-200 rounded-xl text-xs text-blue-900 flex items-start gap-3">
+          <svg class="w-5 h-5 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <span class="block font-bold text-blue-950 uppercase text-[10px] tracking-wider mb-0.5">Activity Description</span>
+            <p class="m-0 font-medium text-xs leading-relaxed text-blue-900">{{ selectedLog?.description }}</p>
+          </div>
         </div>
 
-        <div *ngIf="!loadingDetail && selectedLog" class="space-y-6">
-          
-          <!-- Summary Grid -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">User</span>
-              <span class="font-semibold text-slate-900 truncate block">{{ selectedLog.userEmail || 'System' }}</span>
-            </div>
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">Role</span>
-              <span class="font-semibold text-slate-900">{{ selectedLog.userRole || 'N/A' }}</span>
-            </div>
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">IP Address</span>
-              <span class="font-mono text-slate-800">{{ selectedLog.ipAddress || 'Unknown' }}</span>
-            </div>
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">Entity</span>
-              <span class="font-mono text-slate-800">{{ selectedLog.entityName }}</span>
-            </div>
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">Action</span>
-              <span class="font-bold text-blue-600">{{ selectedLog.action }}</span>
-            </div>
-            <div>
-              <span class="block text-slate-400 font-bold uppercase text-[10px]">Target Key</span>
-              <span class="font-mono text-slate-800 truncate block">{{ selectedLog.primaryKey }}</span>
-            </div>
-          </div>
-
-          <!-- Old Values Diff Box -->
+        <!-- Metadata Summary Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
           <div>
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-rose-500"></span> Old Values (Before Mutation)
-            </h3>
-            <div class="bg-slate-950 text-slate-200 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-60">
-              <pre *ngIf="parsedOldValues">{{ parsedOldValues | json }}</pre>
-              <span *ngIf="!parsedOldValues" class="text-slate-500 italic">No prior record state (e.g. New Insert).</span>
-            </div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">User</span>
+            <span class="font-semibold text-slate-900 truncate block">{{ selectedLog?.userEmail || 'System' }}</span>
           </div>
-
-          <!-- New Values Diff Box -->
           <div>
-            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> New Values (After Mutation)
-            </h3>
-            <div class="bg-slate-950 text-slate-200 p-4 rounded-xl font-mono text-xs overflow-x-auto max-h-60">
-              <pre *ngIf="parsedNewValues">{{ parsedNewValues | json }}</pre>
-              <span *ngIf="!parsedNewValues" class="text-slate-500 italic">No new record state available.</span>
-            </div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">Role</span>
+            <span class="font-semibold text-slate-900">{{ selectedLog?.userRole || 'N/A' }}</span>
           </div>
-
+          <div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">IP Address</span>
+            <span class="font-mono text-slate-800">{{ selectedLog?.ipAddress || 'Unknown' }}</span>
+          </div>
+          <div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">Category</span>
+            <span class="font-mono text-slate-800">{{ selectedLog?.category || 'General' }}</span>
+          </div>
+          <div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">Action</span>
+            <span class="font-bold text-blue-600">{{ selectedLog?.action }}</span>
+          </div>
+          <div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">Trace ID</span>
+            <span class="font-mono text-blue-600 block truncate" [title]="selectedLog?.traceId">{{ selectedLog?.traceId || 'N/A' }}</span>
+          </div>
+          <div>
+            <span class="block text-slate-400 font-bold uppercase text-[10px]">Status Code</span>
+            <span class="font-mono font-bold" [ngClass]="(selectedLog?.statusCode ?? 200) < 400 ? 'text-emerald-600' : 'text-rose-600'">
+              {{ selectedLog?.statusCode ?? 200 }}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <!-- Modal Footer -->
-      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end">
-        <button 
-          (click)="closeDetail()" 
-          class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 cursor-pointer transition-colors">
-          Close Inspector
-        </button>
-      </div>
+        <!-- STRUCTURED DETAILS (NON-JSON UI) -->
+        <div *ngIf="parsedDetails" class="space-y-5">
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5 m-0">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span> Context & Parameters
+          </h3>
 
+          <!-- 1. Top-Level Primitive Properties Grid -->
+          <div *ngIf="getDetailProperties(parsedDetails).length > 0" 
+               class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <div *ngFor="let prop of getDetailProperties(parsedDetails)">
+              <span class="block text-slate-400 font-bold uppercase text-[10px] truncate">{{ prop.label }}</span>
+              <span class="font-semibold text-slate-900 block truncate" [title]="prop.value">
+                {{ prop.value !== null && prop.value !== undefined ? prop.value : '—' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- 2. Array Tables (e.g. Products list, FinalProducts list) -->
+          <div *ngFor="let arraySection of getDetailArrays(parsedDetails)" class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                {{ arraySection.label }} ({{ arraySection.items.length }})
+              </span>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+              <div class="overflow-x-auto max-h-72">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-100/90 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider sticky top-0 bg-slate-100 shadow-xs">
+                      <th *ngFor="let header of getItemHeaders(arraySection.items)" class="py-2.5 px-3">
+                        {{ formatLabel(header) }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
+                    <tr *ngFor="let row of arraySection.items" class="hover:bg-slate-50/80 transition-colors">
+                      <td *ngFor="let header of getItemHeaders(arraySection.items)" class="py-2.5 px-3 whitespace-nowrap">
+                        <ng-container *ngIf="isPrimitive(row[header]); else objectVal">
+                          <span [ngClass]="{'font-semibold text-slate-900': header.toLowerCase().includes('name')}">
+                            {{ row[header] !== null && row[header] !== undefined ? row[header] : '—' }}
+                          </span>
+                        </ng-container>
+                        <ng-template #objectVal>
+                          <span class="text-[10px] font-mono text-slate-400">[Details]</span>
+                        </ng-template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Primitive Text Fallback -->
+          <div *ngIf="isPrimitive(parsedDetails)" class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs font-mono text-slate-800">
+            {{ parsedDetails }}
+          </div>
+        </div>
+
+        <div *ngIf="!parsedDetails" class="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-400 italic">
+          No additional contextual details recorded.
+        </div>
+
+      </div>
     </div>
+
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end">
+      <button 
+        (click)="closeDetail()" 
+        class="px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 cursor-pointer transition-colors">
+        Close Inspector
+      </button>
+    </div>
+
   </div>
+</div>

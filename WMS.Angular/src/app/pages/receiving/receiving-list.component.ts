@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, inject, effect, Output, EventEmit
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
-import { receivingV2Get, receivingGet, getReceiving } from '../../api/generated/functions';
+import { receivingV2Get, getReceiving } from '../../api/generated/functions';
 import { ReceivedProductDetailsDto, ReceivingDetailsDtoPaginatedResponse, ReceivingDetailsDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
@@ -38,7 +38,6 @@ export interface PalletLabelPrintData {
   templateUrl: './receiving-list.component.html',
 })
 export class ReceivingListComponent implements OnInit, OnDestroy {
-  // Reference the thermal print container in the template via ElementRef
   @ViewChild('thermalPrintContainer') thermalPrintContainer!: ElementRef<HTMLDivElement>;
 
   @Output() closed = new EventEmitter<void>();
@@ -268,7 +267,6 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
     }
   }
 
-  // --- ISOLATED IFRAME PRINTING VIA ElementRef ---
   triggerPrint(): void {
     if (!this.thermalPrintContainer?.nativeElement) {
       console.error('Thermal print container not found.');
@@ -278,7 +276,6 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
     this.cd.detectChanges();
     const printContents = this.thermalPrintContainer.nativeElement.innerHTML;
 
-    // Create a temporary hidden iframe at document root
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.right = '0';
@@ -336,7 +333,6 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
     `);
     doc.close();
 
-    // Trigger print after iframe renders images
     setTimeout(() => {
       iframe.contentWindow?.focus();
       iframe.contentWindow?.print();

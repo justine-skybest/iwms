@@ -7,6 +7,9 @@ public record class ReceivedProductDetailsDto
     public int Id { get; set; }
     public int ProductId { get; init; }
 
+    // ✅ Add explicit link to the source IncomingProduct line item
+    public int? IncomingProductId { get; set; }
+
     // --- Expected Baseline Fields ---
     public string? ExpectedProductName { get; init; }
     public int? ExpectedQuantity { get; init; }

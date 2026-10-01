@@ -3,7 +3,6 @@ using System;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Mapping;
 
 namespace WMS.Api.Endpoints;
@@ -12,7 +11,7 @@ public static class BinNamesEndpoint
 {
     public static RouteGroupBuilder MapBinNameEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("binnames").AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("binnames");
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)

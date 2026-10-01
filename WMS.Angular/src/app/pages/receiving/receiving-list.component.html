@@ -111,7 +111,6 @@
                   <lucide-icon [img]="eyeIcon" [size]="15"></lucide-icon>
                 </button>
                 
-                <!-- Quick Print Labels Button on Table Row -->
                 <button 
                   *ngIf="hasPalletizedItems(r)"
                   (click)="preparePalletLabelsForPrinting(r.id!)" 
@@ -157,7 +156,6 @@
     <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" (click)="closeView()"></div>
 
     <div class="relative z-10 w-full max-w-6xl h-full bg-white shadow-2xl flex flex-col pb-16">
-      <!-- Drawer Header -->
       <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white shrink-0">
         <div>
           <div class="flex items-center gap-2">
@@ -179,9 +177,7 @@
         </button>
       </div>
 
-      <!-- Drawer Body -->
       <div class="flex-1 overflow-y-auto p-5 space-y-6">
-        <!-- 1. GENERAL & LOGISTICS INFORMATION -->
         <div>
           <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">Transaction & Logistics Info</h3>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -195,7 +191,6 @@
           </div>
         </div>
 
-        <!-- 2. AUDIT & PERSONNEL -->
         <div>
           <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">Audit & Personnel</h3>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -206,7 +201,6 @@
           </div>
         </div>
 
-        <!-- 3. RECONCILIATION SUMMARY CARD -->
         <div *ngIf="selectedReceiving?.products?.length" class="p-4 bg-slate-900 text-white rounded-xl shadow-md space-y-4">
           <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-3 gap-3 md:gap-0">
             <div class="flex items-center gap-2">
@@ -250,7 +244,6 @@
           </div>
         </div>
 
-        <!-- 4. RECEIVED PRODUCTS LINE-ITEM VERIFICATION TABLE -->
         <div>
           <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">
             Received Products Line Items ({{selectedReceiving?.products?.length || 0}})
@@ -320,14 +313,12 @@
         </div>
       </div>
 
-      <!-- Drawer Footer -->
       <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
         <div class="text-xs text-slate-500 font-mono" *ngIf="selectedReceiving?.products">
           Total Received Items: <strong>{{ selectedReceiving?.products?.length || 0 }}</strong>
         </div>
 
         <div class="flex items-center gap-2">
-          <!-- Print Labels Action in View Drawer Footer -->
           <button 
             *ngIf="hasPalletizedItems(selectedReceiving)"
             (click)="preparePalletLabelsForPrinting(selectedReceiving?.id!)" 
@@ -361,7 +352,6 @@
         <button (click)="closePrintModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
 
-      <!-- Preview -->
       <div class="p-4 pb-16 overflow-y-auto space-y-4 bg-slate-100 flex-1">
         <div *ngFor="let lbl of generatedPalletLabels; let idx = index" class="p-4 bg-white border-2 border-slate-800 rounded-lg shadow-sm space-y-3 font-sans text-slate-900">
           <div class="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
@@ -406,33 +396,33 @@
     </div>
   </div>
 
-<!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
-<div #thermalPrintContainer class="hidden">
-  <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
-    <div style="text-align: center; margin-bottom: 4px;">
-      <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
-    </div>
-
-    <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
-      {{ lbl.productName }}
-    </div>
-
-    <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
-      <div><strong>Code:</strong> {{ lbl.code }}</div>
-      <div style="display: flex; justify-content: space-between;">
-        <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
-        <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
+  <!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
+  <div #thermalPrintContainer class="hidden">
+    <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
+      <div style="text-align: center; margin-bottom: 4px;">
+        <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
       </div>
-      <div><strong>UoM:</strong> {{ lbl.uom }}</div>
-      <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
-      <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
-    </div>
 
-    <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
-      <strong>Date:</strong> {{ lbl.dateReceived }}
+      <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
+        {{ lbl.productName }}
+      </div>
+
+      <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
+        <div><strong>Code:</strong> {{ lbl.code }}</div>
+        <div style="display: flex; justify-content: space-between;">
+          <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
+          <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
+        </div>
+        <div><strong>UoM:</strong> {{ lbl.uom }}</div>
+        <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
+        <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
+      </div>
+
+      <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
+        <strong>Date:</strong> {{ lbl.dateReceived }}
+      </div>
     </div>
   </div>
-</div>
 
   <!-- CREATION COMPONENT DRAWER -->
   <app-receiving-create

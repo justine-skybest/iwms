@@ -13,6 +13,11 @@
         "IsRequired": false
       },
       {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
         "Name": "entityName",
         "Type": "System.String",
         "IsRequired": false
@@ -60,7 +65,7 @@
     "Tags": [
       "Audit Logs"
     ],
-    "Description": "Retrieves a filtered, paginated list of system audit history.",
+    "Description": "Retrieves a filtered, paginated list of system activity logs.",
     "Summary": "Get paginated audit logs"
   },
   {
@@ -94,12 +99,35 @@
     "Tags": [
       "Audit Logs"
     ],
-    "Description": "Retrieves complete audit log details including OldValues and NewValues diff payloads.",
+    "Description": "Retrieves complete audit log details including narrative description and structured JSON details payload.",
     "Summary": "Get audit log details by ID"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.AuditLogEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapAuditLogEndpoints\u003Eb__0_2",
+    "RelativePath": "api/audit-logs/categories",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Audit Logs"
+    ],
+    "Description": "Returns distinct categories recorded in audit logs to populate UI filter dropdowns.",
+    "Summary": "Get list of audit categories"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.AuditLogEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuditLogEndpoints\u003Eb__0_3",
     "RelativePath": "api/audit-logs/entity-names",
     "HttpMethod": "GET",
     "IsController": false,
@@ -117,8 +145,7 @@
     "Tags": [
       "Audit Logs"
     ],
-    "Description": "Returns distinct entity names recorded in audit logs to populate UI filter dropdowns.",
-    "Summary": "Get list of audited entity names"
+    "Summary": "Get list of audit categories (alias)"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.AuthEndpoints\u002B\u003C\u003Ec",
@@ -437,7 +464,7 @@
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
-    "RelativePath": "bin/{id}",
+    "RelativePath": "bin/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
     "Order": 0,
@@ -464,7 +491,7 @@
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
-    "RelativePath": "bin/{id}",
+    "RelativePath": "bin/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
     "Order": 0,
@@ -1546,7 +1573,6 @@
       "Incomings"
     ],
     "EndpointName": "GetIncomingById",
-    "Description": "Retrieves a single incoming shipment record by its primary key.",
     "Summary": "Get incoming shipment by ID"
   },
   {
@@ -1676,8 +1702,8 @@
       "Incomings"
     ],
     "EndpointName": "GetUnreceivedIncomings",
-    "Description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including only products where Received is false.",
-    "Summary": "Get pending or partial incoming shipments with unreceived products"
+    "Description": "Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including calculated remaining balances.",
+    "Summary": "Get pending or partial incoming shipments with unreceived or partial products"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.InventoryEndpoint\u002B\u003C\u003Ec",
@@ -2887,6 +2913,13 @@
         "MediaTypes": [
           "application/json"
         ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "WMS.Api.Dtos.Receiving.ReceivingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
         "StatusCode": 201
       },
       {
@@ -2901,8 +2934,7 @@
       "Receiving"
     ],
     "EndpointName": "CreateReceiving",
-    "Description": "Creates a receiving receipt linked to an Incoming shipment, auto-generates sequential lot numbers per product, marks specific line items as received, and updates Incoming status to PARTIAL or RECEIVED.",
-    "Summary": "Create a new receiving receipt"
+    "Summary": "Create or update a receiving receipt"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
@@ -2938,7 +2970,6 @@
       "Receiving"
     ],
     "EndpointName": "GetReceiving",
-    "Description": "Retrieves full receiving receipt details by ID, including logistics header info, linked warehouse, assigned pallets, and line-item products with their server-generated lot numbers.",
     "Summary": "Get receiving transaction details"
   },
   {
@@ -3044,7 +3075,6 @@
       "Receiving"
     ],
     "EndpointName": "GetAllShippersFromReceiving",
-    "Description": "Retrieves a distinct list of non-empty shipper names across all receiving records, sorted alphabetically.",
     "Summary": "Get all unique shippers from receiving receipts"
   },
   {

@@ -64,8 +64,6 @@ builder.Services.AddAuthentication(options =>
     options.Cookie.Name = ".Skybest.WMS.Auth";
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
-
-    // CHANGE THIS LINE: Allow cookies over HTTP in local development
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
     options.Events.OnRedirectToLogin = context =>
@@ -87,7 +85,7 @@ builder.Services.AddAuthentication(options =>
     options.SaveTokens = true;
 });
 
-// 6. Global Fallback Authorization Policy (Protects ALL business APIs by default)
+// 6. Global Fallback Authorization Policy
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -100,15 +98,14 @@ builder.Services.AddAuthorization(options =>
 // 7. Context & Auth Service Dependency Injections
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>(); // ✅ CORRECT SINGLE REGISTRATION
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddEndpointsApiExplorer();
 
-// 8. Configure Swagger with Enums & Cookie Authentication Security Definition
+// 8. Configure Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.UseInlineDefinitionsForEnums();
-
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "WMS API v1", Version = "v1" });
 
     options.AddSecurityDefinition("CookieAuth", new OpenApiSecurityScheme
@@ -145,7 +142,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 1. Configure Forwarded Headers to trust local Apache proxy
+// Configure Forwarded Headers
 var forwardedHeadersOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -153,30 +150,26 @@ var forwardedHeadersOptions = new ForwardedHeadersOptions
 forwardedHeadersOptions.KnownNetworks.Clear();
 forwardedHeadersOptions.KnownProxies.Clear();
 
-// 2. Apply BEFORE CORS, Authentication, and Authorization
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
-// 9. Seed Roles & System Admin
+// Seed Roles & System Admin
 await IdentityDataSeeder.SeedRolesAndAdminAsync(app.Services, app.Configuration);
 
 app.UseCors("AngularOrigin");
 
-// 10. Serve Swagger BEFORE Authentication & Authorization Middleware
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API v1");
 });
 
-// 11. Pipeline Authentication & Authorization Middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<NotificationHub>("/hubs/notifications");
 
-// 12. Endpoint Routing (Auth Endpoints + Existing Business Endpoints)
+// Endpoints
 app.MapAuthEndpoints();
-
 app.MapWarehouseEndpoints();
 app.MapRackEndpoints();
 app.MapBinEndpoints();
@@ -199,5 +192,4 @@ app.MapIncomingTemplateEndpoints();
 app.MapReportEndpoints();
 app.MapAuditLogEndpoints();
 
-// app.MigrateDb();
 app.Run();

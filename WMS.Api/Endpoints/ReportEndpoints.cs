@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
-using WMS.Api.Filters;
 
 namespace WMS.Api.Endpoints
 {
@@ -51,7 +50,7 @@ namespace WMS.Api.Endpoints
         public static RouteGroupBuilder MapReportEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/reports")
-                .WithTags("Reports").AddEndpointFilter<AuditLoggingFilter>();
+                .WithTags("Reports");
 
             group.MapGet("/warehouse-occupancy", async (
                 WMSContext dbContext,

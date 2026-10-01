@@ -33,16 +33,20 @@ export interface DiscrepancyOption {
 }
 
 export interface SelectableIncomingProduct {
+  id?: number;
   productId: number;
   productName?: string;
   quantity?: number;
+  remainingQuantity?: number;
   cbm?: string;
   totalWeight?: string;
   expirationDate?: string;
   supplier?: string;
+  unitPrice?: number;
+  totalAmount?: number;
   remarks?: string;
   typeOfPackage?: string;
-  received?: boolean;
+  status?: string;
   selected: boolean;
 }
 
@@ -59,20 +63,20 @@ export type StagedProductItem = {
   expectedCbm?: string;
   expectedTotalWeight?: string;
   expectedExpirationDate?: string;
-  cbm?: string | null;
-  containerName?: string | null;
-  expectedCBM?: string | null;
-  expirationDate?: string | null;
+  cbm?: string;
+  containerName?: string;
+  expirationDate?: string;
   id?: number;
-  lotNumber?: string | null;
-  name?: string | null;
-  palletId?: number | null;
+  incomingProductId?: number;
+  lotNumber?: string;
+  name?: string;
+  palletId?: number;
   productId?: number;
   quantity?: number;
-  remarks?: string | null;
-  supplier?: string | null;
+  remarks?: string;
+  supplier?: string;
   totalAmount?: number;
-  totalWeight?: string | null;
+  totalWeight?: string;
   unitPrice?: number;
 };
 
@@ -105,58 +109,6 @@ export interface PalletLabelPrintData {
   standalone: true,
   imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent],
   templateUrl: './receiving-create.component.html',
-  styles: [`
-    @media print {
-      @page {
-        size: 4in 6in;
-        margin: 0 !important;
-      }
-
-      body {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #ffffff !important;
-      }
-
-      body * {
-        visibility: hidden !important;
-      }
-
-      .printable-thermal-labels, .printable-thermal-labels * {
-        visibility: visible !important;
-      }
-
-      .printable-thermal-labels {
-        display: block !important;
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 4in !important;
-        height: 6in !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        z-index: 999999 !important;
-        background: #ffffff !important;
-      }
-
-      .thermal-label-page {
-        width: 4in !important;
-        height: 6in !important;
-        padding: 0.25in !important;
-        margin: 0 !important;
-        page-break-after: always !important;
-        break-after: page !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        box-sizing: border-box !important;
-        background: #ffffff !important;
-        color: #000000 !important;
-        font-family: Arial, sans-serif !important;
-        overflow: hidden !important;
-      }
-    }
-  `]
 })
 export class ReceivingCreateComponent {
   readonly TrashIcon = Trash2;
@@ -176,7 +128,6 @@ export class ReceivingCreateComponent {
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
-  private elementRef = inject(ElementRef);
   public warehouseService = inject(WarehouseService);
   private toastService = inject(ToastService);
 
@@ -232,12 +183,11 @@ export class ReceivingCreateComponent {
     this.isProductDropdownOpen = false;
   }
 
-private generateSeries(externalId: number): string {
-  const currentYearSuffix = new Date().getFullYear().toString().slice(-2);
-  const formattedId = String(externalId).padStart(5, '0');
-
-  return `SLCWH-INC${formattedId}-${currentYearSuffix}`;
-}
+  private generateSeries(externalId: number): string {
+    const currentYearSuffix = new Date().getFullYear().toString().slice(-2);
+    const formattedId = String(externalId).padStart(5, '0');
+    return `SLCWH-INC${formattedId}-${currentYearSuffix}`;
+  }
 
   private getInitialForm(): CreateReceivingDto {
     const now = new Date();
@@ -299,36 +249,45 @@ private generateSeries(externalId: number): string {
     }
   }
 
-  selectIncoming(incoming: IncomingResponseDto): void {
-    this.selectedIncoming = incoming;
-    this.incomingSearchQuery = `#${incoming.id} — ${incoming.shipper}`;
-    this.isIncomingDropdownOpen = false;
-    this.newReceiving.series = this.generateSeries(incoming.id!);
+selectIncoming(incoming: IncomingResponseDto): void {
+  this.selectedIncoming = incoming;
+  this.incomingSearchQuery = `#${incoming.id} — ${incoming.shipper}`;
+  this.isIncomingDropdownOpen = false;
+  this.newReceiving.series = this.generateSeries(incoming.id!);
 
-    this.newReceiving.shipper = incoming.shipper || '';
-    this.newReceiving.consignee = incoming.consignee || '';
-    if (incoming.warehouseId) {
-      this.newReceiving.warehouseId = incoming.warehouseId;
-    }
+  this.newReceiving.shipper = incoming.shipper || '';
+  this.newReceiving.consignee = incoming.consignee || '';
+  if (incoming.warehouseId) {
+    this.newReceiving.warehouseId = incoming.warehouseId;
+  }
 
-    this.availableIncomingProducts = (incoming.products || [])
-      .filter(p => !p.received)
-      .map(p => ({
+  this.availableIncomingProducts = (incoming.products || [])
+    .filter(p => p.status !== 'RECEIVED')
+    .map(p => {
+      const remaining = p.remainingQuantity ?? ((p.quantity || 0) - (p.receivedQuantity || 0));
+      const activeBalance = remaining > 0 ? remaining : (p.quantity || 0);
+
+      return {
+        id: p.id, // ✅ Capture the unique IncomingProduct.Id
         productId: p.productId!,
         productName: p.productName || '',
-        quantity: p.quantity || 0,
+        quantity: activeBalance,
+        remainingQuantity: activeBalance,
         cbm: p.cbm || '0',
         totalWeight: p.totalWeight || '0',
         expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
         supplier: p.supplier || '',
+        unitPrice: p.unitPrice ?? undefined,
+        totalAmount: p.totalAmount ?? undefined,
         remarks: p.remarks || '',
         typeOfPackage: p.typeOfPackage || 'CS GLASS',
-        received: p.received || false,
+        status: p.status,
         selected: false
-      }));
+      };
+    });
 
-    this.syncStagedItemsFromSelection();
-  }
+  this.syncStagedItemsFromSelection();
+}
 
   toggleProductDropdown(event?: Event): void {
     if (event) event.stopPropagation();
@@ -360,49 +319,57 @@ private generateSeries(externalId: number): string {
   }
 
   syncStagedItemsFromSelection(): void {
-    const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
-    const updatedStagedItems: StagedProductItem[] = [];
+  const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
+  const updatedStagedItems: StagedProductItem[] = [];
 
-    for (const p of selectedProducts) {
-      const existing = this.stagedItems.find(s => s.productId === p.productId);
-      if (existing) {
-        updatedStagedItems.push(existing);
-      } else {
-        const prodName = p.productName || '';
-        const qty = p.quantity || 0;
-        const cbmVal = p.cbm || '0';
-        const weightVal = p.totalWeight || '0';
-        const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
+  for (const p of selectedProducts) {
+    // Match by incomingProductId or productId
+    const existing = this.stagedItems.find(s => 
+      (p.id && s.incomingProductId === p.id) || s.productId === p.productId
+    );
 
-        updatedStagedItems.push({
-          productId: p.productId,
-          expectedProductName: prodName,
-          expectedQuantity: qty,
-          expectedCbm: cbmVal,
-          expectedTotalWeight: weightVal,
-          expectedExpirationDate: expiryVal,
+    if (existing) {
+      updatedStagedItems.push(existing);
+    } else {
+      const prodName = p.productName || '';
+      const qty = p.quantity || 0;
+      const cbmVal = p.cbm || '0';
+      const weightVal = p.totalWeight || '0';
+      const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
-          productName: prodName,
-          quantity: qty,
-          cbm: cbmVal,
-          totalWeight: weightVal,
-          expirationDate: expiryVal,
+      updatedStagedItems.push({
+        incomingProductId: p.id, // ✅ Store source IncomingProduct ID
+        productId: p.productId,
+        expectedProductName: prodName,
+        expectedQuantity: qty,
+        expectedCbm: cbmVal,
+        expectedTotalWeight: weightVal,
+        expectedExpirationDate: expiryVal,
 
-          typeOfPackage: p.typeOfPackage || 'CS GLASS',
-          remarks: p.remarks || '',
-          palletId: null,
-          containerName: '',
+        productName: prodName,
+        quantity: qty,
+        cbm: cbmVal,
+        totalWeight: weightVal,
+        expirationDate: expiryVal,
 
-          isMatched: true,
-          discrepancies: []
-        });
-      }
+        supplier: p.supplier || undefined,
+        unitPrice: p.unitPrice ?? undefined,
+        totalAmount: p.totalAmount ?? undefined,
+
+        typeOfPackage: p.typeOfPackage || 'CS GLASS',
+        remarks: p.remarks || '',
+        palletId: undefined,
+        containerName: '',
+
+        isMatched: true,
+        discrepancies: []
+      });
     }
-
-    this.stagedItems = updatedStagedItems;
-    this.newReceiving.products = this.stagedItems;
-    this.cd.markForCheck();
   }
+
+  this.stagedItems = updatedStagedItems;
+  this.cd.markForCheck();
+}
 
   clearIncomingSelection(): void {
     this.selectedIncoming = null;
@@ -413,7 +380,6 @@ private generateSeries(externalId: number): string {
     this.isProductDropdownOpen = false;
     this.productFilterQuery = '';
     this.stagedItems = [];
-    this.newReceiving.products = [];
     this.cd.markForCheck();
   }
 
@@ -598,7 +564,6 @@ private generateSeries(externalId: number): string {
     if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
 
     this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
-    this.newReceiving.products = this.stagedItems;
     this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
     this.closePalletModal();
   }
@@ -612,7 +577,6 @@ private generateSeries(externalId: number): string {
       if (target) target.selected = false;
     }
 
-    this.newReceiving.products = this.stagedItems;
     this.cd.markForCheck();
   }
 
@@ -630,8 +594,8 @@ private generateSeries(externalId: number): string {
 
     for (let i = 0; i < this.stagedItems.length; i++) {
       const item = this.stagedItems[i];
-      if(!item.palletId) {
-        return `Each item should be assign to a specific pallet`;
+      if (!item.palletId) {
+        return `Each item should be assigned to a specific pallet.`;
       }
       if (!item.isMatched && item.discrepancies.length === 0 && !item.remarks?.trim()) {
         return `Line Item #${i + 1} (${item.productName}) is marked as having discrepancies, but no category or remark was provided.`;
@@ -659,37 +623,40 @@ private generateSeries(externalId: number): string {
     this.validationError = '';
     this.isSaving = true;
 
-    const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
-      let remarksText = item.remarks || '';
-      if (!item.isMatched && item.discrepancies.length > 0) {
-        const tagString = `[DISCREPANCIES: ${item.discrepancies.join(', ')}]`;
-        remarksText = remarksText ? `${tagString} ${remarksText}` : tagString;
-      }
+const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
+  let remarksText = item.remarks || '';
+  if (!item.isMatched && item.discrepancies.length > 0) {
+    const tagString = `[DISCREPANCIES: ${item.discrepancies.join(', ')}]`;
+    remarksText = remarksText ? `${tagString} ${remarksText}` : tagString;
+  }
 
-      return {
-        id: item.id || 0,
-        productId: item.productId!,
+  return {
+    id: item.id || 0,
+    productId: item.productId!,
+    incomingProductId: item.incomingProductId ?? undefined, // ✅ Send to backend payload
 
-        expectedProductName: item.expectedProductName,
-        expectedQuantity: item.expectedQuantity,
-        expectedCbm: item.expectedCbm,
-        expectedTotalWeight: item.expectedTotalWeight,
-        expectedExpirationDate: item.expectedExpirationDate as any,
-        typeOfPackage: item.typeOfPackage,
+    expectedProductName: item.expectedProductName,
+    expectedQuantity: item.expectedQuantity,
+    expectedCbm: item.expectedCbm,
+    expectedTotalWeight: item.expectedTotalWeight,
+    expectedExpirationDate: item.expectedExpirationDate as any,
+    typeOfPackage: item.typeOfPackage,
 
-        productName: item.productName,
-        quantity: item.quantity ?? 0,
-        cbm: item.cbm || '0',
-        totalWeight: item.totalWeight || '0',
-        expirationDate: item.expirationDate as any,
-        totalAmount: item.totalAmount,
-        unitPrice: item.unitPrice,
+    productName: item.productName,
+    quantity: item.quantity ?? 0,
+    cbm: item.cbm || '0',
+    totalWeight: item.totalWeight || '0',
+    expirationDate: item.expirationDate as any,
+    
+    supplier: item.supplier || undefined,
+    unitPrice: item.unitPrice ?? undefined,
+    totalAmount: item.totalAmount ?? undefined,
 
-        remarks: remarksText,
-        containerName: item.containerName || '',
-        palletId: item.palletId
-      };
-    });
+    remarks: remarksText,
+    containerName: item.containerName || '',
+    palletId: item.palletId ?? undefined
+  };
+});
 
     const payload: CreateReceivingDto = {
       ...this.newReceiving,
@@ -721,7 +688,6 @@ private generateSeries(externalId: number): string {
       const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
 
       if (createdId && hasPalletizedItems) {
-        // Fetch server details to get exact server-generated Lot Numbers for thermal printing
         await this.preparePalletLabelsForPrinting(createdId);
       } else {
         this.onClose();
@@ -736,19 +702,16 @@ private generateSeries(externalId: number): string {
     }
   }
 
- private async preparePalletLabelsForPrinting(receivingId: number): Promise<void> {
+  private async preparePalletLabelsForPrinting(receivingId: number): Promise<void> {
     try {
       const receiving = await this.api.invoke(getReceiving, { id: receivingId }) as ReceivingDetailsDto;
       const items = (receiving?.products || []).filter(p => !!p.palletId);
-
-      console.log(items)
 
       if (items.length === 0) {
         this.onClose();
         return;
       }
 
-      // 1. Group strongly-typed DTO items by Pallet ID
       const groupedByPallet = new Map<number, ReceivedProductDetailsDto[]>();
       for (const item of items) {
         if (!item.palletId) continue;
@@ -764,26 +727,21 @@ private generateSeries(externalId: number): string {
       for (const [palletId, groupItems] of groupedByPallet.entries()) {
         const totalQty = groupItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
         
-        // 2. Safe numeric weight sum
         const totalWeightVal = groupItems.reduce((acc, curr) => {
           const parsed = parseFloat(curr.totalWeight || '0');
           return acc + (isNaN(parsed) ? 0 : parsed);
         }, 0);
 
         const firstItem = groupItems[0];
-
-        // 3. FIX: ReceivedProductDetailsDto uses `name` for Product Name
         const primaryName = firstItem.name || firstItem.expectedProductName || '—';
         const prodName = groupItems.length === 1 
           ? primaryName 
           : `${primaryName} (+${groupItems.length - 1} items)`;
 
-        // 4. FIX: Use Product ID for single SKU code instead of CBM
         const codeVal = groupItems.length === 1 
           ? (firstItem.productId ? `#${firstItem.productId}` : '—') 
           : 'MULTI-SKU';
 
-        // 5. Clean server-generated Lot Number extraction
         const lotVal = Array.from(
           new Set(
             groupItems
@@ -792,7 +750,6 @@ private generateSeries(externalId: number): string {
           )
         ).join(', ') || '—';
 
-        // 6. Aggregate up to 3 distinct UOMs (typeOfPackage)
         const uomList = Array.from(
           new Set(
             groupItems
@@ -802,7 +759,6 @@ private generateSeries(externalId: number): string {
         );
         const uomVal = uomList.slice(0, 3).join(', ') || 'CS GLASS';
 
-        // 7. HashCode fallback
         const hashCode = 100000 + palletId;
         const qrDataUrl = await generateQrCodeDataUrl(hashCode, 180);
 
@@ -835,7 +791,7 @@ private generateSeries(externalId: number): string {
     }
   }
 
- triggerPrint(): void {
+  triggerPrint(): void {
     if (!this.thermalPrintContainer?.nativeElement) {
       console.error('Thermal print container not found.');
       return;
@@ -844,7 +800,6 @@ private generateSeries(externalId: number): string {
     this.cd.detectChanges();
     const printContents = this.thermalPrintContainer.nativeElement.innerHTML;
 
-    // Create a temporary hidden iframe at document root
     const iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.right = '0';
@@ -891,6 +846,8 @@ private generateSeries(externalId: number): string {
               justify-content: space-between !important;
               box-sizing: border-box !important;
               background: #ffffff !important;
+              color: #000000 !important;
+              font-family: Arial, sans-serif !important;
               overflow: hidden !important;
             }
           </style>
@@ -902,7 +859,6 @@ private generateSeries(externalId: number): string {
     `);
     doc.close();
 
-    // Trigger print after iframe renders images
     setTimeout(() => {
       iframe.contentWindow?.focus();
       iframe.contentWindow?.print();

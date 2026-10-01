@@ -32,7 +32,7 @@ public static class ReceivingMapping
 
     public static Receiving ToUpdateEntity(this CreateReceivingDto createdReceive, int id)
     {
-        return new ()
+        return new()
         {
             Id = id,
             WarehouseId = createdReceive.WarehouseId,
@@ -50,7 +50,7 @@ public static class ReceivingMapping
             CheckerName = createdReceive.CheckerName,
             TimeStart = createdReceive.TimeStart,
             TimeEnd = createdReceive.TimeEnd,
-            DateAdded = createdReceive.DateAdded        
+            DateAdded = createdReceive.DateAdded
         };
     }
 
@@ -60,15 +60,16 @@ public static class ReceivingMapping
         {
             Id = dto.Id,
             ProductId = dto.ProductId,
+            IncomingProductId = dto.IncomingProductId, // ✅ Map IncomingProductId
 
-            // Baseline Expected Fields (From Incoming)
+            // Baseline Expected Fields
             ExpectedProductName = dto.ExpectedProductName,
             ExpectedQuantity = dto.ExpectedQuantity,
             ExpectedCBM = dto.ExpectedCBM,
             ExpectedTotalWeight = dto.ExpectedTotalWeight,
             ExpectedExpirationDate = dto.ExpectedExpirationDate,
 
-            // Actual Counted / Received Fields
+            // Actual Counted Fields
             Quantity = dto.Quantity,
             CBM = dto.CBM ?? "0",
             TotalWeight = dto.TotalWeight ?? "0",
@@ -86,7 +87,7 @@ public static class ReceivingMapping
 
     public static ReceivingSummaryDto ToReceivingSummaryDto(this Receiving receiving)
     {
-        return new ReceivingSummaryDto( 
+        return new ReceivingSummaryDto(
             receiving.Id,
             receiving.WarehouseId,
             receiving.Warehouse!.Name,
@@ -115,17 +116,16 @@ public static class ReceivingMapping
             rp.ProductId,
             rp.Product?.Name ?? rp.ExpectedProductName ?? string.Empty,
             rp.LotNumber!,
-            rp.Product?.TypeOfPackage ?? string.Empty,
+            !string.IsNullOrWhiteSpace(rp.TypeOfPackage) ? rp.TypeOfPackage : (rp.Product?.TypeOfPackage ?? string.Empty),
             rp.Product?.Measurement ?? string.Empty,
             rp.Product?.Weight ?? 0m,
 
-            // Baseline Expected Fields (From Incoming)
+            // Baseline Expected Fields
             rp.ExpectedProductName,
             rp.ExpectedQuantity,
             rp.ExpectedCBM,
             rp.ExpectedTotalWeight,
             rp.ExpectedExpirationDate,
-
 
             // Actual Counted / Received Fields
             rp.Quantity,
@@ -167,13 +167,14 @@ public static class ReceivingMapping
         {
             Id = entity.Id,
             ProductId = entity.ProductId,
+            IncomingProductId = entity.IncomingProductId, // ✅ Map IncomingProductId
 
             // Baseline Expected Fields
-            ExpectedProductName = entity.ExpectedProductName,
-            ExpectedQuantity = entity.ExpectedQuantity,
-            ExpectedCBM = entity.ExpectedCBM,
-            ExpectedTotalWeight = entity.ExpectedTotalWeight,
-            ExpectedExpirationDate = entity.ExpectedExpirationDate,
+            ExpectedProductName = entity.ExpectedProductName ?? entity.Product?.Name,
+            ExpectedQuantity = entity.ExpectedQuantity ?? 0,
+            ExpectedCBM = entity.ExpectedCBM ?? entity.CBM,
+            ExpectedTotalWeight = entity.ExpectedTotalWeight ?? entity.TotalWeight,
+            ExpectedExpirationDate = entity.ExpectedExpirationDate ?? entity.ExpirationDate,
 
             // Actual Counted Fields
             Name = entity.Product?.Name ?? entity.ExpectedProductName,
@@ -183,9 +184,11 @@ public static class ReceivingMapping
             TotalAmount = entity.TotalAmount ?? 0,
             UnitPrice = entity.UnitPrice ?? 0,
             LotNumber = entity.LotNumber,
-            TypeOfPackage = entity.TypeOfPackage,
-            ExpirationDate = entity.ExpirationDate,
+            TypeOfPackage = !string.IsNullOrWhiteSpace(entity.TypeOfPackage)
+                ? entity.TypeOfPackage
+                : entity.Product?.TypeOfPackage,
 
+            ExpirationDate = entity.ExpirationDate,
             Supplier = entity.Supplier,
             Remarks = entity.Remarks,
             ContainerName = entity.ContainerName,
@@ -216,6 +219,6 @@ public static class ReceivingMapping
             receivedProduct.ContainerName,
             receivedProduct.ReceivingId,
             receivedProduct.Receiving!.Series
-        );        
+        );
     }
 }

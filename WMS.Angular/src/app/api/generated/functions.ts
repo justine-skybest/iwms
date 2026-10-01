@@ -5,6 +5,8 @@ export type { ApiAuditLogsGet$Params as ApiAuditLogsGet$Params } from './fn/audi
 export { apiAuditLogsGet as apiAuditLogsGet } from './fn/audit-logs/api-audit-logs-get';
 export type { ApiAuditLogsIdGet$Params as ApiAuditLogsIdGet$Params } from './fn/audit-logs/api-audit-logs-id-get';
 export { apiAuditLogsIdGet as apiAuditLogsIdGet } from './fn/audit-logs/api-audit-logs-id-get';
+export type { ApiAuditLogsCategoriesGet$Params as ApiAuditLogsCategoriesGet$Params } from './fn/audit-logs/api-audit-logs-categories-get';
+export { apiAuditLogsCategoriesGet as apiAuditLogsCategoriesGet } from './fn/audit-logs/api-audit-logs-categories-get';
 export type { ApiAuditLogsEntityNamesGet$Params as ApiAuditLogsEntityNamesGet$Params } from './fn/audit-logs/api-audit-logs-entity-names-get';
 export { apiAuditLogsEntityNamesGet as apiAuditLogsEntityNamesGet } from './fn/audit-logs/api-audit-logs-entity-names-get';
 export type { ApiAuthLoginPost$Params as ApiAuthLoginPost$Params } from './fn/authentication/api-auth-login-post';
@@ -29,6 +31,8 @@ export type { CreateIncoming$Params as CreateIncoming$Params } from './fn/incomi
 export { createIncoming as createIncoming } from './fn/incomings/create-incoming';
 export type { GetUnreceivedIncomings$Params as GetUnreceivedIncomings$Params } from './fn/incomings/get-unreceived-incomings';
 export { getUnreceivedIncomings as getUnreceivedIncomings } from './fn/incomings/get-unreceived-incomings';
+export type { ShortCloseIncoming$Params as ShortCloseIncoming$Params } from './fn/incomings/short-close-incoming';
+export { shortCloseIncoming as shortCloseIncoming } from './fn/incomings/short-close-incoming';
 export type { GetIncomingById$Params as GetIncomingById$Params } from './fn/incomings/get-incoming-by-id';
 export { getIncomingById as getIncomingById } from './fn/incomings/get-incoming-by-id';
 export type { UpdateIncoming$Params as UpdateIncoming$Params } from './fn/incomings/update-incoming';

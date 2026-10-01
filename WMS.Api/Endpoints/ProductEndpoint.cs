@@ -4,7 +4,6 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Product;
 using WMS.Api.Entities;
-using WMS.Api.Filters;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
 
@@ -15,7 +14,7 @@ public static class ProductEndpoint
     public static RouteGroupBuilder MapProductEndpoints(this WebApplication app)
     {
         const string GetProductEndpointName = "GetProduct";
-        var group = app.MapGroup("product").WithParameterValidation().AddEndpointFilter<AuditLoggingFilter>();
+        var group = app.MapGroup("product").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1) — legacy, unfiltered, unpaginated
