@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WMS.Api.Data;
@@ -481,7 +480,6 @@ public static class ReceivingEndpoint
                     existingReceiving.Products!.Add(new ReceivedProduct
                     {
                         ProductId = updatedProduct.ProductId,
-                        IncomingProductId = updatedProduct.IncomingProductId,
                         Quantity = updatedProduct.Quantity,
                         LotNumber = assignedLotNumber,
                         CBM = updatedProduct.CBM,
@@ -586,81 +584,38 @@ public static class ReceivingEndpoint
     {
         if (receiving.Products == null || incoming.Products == null) return;
 
-        var incMap = incoming.Products.ToDictionary(p => p.Id);
-
-        // 1. Explicit IncomingProductId match
-        var receivedByIncId = receiving.Products
-            .Where(rp => rp.IncomingProductId.HasValue && incMap.ContainsKey(rp.IncomingProductId.Value))
-            .GroupBy(rp => rp.IncomingProductId!.Value);
-
-        foreach (var group in receivedByIncId)
-        {
-            var incProd = incMap[group.Key];
-            int totalPlanned = incProd.Quantity;
-            int remainingPlanned = totalPlanned;
-
-            var itemsList = group.OrderBy(rp => rp.Id).ToList();
-
-            for (int i = 0; i < itemsList.Count; i++)
-            {
-                var rp = itemsList[i];
-                bool isLast = (i == itemsList.Count - 1);
-
-                rp.ExpectedCBM = incProd.CBM;
-                rp.ExpectedTotalWeight = incProd.TotalWeight;
-                rp.ExpectedExpirationDate = incProd.ExpirationDate;
-                rp.ExpectedProductName = incProd.Product?.Name;
-                if (string.IsNullOrWhiteSpace(rp.TypeOfPackage))
-                {
-                    rp.TypeOfPackage = incProd.Product?.TypeOfPackage;
-                }
-
-                if (totalPlanned == 0)
-                {
-                    rp.ExpectedQuantity = 0;
-                }
-                else if (!isLast)
-                {
-                    int alloc = Math.Min(rp.Quantity, remainingPlanned);
-                    rp.ExpectedQuantity = alloc;
-                    remainingPlanned = Math.Max(0, remainingPlanned - alloc);
-                }
-                else
-                {
-                    rp.ExpectedQuantity = remainingPlanned;
-                    remainingPlanned = 0;
-                }
-
-                CleanDiscrepancyRemarksIfMatched(rp);
-            }
-        }
-
-        // 2. Fallback waterfall for unlinked legacy items (grouped by ProductId_ExpirationDate)
-        var unlinkedGroups = receiving.Products
-            .Where(rp => !rp.IncomingProductId.HasValue || !incMap.ContainsKey(rp.IncomingProductId.Value))
-            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}");
-
-        var incomingFallbackGroups = incoming.Products
+        // Group INCOMING products by ProductId + ExpirationDate ordered sequentially
+        var incomingGroups = incoming.Products
             .GroupBy(p => $"{p.ProductId}_{FormatDateKey(p.ExpirationDate)}")
-            .ToDictionary(g => g.Key, g => g.OrderBy(p => p.Id).ToList(), StringComparer.OrdinalIgnoreCase);
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderBy(p => p.Id).ToList(),
+                StringComparer.OrdinalIgnoreCase
+            );
 
-        foreach (var group in unlinkedGroups)
+        // Group RECEIVED products by ProductId + ExpirationDate
+        var receivedGroups = receiving.Products
+            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+            .ToList();
+
+        foreach (var group in receivedGroups)
         {
-            if (!incomingFallbackGroups.TryGetValue(group.Key, out var incList) || incList.Count == 0)
+            if (!incomingGroups.TryGetValue(group.Key, out var incList) || incList.Count == 0)
             {
                 continue;
             }
 
-            var itemsList = group.OrderBy(rp => rp.Id).ToList();
+            var receivedItems = group.OrderBy(rp => rp.Id).ToList();
 
             int incIdx = 0;
             int currentIncRemaining = incList[0].Quantity;
 
-            for (int rIdx = 0; rIdx < itemsList.Count; rIdx++)
+            for (int rIdx = 0; rIdx < receivedItems.Count; rIdx++)
             {
-                var rp = itemsList[rIdx];
+                var rp = receivedItems[rIdx];
                 var currentInc = incList[Math.Min(incIdx, incList.Count - 1)];
 
+                // Populate baseline metadata from matching incoming row
                 rp.ExpectedCBM = currentInc.CBM;
                 rp.ExpectedTotalWeight = currentInc.TotalWeight;
                 rp.ExpectedExpirationDate = currentInc.ExpirationDate;
@@ -673,6 +628,7 @@ public static class ReceivingEndpoint
                 int unallocatedPalletQty = rp.Quantity;
                 int allocatedExpectedForPallet = 0;
 
+                // Waterfall allocation across multiple planned line items
                 while (unallocatedPalletQty > 0 && incIdx < incList.Count)
                 {
                     int alloc = Math.Min(unallocatedPalletQty, currentIncRemaining);
@@ -690,18 +646,9 @@ public static class ReceivingEndpoint
                     }
                 }
 
+                // Assign allocated baseline expectation
                 rp.ExpectedQuantity = allocatedExpectedForPallet > 0 ? allocatedExpectedForPallet : rp.Quantity;
-
-                CleanDiscrepancyRemarksIfMatched(rp);
             }
-        }
-    }
-
-    private static void CleanDiscrepancyRemarksIfMatched(ReceivedProduct rp)
-    {
-        if (rp.Quantity == rp.ExpectedQuantity && !string.IsNullOrWhiteSpace(rp.Remarks))
-        {
-            rp.Remarks = Regex.Replace(rp.Remarks, @"\[DISCREPANCIES:[^\]]+\]\s*", string.Empty).Trim();
         }
     }
 
