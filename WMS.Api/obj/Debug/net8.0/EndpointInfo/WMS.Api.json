@@ -618,6 +618,31 @@
         }
       }
     },
+    "/incoming/{id}/short-close": {
+      "post": {
+        "tags": [
+          "Incomings"
+        ],
+        "summary": "Permanently close an incoming shipment with missing/lost items",
+        "operationId": "ShortCloseIncoming",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/incoming/{id}": {
       "get": {
         "tags": [
@@ -5745,7 +5770,8 @@
             "enum": [
               "UNRECEIVED",
               "PARTIAL",
-              "RECEIVED"
+              "RECEIVED",
+              "CLOSED_SHORT"
             ],
             "type": "string"
           },
@@ -5786,7 +5812,8 @@
               "PENDING",
               "RECEIVED",
               "PARTIAL",
-              "CANCELLED"
+              "CANCELLED",
+              "CLOSED_SHORT"
             ],
             "type": "string"
           },
@@ -5831,7 +5858,8 @@
               "PENDING",
               "RECEIVED",
               "PARTIAL",
-              "CANCELLED"
+              "CANCELLED",
+              "CLOSED_SHORT"
             ],
             "type": "string"
           },

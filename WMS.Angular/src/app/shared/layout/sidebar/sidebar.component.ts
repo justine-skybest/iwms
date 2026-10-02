@@ -7,7 +7,7 @@ import { LayoutService } from '../../../lib/services/layout.service';
 import { AuthService } from '../../../lib/services/auth.service';
 import { ArrowLeftRight, Download, FileCheck, AArrowUp, House, Inbox, LogsIcon, LucideAngularModule, Warehouse, ListOrdered, RotateCcwIcon, PackageSearch } from 'lucide-angular';
 import { UserResponseDto } from '../../../api/generated/models';
-import { LayersPlusIcon } from 'lucide-angular/src/icons';
+import { Grid3x3, LayersPlusIcon, User, UserPlus, Users } from 'lucide-angular/src/icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,12 +30,12 @@ export class SidebarComponent implements OnInit {
   ];
 
   masterDataItems = [
-    { path: '/products', label: 'Products', icon: 'products' },
-    { path: '/warehouses', label: 'Warehouses', icon: 'warehouses' },
-    { path: '/pallets', label: 'Pallets', icon: 'pallets' },
-    { path: '/suppliers', label: 'Suppliers', icon: 'suppliers' },
-    { path: '/customers', label: 'Customers', icon: 'customers' },
-    { path: '/users', label: 'System Users', icon: 'users' },
+    { path: '/products', label: 'Products', icon: PackageSearch },
+    { path: '/warehouses', label: 'Warehouses', icon: Warehouse },
+    { path: '/pallets', label: 'Pallets', icon: Grid3x3 },
+    { path: '/suppliers', label: 'Suppliers', icon: Users },
+    { path: '/customers', label: 'Customers', icon: Users },
+    { path: '/users', label: 'System Users', icon: Users },
   ];
 
   reportItems = [

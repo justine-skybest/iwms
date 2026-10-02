@@ -27,8 +27,8 @@ export class LoginComponent implements OnInit {
   returnUrl = '/home';
 
   stats = [
-    ['1,341', 'Pallets Tracked'],
-    ['5', 'Warehouses'],
+    ['700+', 'Pallets Tracked'],
+    ['2', 'Warehouses'],
     ['99.2%', 'Accuracy']
   ];
 

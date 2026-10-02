@@ -4,6 +4,7 @@ using WMS.Api.Dtos;
 using WMS.Api.Dtos.CheckIn;
 using WMS.Api.Entities;
 using WMS.Api.Mapping;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints;
 
@@ -180,10 +181,18 @@ public static class CheckInEndPoint
             return checkIn is null ? Results.NotFound() : Results.Ok(checkIn.ToCheckInDetailsDto());
         }).WithName(GetCheckInEndpoint);
 
-        group.MapPost("/", async (CreateCheckInDto newCheckIn, WMSContext dbContext) =>
+        group.MapPost("/", async (
+                    CreateCheckInDto newCheckIn,
+                    WMSContext dbContext,
+                    IAuditLogService auditLogService) =>
         {
             var bins = await dbContext.Bins
                 .Where(b => newCheckIn.BinIds.Contains(b.Id))
+                .Include(b => b.BinNames)
+                .Include(b => b.Level)
+                .Include(b => b.Bay)
+                .Include(b => b.Rack)
+                    .ThenInclude(r => r!.Warehouse)
                 .ToListAsync();
 
             if (bins.Count != newCheckIn.BinIds.Count)
@@ -192,7 +201,8 @@ public static class CheckInEndPoint
             }
 
             var receivedProducts = await dbContext.ReceivedProducts
-                    .Where(rp => newCheckIn.ReceivedProductIds!.Contains(rp.Id))
+                    .Include(rp => rp.Product)
+                    .Where(rp => newCheckIn.ReceivedProductIds!.Contains(rp.Id) || newCheckIn.PalletId == rp.PalletId)
                     .ToListAsync();
 
             if (newCheckIn.PalletId is null && receivedProducts.Count != newCheckIn.ReceivedProductIds!.Count)
@@ -203,6 +213,36 @@ public static class CheckInEndPoint
             CheckIn checkIn = newCheckIn.ToEntity(bins, receivedProducts);
             dbContext.CheckIns.Add(checkIn);
             await dbContext.SaveChangesAsync();
+
+            // --- ADD AUDIT LOG ENTRY ---
+            string binList = string.Join(", ", bins.Select(b => b.Id));
+            string typeDesc = newCheckIn.PalletId.HasValue ? $"Pallet ID {newCheckIn.PalletId}" : $"{receivedProducts.Count} individual item(s)";
+
+            await auditLogService.LogAsync(
+                category: nameof(CheckIn),
+                action: "Created",
+                description: $"Checked in {typeDesc} to Bin(s) [{binList}] via '{newCheckIn.CheckInType}' process.",
+                details: new
+                {
+                    CheckInId = checkIn.Id,
+                    newCheckIn.CheckInType,
+                    PalletId = newCheckIn.PalletId ?? 0,
+                    TargetBins = bins.Select(b => new
+                    {
+                        BinLocation = $"{b.Rack!.Name} / Bay {b.Bay!.BayNumber} / Level {b.Level!.LevelNumber} / {b.BinNames!.BinName}"
+                    }).ToList(),
+                    TotalItemsCheckedIn = receivedProducts.Count,
+                    newCheckIn.CheckInDate,
+                    Notes = string.IsNullOrWhiteSpace(newCheckIn.Notes) ? "—" : newCheckIn.Notes,
+                    Items = receivedProducts.Select(rp => new
+                    {
+                        rp.Id,
+                        ProductName = rp.Product?.Name ?? $"Product #{rp.ProductId}",
+                        rp.Quantity,
+                        rp.LotNumber
+                    })
+                }
+            );
 
             return Results.CreatedAtRoute(GetCheckInEndpoint, new { id = checkIn.Id }, checkIn.ToCheckInDetailsDto());
         });
