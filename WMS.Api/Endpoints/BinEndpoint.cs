@@ -452,10 +452,16 @@ public static class BinEndpoint
         // -----------------------------------------------------------------------------
         // Stock Query
         // -----------------------------------------------------------------------------
-        group.MapGet("/stock/id/{BinId:int}", async (int BinId, WMSContext dbContext) =>
+        group.MapGet("/stock/id/{BinId:int}", async (
+            int BinId,
+            WMSContext dbContext,
+            CancellationToken cancellationToken) =>
         {
-            var bin = await dbContext.Bins.FindAsync(BinId);
-            if (bin == null)
+            var binExists = await dbContext.Bins
+                .AsNoTracking()
+                .AnyAsync(b => b.Id == BinId, cancellationToken);
+
+            if (!binExists)
                 return Results.NotFound($"Bin with ID#{BinId} not found.");
 
             var checkIns = await dbContext.CheckIns
@@ -471,11 +477,12 @@ public static class BinEndpoint
                     .ThenInclude(p => p!.ReceivedProducts!)
                         .ThenInclude(rp => rp.Receiving)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             if (!checkIns.Any())
                 return Results.Ok(new List<DisplayCheckInProductsDto>());
 
+            // Collect all relevant ReceivedProduct IDs across direct and palletized items
             var receivedProductIds = checkIns
                 .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
                     ? ci.Pallet.ReceivedProducts
@@ -484,10 +491,12 @@ public static class BinEndpoint
                 .Distinct()
                 .ToList();
 
+            // Map total picked quantities per ReceivedProductId
             var pickedMap = await dbContext.PickedProducts
                 .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
                 .GroupBy(pp => pp.ReceivedProductId)
-                .ToDictionaryAsync(g => g.Key, g => g.Sum(pp => pp.QuantityPicked));
+                .Select(g => new { ReceivedProductId = g.Key, PickedQty = g.Sum(pp => pp.QuantityPicked) })
+                .ToDictionaryAsync(x => x.ReceivedProductId, x => x.PickedQty, cancellationToken);
 
             var result = checkIns.Select(ci =>
             {
@@ -498,19 +507,21 @@ public static class BinEndpoint
                 var mappedProducts = targetProducts
                     .Select(rp =>
                     {
+                        // Fix: Ensure baseQty is a non-nullable int
+                        var baseQty = rp.ExpectedQuantity is > 0 ? rp.ExpectedQuantity.Value : rp.Quantity;
                         var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
-                        var availableQty = rp.Quantity - pickedQty;
+                        var availableQty = baseQty - pickedQty;
 
                         return new CheckedInProductSumamryDto(
                             id: rp.Id,
-                            Name: rp.Product?.Name ?? "",
-                            TypeOfPackage: rp.Product?.TypeOfPackage ?? "",
+                            Name: rp.Product?.Name ?? rp.ExpectedProductName ?? "",
+                            TypeOfPackage: rp.TypeOfPackage ?? rp.Product?.TypeOfPackage ?? "",
                             Measurement: rp.Product?.Measurement ?? "",
                             Weight: rp.Product?.Weight ?? 0,
-                            Quantity: availableQty,
+                            Quantity: availableQty, // Now cleanly converts non-nullable int to decimal/int
                             CBM: rp.CBM,
                             TotalWeight: rp.TotalWeight,
-                            ExpirationDate: rp.ExpirationDate,
+                            ExpirationDate: rp.ExpirationDate ?? rp.ExpectedExpirationDate,
                             Remarks: rp.Remarks,
                             ContainerName: rp.ContainerName,
                             PalletId: rp.PalletId?.ToString() ?? ci.PalletId?.ToString(),
@@ -530,7 +541,7 @@ public static class BinEndpoint
                     Notes: ci.Notes
                 );
             })
-            .Where(dto => dto.ReceivedProducts.Any())
+            .Where(dto => dto.ReceivedProducts.Any()) // ❌ Strictly exclude check-ins with 0 remaining products
             .ToList();
 
             return Results.Ok(result);

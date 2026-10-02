@@ -2026,11 +2026,14 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_8",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_9",
     "RelativePath": "pallet/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -2058,13 +2061,16 @@
         "StatusCode": 400
       }
     ],
+    "Tags": [
+      "Pallet"
+    ],
     "EndpointName": "CreatePallet",
     "Description": "Creates a new pallet record in the system and returns its details.",
     "Summary": "Create a new pallet"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_5",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_6",
     "RelativePath": "pallet/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2083,11 +2089,14 @@
         "StatusCode": 200
       }
     ],
+    "Tags": [
+      "Pallet"
+    ],
     "EndpointName": "GetPallet"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_10",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_11",
     "RelativePath": "pallet/{id}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -2123,13 +2132,16 @@
         "StatusCode": 400
       }
     ],
+    "Tags": [
+      "Pallet"
+    ],
     "EndpointName": "UpdatePallet",
     "Description": "Updates all details of an existing pallet by its ID.",
     "Summary": "Update an existing pallet"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_11",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_12",
     "RelativePath": "pallet/{id}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -2147,11 +2159,14 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_9",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_10",
     "RelativePath": "pallet/autocreate/{WarehouseId:int}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -2169,11 +2184,14 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_7",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_8",
     "RelativePath": "pallet/number/{WarehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2193,11 +2211,14 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_6",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_7",
     "RelativePath": "pallet/QRCode/{palletHashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2220,11 +2241,51 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_3",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_2",
+    "RelativePath": "pallet/stock/pallet/{PalletId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PalletId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.DisplayCheckInProductsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Pallet"
+    ],
+    "EndpointName": "GetPalletStockById",
+    "Description": "Retrieves active check-ins for a given Pallet ID, calculating net unpicked stock across transfers.",
+    "Summary": "Get available stock for a specific pallet by ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_4",
     "RelativePath": "pallet/ToBeCheckIn/{WarehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2244,6 +2305,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
@@ -2290,11 +2354,14 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_4",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_5",
     "RelativePath": "pallet/v2/ToBeCheckIn/{WarehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2336,11 +2403,14 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapPalletEndpoints\u003Eb__0_2",
+    "Method": "\u003CMapPalletEndpoints\u003Eb__0_3",
     "RelativePath": "pallet/Warehouse/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2360,6 +2430,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Pallet"
     ]
   },
   {

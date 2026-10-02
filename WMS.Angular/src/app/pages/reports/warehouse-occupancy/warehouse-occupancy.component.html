@@ -274,10 +274,10 @@
                 <lucide-icon [img]="CalendarIcon" [size]="12"></lucide-icon>
                 <span>{{ formatDate(checkIn.checkInDate) }}</span>
               </div>
-              <div class="flex items-center gap-1 text-slate-400">
+              <!-- <div class="flex items-center gap-1 text-slate-400">
                 <lucide-icon [img]="HashIcon" [size]="12"></lucide-icon>
                 <span>Pallet: {{ checkIn.palletId ? ('#' + checkIn.palletId) : 'N/A' }}</span>
-              </div>
+              </div> -->
             </div>
 
             <div *ngIf="checkIn.notes" class="text-[11px] text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800">
