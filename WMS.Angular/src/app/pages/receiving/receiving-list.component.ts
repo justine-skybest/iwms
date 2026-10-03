@@ -441,4 +441,8 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
 
     return summary;
   }
+
+  getTotalReceivedQuantity(receiving: ReceivingDetailsDto): number {
+    return receiving.products?.reduce((sum, p) => sum + (p.quantity ?? 0), 0) ?? 0;
+  }
 }
