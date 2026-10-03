@@ -72,7 +72,7 @@
               "RelativeDocumentMoniker": "Mapping\\IncomingMapping.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Mapping\\IncomingMapping.cs",
               "RelativeToolTip": "Mapping\\IncomingMapping.cs",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAkwKYAAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAALsAAAAAAAAAAAAAAMIAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-03T07:21:01.628Z",
               "EditorCaption": ""
@@ -87,8 +87,7 @@
               "RelativeToolTip": "Endpoints\\IncomingEndpoint.cs",
               "ViewState": "AgIAAE4AAAAAAAAAAAAUwFYAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-03T07:20:32.84Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-03T07:20:32.84Z"
             },
             {
               "$type": "Document",
@@ -100,8 +99,7 @@
               "RelativeToolTip": "Endpoints\\ReceivingEndpoint.cs",
               "ViewState": "AgIAAFQAAAAAAAAAAAAYwFkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-03T04:15:16.332Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-03T04:15:16.332Z"
             },
             {
               "$type": "Document",
@@ -137,8 +135,7 @@
               "RelativeToolTip": "docker-compose.yml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
-              "WhenOpened": "2026-10-02T13:01:01.061Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-02T13:01:01.061Z"
             },
             {
               "$type": "Document",
@@ -162,8 +159,7 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAnwBsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-02T12:55:54.36Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-02T12:55:54.36Z"
             },
             {
               "$type": "Document",

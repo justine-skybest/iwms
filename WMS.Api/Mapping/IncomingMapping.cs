@@ -36,7 +36,7 @@ namespace WMS.Api.Mapping
         {
             var allReceived = receivedProductsList ?? new List<ReceivedProduct>();
 
-            // Create a local pool so we can deduct quantities cleanly without mutating original entities
+            // Create a local pool to deduct quantities without mutating EF entities
             var unallocatedPool = allReceived
                 .Select(rp => new LocalReceivedPoolItem
                 {
@@ -73,7 +73,7 @@ namespace WMS.Api.Mapping
                         );
                     }
 
-                    // Priority 3: Fallback match by ProductId alone (when exp date was added/changed during receiving)
+                    // Priority 3: Fallback match by ProductId alone
                     if (allocatedToThisLine < p.Quantity)
                     {
                         allocatedToThisLine += DeductFromPool(
@@ -91,6 +91,25 @@ namespace WMS.Api.Mapping
 
                     int remaining = Math.Max(0, p.Quantity - allocatedToThisLine);
 
+                    // 🛠️ FIX: Dynamically calculate line item status based on allocated quantity
+                    IncomingProductStatus dynamicStatus;
+                    if (p.Status == IncomingProductStatus.CLOSED_SHORT)
+                    {
+                        dynamicStatus = IncomingProductStatus.CLOSED_SHORT;
+                    }
+                    else if (allocatedToThisLine >= p.Quantity && p.Quantity > 0)
+                    {
+                        dynamicStatus = IncomingProductStatus.RECEIVED;
+                    }
+                    else if (allocatedToThisLine > 0)
+                    {
+                        dynamicStatus = IncomingProductStatus.PARTIAL;
+                    }
+                    else
+                    {
+                        dynamicStatus = IncomingProductStatus.UNRECEIVED;
+                    }
+
                     productDtos.Add(new IncomingProductResponseDto
                     {
                         Id = p.Id,
@@ -107,11 +126,30 @@ namespace WMS.Api.Mapping
                         TypeOfPackage = p.Product?.TypeOfPackage,
                         ExpirationDate = p.ExpirationDate,
                         Supplier = p.Supplier,
-                        Status = p.Status,
+                        Status = dynamicStatus, // ✅ Correctly returns RECEIVED when ReceivedQuantity == Quantity
                         DateAdded = p.DateAdded,
                         Remarks = p.Remarks
                     });
                 }
+            }
+
+            // 🛠️ FIX: Dynamically calculate overall incoming status
+            IncomingStatus dynamicOverallStatus;
+            if (productDtos.Count > 0 && productDtos.All(p => p.Status == IncomingProductStatus.RECEIVED))
+            {
+                dynamicOverallStatus = IncomingStatus.RECEIVED;
+            }
+            else if (productDtos.Count > 0 && productDtos.All(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.CLOSED_SHORT))
+            {
+                dynamicOverallStatus = IncomingStatus.CLOSED_SHORT;
+            }
+            else if (productDtos.Any(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.PARTIAL))
+            {
+                dynamicOverallStatus = IncomingStatus.PARTIAL;
+            }
+            else
+            {
+                dynamicOverallStatus = entity.Status;
             }
 
             return new IncomingResponseDto
@@ -121,7 +159,7 @@ namespace WMS.Api.Mapping
                 WarehouseName = entity.Warehouse?.Name,
                 Shipper = entity.Shipper,
                 Consignee = entity.Consignee,
-                Status = entity.Status,
+                Status = dynamicOverallStatus, // ✅ Reflects true calculated status
                 Products = productDtos
             };
         }
