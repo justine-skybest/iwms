@@ -574,8 +574,52 @@ public static class ReceivingEndpoint
 
             if (incoming != null)
             {
-                RecalculateExpectedQuantities(receiving, incoming);
+                RecalculateExpectedQuantities(receiving, incoming, dbContext);
             }
+        }
+    }
+
+    private static void RecalculateExpectedQuantities(
+    Receiving receiving,
+    Incoming incoming,
+    WMSContext dbContext)
+    {
+        if (receiving.Products == null || receiving.Products.Count == 0 || incoming.Products == null)
+            return;
+
+        // 1. Fetch all receiving receipts created BEFORE this current receiving receipt
+        var priorReceivings = dbContext.Receivings
+            .AsNoTracking()
+            .Include(r => r.Products)
+            .Where(r => r.IncomingId == incoming.Id && r.Id < receiving.Id)
+            .OrderBy(r => r.Id)
+            .ToList();
+
+        // 2. Sum up total quantities already received in prior receipts
+        var priorReceivedPool = priorReceivings
+            .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
+            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+            .ToDictionary(
+                g => g.Key,
+                g => g.Sum(p => p.Quantity),
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        // 3. Determine remaining expected quantity for each product
+        foreach (var rp in receiving.Products)
+        {
+            string key = $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}";
+
+            var incomingProduct = incoming.Products
+                .FirstOrDefault(ip => ip.ProductId == rp.ProductId && FormatDateKey(ip.ExpirationDate) == FormatDateKey(rp.ExpirationDate));
+
+            int totalOriginalExpected = incomingProduct?.Quantity ?? rp.Quantity;
+            int priorReceivedQty = priorReceivedPool.TryGetValue(key, out var qty) ? qty : 0;
+
+            // Remaining expected for THIS receiving session
+            int remainingExpected = Math.Max(0, totalOriginalExpected - priorReceivedQty);
+
+            rp.ExpectedQuantity = remainingExpected;
         }
     }
 
