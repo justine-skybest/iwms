@@ -485,7 +485,14 @@ public static class ReceivingEndpoint
     // -----------------------------------------------------------------------------
     // DATE KEY NORMALIZER HELPER
     // -----------------------------------------------------------------------------
-    private static string FormatDateKey(DateOnly? date) => date?.ToString("yyyy-MM-dd") ?? "NONE";
+    // Unified helper accepting object? to handle DateOnly?, DateTime?, and null seamlessly
+    private static string FormatDateKey(object? date) => date switch
+    {
+        DateOnly d => d.ToString("yyyy-MM-dd"),
+        DateTime dt => dt.ToString("yyyy-MM-dd"),
+        string s when DateTime.TryParse(s, out var dt) => dt.ToString("yyyy-MM-dd"),
+        _ => "NONE"
+    };
 
     // -----------------------------------------------------------------------------
     // WATERFALL EXPECTED QUANTITY ALLOCATION HELPER (PRESERVES INDIVIDUAL LINE BASELINES)
@@ -580,14 +587,14 @@ public static class ReceivingEndpoint
     }
 
     private static void RecalculateExpectedQuantities(
-    Receiving receiving,
-    Incoming incoming,
-    WMSContext dbContext)
+       Receiving receiving,
+       Incoming incoming,
+       WMSContext dbContext)
     {
         if (receiving.Products == null || receiving.Products.Count == 0 || incoming.Products == null)
             return;
 
-        // 1. Fetch all receiving receipts created BEFORE this current receiving receipt
+        // 1. Fetch all prior receiving receipts for this incoming shipment
         var priorReceivings = dbContext.Receivings
             .AsNoTracking()
             .Include(r => r.Products)
@@ -595,32 +602,117 @@ public static class ReceivingEndpoint
             .OrderBy(r => r.Id)
             .ToList();
 
-        // 2. Sum up total quantities already received in prior receipts
-        var priorReceivedPool = priorReceivings
+        var priorReceivedProducts = priorReceivings
             .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
-            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
-            .ToDictionary(
-                g => g.Key,
-                g => g.Sum(p => p.Quantity),
-                StringComparer.OrdinalIgnoreCase
+            .ToList();
+
+        // 2. Build an expected pool from ALL Incoming product lines (including duplicates)
+        var expectedPool = incoming.Products
+            .Select(ip => new LocalExpectedPoolItem
+            {
+                IncomingProductId = ip.Id,
+                ProductId = ip.ProductId,
+                ExpirationDate = ip.ExpirationDate,
+                RemainingExpected = ip.Quantity
+            })
+            .ToList();
+
+        // 3. Deduct prior received quantities sequentially across the pool
+        foreach (var priorRp in priorReceivedProducts)
+        {
+            DeductFromExpectedPool(
+                expectedPool,
+                priorRp.IncomingProductId,
+                priorRp.ProductId,
+                priorRp.ExpirationDate,
+                priorRp.Quantity
+            );
+        }
+
+        // 4. Assign ExpectedQuantity for each line in the CURRENT receiving receipt
+        foreach (var currentRp in receiving.Products)
+        {
+            int allocatedExpected = DeductFromExpectedPool(
+                expectedPool,
+                currentRp.IncomingProductId,
+                currentRp.ProductId,
+                currentRp.ExpirationDate,
+                currentRp.Quantity
             );
 
-        // 3. Determine remaining expected quantity for each product
-        foreach (var rp in receiving.Products)
-        {
-            string key = $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}";
-
-            var incomingProduct = incoming.Products
-                .FirstOrDefault(ip => ip.ProductId == rp.ProductId && FormatDateKey(ip.ExpirationDate) == FormatDateKey(rp.ExpirationDate));
-
-            int totalOriginalExpected = incomingProduct?.Quantity ?? rp.Quantity;
-            int priorReceivedQty = priorReceivedPool.TryGetValue(key, out var qty) ? qty : 0;
-
-            // Remaining expected for THIS receiving session
-            int remainingExpected = Math.Max(0, totalOriginalExpected - priorReceivedQty);
-
-            rp.ExpectedQuantity = remainingExpected;
+            currentRp.ExpectedQuantity = allocatedExpected;
         }
+    }
+
+    private class LocalExpectedPoolItem
+    {
+        public int IncomingProductId { get; set; }
+        public int ProductId { get; set; }
+        public object? ExpirationDate { get; set; }
+        public int RemainingExpected { get; set; }
+    }
+
+    private static int DeductFromExpectedPool(
+        List<LocalExpectedPoolItem> pool,
+        int? incomingProductId,
+        int productId,
+        object? expDate,
+        int quantityToDeduct)
+    {
+        if (quantityToDeduct <= 0) return 0;
+
+        int totalAllocated = 0;
+
+        // Step A: Direct match by IncomingProductId
+        if (incomingProductId.HasValue)
+        {
+            var match = pool.FirstOrDefault(p => p.IncomingProductId == incomingProductId.Value && p.RemainingExpected > 0);
+            if (match != null)
+            {
+                int take = Math.Min(match.RemainingExpected, quantityToDeduct);
+                match.RemainingExpected -= take;
+                totalAllocated += take;
+            }
+        }
+
+        // Step B: Match across ALL duplicate lines with ProductId + ExpirationDate
+        if (totalAllocated < quantityToDeduct)
+        {
+            string targetExp = FormatDateKey(expDate);
+            var matchingLines = pool
+                .Where(p => p.ProductId == productId && FormatDateKey(p.ExpirationDate) == targetExp && p.RemainingExpected > 0)
+                .ToList();
+
+            foreach (var match in matchingLines)
+            {
+                int needed = quantityToDeduct - totalAllocated;
+                if (needed <= 0) break;
+
+                int take = Math.Min(match.RemainingExpected, needed);
+                match.RemainingExpected -= take;
+                totalAllocated += take;
+            }
+        }
+
+        // Step C: Fallback across ALL duplicate lines with ProductId alone (handles null/added exp dates)
+        if (totalAllocated < quantityToDeduct)
+        {
+            var matchingLines = pool
+                .Where(p => p.ProductId == productId && p.RemainingExpected > 0)
+                .ToList();
+
+            foreach (var match in matchingLines)
+            {
+                int needed = quantityToDeduct - totalAllocated;
+                if (needed <= 0) break;
+
+                int take = Math.Min(match.RemainingExpected, needed);
+                match.RemainingExpected -= take;
+                totalAllocated += take;
+            }
+        }
+
+        return totalAllocated;
     }
 
     private static async Task<string> GenerateReceivingSeriesAsync(
