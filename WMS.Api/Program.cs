@@ -10,6 +10,7 @@ using WMS.Api.Hubs;
 using WMS.Api.Services;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Caching.Hybrid;
 
 DotNetEnv.Env.Load();
 
@@ -17,6 +18,29 @@ System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Inst
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
+
+// 1. Register Redis as the secondary (L2) distributed cache provider
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "WMS_";
+});
+
+// 2. Register HybridCache (automatically links to L1 In-Memory + L2 Redis)
+#pragma warning disable EXTEXP0018 // Experimental API in earlier .NET releases
+builder.Services.AddHybridCache(options =>
+{
+    // Global maximum payload size limit (Default: 1MB)
+    options.MaximumPayloadBytes = 1024 * 1024 * 10; // 10 MB
+
+    // Default expiration settings across endpoints
+    options.DefaultEntryOptions = new HybridCacheEntryOptions
+    {
+        Expiration = TimeSpan.FromMinutes(10),        // L2 Redis TTL
+        LocalCacheExpiration = TimeSpan.FromSeconds(5) // L1 Memory TTL (Keep short for fast invalidation)
+    };
+});
+#pragma warning restore EXTEXP0018
 
 // 1. Minimal API JSON Serialization
 builder.Services.ConfigureHttpJsonOptions(options =>

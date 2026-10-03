@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, ChangeDetectorRef, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Input, Output, inject, ChangeDetectorRef, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../../api/generated/api';
@@ -17,6 +17,19 @@ import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, Qr
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { ConfirmDialogComponent } from '../../../shared/components/dialog/confirm-dialog.component';
+
+// Interface defining the exact state to preserve
+export interface ReceivingFormDraft {
+  newReceiving: CreateReceivingDto;
+  stagedItems: StagedProductItem[];
+  selectedIncoming: IncomingResponseDto | null;
+  availableIncomingProducts: SelectableIncomingProduct[];
+  incomingSearchQuery: string;
+  savedAt: string;
+}
 
 export type DiscrepancyCategory = 
   | 'QUANTITY' 
@@ -107,7 +120,7 @@ export interface PalletLabelPrintData {
 @Component({
   selector: 'app-receiving-create',
   standalone: true,
-  imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent],
+  imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent, ConfirmDialogComponent],
   templateUrl: './receiving-create.component.html',
 })
 export class ReceivingCreateComponent {
@@ -140,6 +153,14 @@ export class ReceivingCreateComponent {
 
   isSaving = false;
   validationError = '';
+
+  isConfirmCloseOpen = false;
+
+  private readonly DRAFT_STORAGE_KEY = 'warehouse_receiving_draft_v1';
+  private draftSave$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
+  
+  hasRestoredDraft = false;
 
   newReceiving: CreateReceivingDto = this.getInitialForm();
   stagedItems: StagedProductItem[] = [];
@@ -176,6 +197,85 @@ export class ReceivingCreateComponent {
   generatedPalletLabels: PalletLabelPrintData[] = [];
 
   private incomingSearchDebounce: any;
+
+  ngOnInit(): void {
+    // 1. Setup debounced auto-save (400ms prevents UI lag during fast typing or barcode scanning)
+    console.log('Setting up draft auto-save with debounce...');
+    this.draftSave$
+      .pipe(
+        debounceTime(400),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.saveDraftToStorage();
+      });
+
+    // 2. Restore any saved draft on load
+    this.restoreDraftFromStorage();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Call this whenever form fields, staged items, or selections change
+   */
+  triggerDraftSave(): void {
+    this.draftSave$.next();
+  }
+
+  private saveDraftToStorage(): void {
+    // Only save if there is actual progress (staged items or modified header fields)
+    if (!this.selectedIncoming && this.stagedItems.length === 0 && !this.newReceiving.reference) {
+      return;
+    }
+
+    const draft: ReceivingFormDraft = {
+      newReceiving: this.newReceiving,
+      stagedItems: this.stagedItems,
+      selectedIncoming: this.selectedIncoming,
+      availableIncomingProducts: this.availableIncomingProducts,
+      incomingSearchQuery: this.incomingSearchQuery,
+      savedAt: new Date().toISOString()
+    };
+
+    try {
+      localStorage.setItem(this.DRAFT_STORAGE_KEY, JSON.stringify(draft));
+    } catch (err) {
+      console.error('Failed to save receiving draft to localStorage:', err);
+    }
+  }
+
+  private restoreDraftFromStorage(): void {
+    const rawData = localStorage.getItem(this.DRAFT_STORAGE_KEY);
+    if (!rawData) return;
+
+    try {
+      const draft: ReceivingFormDraft = JSON.parse(rawData);
+      
+      if (draft) {
+        this.newReceiving = draft.newReceiving || this.getInitialForm();
+        this.stagedItems = draft.stagedItems || [];
+        this.selectedIncoming = draft.selectedIncoming || null;
+        this.availableIncomingProducts = draft.availableIncomingProducts || [];
+        this.incomingSearchQuery = draft.incomingSearchQuery || '';
+        this.hasRestoredDraft = true;
+
+        this.toastService.info('Restored unsaved receiving draft.');
+        this.cd.markForCheck();
+      }
+    } catch (err) {
+      console.error('Failed to parse receiving draft from storage:', err);
+      this.clearDraft();
+    }
+  }
+
+  public clearDraft(): void {
+    localStorage.removeItem(this.DRAFT_STORAGE_KEY);
+    this.hasRestoredDraft = false;
+  }
 
   @HostListener('document:click')
   onDocumentClick(): void {
@@ -287,6 +387,7 @@ selectIncoming(incoming: IncomingResponseDto): void {
     });
 
   this.syncStagedItemsFromSelection();
+  this.triggerDraftSave();
 }
 
   toggleProductDropdown(event?: Event): void {
@@ -369,6 +470,7 @@ selectIncoming(incoming: IncomingResponseDto): void {
 
   this.stagedItems = updatedStagedItems;
   this.cd.markForCheck();
+  this.triggerDraftSave();
 }
 
   clearIncomingSelection(): void {
@@ -381,6 +483,7 @@ selectIncoming(incoming: IncomingResponseDto): void {
     this.productFilterQuery = '';
     this.stagedItems = [];
     this.cd.markForCheck();
+    this.triggerDraftSave();
   }
 
   toggleItemMatch(item: StagedProductItem): void {
@@ -397,12 +500,14 @@ selectIncoming(incoming: IncomingResponseDto): void {
       this.autoDetectDiscrepancies(item);
     }
     this.cd.markForCheck();
+    this.triggerDraftSave();
   }
 
   onFieldChange(item: StagedProductItem): void {
     if (!item.isMatched) {
       this.autoDetectDiscrepancies(item);
     }
+    this.triggerDraftSave();
     this.cd.markForCheck();
   }
 
@@ -566,6 +671,7 @@ selectIncoming(incoming: IncomingResponseDto): void {
     this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
     this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
     this.closePalletModal();
+    this.triggerDraftSave();
   }
 
   removeProductItem(index: number): void {
@@ -576,6 +682,8 @@ selectIncoming(incoming: IncomingResponseDto): void {
       const target = this.availableIncomingProducts.find(p => p.productId === removedItem.productId);
       if (target) target.selected = false;
     }
+
+    this.triggerDraftSave();
 
     this.cd.markForCheck();
   }
@@ -682,6 +790,9 @@ const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item
     try {
       const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
       this.toastService.success(`Receiving ${payload.series} successfully submitted`);
+      
+      this.clearDraft();
+
       this.created.emit();
 
       const createdId = createdReceiving?.id;
@@ -700,6 +811,14 @@ const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item
       this.isSaving = false;
       this.cd.markForCheck();
     }
+  }
+
+  discardDraft(): void {
+    this.clearDraft();
+    this.newReceiving = this.getInitialForm();
+    this.stagedItems = [];
+    this.clearIncomingSelection();
+    this.toastService.info('Draft discarded.');
   }
 
   private async preparePalletLabelsForPrinting(receivingId: number): Promise<void> {
@@ -874,7 +993,61 @@ const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item
     this.onClose();
   }
 
+  /**
+ * Checks if the user has entered any data into the form.
+ */
+private hasUnsavedChanges(): boolean {
+  if (this.selectedIncoming !== null) return true;
+  if (this.stagedItems && this.stagedItems.length > 0) return true;
+
+  const current = this.newReceiving;
+  const initial = this.getInitialForm();
+
+  return !!(
+    (current.reference && current.reference.trim() !== '') ||
+    (current.driverName && current.driverName.trim() !== '') ||
+    (current.plateNumber && current.plateNumber.trim() !== '') ||
+    (current.transportCompany && current.transportCompany.trim() !== '') ||
+    (current.shipper && current.shipper.trim() !== '') ||
+    (current.consignee && current.consignee.trim() !== '') ||
+    (current.checkerName && current.checkerName.trim() !== '') ||
+    (current.clientRepresentative && current.clientRepresentative.trim() !== '')
+  );
+}
+
+/**
+   * Called when the user clicks '✕', Backdrop, or 'Cancel'
+   */
   onClose(): void {
+    if (this.hasUnsavedChanges()) {
+      this.isConfirmCloseOpen = true;
+      this.cd.markForCheck();
+    } else {
+      this.forceCloseAndReset();
+    }
+  }
+
+  /**
+   * Triggered when the user confirms discarding changes in the dialog
+   */
+  onConfirmClose(): void {
+    this.isConfirmCloseOpen = false;
+    this.forceCloseAndReset();
+  }
+
+  /**
+   * Triggered when the user decides to stay and keep editing
+   */
+  onCancelClose(): void {
+    this.isConfirmCloseOpen = false;
+    this.cd.markForCheck();
+  }
+
+  /**
+   * Clears storage and resets form state completely
+   */
+  private forceCloseAndReset(): void {
+    this.clearDraft();
     this.newReceiving = this.getInitialForm();
     this.stagedItems = [];
     this.clearIncomingSelection();
@@ -883,5 +1056,6 @@ const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item
     this.generatedPalletLabels = [];
     this.validationError = '';
     this.close.emit();
+    this.cd.markForCheck();
   }
 }
