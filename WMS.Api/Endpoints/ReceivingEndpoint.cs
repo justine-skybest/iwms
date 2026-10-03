@@ -209,6 +209,7 @@ public static class ReceivingEndpoint
 
             // 2. ALWAYS CREATE A DISTINCT NEW RECEIVING RECORD
             var receiving = newReceivingDto.ToEntity();
+            receiving.Series = await GenerateReceivingSeriesAsync(newReceivingDto.IncomingId, dbContext, cancellationToken);
             dbContext.Receivings.Add(receiving);
             await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -576,5 +577,27 @@ public static class ReceivingEndpoint
                 RecalculateExpectedQuantities(receiving, incoming);
             }
         }
+    }
+
+    private static async Task<string> GenerateReceivingSeriesAsync(
+        int incomingId,
+        WMSContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        var currentYearSuffix = DateTime.Now.ToString("yy");
+
+        // ✅ Corrected: Pass "D5" inside ToString()
+        var formattedId = incomingId.ToString("D5");
+        var baseSeries = $"SLCWH-INC{formattedId}-{currentYearSuffix}";
+
+        // Count existing receiving receipts for this incoming shipment
+        var existingCount = await dbContext.Receivings
+            .CountAsync(r => r.IncomingId == incomingId, cancellationToken);
+
+        // First receipt: "SLCWH-INC00012-26"
+        // Subsequent receipts: "SLCWH-INC00012-26-R2", "SLCWH-INC00012-26-R3"
+        return existingCount == 0
+            ? baseSeries
+            : $"{baseSeries}-R{existingCount + 1}";
     }
 }

@@ -23,10 +23,6 @@
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:wms.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\incomingendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\incomingendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
@@ -68,7 +64,7 @@
               "RelativeDocumentMoniker": "Endpoints\\ReceivingEndpoint.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\ReceivingEndpoint.cs",
               "RelativeToolTip": "Endpoints\\ReceivingEndpoint.cs",
-              "ViewState": "AgIAAEIBAAAAAAAAAAAAAE8BAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEMCAAAAAAAAAAAQwEsCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-03T04:15:16.332Z",
               "EditorCaption": ""
@@ -83,8 +79,7 @@
               "RelativeToolTip": "Entities\\ReceivedProduct.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAxwAgAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-03T04:10:13.747Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-03T04:10:13.747Z"
             },
             {
               "$type": "Document",
@@ -100,7 +95,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "docker-compose.yml",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\docker-compose.yml",
               "RelativeDocumentMoniker": "docker-compose.yml",
@@ -112,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -136,18 +131,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "IncomingEndpoint.cs",
-              "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\IncomingEndpoint.cs",
-              "RelativeDocumentMoniker": "Endpoints\\IncomingEndpoint.cs",
-              "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\IncomingEndpoint.cs",
-              "RelativeToolTip": "Endpoints\\IncomingEndpoint.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-02T12:46:14.093Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
               "Title": "PalletEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\PalletEndpoint.cs",
@@ -156,12 +139,11 @@
               "RelativeToolTip": "Endpoints\\PalletEndpoint.cs",
               "ViewState": "AgIAAIoAAAAAAAAAAAAnwJUAAABfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-02T07:12:44.132Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-02T07:12:44.132Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "BinEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\BinEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\BinEndpoint.cs",
@@ -173,7 +155,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "InventoryEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\InventoryEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\InventoryEndpoint.cs",
