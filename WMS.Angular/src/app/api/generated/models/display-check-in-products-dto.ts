@@ -3,7 +3,7 @@
 
 import type { CheckedInProductSumamryDto } from '../models/checked-in-product-sumamry-dto';
 export interface DisplayCheckInProductsDto {
-  checkInDate?: string;
+  checkInDate?: string | null;
   checkInType?: string | null;
   id?: number;
   notes?: string | null;

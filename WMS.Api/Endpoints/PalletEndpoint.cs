@@ -85,20 +85,26 @@ public static class PalletEndpoint
         .Produces<PaginatedResponse<PalletSummaryDto>>(StatusCodes.Status200OK);
 
         // -----------------------------------------------------------------------------
-        // Get Available Stock by Pallet ID
+        // Get Available Stock by Pallet ID (Supports Unchecked-In Pallets)
         // -----------------------------------------------------------------------------
         group.MapGet("/stock/pallet/{PalletId:int}", async (
             int PalletId,
             WMSContext dbContext,
             CancellationToken cancellationToken) =>
         {
-            var palletExists = await dbContext.Pallets
+            // 1. Fetch Pallet entity directly with received products
+            var pallet = await dbContext.Pallets
+                .Include(p => p.ReceivedProducts!)
+                    .ThenInclude(rp => rp.Product)
+                .Include(p => p.ReceivedProducts!)
+                    .ThenInclude(rp => rp.Receiving)
                 .AsNoTracking()
-                .AnyAsync(p => p.Id == PalletId, cancellationToken);
+                .FirstOrDefaultAsync(p => p.Id == PalletId, cancellationToken);
 
-            if (!palletExists)
+            if (pallet is null)
                 return Results.NotFound($"Pallet with ID#{PalletId} not found.");
 
+            // 2. Fetch any active CheckIns for this Pallet ID
             var checkIns = await dbContext.CheckIns
                 .Where(ci => ci.PalletId == PalletId)
                 .Include(ci => ci.ReceivedProducts)
@@ -114,75 +120,116 @@ public static class PalletEndpoint
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
 
-            if (!checkIns.Any())
-                return Results.Ok(new List<DisplayCheckInProductsDto>());
+            // 3. Determine target products pool (Check-In vs Unchecked-In Staging)
+            List<ReceivedProduct> targetProducts;
 
-            // Collect all relevant ReceivedProduct IDs across direct and palletized items
-            var receivedProductIds = checkIns
-                .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
-                    ? ci.Pallet.ReceivedProducts
-                    : ci.ReceivedProducts)
-                .Select(rp => rp.Id)
-                .Distinct()
-                .ToList();
+            if (checkIns.Any())
+            {
+                targetProducts = checkIns
+                    .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
+                        ? ci.Pallet.ReceivedProducts
+                        : ci.ReceivedProducts)
+                    .DistinctBy(rp => rp.Id)
+                    .ToList();
+            }
+            else
+            {
+                targetProducts = pallet.ReceivedProducts?.ToList() ?? new List<ReceivedProduct>();
+            }
 
-            // Map total picked quantities per ReceivedProductId
+            var receivedProductIds = targetProducts.Select(rp => rp.Id).Distinct().ToList();
+
+            // 4. Map total picked quantities per ReceivedProductId
             var pickedMap = await dbContext.PickedProducts
                 .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
                 .GroupBy(pp => pp.ReceivedProductId)
                 .Select(g => new { ReceivedProductId = g.Key, PickedQty = g.Sum(pp => pp.QuantityPicked) })
                 .ToDictionaryAsync(x => x.ReceivedProductId, x => x.PickedQty, cancellationToken);
 
-            var result = checkIns.Select(ci =>
+            // Local product mapping helper
+            CheckedInProductSumamryDto MapProduct(ReceivedProduct rp, string? fallbackPalletId)
             {
-                var targetProducts = (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
-                    ? ci.Pallet.ReceivedProducts
-                    : ci.ReceivedProducts;
+                var baseQty = rp.ExpectedQuantity is > 0 ? rp.ExpectedQuantity.Value : rp.Quantity;
+                var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
+                var availableQty = baseQty - pickedQty;
 
+                return new CheckedInProductSumamryDto(
+                    id: rp.Id,
+                    Name: rp.Product?.Name ?? rp.ExpectedProductName ?? "",
+                    TypeOfPackage: rp.TypeOfPackage ?? rp.Product?.TypeOfPackage ?? "",
+                    Measurement: rp.Product?.Measurement ?? "",
+                    Weight: rp.Product?.Weight ?? 0,
+                    Quantity: availableQty, // Net unpicked stock
+                    CBM: rp.CBM,
+                    TotalWeight: rp.TotalWeight,
+                    ExpirationDate: rp.ExpirationDate ?? rp.ExpectedExpirationDate,
+                    Remarks: rp.Remarks,
+                    ContainerName: rp.ContainerName,
+                    PalletId: rp.PalletId?.ToString() ?? fallbackPalletId,
+                    ReceivingSeries: rp.Receiving?.Series,
+                    Shipper: rp.Receiving?.Shipper
+                );
+            }
+
+            List<DisplayCheckInProductsDto> result;
+
+            if (checkIns.Any())
+            {
+                // Scenario A: Pallet HAS BEEN checked in
+                result = checkIns.Select(ci =>
+                {
+                    var ciTargetProducts = (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Any())
+                        ? ci.Pallet.ReceivedProducts
+                        : ci.ReceivedProducts;
+
+                    var mappedProducts = ciTargetProducts
+                        .Select(rp => MapProduct(rp, ci.PalletId?.ToString()))
+                        .Where(rp => rp.Quantity > 0)
+                        .ToList();
+
+                    return new DisplayCheckInProductsDto(
+                        Id: ci.Id,
+                        CheckInType: ci.CheckInType,
+                        PalletNumber: ci.Pallet?.PalletNumber != null ? "Pallet #" + ci.Pallet.PalletNumber : $"Pallet #{PalletId}",
+                        ReceivedProducts: mappedProducts,
+                        CheckInDate: ci.CheckInDate,
+                        Notes: ci.Notes
+                    );
+                })
+                .Where(dto => dto.ReceivedProducts != null && dto.ReceivedProducts.Any())
+                .ToList();
+            }
+            else
+            {
+                // Scenario B: Pallet HAS NOT BEEN checked in yet (Staging / Pending Putaway)
                 var mappedProducts = targetProducts
-                    .Select(rp =>
-                    {
-                        var baseQty = rp.ExpectedQuantity is > 0 ? rp.ExpectedQuantity.Value : rp.Quantity;
-                        var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
-                        var availableQty = baseQty - pickedQty;
-
-                        return new CheckedInProductSumamryDto(
-                            id: rp.Id,
-                            Name: rp.Product?.Name ?? rp.ExpectedProductName ?? "",
-                            TypeOfPackage: rp.TypeOfPackage ?? rp.Product?.TypeOfPackage ?? "",
-                            Measurement: rp.Product?.Measurement ?? "",
-                            Weight: rp.Product?.Weight ?? 0,
-                            Quantity: availableQty, // Net unpicked stock
-                            CBM: rp.CBM,
-                            TotalWeight: rp.TotalWeight,
-                            ExpirationDate: rp.ExpirationDate ?? rp.ExpectedExpirationDate,
-                            Remarks: rp.Remarks,
-                            ContainerName: rp.ContainerName,
-                            PalletId: rp.PalletId?.ToString() ?? ci.PalletId?.ToString(),
-                            ReceivingSeries: rp.Receiving?.Series,
-                            Shipper: rp.Receiving?.Shipper
-                        );
-                    })
-                    .Where(rp => rp.Quantity > 0) // Strictly exclude items with 0 or negative available stock
+                    .Select(rp => MapProduct(rp, PalletId.ToString()))
+                    .Where(rp => rp.Quantity > 0)
                     .ToList();
 
-                return new DisplayCheckInProductsDto(
-                    Id: ci.Id,
-                    CheckInType: ci.CheckInType,
-                    PalletNumber: ci.Pallet?.PalletNumber != null ? "Pallet #" + ci.Pallet.PalletNumber : "",
-                    ReceivedProducts: mappedProducts,
-                    CheckInDate: ci.CheckInDate,
-                    Notes: ci.Notes
-                );
-            })
-            .Where(dto => dto.ReceivedProducts.Any()) // Strictly exclude check-ins with 0 remaining products
-            .ToList();
+                if (!mappedProducts.Any())
+                {
+                    return Results.Ok(new List<DisplayCheckInProductsDto>());
+                }
+
+                result = new List<DisplayCheckInProductsDto>
+        {
+            new DisplayCheckInProductsDto(
+                Id: 0,
+                CheckInType: "UNCHECKED_IN",
+                PalletNumber: pallet.PalletNumber != 0 ? $"Pallet #{pallet.PalletNumber}" : $"Pallet #{PalletId}",
+                ReceivedProducts: mappedProducts,
+                CheckInDate: null,
+                Notes: "Pending Check-In (In Receiving / Staging Area)"
+            )
+        };
+            }
 
             return Results.Ok(result);
         })
         .WithName("GetPalletStockById")
         .WithSummary("Get available stock for a specific pallet by ID")
-        .WithDescription("Retrieves active check-ins for a given Pallet ID, calculating net unpicked stock across transfers.")
+        .WithDescription("Retrieves stock for a given Pallet ID, supporting both checked-in bins and unchecked-in staging pallets while calculating net unpicked stock.")
         .Produces<List<DisplayCheckInProductsDto>>(StatusCodes.Status200OK)
         .Produces<string>(StatusCodes.Status404NotFound);
 

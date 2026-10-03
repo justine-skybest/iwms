@@ -7,6 +7,6 @@ public record class DisplayCheckInProductsDto(
     string CheckInType,    
     string PalletNumber,
     List<CheckedInProductSumamryDto> ReceivedProducts,
-    DateTime CheckInDate,
+    DateTime? CheckInDate,
     string? Notes
 );

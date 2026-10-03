@@ -2280,7 +2280,7 @@
       "Pallet"
     ],
     "EndpointName": "GetPalletStockById",
-    "Description": "Retrieves active check-ins for a given Pallet ID, calculating net unpicked stock across transfers.",
+    "Description": "Retrieves stock for a given Pallet ID, supporting both checked-in bins and unchecked-in staging pallets while calculating net unpicked stock.",
     "Summary": "Get available stock for a specific pallet by ID"
   },
   {

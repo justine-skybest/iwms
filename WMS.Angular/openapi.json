@@ -925,7 +925,7 @@
           "Pallet"
         ],
         "summary": "Get available stock for a specific pallet by ID",
-        "description": "Retrieves active check-ins for a given Pallet ID, calculating net unpicked stock across transfers.",
+        "description": "Retrieves stock for a given Pallet ID, supporting both checked-in bins and unchecked-in staging pallets while calculating net unpicked stock.",
         "operationId": "GetPalletStockById",
         "parameters": [
           {
@@ -5606,7 +5606,8 @@
           },
           "checkInDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "notes": {
             "type": "string",

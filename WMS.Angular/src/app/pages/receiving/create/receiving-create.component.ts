@@ -720,99 +720,101 @@ selectIncoming(incoming: IncomingResponseDto): void {
     return new Date(`${baseDate}T${formattedTime}`).toISOString();
   }
 
-  async saveReceiving(): Promise<void> {
-    const error = this.validateForm();
-    if (error) {
-      this.validationError = error;
-      this.cd.markForCheck();
-      return;
-    }
-
-    this.validationError = '';
-    this.isSaving = true;
-
-const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
-  let remarksText = item.remarks || '';
-  if (!item.isMatched && item.discrepancies.length > 0) {
-    const tagString = `[DISCREPANCIES: ${item.discrepancies.join(', ')}]`;
-    remarksText = remarksText ? `${tagString} ${remarksText}` : tagString;
+async saveReceiving(): Promise<void> {
+  const error = this.validateForm();
+  if (error) {
+    this.validationError = error;
+    this.cd.markForCheck();
+    return;
   }
 
-  return {
-    id: item.id || 0,
-    productId: item.productId!,
-    incomingProductId: item.incomingProductId ?? undefined, // ✅ Send to backend payload
+  this.validationError = '';
+  this.isSaving = true;
 
-    expectedProductName: item.expectedProductName,
-    expectedQuantity: item.expectedQuantity,
-    expectedCbm: item.expectedCbm,
-    expectedTotalWeight: item.expectedTotalWeight,
-    expectedExpirationDate: item.expectedExpirationDate as any,
-    typeOfPackage: item.typeOfPackage,
+  const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
+    let remarksText = item.remarks || '';
+    if (!item.isMatched && item.discrepancies.length > 0) {
+      const tagString = `[DISCREPANCIES: ${item.discrepancies.join(', ')}]`;
+      remarksText = remarksText ? `${tagString} ${remarksText}` : tagString;
+    }
 
-    productName: item.productName,
-    quantity: item.quantity ?? 0,
-    cbm: item.cbm || '0',
-    totalWeight: item.totalWeight || '0',
-    expirationDate: item.expirationDate as any,
-    
-    supplier: item.supplier || undefined,
-    unitPrice: item.unitPrice ?? undefined,
-    totalAmount: item.totalAmount ?? undefined,
+    return {
+      id: item.id || 0,
+      productId: item.productId!,
+      incomingProductId: item.incomingProductId ?? undefined,
 
-    remarks: remarksText,
-    containerName: item.containerName || '',
-    palletId: item.palletId ?? undefined
-  };
-});
+      expectedProductName: item.expectedProductName,
+      expectedQuantity: item.expectedQuantity,
+      expectedCbm: item.expectedCbm,
+      expectedTotalWeight: item.expectedTotalWeight,
+      expectedExpirationDate: item.expectedExpirationDate as any,
+      typeOfPackage: item.typeOfPackage,
 
-    const payload: CreateReceivingDto = {
-      ...this.newReceiving,
-      warehouseId: this.warehouseService.selectedWarehouseId()!,
-      incomingId: this.selectedIncoming?.id! ?? null,
-      series: this.newReceiving.series?.trim() ?? '',
-      transportCompany: this.newReceiving.transportCompany?.trim() ?? '',
-      shipper: this.newReceiving.shipper?.trim() ?? '',
-      consignee: this.newReceiving.consignee?.trim() || undefined,
-      reference: this.newReceiving.reference?.trim() ?? '',
-      plateNumber: this.newReceiving.plateNumber?.trim() ?? '',
-      driverName: this.newReceiving.driverName?.trim() ?? '',
-      checkerName: this.newReceiving.checkerName?.trim() || undefined,
-      clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
-      dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
-      dateAdded: new Date().toISOString(),
-      dateTime: new Date().toISOString(),
-      timeStart: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeStart),
-      timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
-      products: processedProducts
-    };
-
-    try {
-      const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
-      this.toastService.success(`Receiving ${payload.series} successfully submitted`);
+      productName: item.productName,
+      quantity: item.quantity ?? 0,
+      cbm: item.cbm || '0',
+      totalWeight: item.totalWeight || '0',
+      expirationDate: item.expirationDate as any,
       
-      this.clearDraft();
+      supplier: item.supplier || undefined,
+      unitPrice: item.unitPrice ?? undefined,
+      totalAmount: item.totalAmount ?? undefined,
 
-      this.created.emit();
+      remarks: remarksText,
+      containerName: item.containerName || '',
+      palletId: item.palletId ?? undefined
+    };
+  });
 
-      const createdId = createdReceiving?.id;
-      const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
+  const payload: CreateReceivingDto = {
+    ...this.newReceiving,
+    warehouseId: this.warehouseService.selectedWarehouseId()!,
+    incomingId: this.selectedIncoming?.id! ?? null,
+    series: this.newReceiving.series?.trim() ?? '',
+    transportCompany: this.newReceiving.transportCompany?.trim() ?? '',
+    shipper: this.newReceiving.shipper?.trim() ?? '',
+    consignee: this.newReceiving.consignee?.trim() || undefined,
+    reference: this.newReceiving.reference?.trim() ?? '',
+    plateNumber: this.newReceiving.plateNumber?.trim() ?? '',
+    driverName: this.newReceiving.driverName?.trim() ?? '',
+    checkerName: this.newReceiving.checkerName?.trim() || undefined,
+    clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
+    dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
+    dateAdded: new Date().toISOString(),
+    dateTime: new Date().toISOString(),
+    timeStart: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeStart),
+    timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
+    products: processedProducts
+  };
 
-      if (createdId && hasPalletizedItems) {
-        await this.preparePalletLabelsForPrinting(createdId);
-      } else {
-        this.onClose();
-      }
-    } catch (err) {
-      console.error('Failed to create receiving:', err);
-      this.toastService.error(`Failed to create receiving: ${err}`);
-      this.validationError = 'Failed to save receiving receipt. Please check server connection.';
-    } finally {
-      this.isSaving = false;
-      this.cd.markForCheck();
+  try {
+    const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
+    this.toastService.success(`Receiving ${payload.series} successfully submitted`);
+    
+    // 1. Purge draft from storage
+    this.clearDraft();
+
+    // 2. Notify parent component to refresh records
+    this.created.emit();
+
+    const createdId = createdReceiving?.id;
+    const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
+
+    // 3. Prepare print labels if pallets exist; otherwise reset & close form without prompt
+    if (createdId && hasPalletizedItems) {
+      await this.preparePalletLabelsForPrinting(createdId);
+    } else {
+      this.forceCloseAndReset();
     }
+  } catch (err) {
+    console.error('Failed to create receiving:', err);
+    this.toastService.error(`Failed to create receiving: ${err}`);
+    this.validationError = 'Failed to save receiving receipt. Please check server connection.';
+  } finally {
+    this.isSaving = false;
+    this.cd.markForCheck();
   }
-
+}
   discardDraft(): void {
     this.clearDraft();
     this.newReceiving = this.getInitialForm();
@@ -990,7 +992,7 @@ const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item
   closePrintModal(): void {
     this.isPrintModalOpen = false;
     this.generatedPalletLabels = [];
-    this.onClose();
+    this.forceCloseAndReset();
   }
 
   /**
