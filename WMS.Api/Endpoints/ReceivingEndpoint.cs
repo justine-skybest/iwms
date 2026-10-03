@@ -207,96 +207,10 @@ public static class ReceivingEndpoint
                 return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} is already completed or short-closed." });
             }
 
-            // 2. Check if a Receiving entry ALREADY EXISTS for this IncomingId
-            var existingReceiving = await dbContext.Receivings
-                .Include(r => r.Products!)
-                    .ThenInclude(p => p.Product)
-                .FirstOrDefaultAsync(r => r.IncomingId == newReceivingDto.IncomingId, cancellationToken);
-
-            Receiving receiving;
-            bool isNewReceiving = existingReceiving is null;
-
-            if (isNewReceiving)
-            {
-                // CREATE NEW RECEIVING RECORD
-                receiving = newReceivingDto.ToEntity();
-                dbContext.Receivings.Add(receiving);
-                await dbContext.SaveChangesAsync(cancellationToken);
-            }
-            else
-            {
-                // UPDATE / ACCUMULATE ON EXISTING RECEIVING RECORD
-                receiving = existingReceiving!;
-                receiving.Shipper = newReceivingDto.Shipper;
-                receiving.Consignee = newReceivingDto.Consignee;
-                receiving.TransportCompany = newReceivingDto.TransportCompany;
-                receiving.PlateNumber = newReceivingDto.PlateNumber;
-                receiving.DriverName = newReceivingDto.DriverName;
-                receiving.WarehouseId = newReceivingDto.WarehouseId;
-
-                receiving.Products ??= new List<ReceivedProduct>();
-
-                foreach (var incomingProductDto in newReceivingDto.Products)
-                {
-                    string expKey = FormatDateKey(incomingProductDto.ExpirationDate);
-
-                    // Look for existing row matching IncomingProductId (or ProductId + Expiry) + PalletId
-                    var matchInExisting = receiving.Products.FirstOrDefault(p =>
-                        ((incomingProductDto.IncomingProductId.HasValue && p.IncomingProductId == incomingProductDto.IncomingProductId.Value) ||
-                         (p.ProductId == incomingProductDto.ProductId && FormatDateKey(p.ExpirationDate) == expKey)) &&
-                        p.PalletId == incomingProductDto.PalletId);
-
-                    if (matchInExisting != null)
-                    {
-                        // Scenario A: Same Pallet ID -> Accumulate quantity
-                        matchInExisting.Quantity += incomingProductDto.Quantity;
-                        matchInExisting.UnitPrice = incomingProductDto.UnitPrice != 0 ? incomingProductDto.UnitPrice : matchInExisting.UnitPrice;
-                        matchInExisting.TotalAmount = incomingProductDto.TotalAmount != 0 ? incomingProductDto.TotalAmount : matchInExisting.TotalAmount;
-                        matchInExisting.Supplier = !string.IsNullOrWhiteSpace(incomingProductDto.Supplier) ? incomingProductDto.Supplier : matchInExisting.Supplier;
-                        if (!string.IsNullOrWhiteSpace(incomingProductDto.TypeOfPackage))
-                        {
-                            matchInExisting.TypeOfPackage = incomingProductDto.TypeOfPackage;
-                        }
-                        matchInExisting.CBM = incomingProductDto.CBM;
-                        matchInExisting.TotalWeight = incomingProductDto.TotalWeight;
-                        matchInExisting.Remarks = incomingProductDto.Remarks;
-                    }
-                    else
-                    {
-                        // Scenario B: Different Pallet ID -> Create distinct received row
-                        receiving.Products.Add(new ReceivedProduct
-                        {
-                            ReceivingId = receiving.Id,
-                            ProductId = incomingProductDto.ProductId,
-                            IncomingProductId = incomingProductDto.IncomingProductId,
-                            Quantity = incomingProductDto.Quantity,
-
-                            ExpectedQuantity = (incomingProductDto.ExpectedQuantity.HasValue && incomingProductDto.ExpectedQuantity.Value > 0)
-                                ? incomingProductDto.ExpectedQuantity.Value
-                                : incomingProductDto.Quantity,
-
-                            ExpectedCBM = incomingProductDto.ExpectedCBM ?? incomingProductDto.CBM,
-                            ExpectedTotalWeight = incomingProductDto.ExpectedTotalWeight ?? incomingProductDto.TotalWeight,
-                            ExpectedExpirationDate = incomingProductDto.ExpectedExpirationDate ?? incomingProductDto.ExpirationDate,
-                            ExpectedProductName = incomingProductDto.ExpectedProductName,
-
-                            UnitPrice = incomingProductDto.UnitPrice,
-                            TotalAmount = incomingProductDto.TotalAmount,
-                            Supplier = incomingProductDto.Supplier,
-                            TypeOfPackage = incomingProductDto.TypeOfPackage,
-                            LotNumber = incomingProductDto.LotNumber,
-                            CBM = incomingProductDto.CBM,
-                            TotalWeight = incomingProductDto.TotalWeight,
-                            Remarks = incomingProductDto.Remarks,
-                            ExpirationDate = incomingProductDto.ExpirationDate,
-                            ContainerName = incomingProductDto.ContainerName ?? "N/A",
-                            PalletId = incomingProductDto.PalletId
-                        });
-                    }
-                }
-
-                await dbContext.SaveChangesAsync(cancellationToken);
-            }
+            // 2. ALWAYS CREATE A DISTINCT NEW RECEIVING RECORD
+            var receiving = newReceivingDto.ToEntity();
+            dbContext.Receivings.Add(receiving);
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             // 3. Generate Lot Numbers for any unassigned products
             int sequenceIndex = 1;
@@ -317,7 +231,7 @@ public static class ReceivingEndpoint
             RecalculateExpectedQuantities(receiving, incoming);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS
+            // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS (Aggregated across ALL receivings for this shipment)
             var allReceivedProducts = await dbContext.Receivings
                 .Where(r => r.IncomingId == incoming.Id)
                 .SelectMany(r => r.Products!)
@@ -401,10 +315,8 @@ public static class ReceivingEndpoint
 
             await auditLogService.LogAsync(
                 category: "Receiving",
-                action: isNewReceiving ? "Created" : "Updated",
-                description: isNewReceiving
-                    ? $"Created receiving receipt '{resultDto.Series}' (linked to Incoming ID {incoming.Id}) with {resultDto.Products.Count} line item(s)."
-                    : $"Updated existing receiving receipt '{resultDto.Series}' for Incoming ID {incoming.Id}. Overall Incoming status is now '{incoming.Status}'.",
+                action: "Created",
+                description: $"Created receiving receipt '{resultDto.Series}' (linked to Incoming ID {incoming.Id}) with {resultDto.Products.Count} line item(s). Overall Incoming status is now '{incoming.Status}'.",
                 details: new
                 {
                     ReceivingId = resultDto.Id,
@@ -422,13 +334,10 @@ public static class ReceivingEndpoint
                 }
             );
 
-            return isNewReceiving
-                ? Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, resultDto)
-                : Results.Ok(resultDto);
+            return Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, resultDto);
         })
         .WithName("CreateReceiving")
-        .WithSummary("Create or update a receiving receipt")
-        .Produces<ReceivingDetailsDto>(StatusCodes.Status200OK)
+        .WithSummary("Create a new receiving receipt")
         .Produces<ReceivingDetailsDto>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);

@@ -3013,13 +3013,6 @@
         "MediaTypes": [
           "application/json"
         ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "WMS.Api.Dtos.Receiving.ReceivingDetailsDto",
-        "MediaTypes": [
-          "application/json"
-        ],
         "StatusCode": 201
       },
       {
@@ -3034,7 +3027,7 @@
       "Receiving"
     ],
     "EndpointName": "CreateReceiving",
-    "Summary": "Create or update a receiving receipt"
+    "Summary": "Create a new receiving receipt"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",
