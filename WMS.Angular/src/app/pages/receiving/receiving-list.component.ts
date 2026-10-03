@@ -443,6 +443,6 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   }
 
   getTotalReceivedQuantity(receiving: ReceivingDetailsDto): number {
-    return receiving.products?.reduce((sum, p) => sum + (p.quantity ?? 0), 0) ?? 0;
+    return receiving.products?.reduce((sum, p) => sum + Number(p.quantity || 0), 0) ?? 0;
   }
 }
