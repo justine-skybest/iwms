@@ -1587,7 +1587,7 @@
         "tags": [
           "Receiving"
         ],
-        "summary": "Create or update a receiving receipt",
+        "summary": "Create a new receiving receipt",
         "operationId": "CreateReceiving",
         "requestBody": {
           "content": {
@@ -1600,16 +1600,6 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ReceivingDetailsDto"
-                }
-              }
-            }
-          },
           "201": {
             "description": "Created",
             "content": {

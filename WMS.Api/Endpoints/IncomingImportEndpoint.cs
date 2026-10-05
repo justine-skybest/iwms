@@ -118,59 +118,127 @@ namespace WMS.Api.Endpoints
                 var parseResult = await ParseExcelAsync(file, dbContext, cancellationToken);
                 if (parseResult.ResultError is not null) return parseResult.ResultError;
 
-                var errors = new List<string>();
-
                 var existingDbItems = existingIncoming.Products ?? new List<IncomingProduct>();
+                var existingDbItemIds = existingDbItems.Select(p => p.Id).Where(id => id > 0).ToList();
 
-                // Separate partially or fully received items from unreceived items
-                var receivedOrPartialItems = existingDbItems.Where(p => p.Status != IncomingProductStatus.UNRECEIVED).ToList();
-                var unreceivedItems = existingDbItems.Where(p => p.Status == IncomingProductStatus.UNRECEIVED).ToList();
+                // Unpack nullable IncomingProductId safely for ReceivedProducts check
+                var referencedProductIds = await dbContext.Set<ReceivedProduct>()
+                    .AsNoTracking()
+                    .Where(rp => rp.IncomingProductId.HasValue && existingDbItemIds.Contains(rp.IncomingProductId.Value))
+                    .Select(rp => rp.IncomingProductId!.Value)
+                    .Distinct()
+                    .ToListAsync(cancellationToken);
+
+                var referencedIdsSet = new HashSet<int>(referencedProductIds);
+
+                // Protected if status is not UNRECEIVED OR if referenced in ReceivedProducts table
+                bool IsProtectedFromDelete(IncomingProduct p) =>
+                    p.Status != IncomingProductStatus.UNRECEIVED || referencedIdsSet.Contains(p.Id);
+
+                var protectedDbItems = existingDbItems.Where(IsProtectedFromDelete).ToList();
+                var deletableDbItems = existingDbItems.Where(p => !IsProtectedFromDelete(p)).ToList();
 
                 var incomingExcelList = parseResult.IncomingProducts.ToList();
+                var matchedExcelIndices = new HashSet<int>();
 
-                // RULE 1: Ensure already received or partially received items remain intact in the updated Excel file
-                foreach (var recItem in receivedOrPartialItems)
+                // Helper matcher function comparing Product, Expiration, and Supplier
+                bool IsMatch(IncomingProduct dbItem, IncomingProduct excelItem)
                 {
-                    string prodName = recItem.Product?.Name ?? $"Product #{recItem.ProductId}";
-                    string recExpKey = recItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
-
-                    var matchIndex = incomingExcelList.FindIndex(excelItem =>
-                        excelItem.ProductId == recItem.ProductId &&
-                        (excelItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE") == recExpKey &&
-                        (excelItem.Supplier ?? "NONE").Trim().Equals((recItem.Supplier ?? "NONE").Trim(), StringComparison.OrdinalIgnoreCase) &&
-                        excelItem.UnitPrice == recItem.UnitPrice &&
-                        excelItem.Quantity == recItem.Quantity &&
-                        excelItem.TotalAmount == recItem.TotalAmount &&
-                        excelItem.CBM == recItem.CBM &&
-                        excelItem.TotalWeight == recItem.TotalWeight
-                    );
-
-                    if (matchIndex == -1)
+                    bool productMatches = false;
+                    if (dbItem.ProductId > 0 && excelItem.ProductId > 0)
                     {
-                        errors.Add($"Cannot remove or alter partially/fully received item '{prodName}' (Exp: {recExpKey}, Status: {recItem.Status}). Ensure it exists exactly as originally recorded in the updated Excel file.");
+                        productMatches = dbItem.ProductId == excelItem.ProductId;
                     }
                     else
                     {
-                        incomingExcelList.RemoveAt(matchIndex);
+                        string dbName = dbItem.Product?.Name ?? "";
+                        string excelName = excelItem.Product?.Name ?? "";
+                        if (!string.IsNullOrWhiteSpace(dbName) && !string.IsNullOrWhiteSpace(excelName))
+                        {
+                            productMatches = dbName.Equals(excelName, StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
+
+                    if (!productMatches) return false;
+
+                    string dbExp = dbItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                    string excelExp = excelItem.ExpirationDate?.ToString("yyyy-MM-dd") ?? "NONE";
+                    if (dbExp != excelExp) return false;
+
+                    string dbSup = (dbItem.Supplier ?? "").Trim();
+                    string excelSup = (excelItem.Supplier ?? "").Trim();
+                    return dbSup.Equals(excelSup, StringComparison.OrdinalIgnoreCase);
+                }
+
+                // PHASE 1: Update Protected Items (Never deleted under any condition)
+                foreach (var dbItem in protectedDbItems)
+                {
+                    for (int i = 0; i < incomingExcelList.Count; i++)
+                    {
+                        if (matchedExcelIndices.Contains(i)) continue;
+
+                        if (IsMatch(dbItem, incomingExcelList[i]))
+                        {
+                            matchedExcelIndices.Add(i);
+                            var excelItem = incomingExcelList[i];
+
+                            dbItem.Quantity = excelItem.Quantity;
+                            dbItem.UnitPrice = excelItem.UnitPrice;
+                            dbItem.TotalAmount = excelItem.TotalAmount;
+                            dbItem.CBM = excelItem.CBM;
+                            dbItem.TotalWeight = excelItem.TotalWeight;
+                            dbItem.Remarks = excelItem.Remarks;
+                            break;
+                        }
                     }
                 }
 
-                if (errors.Any())
+                // PHASE 2: Process Deletable Items (Guaranteed 0 foreign key references)
+                int removedCount = 0;
+                foreach (var dbItem in deletableDbItems)
                 {
-                    return Results.UnprocessableEntity(new { Errors = errors });
+                    int matchIdx = -1;
+                    for (int i = 0; i < incomingExcelList.Count; i++)
+                    {
+                        if (matchedExcelIndices.Contains(i)) continue;
+
+                        if (IsMatch(dbItem, incomingExcelList[i]))
+                        {
+                            matchIdx = i;
+                            break;
+                        }
+                    }
+
+                    if (matchIdx != -1)
+                    {
+                        matchedExcelIndices.Add(matchIdx);
+                        var excelItem = incomingExcelList[matchIdx];
+
+                        // Update in-place to avoid deletion/re-creation
+                        dbItem.Quantity = excelItem.Quantity;
+                        dbItem.UnitPrice = excelItem.UnitPrice;
+                        dbItem.TotalAmount = excelItem.TotalAmount;
+                        dbItem.CBM = excelItem.CBM;
+                        dbItem.TotalWeight = excelItem.TotalWeight;
+                        dbItem.Remarks = excelItem.Remarks;
+                    }
+                    else
+                    {
+                        // Safe to delete: guaranteed 0 foreign key references
+                        dbContext.Remove(dbItem);
+                        removedCount++;
+                    }
                 }
 
-                // APPLY REVISIONS: Clear existing UNRECEIVED items and append newly parsed unreceived line items
-                int removedCount = unreceivedItems.Count;
-                foreach (var dbItem in unreceivedItems)
+                // PHASE 3: Insert new items from Excel
+                int addedCount = 0;
+                for (int i = 0; i < incomingExcelList.Count; i++)
                 {
-                    dbContext.Remove(dbItem);
-                }
-
-                int addedCount = incomingExcelList.Count;
-                foreach (var newExcelItem in incomingExcelList)
-                {
-                    existingIncoming.Products!.Add(newExcelItem);
+                    if (!matchedExcelIndices.Contains(i))
+                    {
+                        existingIncoming.Products!.Add(incomingExcelList[i]);
+                        addedCount++;
+                    }
                 }
 
                 if (!string.IsNullOrWhiteSpace(parseResult.Shipper)) existingIncoming.Shipper = parseResult.Shipper;
@@ -182,13 +250,14 @@ namespace WMS.Api.Endpoints
                 await auditLogService.LogAsync(
                     category: "Incoming Import",
                     action: "Updated",
-                    description: $"Revised incoming shipment ID {existingIncoming.Id} via '{file.FileName}'. Removed {removedCount} unreceived item(s) and inserted {addedCount} updated item(s).",
+                    description: $"Revised incoming shipment ID {existingIncoming.Id} via '{file.FileName}'. Removed {removedCount} unused item(s), preserved {protectedDbItems.Count} received/partial item(s), and added {addedCount} new item(s).",
                     details: new
                     {
                         IncomingId = existingIncoming.Id,
                         FileName = file.FileName,
                         AddedItemsCount = addedCount,
                         RemovedItemsCount = removedCount,
+                        PreservedProtectedCount = protectedDbItems.Count,
                         TotalFinalItems = existingIncoming.Products!.Count,
 
                         FinalProducts = existingIncoming.Products.Select(p =>
