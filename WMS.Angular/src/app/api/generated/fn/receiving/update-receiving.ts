@@ -9,13 +9,13 @@ import { RequestBuilder } from '../../request-builder';
 
 import type { CreateReceivingDto } from '../../models/create-receiving-dto';
 
-export interface ReceivingIdPut$Params {
+export interface UpdateReceiving$Params {
   id: number;
       body: CreateReceivingDto
 }
 
-export function receivingIdPut(http: HttpClient, rootUrl: string, params: ReceivingIdPut$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, receivingIdPut.PATH, 'put');
+export function updateReceiving(http: HttpClient, rootUrl: string, params: UpdateReceiving$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, updateReceiving.PATH, 'put');
   if (params) {
     rb.path('id', params.id, {});
     rb.body(params.body, 'application/json');
@@ -31,4 +31,4 @@ export function receivingIdPut(http: HttpClient, rootUrl: string, params: Receiv
   );
 }
 
-receivingIdPut.PATH = '/receiving/{id}';
+updateReceiving.PATH = '/receiving/{id}';

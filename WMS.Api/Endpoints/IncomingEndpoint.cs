@@ -174,6 +174,46 @@ namespace WMS.Api.Endpoints
             .WithDescription("Retrieves a paginated list of incoming shipments with status PENDING or PARTIAL, including calculated remaining balances.")
             .Produces<PaginatedResponse<IncomingResponseDto>>(StatusCodes.Status200OK);
 
+            // -----------------------------------------------------------------------------
+            // GET /unreceived/{id:int} - Get unreceived or partial incoming shipment by ID
+            // -----------------------------------------------------------------------------
+            group.MapGet("/unreceived/{id:int}", async (
+                int id,
+                WMSContext dbContext,
+                CancellationToken cancellationToken = default) =>
+            {
+                var incoming = await dbContext.Incomings
+                    .Where(inc => inc.Status != IncomingStatus.RECEIVED && inc.Status != IncomingStatus.CLOSED_SHORT)
+                    .Include(inc => inc.Warehouse)
+                    .Include(inc => inc.Products!)
+                        .ThenInclude(p => p.Product)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(inc => inc.Id == id, cancellationToken);
+
+                if (incoming is null)
+                {
+                    return Results.NotFound(new { Message = $"Unreceived incoming shipment record #{id} was not found or is already completed/closed." });
+                }
+
+                // Fetch all received products across linked receiving receipts to calculate line item balances
+                var existingReceivings = await dbContext.Receivings
+                    .Include(r => r.Products)
+                    .Where(r => r.IncomingId == id)
+                    .AsNoTracking()
+                    .ToListAsync(cancellationToken);
+
+                var linkedProducts = existingReceivings
+                    .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
+                    .ToList();
+
+                return Results.Ok(incoming.ToResponseDto(linkedProducts));
+            })
+            .WithName("GetUnreceivedIncomingById")
+            .WithSummary("Get pending or partial incoming shipment details by ID")
+            .WithDescription("Retrieves detailed information for a specific unreceived or partial incoming shipment, including calculated received and remaining balances.")
+            .Produces<IncomingResponseDto>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status404NotFound);
+
             group.MapPost("/{id:int}/short-close", async (
                 int id,
                 WMSContext dbContext,

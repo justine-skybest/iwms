@@ -105,6 +105,9 @@
                 <button (click)="openView(r)" class="p-1.5 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors" title="View Details">
                   <lucide-icon [img]="eyeIcon" [size]="15"></lucide-icon>
                 </button>
+                <button (click)="openEdit(r)" class="p-1.5 text-slate-500 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-200 hover:bg-slate-100 dark:hover:bg-yellow-800 rounded-lg transition-colors" title="Edit">
+                  <lucide-icon [img]="pencilIcon" [size]="15"></lucide-icon>
+                </button>
                 
                 <button 
                   *ngIf="hasPalletizedItems(r)"
@@ -370,10 +373,19 @@
     </div>
   </div>
 
-  <!-- CREATION COMPONENT DRAWER -->
-  <app-receiving-create
-    [isOpen]="isCreateOpen"
-    (close)="closeCreate()"
-    (created)="loadReceivings()"
-  ></app-receiving-create>
 </div>
+<!-- CREATION COMPONENT DRAWER -->
+<app-receiving-create
+  [isOpen]="isCreateOpen"
+  (close)="closeCreate()"
+  (created)="loadReceivings()"
+  (updated)="loadReceivings()"
+></app-receiving-create>
+
+<!-- EDIT DRAWER -->
+<app-edit-receiving
+  [isOpen]="isEditOpen"
+  [selectedReceiving]="selectedReceivingToEdit"
+  (close)="closeEdit()"
+  (updated)="loadReceivings()">
+</app-edit-receiving>

@@ -618,6 +618,49 @@
         }
       }
     },
+    "/incoming/unreceived/{id}": {
+      "get": {
+        "tags": [
+          "Incomings"
+        ],
+        "summary": "Get pending or partial incoming shipment details by ID",
+        "description": "Retrieves detailed information for a specific unreceived or partial incoming shipment, including calculated received and remaining balances.",
+        "operationId": "GetUnreceivedIncomingById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncomingResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/incoming/{id}/short-close": {
       "post": {
         "tags": [
@@ -1782,6 +1825,7 @@
           "Receiving"
         ],
         "summary": "Get receiving transaction details",
+        "description": "Retrieves full receiving receipt details by ID, including products, assigned pallets, and warehouse context.",
         "operationId": "GetReceiving",
         "parameters": [
           {
@@ -1821,6 +1865,8 @@
         "tags": [
           "Receiving"
         ],
+        "summary": "Update an existing receiving receipt",
+        "operationId": "UpdateReceiving",
         "parameters": [
           {
             "name": "id",
@@ -1843,12 +1889,25 @@
           "required": true
         },
         "responses": {
+          "204": {
+            "description": "No Content"
+          },
           "400": {
             "description": "Bad Request",
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }

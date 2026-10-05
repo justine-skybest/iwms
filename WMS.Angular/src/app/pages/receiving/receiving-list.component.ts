@@ -6,13 +6,14 @@ import { receivingV2Get, getReceiving } from '../../api/generated/functions';
 import { ReceivedProductDetailsDto, ReceivingDetailsDtoPaginatedResponse, ReceivingDetailsDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
-import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet, Clock, Printer } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet, Clock, Printer, PencilIcon } from 'lucide-angular';
 import { SignalRService } from '../../lib/services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 import { formatDate } from '../../lib/utils/format-date';
 import { formatTime } from '../../lib/utils/format-time';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
+import { EditReceivingComponent } from './edit/edit-receiving.component';
 
 export type DiscrepancyCategory = 'QUANTITY' | 'DESCRIPTION' | 'EXPIRY' | 'WEIGHT' | 'CBM' | 'DAMAGED' | 'OTHER';
 
@@ -34,7 +35,7 @@ export interface PalletLabelPrintData {
 @Component({
   selector: 'app-receiving-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent],
+  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent, EditReceivingComponent],
   templateUrl: './receiving-list.component.html',
 })
 export class ReceivingListComponent implements OnInit, OnDestroy {
@@ -51,6 +52,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   readonly SummaryIcon = FileSpreadsheet;
   readonly ClockIcon = Clock;
   readonly PrinterIcon = Printer;
+  readonly pencilIcon = PencilIcon;
 
   readonly BASELINE_START_DATE = '2026-09-23';
 
@@ -80,6 +82,10 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   isPrintModalOpen = false;
   generatedPalletLabels: PalletLabelPrintData[] = [];
   isGeneratingLabels = false;
+
+  // 2. Add State Variables for Editing
+  isEditOpen = false;
+  selectedReceivingToEdit: ReceivingDetailsDto | null = null;
 
   constructor() {
     effect(() => {
@@ -139,6 +145,16 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   openView(receiving: ReceivingDetailsDto): void {
     this.selectedReceiving = receiving;
     this.isViewOpen = true;
+  }
+
+  openEdit(receiving: ReceivingDetailsDto): void {
+    this.selectedReceivingToEdit = receiving;
+    this.isEditOpen = true;
+  }
+
+  closeEdit(): void {
+    this.isEditOpen = false;
+    this.selectedReceivingToEdit = null;
   }
 
   closeView(): void {

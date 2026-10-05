@@ -31,6 +31,8 @@ export type { CreateIncoming$Params as CreateIncoming$Params } from './fn/incomi
 export { createIncoming as createIncoming } from './fn/incomings/create-incoming';
 export type { GetUnreceivedIncomings$Params as GetUnreceivedIncomings$Params } from './fn/incomings/get-unreceived-incomings';
 export { getUnreceivedIncomings as getUnreceivedIncomings } from './fn/incomings/get-unreceived-incomings';
+export type { GetUnreceivedIncomingById$Params as GetUnreceivedIncomingById$Params } from './fn/incomings/get-unreceived-incoming-by-id';
+export { getUnreceivedIncomingById as getUnreceivedIncomingById } from './fn/incomings/get-unreceived-incoming-by-id';
 export type { ShortCloseIncoming$Params as ShortCloseIncoming$Params } from './fn/incomings/short-close-incoming';
 export { shortCloseIncoming as shortCloseIncoming } from './fn/incomings/short-close-incoming';
 export type { GetIncomingById$Params as GetIncomingById$Params } from './fn/incomings/get-incoming-by-id';
@@ -99,8 +101,8 @@ export type { ReceivingSeriesGet$Params as ReceivingSeriesGet$Params } from './f
 export { receivingSeriesGet as receivingSeriesGet } from './fn/receiving/receiving-series-get';
 export type { GetReceiving$Params as GetReceiving$Params } from './fn/receiving/get-receiving';
 export { getReceiving as getReceiving } from './fn/receiving/get-receiving';
-export type { ReceivingIdPut$Params as ReceivingIdPut$Params } from './fn/receiving/receiving-id-put';
-export { receivingIdPut as receivingIdPut } from './fn/receiving/receiving-id-put';
+export type { UpdateReceiving$Params as UpdateReceiving$Params } from './fn/receiving/update-receiving';
+export { updateReceiving as updateReceiving } from './fn/receiving/update-receiving';
 export type { ReceivingIdDelete$Params as ReceivingIdDelete$Params } from './fn/receiving/receiving-id-delete';
 export { receivingIdDelete as receivingIdDelete } from './fn/receiving/receiving-id-delete';
 export type { GetWarehouseOccupancyReport$Params as GetWarehouseOccupancyReport$Params } from './fn/reports/get-warehouse-occupancy-report';

@@ -1,0 +1,410 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-50 flex justify-end">
+  <!-- Backdrop -->
+  <div 
+    class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm cursor-pointer transition-opacity" 
+    (click)="onClose()"
+    title="Click outside to close">
+  </div>
+
+  <!-- Drawer Panel -->
+  <div class="relative z-10 w-full max-w-6xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto pb-16">
+    <div>
+      <!-- Header -->
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
+        <div>
+          <h2 class="text-base font-bold">Edit Receiving Receipt</h2>
+          <p class="text-xs text-slate-400">
+            Modify received line items and shipment details for <strong class="text-blue-400 font-mono">{{ newReceiving.series }}</strong>
+          </p>
+        </div>
+        <button (click)="onClose()" class="p-1 rounded-lg text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="p-5 space-y-6">
+        <!-- Global Validation Error Banner -->
+        <div *ngIf="validationError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 font-medium flex items-center gap-2">
+          <lucide-icon [img]="AlertIcon" [size]="16" class="text-red-600 flex-shrink-0"></lucide-icon>
+          <span>{{ validationError }}</span>
+        </div>
+
+        <!-- 1. LINKED INCOMING SHIPMENT INDICATOR -->
+        <div *ngIf="selectedIncoming" class="bg-blue-50/70 p-4 border border-blue-200 rounded-xl space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="block text-xs font-bold text-blue-900 uppercase tracking-wider">
+              Linked Incoming Shipment Context
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
+              Shipment Status: {{ selectedIncoming.status }}
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-3 border border-blue-200 rounded-lg text-xs gap-2 shadow-sm">
+            <div class="flex flex-wrap items-center gap-4">
+              <span class="font-mono font-bold text-blue-700">Shipment #{{ selectedIncoming.id }}</span>
+              <span class="text-slate-600">Shipper: <strong>{{ selectedIncoming.shipper || '—' }}</strong></span>
+              <span class="text-slate-600">Consignee: <strong>{{ selectedIncoming.consignee || '—' }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. GENERAL INFORMATION -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">General Information</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Series No.:</label>
+              <input type="text" [value]="newReceiving.series" disabled class="w-full text-xs px-3 py-2 border border-slate-200 rounded-lg bg-slate-100 font-mono text-slate-500 font-bold" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Date Received:</label>
+              <input type="date" [(ngModel)]="newReceiving.dateReceived" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>INV / PO / DR Ref No.:</label>
+              <input type="text" [(ngModel)]="newReceiving.reference" placeholder="Reference #" maxlength="35" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" required />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- 3. LOGISTICS & TRANSPORT -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Logistics & Driver Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>Transport Company:</label>
+              <input type="text" [(ngModel)]="newReceiving.transportCompany" placeholder="Transport Co." maxlength="85" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" required />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>Driver Name:</label>
+              <input type="text" [(ngModel)]="newReceiving.driverName" placeholder="Driver Name" maxlength="50" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" required />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>Plate Number:</label>
+              <input type="text" [(ngModel)]="newReceiving.plateNumber" placeholder="Plate #" maxlength="25" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" required />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>Shipper / Exporter:</label>
+              <input type="text" [(ngModel)]="newReceiving.shipper" placeholder="Shipper / Exporter" maxlength="85" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" required />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Consignee / Importer:</label>
+              <input type="text" [(ngModel)]="newReceiving.consignee" placeholder="Consignee / Importer" maxlength="85" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg bg-slate-50" />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- 4. AUDIT & PERSONNEL -->
+        <div>
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Audit & Personnel</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Checker Name:</label>
+              <input type="text" [(ngModel)]="newReceiving.checkerName" placeholder="Checker Name" maxlength="50" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Client Representative:</label>
+              <input type="text" [(ngModel)]="newReceiving.clientRepresentative" placeholder="Client Rep" maxlength="50" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Time Start:</label>
+              <input type="time" [(ngModel)]="newReceiving.timeStart" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Time End:</label>
+              <input type="time" [(ngModel)]="newReceiving.timeEnd" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- 5. STAGED ITEMS TABLE -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Received Line Items ({{ stagedItems.length }})
+            </h3>
+          </div>
+
+          <div class="border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
+            <table class="w-full text-xs text-left whitespace-nowrap">
+              <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-2.5">Product Description</th>
+                  <th class="p-2.5 text-center">Received Quantity</th>
+                  <th class="p-2.5 text-center">CBM</th>
+                  <th class="p-2.5 text-center">Total Weight</th>
+                  <th class="p-2.5 text-center">Expiry Date</th>
+                  <th class="p-2.5">Assigned Pallet</th>
+                  <th class="p-2.5">Remarks</th>
+                  <th class="p-2.5 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr *ngIf="isLoadingDetails">
+                  <td colspan="8" class="p-8 text-center text-slate-400 text-xs">
+                    <div class="flex items-center justify-center gap-2">
+                      <lucide-icon [img]="LoaderIcon" [size]="16" class="animate-spin text-blue-600"></lucide-icon>
+                      Loading receiving receipt details...
+                    </div>
+                  </td>
+                </tr>
+
+                <tr *ngIf="!isLoadingDetails && stagedItems.length === 0">
+                  <td colspan="8" class="p-8 text-center text-slate-400 text-xs">
+                    No line items found for this receiving receipt.
+                  </td>
+                </tr>
+
+                <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors">
+                  <!-- Product Name -->
+                  <td class="p-2.5 font-medium text-slate-800 min-w-[220px]">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.productName"
+                      class="w-full text-xs px-2 py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-semibold text-slate-800" 
+                    />
+                  </td>
+
+                  <!-- Received Quantity -->
+                  <td class="p-2.5 text-center min-w-[120px]">
+                    <div class="flex items-center justify-center gap-1">
+                      <input 
+                        type="number" 
+                        min="0" 
+                        [(ngModel)]="item.quantity"
+                        class="w-20 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-bold text-slate-800" 
+                      />
+                    </div>
+                  </td>
+
+                  <!-- CBM -->
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.cbm"
+                      class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
+
+                  <!-- Weight -->
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.totalWeight"
+                      class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
+
+                  <!-- Expiry Date -->
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="date" 
+                      [(ngModel)]="item.expirationDate" 
+                      class="text-xs px-2 py-1 rounded border border-slate-300 font-mono focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
+
+                  <!-- Pallet -->
+                  <td class="p-2.5">
+                    <button *ngIf="!item.palletId" (click)="openPalletModal(idx)" type="button" class="text-xs text-blue-600 hover:underline">
+                      + Assign Pallet
+                    </button>
+                    <span *ngIf="item.palletId" class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      #{{ item.palletId }}
+                    </span>
+                  </td>
+
+                  <!-- Remarks Column -->
+                  <td class="p-2.5 min-w-[180px]">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.remarks" 
+                      placeholder="Item remarks / notes..." 
+                      class="w-full text-xs px-2 py-1 border border-slate-300 rounded text-slate-600 focus:ring-1 focus:ring-blue-400 focus:outline-none" 
+                    />
+                  </td>
+
+                  <!-- Action -->
+                  <td class="p-2.5 text-center">
+                    <button (click)="removeProductItem(idx)" class="text-slate-400 hover:text-red-600 p-1">✕</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Footer Actions -->
+    <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
+      <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
+      <div class="text-xs text-slate-500">
+        Total Line Items: <strong>{{ stagedItems.length }}</strong>
+      </div>
+      <div class="flex items-center gap-2">
+        <button (click)="onClose()" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100">
+          Cancel
+        </button>
+        <button 
+          (click)="saveReceiving()" 
+          [disabled]="isSaving || isLoadingDetails" 
+          type="button" 
+          class="px-5 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 disabled:opacity-50 flex items-center gap-2"
+        >
+          <lucide-icon *ngIf="isSaving" [img]="LoaderIcon" [size]="14" class="animate-spin"></lucide-icon>
+          <span>{{ isSaving ? 'Updating Receipt...' : 'Update Receipt' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PALLET SCANNING MODAL -->
+<div *ngIf="isPalletModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePalletModal()"></div>
+  <div class="relative z-10 w-full max-w-md bg-white rounded-xl shadow-2xl overflow-hidden p-5 space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+      <h3 class="text-sm font-bold text-slate-800">Assign Pallet to Line Item</h3>
+      <button (click)="closePalletModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+    </div>
+
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <label class="block text-xs font-bold text-slate-700">Pallet QR HashCode</label>
+        <app-qr-scanner buttonText="Scan QR" modalTitle="Pallet Scanner" (scanSuccess)="onQrScanned($event)"></app-qr-scanner>
+      </div>
+
+      <div class="flex gap-2">
+        <input 
+          type="text" 
+          [(ngModel)]="palletQrCodeInput" 
+          placeholder="Enter QR HashCode" 
+          (keyup.enter)="scanAndLocatePallet()" 
+          class="flex-1 text-xs px-3 py-2 border border-slate-300 rounded-lg" 
+        />
+        <button (click)="scanAndLocatePallet()" [disabled]="isLocatingPallet" class="px-3 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800">
+          {{ isLocatingPallet ? 'Locating...' : 'Locate' }}
+        </button>
+      </div>
+
+      <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
+
+      <div *ngIf="scannedPallet" class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs space-y-1">
+        <div><strong>Pallet ID:</strong> #{{ scannedPallet.palletId }}</div>
+        <div><strong>Pallet Number:</strong> {{ scannedPallet.palletNumber || '—' }}</div>
+        <div><strong>Current Location:</strong> {{ scannedPallet.currentBinLocation || 'Unassigned' }}</div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 border-t border-slate-200 pt-3">
+      <button (click)="closePalletModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded-lg text-slate-700">Cancel</button>
+      <button (click)="applyPalletToRow()" [disabled]="!scannedPallet" class="px-3.5 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50">
+        Apply Pallet
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT LABELS MODAL -->
+<div *ngIf="isPrintModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePrintModal()"></div>
+  <div class="relative z-10 w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <lucide-icon [img]="PrinterIcon" [size]="18" class="text-blue-400"></lucide-icon>
+        <div>
+          <h3 class="text-sm font-bold">Print Pallet QR Labels</h3>
+          <p class="text-[11px] text-slate-400">Generated {{ generatedPalletLabels.length }} thermal label(s) for warehouse printer</p>
+        </div>
+      </div>
+      <button (click)="closePrintModal()" class="text-slate-400 hover:text-white">✕</button>
+    </div>
+
+    <div class="p-4 pb-16 overflow-y-auto space-y-4 bg-slate-100 flex-1">
+      <div *ngFor="let lbl of generatedPalletLabels; let idx = index" class="p-4 bg-white border-2 border-slate-800 rounded-lg shadow-sm space-y-3 font-sans text-slate-900">
+        <div class="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
+          Pallet Label #{{ idx + 1 }} of {{ generatedPalletLabels.length }} ({{ lbl.palletNumber }})
+        </div>
+
+        <div class="flex justify-center">
+          <img [src]="lbl.qrUrl" alt="Pallet QR" class="w-28 h-28 border p-1 rounded" />
+        </div>
+
+        <div class="font-bold text-sm text-slate-900 border-b pb-1 leading-snug uppercase">
+          {{ lbl.productName }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+          <div><span class="font-normal text-slate-500">Code:</span> <strong>{{ lbl.code }}</strong></div>
+          <div><span class="font-normal text-slate-500">Weight:</span> <strong>{{ lbl.weight }} kg</strong></div>
+          <div><span class="font-normal text-slate-500">Qty:</span> <strong class="text-blue-600 font-bold">{{ lbl.quantity }}</strong></div>
+          <div><span class="font-normal text-slate-500">UoM:</span> <strong>{{ lbl.uom }}</strong></div>
+          <div><span class="font-normal text-slate-500">Lot:</span> <strong>{{ lbl.lotNumber }}</strong></div>
+          <div><span class="font-normal text-slate-500">Exp:</span> <strong>{{ lbl.expirationDate }}</strong></div>
+        </div>
+
+        <div class="text-[11px] font-mono text-slate-600 border-t pt-1">
+          Date Received: <strong>{{ lbl.dateReceived }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+      <span class="text-xs text-slate-500">Standard 4" x 6" Thermal Bluetooth Format</span>
+      <div class="flex items-center gap-2">
+        <button (click)="closePrintModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100">
+          Done
+        </button>
+        <button (click)="triggerPrint()" class="px-4 py-1.5 text-xs bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 flex items-center gap-1.5">
+          <lucide-icon [img]="PrinterIcon" [size]="14"></lucide-icon>
+          <span>Print All Labels</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
+<div #thermalPrintContainer class="hidden">
+  <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
+    <div style="text-align: center; margin-bottom: 4px;">
+      <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
+    </div>
+
+    <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
+      {{ lbl.productName }}
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
+      <div><strong>Code:</strong> {{ lbl.code }}</div>
+      <div style="display: flex; justify-content: space-between;">
+        <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
+        <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
+      </div>
+      <div><strong>UoM:</strong> {{ lbl.uom }}</div>
+      <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
+      <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
+      <strong>Date:</strong> {{ lbl.dateReceived }}
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [isOpen]="isConfirmCloseOpen"
+  title="Discard Unsaved Changes?"
+  message="You have modified fields in this receipt. Exiting will discard your edits."
+  confirmText="Discard & Exit"
+  cancelText="Keep Editing"
+  variant="warning"
+  (confirmed)="onConfirmClose()"
+  (cancelled)="onCancelClose()">
+</app-confirm-dialog>
