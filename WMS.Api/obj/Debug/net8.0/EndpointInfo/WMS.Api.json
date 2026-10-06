@@ -2106,7 +2106,7 @@
         "tags": [
           "Reports"
         ],
-        "summary": "Downloads the generated Excel report file",
+        "summary": "Downloads the generated report file",
         "operationId": "DownloadReport",
         "parameters": [
           {

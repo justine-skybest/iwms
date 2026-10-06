@@ -637,9 +637,6 @@ namespace WMS.Api.Endpoints
             .WithName("GetReceivingReports")
             .WithSummary("Retrieve list of generated receiving reports");
 
-            // -----------------------------------------------------------------------------
-            // GET /reports/download/{id}
-            // -----------------------------------------------------------------------------
             group.MapGet("/receiving/download/{id:int}", async (
                 int id,
                 WMSContext dbContext,
@@ -647,7 +644,8 @@ namespace WMS.Api.Endpoints
             {
                 var job = await dbContext.ReportJobs.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
-                if (job == null) return Results.NotFound(new { Message = "Report job not found." });
+                if (job == null)
+                    return Results.NotFound(new { Message = "Report job not found." });
 
                 if (job.Status != ReportStatus.Completed || string.IsNullOrEmpty(job.FilePath))
                     return Results.BadRequest(new { Message = $"Report is not ready. Current Status: {job.Status}" });
@@ -657,16 +655,23 @@ namespace WMS.Api.Endpoints
                 if (!File.Exists(absolutePath))
                     return Results.NotFound(new { Message = "Physical report file missing on disk." });
 
-                string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                string contentType = Path.GetExtension(absolutePath).ToLower() switch
+                {
+                    ".pdf" => "application/pdf",
+                    ".csv" => "text/csv",
+                    ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    _ => "application/octet-stream"
+                };
+
                 string fileName = Path.GetFileName(absolutePath);
 
                 return Results.File(absolutePath, contentType, fileName);
             })
-            .Produces(StatusCodes.Status200OK, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            .Produces(StatusCodes.Status200OK, contentType: "application/octet-stream")
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .WithName("DownloadReport")
-            .WithSummary("Downloads the generated Excel report file");
+            .WithSummary("Downloads the generated report file");
 
             return group;
         }

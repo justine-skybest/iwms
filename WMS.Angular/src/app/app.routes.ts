@@ -65,11 +65,11 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/pick-order/pick-order.routes').then((m) => m.pickOrderRoutes),
         title: 'Pick-Order'
       },
-      {
-        path: 'reconcillation-report',
-        loadChildren: () => import('./pages/reports/receiving-reconciliation-report/receiving-reconciliation.routes').then((m) => m.reconcillationRoutes),
-        title: 'Reconciliation Report'
-      },
+      // {
+      //   path: 'reconcillation-report',
+      //   loadChildren: () => import('./pages/reports/receiving-reconciliation-report/receiving-reconciliation.routes').then((m) => m.reconcillationRoutes),
+      //   title: 'Reconciliation Report'
+      // },
       {
         path: 'receiving-reports',
         loadChildren: () => import('./pages/reports/receiving-report-generation/receiving-report.routes').then((m) => m.receivingReportRoutes),

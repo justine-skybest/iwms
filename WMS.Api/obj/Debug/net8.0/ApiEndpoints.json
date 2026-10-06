@@ -3406,7 +3406,7 @@
       "Reports"
     ],
     "EndpointName": "DownloadReport",
-    "Summary": "Downloads the generated Excel report file"
+    "Summary": "Downloads the generated report file"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
