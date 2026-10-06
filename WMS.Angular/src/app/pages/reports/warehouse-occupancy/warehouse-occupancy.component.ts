@@ -340,87 +340,104 @@ export class WarehouseOccupancyComponent implements OnInit, OnDestroy {
     this.renderRackFromImageStyle();
   }
 
-  private renderRackFromImageStyle(): void {
-    // 1. Completely dispose and remove the previous master rack structure from scene
-    if (this.rackGroup) {
-      this.scene.remove(this.rackGroup);
-      this.rackGroup.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.geometry.dispose();
-          if (Array.isArray(child.material)) {
-            child.material.forEach((m) => m.dispose());
-          } else {
-            child.material.dispose();
-          }
+private renderRackFromImageStyle(): void {
+  // 1. Completely dispose and remove the previous master rack structure from scene
+  if (this.rackGroup) {
+    this.scene.remove(this.rackGroup);
+    this.rackGroup.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.dispose();
+        if (Array.isArray(child.material)) {
+          child.material.forEach((m) => m.dispose());
+        } else {
+          child.material.dispose();
         }
-      });
-      this.rackGroup = null;
-    }
-    this.binGroups = [];
-    this.selectedBinGroup = null;
-
-    if (!this.report?.bins || this.report.bins.length === 0 || this.selectedRackOptions.length === 0) return;
-
-    // 2. Create new master rack group
-    this.rackGroup = new THREE.Group();
-
-    const bins = Array.from(this.report.bins);
-    const selectedRack = this.selectedRackOptions[0]?.raw;
-    const rackTitle = selectedRack?.name || 'Metal Shelving 1';
-
-    const bayWidth = 2.4;
-    const levelHeight = 1.8;
-    const depth = 1.4;
-    const postThickness = 0.1;
-
-    let maxBay = 1;
-    let maxLevel = 1;
-
-    bins.forEach(b => {
-      if ((b.bayNumber || 1) > maxBay) maxBay = b.bayNumber || 1;
-      if ((b.levelNumber || 1) > maxLevel) maxLevel = b.levelNumber || 1;
+      }
     });
+    this.rackGroup = null;
+  }
+  this.binGroups = [];
+  this.selectedBinGroup = null;
 
-    const postMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.5 });
-    const shelfPlateMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 });
+  if (!this.report?.bins || this.report.bins.length === 0 || this.selectedRackOptions.length === 0) return;
 
-    // Build Vertical Steel Posts (Added to rackGroup)
-    for (let bay = 0; bay <= maxBay; bay++) {
-      const posX = bay * bayWidth;
-      const postGeo = new THREE.BoxGeometry(postThickness, maxLevel * levelHeight + 0.4, postThickness);
+  // 2. Create new master rack group
+  this.rackGroup = new THREE.Group();
 
-      const frontPost = new THREE.Mesh(postGeo, postMat);
-      frontPost.position.set(posX, (maxLevel * levelHeight) / 2, depth / 2);
-      this.rackGroup.add(frontPost);
+  const bins = Array.from(this.report.bins);
+  const selectedRack = this.selectedRackOptions[0]?.raw;
+  const rackTitle = selectedRack?.name || 'Metal Shelving 1';
 
-      const backPost = new THREE.Mesh(postGeo, postMat);
-      backPost.position.set(posX, (maxLevel * levelHeight) / 2, -depth / 2);
-      this.rackGroup.add(backPost);
+  const bayWidth = 2.4;
+  const levelHeight = 1.8;
+  const depth = 1.4;
+  const postThickness = 0.1;
+
+  // Start max calculation at 0 to accurately reflect dataset dimensions
+  let maxBay = 0;
+  let maxLevel = 0;
+
+  bins.forEach(b => {
+    if ((b.bayNumber || 1) > maxBay) maxBay = b.bayNumber || 1;
+    if ((b.levelNumber || 1) > maxLevel) maxLevel = b.levelNumber || 1;
+  });
+
+  const postMat = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: 0.5 });
+  const shelfPlateMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.4 });
+
+  // Build Vertical Steel Posts
+  for (let bay = 0; bay <= maxBay; bay++) {
+    const posX = bay * bayWidth;
+    const postGeo = new THREE.BoxGeometry(postThickness, maxLevel * levelHeight + 0.4, postThickness);
+
+    const frontPost = new THREE.Mesh(postGeo, postMat);
+    frontPost.position.set(posX, (maxLevel * levelHeight) / 2, depth / 2);
+    this.rackGroup.add(frontPost);
+
+    const backPost = new THREE.Mesh(postGeo, postMat);
+    backPost.position.set(posX, (maxLevel * levelHeight) / 2, -depth / 2);
+    this.rackGroup.add(backPost);
+  }
+
+  // Build Shelves
+  for (let level = 1; level <= maxLevel; level++) {
+    const posY = (level - 1) * levelHeight + 0.05;
+    const shelfGeo = new THREE.BoxGeometry(maxBay * bayWidth, 0.08, depth);
+    const shelfMesh = new THREE.Mesh(shelfGeo, shelfPlateMat);
+    shelfMesh.position.set((maxBay * bayWidth) / 2, posY, 0);
+    this.rackGroup.add(shelfMesh);
+  }
+
+  // Build Floating Title Header
+  const headerLabel = this.createRackHeaderLabel(rackTitle);
+  headerLabel.position.set((maxBay * bayWidth) / 2, maxLevel * levelHeight + 1.2, 0);
+  this.rackGroup.add(headerLabel);
+
+  const qrTex = this.getOrCreateQrTexture();
+  const qrBoxMat = new THREE.MeshStandardMaterial({ map: qrTex, roughness: 0.3 });
+
+  // Group bins by bay & level to divide slot width evenly
+  const slotMap = new Map<string, typeof bins>();
+  bins.forEach(bin => {
+    const key = `${bin.bayNumber || 1}_${bin.levelNumber || 1}`;
+    if (!slotMap.has(key)) {
+      slotMap.set(key, []);
     }
+    slotMap.get(key)!.push(bin);
+  });
 
-    // Build Shelves (Added to rackGroup)
-    for (let level = 1; level <= maxLevel; level++) {
-      const posY = (level - 1) * levelHeight + 0.05;
-      const shelfGeo = new THREE.BoxGeometry(maxBay * bayWidth, 0.08, depth);
-      const shelfMesh = new THREE.Mesh(shelfGeo, shelfPlateMat);
-      shelfMesh.position.set((maxBay * bayWidth) / 2, posY, 0);
-      this.rackGroup.add(shelfMesh);
-    }
+  // Build Bins & Cargo Boxes horizontally arranged inside each bay slot
+  slotMap.forEach((slotBins) => {
+    const totalInSlot = slotBins.length;
+    const slotWidth = (bayWidth - postThickness) / totalInSlot;
 
-    // Build Floating Title Header (Added to rackGroup)
-    const headerLabel = this.createRackHeaderLabel(rackTitle);
-    headerLabel.position.set((maxBay * bayWidth) / 2, maxLevel * levelHeight + 1.2, 0);
-    this.rackGroup.add(headerLabel);
-
-    const qrTex = this.getOrCreateQrTexture();
-    const qrBoxMat = new THREE.MeshStandardMaterial({ map: qrTex, roughness: 0.3 });
-
-    // Build Bins & Cargo Boxes (Added to rackGroup)
-    bins.forEach(bin => {
+    slotBins.forEach((bin, binIndex) => {
       const bay = bin.bayNumber || 1;
       const level = bin.levelNumber || 1;
 
-      const posX = (bay - 0.5) * bayWidth;
+      // Position bins side by side across the bay slot width
+      const bayStartX = (bay - 1) * bayWidth + postThickness / 2;
+      const posX = bayStartX + (binIndex + 0.5) * slotWidth;
       const posY = (level - 1) * levelHeight + 0.08;
       const posZ = 0;
 
@@ -428,14 +445,18 @@ export class WarehouseOccupancyComponent implements OnInit, OnDestroy {
       binGroup.position.set(posX, posY, posZ);
       binGroup.userData = { bin, isBinGroup: true };
 
+      const boxWidth = slotWidth * 0.85; // Leave small spacing margin
+      const boxHeight = 0.9;
+      const boxDepth = 1.0;
+
       if (bin.isOccupied) {
-        const boxGeo = new THREE.BoxGeometry(1.2, 0.9, 1.0);
+        const boxGeo = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
         const cargoMesh = new THREE.Mesh(boxGeo, qrBoxMat);
         cargoMesh.name = 'cargoMesh';
-        cargoMesh.position.set(0, 0.45, 0);
+        cargoMesh.position.set(0, boxHeight / 2, 0);
         binGroup.add(cargoMesh);
       } else {
-        const emptyGeo = new THREE.BoxGeometry(1.4, 0.9, 1.0);
+        const emptyGeo = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
         const emptyMat = new THREE.MeshStandardMaterial({
           color: 0x059669,
           transparent: true,
@@ -444,23 +465,24 @@ export class WarehouseOccupancyComponent implements OnInit, OnDestroy {
         });
         const emptyMesh = new THREE.Mesh(emptyGeo, emptyMat);
         emptyMesh.name = 'cargoMesh';
-        emptyMesh.position.set(0, 0.45, 0);
+        emptyMesh.position.set(0, boxHeight / 2, 0);
         binGroup.add(emptyMesh);
       }
 
       this.rackGroup!.add(binGroup);
       this.binGroups.push(binGroup);
     });
+  });
 
-    this.scene.add(this.rackGroup);
+  this.scene.add(this.rackGroup);
 
-    const centerX = (maxBay * bayWidth) / 2;
-    const centerY = (maxLevel * levelHeight) / 2;
+  const centerX = (maxBay * bayWidth) / 2;
+  const centerY = (maxLevel * levelHeight) / 2;
 
-    this.controls.target.set(centerX, centerY, 0);
-    this.camera.position.set(centerX, centerY + 1, maxBay * 2.2 + 6);
-    this.controls.update();
-  }
+  this.controls.target.set(centerX, centerY, 0);
+  this.camera.position.set(centerX, centerY + 1, maxBay * 2.2 + 6);
+  this.controls.update();
+}
 
   private handleCanvasClick(event: PointerEvent): void {
     if (!this.canvasContainer || !this.renderer) return;
