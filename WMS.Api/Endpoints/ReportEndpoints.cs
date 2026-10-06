@@ -125,7 +125,7 @@ namespace WMS.Api.Endpoints
                             PalletProducts = ci.Pallet.ReceivedProducts.Select(rp => new
                             {
                                 rp.ReceivingId,
-                                ProductName = rp.ExpectedProductName,
+                                ProductName = rp.Product.Name,
                                 OriginalQuantity = rp.ExpectedQuantity > 0 ? rp.ExpectedQuantity : rp.Quantity,
                                 PickedQuantity = dbContext.PickedProducts
                                     .Where(pp => pp.ReceivedProductId == rp.Id)
@@ -423,19 +423,22 @@ namespace WMS.Api.Endpoints
 
                         int currentRow = 13; // 👈 Updated starting row for Table 1 to accommodate the extra header row
 
+                        // -------------------------------------------------------------
                         // TABLE 1: RECEIVED ITEMS
+                        // -------------------------------------------------------------
                         ws.Cell(currentRow, 1).Value = "1. LIST OF RECEIVED ITEMS";
-                        ws.Range(currentRow, 1, currentRow, 11).Merge()
+                        // Increased span to 12 columns to accommodate the new CBM column
+                        ws.Range(currentRow, 1, currentRow, 12).Merge()
                             .Style.Font.SetBold().Font.SetFontSize(12)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#059669"))
                             .Font.SetFontColor(XLColor.White);
                         currentRow++;
 
                         string[] receivedHeaders = {
-                "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
-                "Product Code", "Product Name", "Received Qty", "UOM", "Weight (KG)",
-                "Pallet / Plate"
-            };
+    "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
+    "Product Code", "Product Name", "Received Qty", "UOM", "CBM", "Weight (KG)",
+    "Pallet / Plate"
+};
 
                         for (int i = 0; i < receivedHeaders.Length; i++)
                         {
@@ -466,9 +469,10 @@ namespace WMS.Api.Endpoints
                                     ws.Cell(currentRow, 6).Value = rp.Product?.Code ?? "N/A";
                                     ws.Cell(currentRow, 7).Value = rp.Product?.Name ?? rp.ExpectedProductName ?? "N/A";
                                     ws.Cell(currentRow, 8).Value = rp.Quantity;
-                                    ws.Cell(currentRow, 9).Value = rp.TypeOfPackage ?? "CS";
-                                    ws.Cell(currentRow, 10).Value = rp.TotalWeight ?? "0";
-                                    ws.Cell(currentRow, 11).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {r.PlateNumber}";
+                                    ws.Cell(currentRow, 9).Value = rp.TypeOfPackage;
+                                    ws.Cell(currentRow, 10).Value = rp.CBM;        
+                                    ws.Cell(currentRow, 11).Value = rp.TotalWeight; 
+                                    ws.Cell(currentRow, 12).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {r.PlateNumber}";
                                     currentRow++;
                                 }
                             }
