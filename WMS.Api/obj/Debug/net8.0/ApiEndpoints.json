@@ -2390,11 +2390,21 @@
           "application/json"
         ],
         "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 500
       }
     ],
     "Tags": [
-      "Pallet"
-    ]
+      "Pallets"
+    ],
+    "EndpointName": "GetPalletsV2",
+    "Description": "Fetches pallets with support for filtering by warehouse ID and search queries matching pallet number or warehouse name.",
+    "Summary": "Retrieve a paginated list of pallets"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",
@@ -3297,6 +3307,106 @@
     "Tags": [
       "Receiving"
     ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_2",
+    "RelativePath": "reports/generate-receiving-report",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WMS.Api.Dtos.Reporting.GenerateReceivingReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "GenerateReportResponse",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 202
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ],
+    "EndpointName": "GenerateReceivingReport",
+    "Summary": "Triggers an async job to generate a Reconciled Receiving Excel report"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_3",
+    "RelativePath": "reports/receiving",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ReceivingReportListResponse",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ],
+    "EndpointName": "GetReceivingReports",
+    "Summary": "Retrieve list of generated receiving reports"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_4",
+    "RelativePath": "reports/receiving/download/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ],
+    "EndpointName": "DownloadReport",
+    "Summary": "Downloads the generated Excel report file"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",

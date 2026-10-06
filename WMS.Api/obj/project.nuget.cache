@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Hj09eG9bVlY=",
+  "dgSpecHash": "DsK8I65GjWg=",
   "success": true,
   "projectFilePath": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\WMS.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\justi\\.nuget\\packages\\closedxml\\0.105.1\\closedxml.0.105.1.nupkg.sha512",
     "C:\\Users\\justi\\.nuget\\packages\\closedxml.parser\\2.0.0\\closedxml.parser.2.0.0.nupkg.sha512",
+    "C:\\Users\\justi\\.nuget\\packages\\csvhelper\\33.1.0\\csvhelper.33.1.0.nupkg.sha512",
     "C:\\Users\\justi\\.nuget\\packages\\documentformat.openxml\\3.1.1\\documentformat.openxml.3.1.1.nupkg.sha512",
     "C:\\Users\\justi\\.nuget\\packages\\documentformat.openxml.framework\\3.1.1\\documentformat.openxml.framework.3.1.1.nupkg.sha512",
     "C:\\Users\\justi\\.nuget\\packages\\dotnetenv\\3.2.0\\dotnetenv.3.2.0.nupkg.sha512",

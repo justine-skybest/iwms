@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 using WMS.Api.Entities;
+using WMS.Api.Entities.Reporting;
 using WMS.Api.Services;
 
 namespace WMS.Api.Data;
@@ -45,6 +46,7 @@ public class WMSContext(
     public DbSet<TransferLog> TransferLogs => Set<TransferLog>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<ReportJob> ReportJobs => Set<ReportJob>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

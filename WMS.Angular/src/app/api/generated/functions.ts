@@ -47,8 +47,6 @@ export type { PalletGet$Params as PalletGet$Params } from './fn/pallet/pallet-ge
 export { palletGet as palletGet } from './fn/pallet/pallet-get';
 export type { CreatePallet$Params as CreatePallet$Params } from './fn/pallet/create-pallet';
 export { createPallet as createPallet } from './fn/pallet/create-pallet';
-export type { PalletV2Get$Params as PalletV2Get$Params } from './fn/pallet/pallet-v-2-get';
-export { palletV2Get as palletV2Get } from './fn/pallet/pallet-v-2-get';
 export type { GetPalletStockById$Params as GetPalletStockById$Params } from './fn/pallet/get-pallet-stock-by-id';
 export { getPalletStockById as getPalletStockById } from './fn/pallet/get-pallet-stock-by-id';
 export type { PalletWarehouseIdGet$Params as PalletWarehouseIdGet$Params } from './fn/pallet/pallet-warehouse-id-get';
@@ -69,6 +67,8 @@ export type { PalletNumberWarehouseIdGet$Params as PalletNumberWarehouseIdGet$Pa
 export { palletNumberWarehouseIdGet as palletNumberWarehouseIdGet } from './fn/pallet/pallet-number-warehouse-id-get';
 export type { PalletAutocreateWarehouseIdPost$Params as PalletAutocreateWarehouseIdPost$Params } from './fn/pallet/pallet-autocreate-warehouse-id-post';
 export { palletAutocreateWarehouseIdPost as palletAutocreateWarehouseIdPost } from './fn/pallet/pallet-autocreate-warehouse-id-post';
+export type { GetPalletsV2$Params as GetPalletsV2$Params } from './fn/pallets/get-pallets-v-2';
+export { getPalletsV2 as getPalletsV2 } from './fn/pallets/get-pallets-v-2';
 export type { GetRacks$Params as GetRacks$Params } from './fn/racks/get-racks';
 export { getRacks as getRacks } from './fn/racks/get-racks';
 export type { RackPost$Params as RackPost$Params } from './fn/racks/rack-post';
@@ -109,6 +109,12 @@ export type { GetWarehouseOccupancyReport$Params as GetWarehouseOccupancyReport$
 export { getWarehouseOccupancyReport as getWarehouseOccupancyReport } from './fn/reports/get-warehouse-occupancy-report';
 export type { ReportsTransactionSummaryGet$Params as ReportsTransactionSummaryGet$Params } from './fn/reports/reports-transaction-summary-get';
 export { reportsTransactionSummaryGet as reportsTransactionSummaryGet } from './fn/reports/reports-transaction-summary-get';
+export type { GenerateReceivingReport$Params as GenerateReceivingReport$Params } from './fn/reports/generate-receiving-report';
+export { generateReceivingReport as generateReceivingReport } from './fn/reports/generate-receiving-report';
+export type { GetReceivingReports$Params as GetReceivingReports$Params } from './fn/reports/get-receiving-reports';
+export { getReceivingReports as getReceivingReports } from './fn/reports/get-receiving-reports';
+export type { DownloadReport$Params as DownloadReport$Params } from './fn/reports/download-report';
+export { downloadReport as downloadReport } from './fn/reports/download-report';
 export type { LocatePalletByNumber$Params as LocatePalletByNumber$Params } from './fn/transfers/locate-pallet-by-number';
 export { locatePalletByNumber as locatePalletByNumber } from './fn/transfers/locate-pallet-by-number';
 export type { LocatePalletByQrCode$Params as LocatePalletByQrCode$Params } from './fn/transfers/locate-pallet-by-qr-code';

@@ -7,20 +7,16 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { PalletSummaryDtoPaginatedResponse } from '../../models/pallet-summary-dto-paginated-response';
+import type { ReceivingReportListResponse } from '../../models/receiving-report-list-response';
 
-export interface PalletV2Get$Params {
-  search?: string;
-  warehouseId?: number;
+export interface GetReceivingReports$Params {
   page?: number;
   pageSize?: number;
 }
 
-export function palletV2Get(http: HttpClient, rootUrl: string, params?: PalletV2Get$Params, context?: HttpContext): Observable<StrictHttpResponse<PalletSummaryDtoPaginatedResponse>> {
-  const rb = new RequestBuilder(rootUrl, palletV2Get.PATH, 'get');
+export function getReceivingReports(http: HttpClient, rootUrl: string, params?: GetReceivingReports$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingReportListResponse>> {
+  const rb = new RequestBuilder(rootUrl, getReceivingReports.PATH, 'get');
   if (params) {
-    rb.query('search', params.search, {});
-    rb.query('warehouseId', params.warehouseId, {});
     rb.query('page', params.page, {});
     rb.query('pageSize', params.pageSize, {});
   }
@@ -30,9 +26,9 @@ export function palletV2Get(http: HttpClient, rootUrl: string, params?: PalletV2
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<PalletSummaryDtoPaginatedResponse>;
+      return r as StrictHttpResponse<ReceivingReportListResponse>;
     })
   );
 }
 
-palletV2Get.PATH = '/pallet/v2';
+getReceivingReports.PATH = '/reports/receiving';

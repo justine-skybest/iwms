@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.CheckIn;
@@ -33,10 +34,10 @@ public static class PalletEndpoint
         // -----------------------------------------------------------------------------
         group.MapGet("/v2", async (
             WMSContext dbContext,
-            string? search = null,
-            int? warehouseId = null,
-            int page = 1,
-            int pageSize = 50,
+            [Description("Filter by pallet number or warehouse name")] string? search = null,
+            [Description("Filter by specific warehouse ID")] int? warehouseId = null,
+            [Description("Page number (1-based index)")] int page = 1,
+            [Description("Number of items per page (1 to 500)")] int pageSize = 50,
             CancellationToken cancellationToken = default) =>
         {
             const int maxPageSize = 500;
@@ -54,9 +55,6 @@ public static class PalletEndpoint
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                // NOTE: assumes search should match pallet number or warehouse
-                // name; adjust to whatever field(s) are actually meaningful
-                // for a pallet search (e.g. PalletHashCode).
                 query = query.Where(pallet =>
                     pallet.PalletNumber.ToString().Contains(search) ||
                     (pallet.Warehouse != null && pallet.Warehouse.Name.Contains(search)));
@@ -82,7 +80,12 @@ public static class PalletEndpoint
 
             return Results.Ok(response);
         })
-        .Produces<PaginatedResponse<PalletSummaryDto>>(StatusCodes.Status200OK);
+        .WithName("GetPalletsV2")
+        .WithTags("Pallets")
+        .WithSummary("Retrieve a paginated list of pallets")
+        .WithDescription("Fetches pallets with support for filtering by warehouse ID and search queries matching pallet number or warehouse name.")
+        .Produces<PaginatedResponse<PalletSummaryDto>>(StatusCodes.Status200OK, "application/json")
+        .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // -----------------------------------------------------------------------------
         // Get Available Stock by Pallet ID (Supports Unchecked-In Pallets)

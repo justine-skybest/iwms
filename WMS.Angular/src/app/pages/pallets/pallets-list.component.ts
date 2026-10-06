@@ -2,13 +2,13 @@ import { ChangeDetectorRef, Component, OnInit, inject, effect } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
-import { palletV2Get } from '../../api/generated/functions';
 import { PalletSummaryDto, PalletSummaryDtoPaginatedResponse } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
 import { LucideAngularModule, ChevronLeft, ChevronRight, PlusIcon, SearchIcon } from 'lucide-angular';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 import { CreatePalletDialogComponent } from './create/create-pallet-dialog.component';
+import { getPalletsV2 } from '../../api/generated/functions';
 
 export type PalletWithQr = PalletSummaryDto & { qrCodeUrl?: string };
 
@@ -82,7 +82,7 @@ export class PalletsListComponent implements OnInit {
     const params = this.warehouseService.withWarehouse(baseParams);
 
     try {
-      const response = await this.api.invoke(palletV2Get, params) as PalletSummaryDtoPaginatedResponse;
+      const response = await this.api.invoke(getPalletsV2, params) as PalletSummaryDtoPaginatedResponse;
       const rawItems = response.items ?? [];
 
       this.pallets = await Promise.all(

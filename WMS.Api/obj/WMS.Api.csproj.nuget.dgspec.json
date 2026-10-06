@@ -57,6 +57,10 @@
               "target": "Package",
               "version": "[0.105.1, )"
             },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[33.1.0, )"
+            },
             "DotNetEnv": {
               "target": "Package",
               "version": "[3.2.0, )"

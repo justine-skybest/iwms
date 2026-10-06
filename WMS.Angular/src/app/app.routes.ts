@@ -71,6 +71,11 @@ export const routes: Routes = [
         title: 'Reconciliation Report'
       },
       {
+        path: 'receiving-reports',
+        loadChildren: () => import('./pages/reports/receiving-report-generation/receiving-report.routes').then((m) => m.receivingReportRoutes),
+        title: 'Receiving Reports'
+      },
+      {
         path: 'warehouse-occupancy',
         loadChildren: () => import('./pages/reports/warehouse-occupancy/warehouse-occupancy.routes').then((m) => m.warehouseOccupancyRoutes),
         title: 'Warehouse Occupancy'

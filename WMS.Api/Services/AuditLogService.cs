@@ -11,14 +11,31 @@ namespace WMS.Api.Services
     {
         private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
-        public async Task LogAsync(string category, string action, string description, object? details = null, int statusCode = 200)
+        public async Task LogAsync(
+            string category,
+            string action,
+            string description,
+            object? details = null,
+            int statusCode = 200,
+            string? userOverride = null,
+            Guid? userIdOverride = null)
         {
             var httpContext = httpContextAccessor.HttpContext;
             var user = httpContext?.User;
 
-            Guid.TryParse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId);
+            // Use override first, fallback to HttpContext
+            Guid? userId = userIdOverride;
+            if (!userId.HasValue && user != null)
+            {
+                if (Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId))
+                {
+                    userId = parsedId;
+                }
+            }
 
-            var userEmail = user?.FindFirst(ClaimTypes.Email)?.Value
+            // Use override first, fallback to HttpContext claims, fallback to "System"
+            var userEmail = userOverride
+                ?? user?.FindFirst(ClaimTypes.Email)?.Value
                 ?? user?.FindFirst("email")?.Value
                 ?? user?.Identity?.Name
                 ?? "System";

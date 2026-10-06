@@ -898,70 +898,6 @@
         }
       }
     },
-    "/pallet/v2": {
-      "get": {
-        "tags": [
-          "Pallet"
-        ],
-        "parameters": [
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "warehouseId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PalletSummaryDtoPaginatedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/pallet/stock/pallet/{PalletId}": {
       "get": {
         "tags": [
@@ -1313,6 +1249,83 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/pallet/v2": {
+      "get": {
+        "tags": [
+          "Pallets"
+        ],
+        "summary": "Retrieve a paginated list of pallets",
+        "description": "Fetches pallets with support for filtering by warehouse ID and search queries matching pallet number or warehouse name.",
+        "operationId": "GetPalletsV2",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletSummaryDtoPaginatedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -2012,6 +2025,109 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/reports/generate-receiving-report": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Triggers an async job to generate a Reconciled Receiving Excel report",
+        "operationId": "GenerateReceivingReport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateReceivingReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateReportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/receiving": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Retrieve list of generated receiving reports",
+        "operationId": "GetReceivingReports",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivingReportListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/receiving/download/{id}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Downloads the generated Excel report file",
+        "operationId": "DownloadReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -5722,6 +5838,83 @@
         },
         "additionalProperties": false
       },
+      "GenerateReceivingReportRequest": {
+        "type": "object",
+        "properties": {
+          "subType": {
+            "enum": [
+              "PerPalletPerPackingList",
+              "PerPlateNumberPerPackingList",
+              "ReceivedVsRemaining",
+              "DailyPerPackingList"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "Csv",
+              "Pdf",
+              "Excel"
+            ],
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "incomingId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "packingListNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "plateNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "palletNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "supplier": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GenerateReportResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "jobNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "HttpValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -7067,6 +7260,35 @@
         },
         "additionalProperties": false
       },
+      "ReceivingReportListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportJob"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "ReceivingSummaryDto": {
         "type": "object",
         "properties": {
@@ -7170,6 +7392,92 @@
           "dateReceived": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReportJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastModifiedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "reportType": {
+            "enum": [
+              "Receiving",
+              "Incoming",
+              "Aging",
+              "Warehouse_Occupancy",
+              "Inventory"
+            ],
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "Csv",
+              "Pdf",
+              "Excel"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "Pending",
+              "Processing",
+              "Completed",
+              "Failed"
+            ],
+            "type": "string"
+          },
+          "periodStart": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "periodEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "requestedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "filePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
