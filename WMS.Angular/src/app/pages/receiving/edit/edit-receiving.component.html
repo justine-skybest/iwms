@@ -14,7 +14,7 @@
         <div>
           <h2 class="text-base font-bold">Edit Receiving Receipt</h2>
           <p class="text-xs text-slate-400">
-            Modify received line items and shipment details for <strong class="text-blue-400 font-mono">{{ newReceiving.series }}</strong>
+            Modify line items, add unreceived shipment products, and update pallet measurements for <strong class="text-blue-400 font-mono">{{ newReceiving.series }}</strong>
           </p>
         </div>
         <button (click)="onClose()" class="p-1 rounded-lg text-slate-400 hover:text-white">✕</button>
@@ -27,8 +27,8 @@
           <span>{{ validationError }}</span>
         </div>
 
-        <!-- 1. LINKED INCOMING SHIPMENT INDICATOR -->
-        <div *ngIf="selectedIncoming" class="bg-blue-50/70 p-4 border border-blue-200 rounded-xl space-y-2">
+        <!-- 1. LINKED INCOMING SHIPMENT INDICATOR & ADD LINE ITEMS COMBOBOX -->
+        <div *ngIf="selectedIncoming" class="bg-blue-50/70 p-4 border border-blue-200 rounded-xl space-y-3">
           <div class="flex items-center justify-between">
             <span class="block text-xs font-bold text-blue-900 uppercase tracking-wider">
               Linked Incoming Shipment Context
@@ -43,6 +43,108 @@
               <span class="font-mono font-bold text-blue-700">Shipment #{{ selectedIncoming.id }}</span>
               <span class="text-slate-600">Shipper: <strong>{{ selectedIncoming.shipper || '—' }}</strong></span>
               <span class="text-slate-600">Consignee: <strong>{{ selectedIncoming.consignee || '—' }}</strong></span>
+            </div>
+          </div>
+
+          <!-- INLINE LINE ITEM SELECTION COMBOBOX FOR ADDING NEW ITEMS -->
+          <div class="space-y-1.5 pt-2 border-t border-blue-200/80">
+            <div class="flex items-center justify-between">
+              <label class="block text-xs font-bold text-blue-900 uppercase tracking-wider">
+                Add Line Items from Incoming Shipment
+              </label>
+              <span class="text-[11px] text-slate-500 font-mono">
+                Staged: <strong>{{ stagedItems.length }}</strong> / {{ availableIncomingProducts.length }} products available
+              </span>
+            </div>
+
+            <div class="relative">
+              <div 
+                (click)="toggleProductDropdown($event)"
+                class="w-full text-xs px-3 py-2.5 border border-slate-300 rounded-lg bg-white focus-within:ring-2 focus-within:ring-blue-500 cursor-pointer flex items-center justify-between shadow-sm"
+              >
+                <div class="flex items-center gap-2 truncate text-slate-700 font-medium">
+                  <lucide-icon [img]="PackageCheckIcon" [size]="15" class="text-blue-600 shrink-0"></lucide-icon>
+                  <span *ngIf="stagedItems.length === 0" class="text-slate-400">Select line items to add...</span>
+                  <span *ngIf="stagedItems.length > 0" class="truncate font-semibold text-slate-800">
+                    {{ stagedItems.length }} Line Item(s) Selected / Staged
+                  </span>
+                </div>
+                <lucide-icon [img]="ChevronDownIcon" [size]="15" class="text-slate-400 shrink-0 transition-transform duration-200" [class.rotate-180]="isProductDropdownOpen"></lucide-icon>
+              </div>
+
+              <!-- Product Selection Dropdown -->
+              <div 
+                *ngIf="isProductDropdownOpen"
+                (click)="$event.stopPropagation()"
+                class="absolute z-30 left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-2xl max-h-64 overflow-y-auto divide-y divide-slate-100"
+              >
+                <div class="p-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between sticky top-0 z-10 gap-2">
+                  <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 shrink-0">
+                    <input 
+                      type="checkbox" 
+                      [checked]="isAllProductsSelected" 
+                      (change)="toggleSelectAllProducts($event)"
+                      class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 cursor-pointer" 
+                    />
+                    <span>Select All Items</span>
+                  </label>
+
+                  <div class="relative flex-1 max-w-xs">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="productFilterQuery" 
+                      placeholder="Filter products..." 
+                      class="w-full text-[11px] pl-7 pr-2 py-1 border border-slate-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                    />
+                    <lucide-icon [img]="SearchIcon" [size]="12" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400"></lucide-icon>
+                  </div>
+                </div>
+
+                <div 
+                *ngFor="let p of filteredAvailableProducts" 
+                (click)="toggleProductSelection(p)"
+                [ngClass]="{
+                    'bg-slate-100/70 text-slate-500 cursor-not-allowed': p.isPreSelected,
+                    'bg-blue-50/60 cursor-pointer': p.selected && !p.isPreSelected,
+                    'hover:bg-slate-50 cursor-pointer': !p.selected
+                }"
+                class="p-2.5 flex items-center justify-between transition-colors text-xs select-none"
+                >
+                <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                    <input 
+                    type="checkbox" 
+                    [checked]="p.selected" 
+                    [disabled]="p.isPreSelected"
+                    class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500 shrink-0 pointer-events-none disabled:opacity-60"
+                    />
+                    <div class="min-w-0">
+                    <div class="font-bold text-slate-800 truncate flex items-center gap-1.5">
+                        <span>{{ p.productName }}</span>
+                        <span *ngIf="p.remainingQuantity === 0" class="text-[9px] px-1.5 py-0.2 bg-emerald-100 text-emerald-800 font-bold rounded border border-emerald-300 shrink-0">
+                        RECEIVED
+                        </span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 truncate">
+                        Supplier: {{ p.supplier || '—' }} | Expiry: {{ formatDate(p.expirationDate!) }}
+                    </div>
+                    </div>
+                </div>
+
+                <div class="text-right font-mono shrink-0">
+                    <div 
+                    class="font-bold" 
+                    [ngClass]="p.remainingQuantity === 0 ? 'text-slate-400' : 'text-blue-700'"
+                    >
+                    {{ p.quantity }} units balance
+                    </div>
+                    <div class="text-[10px] text-slate-400">{{ p.cbm }} CBM | {{ p.totalWeight }} Weight</div>
+                </div>
+                </div>
+
+                <div *ngIf="filteredAvailableProducts.length === 0" class="p-4 text-center text-slate-400 text-xs">
+                  No matching line items available.
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -156,7 +258,7 @@
 
                 <tr *ngIf="!isLoadingDetails && stagedItems.length === 0">
                   <td colspan="8" class="p-8 text-center text-slate-400 text-xs">
-                    No line items found for this receiving receipt.
+                    No line items staged. Use the dropdown above to add products from the shipment.
                   </td>
                 </tr>
 
@@ -177,6 +279,7 @@
                         type="number" 
                         min="0" 
                         [(ngModel)]="item.quantity"
+                        (ngModelChange)="onItemQuantityChange(item)"
                         class="w-20 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-bold text-slate-800" 
                       />
                     </div>
@@ -187,6 +290,7 @@
                     <input 
                       type="text" 
                       [(ngModel)]="item.cbm"
+                      (ngModelChange)="onItemFieldChange()"
                       class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
                     />
                   </td>
@@ -196,6 +300,7 @@
                     <input 
                       type="text" 
                       [(ngModel)]="item.totalWeight"
+                      (ngModelChange)="onItemFieldChange()"
                       class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
                     />
                   </td>
@@ -238,6 +343,82 @@
             </table>
           </div>
         </div>
+
+        <hr class="border-slate-200" />
+
+        <!-- 6. PALLET GROUPING & PHYSICAL MEASUREMENT OVERRIDES -->
+        <div *ngIf="palletGroups.length > 0" class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+              <lucide-icon [img]="LayersIcon" [size]="16" class="text-blue-600"></lucide-icon>
+              <span>Palletized Group Summaries & Scale Measurements ({{ palletGroups.length }} Pallets)</span>
+            </h3>
+            <span class="text-[11px] text-slate-500">
+              Warehouse man can override total scale CBM & weight per pallet. Line items will be auto-adjusted proportionally.
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div *ngFor="let group of palletGroups; trackBy: trackByPalletId" class="bg-slate-50 p-4 border border-slate-200 rounded-xl space-y-3 shadow-sm">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div class="flex items-center gap-2">
+                  <lucide-icon [img]="BoxIcon" [size]="16" class="text-blue-600"></lucide-icon>
+                  <span class="font-mono font-bold text-xs text-slate-800">Pallet #{{ group.palletId }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">
+                    {{ group.items.length }} SKU(s) | {{ group.totalQuantity }} Units
+                  </span>
+                </div>
+              </div>
+
+              <!-- Assigned Items Quick List -->
+              <div class="space-y-1 text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 max-h-28 overflow-y-auto">
+                <div *ngFor="let itm of group.items" class="flex justify-between items-center text-[11px] font-mono">
+                  <span class="truncate font-semibold text-slate-700 max-w-[200px]">{{ itm.productName }}</span>
+                  <span class="text-slate-500">{{ itm.quantity }} units | {{ itm.cbm }} CBM | {{ itm.totalWeight }} kg</span>
+                </div>
+              </div>
+
+              <!-- Measurement Controls & Overrides -->
+              <div class="grid grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                    Pallet Total CBM
+                  </label>
+                  <div class="relative">
+                    <input 
+                      type="number" 
+                      step="0.001"
+                      min="0"
+                      [ngModel]="group.calculatedCbm"
+                      (ngModelChange)="applyPalletCbmOverride(group, $event)"
+                      class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">m³</span>
+                  </div>
+                  <span class="text-[9px] text-slate-400">Auto-summed: {{ group.calculatedCbm }} m³</span>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                    Pallet Total Weight
+                  </label>
+                  <div class="relative">
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      min="0"
+                      [ngModel]="group.calculatedWeight"
+                      (ngModelChange)="applyPalletWeightOverride(group, $event)"
+                      class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">kg</span>
+                  </div>
+                  <span class="text-[9px] text-slate-400">Auto-summed: {{ group.calculatedWeight }} kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -245,7 +426,7 @@
     <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
       <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
       <div class="text-xs text-slate-500">
-        Total Line Items: <strong>{{ stagedItems.length }}</strong>
+        Total Line Items: <strong>{{ stagedItems.length }}</strong> | Total Pallets: <strong>{{ palletGroups.length }}</strong>
       </div>
       <div class="flex items-center gap-2">
         <button (click)="onClose()" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100">

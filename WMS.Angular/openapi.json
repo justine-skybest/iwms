@@ -624,7 +624,7 @@
           "Incomings"
         ],
         "summary": "Get pending or partial incoming shipment details by ID",
-        "description": "Retrieves detailed information for a specific unreceived or partial incoming shipment, including calculated received and remaining balances.",
+        "description": "Retrieves detailed information for a specific unreceived or partial incoming shipment, including dynamically calculated received and remaining product balances.",
         "operationId": "GetUnreceivedIncomingById",
         "parameters": [
           {
@@ -5430,7 +5430,8 @@
           },
           "incomingId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "series": {
             "type": "string",

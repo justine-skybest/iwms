@@ -163,7 +163,7 @@ export class InventoryCheckModalComponent implements OnChanges {
     try {
       // Fetch available stock by Pallet ID
       const res = (await this.api.invoke(getPalletStockById, {
-        PalletId: palletId - 100000,
+        PalletId: palletId,
       })) as any;
 
       const data = (Array.isArray(res) ? res : [res]) as DisplayCheckInProductsDto[];

@@ -12,7 +12,7 @@
       <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
         <div>
           <h2 class="text-base font-bold">New Receiving Receipt</h2>
-          <p class="text-xs text-slate-400">Match incoming shipment line items against physical received goods</p>
+          <p class="text-xs text-slate-400">Record physical received goods, auto-calculate balances, and group items into pallets</p>
         </div>
         <button (click)="onClose()" class="p-1 rounded-lg text-slate-400 hover:text-white">✕</button>
       </div>
@@ -212,10 +212,6 @@
         <div>
           <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">General Information</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <!-- <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1"><span class="text-red-500">*</span>Series No.:</label>
-              <input type="text" (ngModelChange)="triggerDraftSave()" [(ngModel)]="newReceiving.series" placeholder="SLCWH-00001-26" maxlength="15" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg font-mono focus:ring-1 focus:ring-blue-500 uppercase" required />
-            </div> -->
             <div>
               <label class="block text-xs font-medium text-slate-600 mb-1">Date Received:</label>
               <input type="date" (ngModelChange)="triggerDraftSave()" [(ngModel)]="newReceiving.dateReceived" class="w-full text-xs px-3 py-2 border border-slate-300 rounded-lg" />
@@ -283,32 +279,25 @@
 
         <hr class="border-slate-200" />
 
-        <!-- 5. STAGED ITEMS TABLE -->
+        <!-- 5. STAGED RECEIVED LINE ITEMS TABLE -->
         <div>
           <div class="flex items-center justify-between mb-3">
-            <div>
-              <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
-                <span>Received Line Items ({{ stagedItems.length }})</span>
-                <span *ngIf="getDiscrepancySummary().flaggedCount > 0" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-semibold border border-amber-300 flex items-center gap-1">
-                  <lucide-icon [img]="AlertIcon" [size]="12"></lucide-icon>
-                  {{ getDiscrepancySummary().flaggedCount }} Flagged Discrepancy(ies)
-                </span>
-              </h3>
-              <p class="text-[11px] text-slate-500">Uncheck "Match" to enable inputs and record actual physical discrepancies.</p>
-            </div>
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+              Received Line Items ({{ stagedItems.length }})
+            </h3>
           </div>
 
           <div class="border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
             <table class="w-full text-xs text-left whitespace-nowrap">
               <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
-                  <th class="p-2.5 text-center w-12">Match</th>
-                  <th class="p-2.5">Product Description / Code</th>
-                  <th class="p-2.5 text-center">Quantity (Exp / Act)</th>
-                  <th class="p-2.5 text-center">CBM (Exp / Act)</th>
-                  <th class="p-2.5 text-center">Weight (Exp / Act)</th>
-                  <th class="p-2.5 text-center">Expiry Date (Exp / Act)</th>
+                  <th class="p-2.5">Product Description</th>
+                  <th class="p-2.5 text-center">Received Quantity</th>
+                  <th class="p-2.5 text-center">CBM</th>
+                  <th class="p-2.5 text-center">Total Weight</th>
+                  <th class="p-2.5 text-center">Expiry Date</th>
                   <th class="p-2.5">Assigned Pallet</th>
+                  <th class="p-2.5">Remarks</th>
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
@@ -319,203 +308,156 @@
                   </td>
                 </tr>
 
-                <ng-container *ngFor="let item of stagedItems; let idx = index">
-                  <tr [ngClass]="{'bg-amber-50/60': !item.isMatched, 'hover:bg-slate-50': item.isMatched}" class="transition-colors">
-                    <td class="p-2.5 text-center">
+                <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors">
+                  <td class="p-2.5 font-medium text-slate-800 min-w-[220px]">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.productName"
+                      (ngModelChange)="triggerDraftSave()"
+                      class="w-full text-xs px-2 py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-semibold text-slate-800" 
+                    />
+                  </td>
+
+                  <td class="p-2.5 text-center">
+                    <div class="flex items-center justify-center gap-1">
                       <input 
-                        type="checkbox" 
-                        [checked]="item.isMatched" 
-                        (ngModelChange)="triggerDraftSave()"
-                        (change)="toggleItemMatch(item)"
-                        class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                        title="Uncheck to enable input fields and record discrepancies"
+                        type="number" 
+                        min="0" 
+                        [(ngModel)]="item.quantity"
+                        (ngModelChange)="onItemQuantityChange(item)"
+                        class="w-20 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-bold text-slate-800" 
                       />
-                    </td>
+                    </div>
+                    <div *ngIf="item.expectedQuantity !== undefined" class="text-[10px] text-slate-400 font-mono mt-0.5">
+                      Remaining Exp: {{ item.expectedQuantity }}
+                    </div>
+                  </td>
 
-                    <td class="p-2.5 font-medium text-slate-800">
-                      <input 
-                        type="text" 
-                        [(ngModel)]="item.productName"
-                        (ngModelChange)="triggerDraftSave(); onFieldChange(item)"
-                        [disabled]="item.isMatched"
-                        [ngClass]="{
-                          'bg-slate-100 text-slate-600 cursor-not-allowed border-transparent': item.isMatched, 
-                          'bg-white border-amber-300 ring-1 ring-amber-400 font-bold': !item.isMatched
-                        }"
-                        class="w-full text-xs px-2 py-1 rounded border focus:outline-none" 
-                      />
-                      <div *ngIf="!item.isMatched && item.productName?.trim()?.toLowerCase() !== item.expectedProductName?.trim()?.toLowerCase()" class="text-[10px] text-amber-700 font-semibold mt-0.5">
-                        Expected: {{ item.expectedProductName }}
-                      </div>
-                    </td>
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.cbm"
+                      (ngModelChange)="triggerDraftSave()"
+                      class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
 
-                    <td class="p-2.5 text-center">
-                      <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-[11px] font-mono font-semibold text-slate-400" title="Expected Baseline Balance">
-                          {{ item.expectedQuantity }}
-                        </span>
-                        <span class="text-slate-300">/</span>
-                        <input 
-                          type="number" 
-                          min="0" 
-                          [(ngModel)]="item.quantity"
-                          (ngModelChange)="onFieldChange(item)"
-                          [disabled]="item.isMatched"
-                          [ngClass]="{
-                            'bg-slate-100 text-slate-600 cursor-not-allowed border-transparent': item.isMatched, 
-                            'bg-white border-amber-300 ring-2 ring-amber-400 font-bold': !item.isMatched
-                          }"
-                          class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
-                        />
-                      </div>
-                      <div class="text-[10px] font-bold font-mono mt-0.5" *ngIf="getVariance(item) !== 0">
-                        <span *ngIf="getVariance(item) < 0" class="text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">({{ getVariance(item) }} Short)</span>
-                        <span *ngIf="getVariance(item) > 0" class="text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">(+{{ getVariance(item) }} Excess)</span>
-                      </div>
-                    </td>
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.totalWeight"
+                      (ngModelChange)="triggerDraftSave()"
+                      class="w-16 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
 
-                    <td class="p-2.5 text-center">
-                      <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-[10px] font-mono text-slate-400">{{ item.expectedCbm }}</span>
-                        <span class="text-slate-300">/</span>
-                        <input 
-                          type="text" 
-                          [(ngModel)]="item.cbm"
-                          (ngModelChange)="onFieldChange(item)"
-                          [disabled]="item.isMatched"
-                          [ngClass]="{
-                            'bg-slate-100 text-slate-600 cursor-not-allowed border-transparent': item.isMatched, 
-                            'bg-white border-amber-300 ring-1 ring-amber-400 font-bold': !item.isMatched
-                          }"
-                          class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
-                        />
-                      </div>
-                    </td>
+                  <td class="p-2.5 text-center">
+                    <input 
+                      type="date" 
+                      [(ngModel)]="item.expirationDate" 
+                      (ngModelChange)="triggerDraftSave()"
+                      class="text-xs px-2 py-1 rounded border border-slate-300 font-mono focus:ring-1 focus:ring-blue-500 focus:outline-none" 
+                    />
+                  </td>
 
-                    <td class="p-2.5 text-center">
-                      <div class="flex items-center justify-center gap-1.5">
-                        <span class="text-[10px] font-mono text-slate-400">{{ item.expectedTotalWeight }}</span>
-                        <span class="text-slate-300">/</span>
-                        <input 
-                          type="text" 
-                          [(ngModel)]="item.totalWeight"
-                          (ngModelChange)="onFieldChange(item)"
-                          [disabled]="item.isMatched"
-                          [ngClass]="{
-                            'bg-slate-100 text-slate-600 cursor-not-allowed border-transparent': item.isMatched, 
-                            'bg-white border-amber-300 ring-1 ring-amber-400 font-bold': !item.isMatched
-                          }"
-                          class="w-16 text-center text-xs font-mono py-1 rounded border focus:outline-none" 
-                        />
-                      </div>
-                    </td>
+                  <td class="p-2.5">
+                    <button *ngIf="!item.palletId" (click)="openPalletModal(idx)" type="button" class="text-xs text-blue-600 hover:underline">
+                      + Assign Pallet
+                    </button>
+                    <span *ngIf="item.palletId" class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                      #{{ item.palletId }}
+                    </span>
+                  </td>
 
-                    <td class="p-2.5 text-center">
-                      <input 
-                        type="date" 
-                        [(ngModel)]="item.expirationDate" 
-                        (ngModelChange)="onFieldChange(item)"
-                        [disabled]="item.isMatched"
-                        [ngClass]="{
-                          'bg-slate-100 text-slate-600 cursor-not-allowed border-transparent': item.isMatched, 
-                          'bg-white border-amber-300 ring-1 ring-amber-400 font-bold': !item.isMatched
-                        }"
-                        class="text-xs px-2 py-1 rounded border font-mono focus:outline-none" 
-                      />
-                    </td>
+                  <td class="p-2.5 min-w-[180px]">
+                    <input 
+                      type="text" 
+                      [(ngModel)]="item.remarks" 
+                      (ngModelChange)="triggerDraftSave()"
+                      placeholder="Item remarks / notes..." 
+                      class="w-full text-xs px-2 py-1 border border-slate-300 rounded text-slate-600 focus:ring-1 focus:ring-blue-400 focus:outline-none" 
+                    />
+                  </td>
 
-                    <td class="p-2.5">
-                      <button *ngIf="!item.palletId" (click)="openPalletModal(idx)" type="button" class="text-xs text-blue-600 hover:underline">
-                        + Assign Pallet
-                      </button>
-                      <span *ngIf="item.palletId" class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                        #{{ item.palletId }}
-                      </span>
-                    </td>
-
-                    <td class="p-2.5 text-center">
-                      <button (click)="removeProductItem(idx)" class="text-slate-400 hover:text-red-600 p-1">✕</button>
-                    </td>
-                  </tr>
-
-                  <!-- Discrepancy Breakdown Drawer Row -->
-                  <tr *ngIf="!item.isMatched" class="bg-amber-50/80 border-b-2 border-amber-200">
-                    <td colspan="8" class="p-3 pl-12 space-y-2">
-                      <div class="flex items-center gap-2 text-xs font-bold text-amber-900">
-                        <lucide-icon [img]="AlertIcon" [size]="14" class="text-amber-600"></lucide-icon>
-                        <span>Auto-Detected Discrepancy Tags for Line #{{ idx + 1 }}:</span>
-                      </div>
-
-                      <div class="flex flex-wrap items-center gap-1.5">
-                        <button
-                          *ngFor="let opt of discrepancyOptions"
-                          type="button"
-                          (click)="toggleDiscrepancyCategory(item, opt.key)"
-                          [ngClass]="{
-                            'bg-amber-600 text-white font-bold border-amber-700 shadow-sm': hasDiscrepancyCategory(item, opt.key),
-                            'bg-white text-slate-700 border-slate-300 hover:bg-slate-100': !hasDiscrepancyCategory(item, opt.key)
-                          }"
-                          class="text-[11px] px-2.5 py-1 rounded-md border transition-all flex items-center gap-1"
-                        >
-                          <span>{{ opt.label }}</span>
-                          <span *ngIf="hasDiscrepancyCategory(item, opt.key)">✓</span>
-                        </button>
-                      </div>
-
-                      <div>
-                        <input 
-                          type="text" 
-                          [(ngModel)]="item.remarks" 
-                          (ngModelChange)="triggerDraftSave()"
-                          placeholder="Provide specific notes describing the discrepancy..." 
-                          class="w-full text-xs px-3 py-1.5 border border-amber-300 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none" 
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </ng-container>
+                  <td class="p-2.5 text-center">
+                    <button (click)="removeProductItem(idx)" class="text-slate-400 hover:text-red-600 p-1">✕</button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
+        </div>
 
-          <!-- Summary Card -->
-          <div *ngIf="stagedItems.length > 0" class="mt-4 p-4 bg-slate-900 text-white rounded-xl shadow-lg space-y-3">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2">
-                <lucide-icon [img]="SummaryIcon" [size]="16" class="text-amber-400"></lucide-icon>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200">Receiving Reconciliation Summary</h4>
-              </div>
-              <div class="flex items-center gap-3 text-xs font-mono">
-                <span class="text-emerald-400 font-bold">{{ getDiscrepancySummary().matchedCount }} Matched</span>
-                <span class="text-slate-600">|</span>
-                <span class="text-amber-400 font-bold">{{ getDiscrepancySummary().flaggedCount }} Discrepancy(ies)</span>
-              </div>
-            </div>
+        <hr class="border-slate-200" />
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-              <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Total Line Items</div>
-                <div class="text-base font-bold font-mono text-white mt-0.5">{{ getDiscrepancySummary().totalItems }}</div>
-              </div>
+        <!-- 6. PALLET GROUPING & PHYSICAL MEASUREMENT OVERRIDES -->
+        <div *ngIf="palletGroups.length > 0" class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+              <lucide-icon [img]="LayersIcon" [size]="16" class="text-blue-600"></lucide-icon>
+              <span>Palletized Group Summaries & Scale Measurements ({{ palletGroups.length }} Pallets)</span>
+            </h3>
+            <span class="text-[11px] text-slate-500">
+              Warehouse man can override total scale CBM & weight per pallet. Line items will be auto-adjusted proportionally.
+            </span>
+          </div>
 
-              <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Total Shortage (Units)</div>
-                <div class="text-base font-bold font-mono text-amber-400 mt-0.5">
-                  -{{ getDiscrepancySummary().totalQuantityShortage }}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div *ngFor="let group of palletGroups" class="bg-slate-50 p-4 border border-slate-200 rounded-xl space-y-3 shadow-sm">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div class="flex items-center gap-2">
+                  <lucide-icon [img]="BoxIcon" [size]="16" class="text-blue-600"></lucide-icon>
+                  <span class="font-mono font-bold text-xs text-slate-800">Pallet #{{ group.palletId }}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-semibold">
+                    {{ group.items.length }} SKU(s) | {{ group.totalQuantity }} Units
+                  </span>
                 </div>
               </div>
 
-              <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Total Excess (Units)</div>
-                <div class="text-base font-bold font-mono text-blue-400 mt-0.5">
-                  +{{ getDiscrepancySummary().totalQuantityExcess }}
+              <!-- Assigned Items Quick List -->
+              <div class="space-y-1 text-xs text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 max-h-28 overflow-y-auto">
+                <div *ngFor="let itm of group.items" class="flex justify-between items-center text-[11px] font-mono">
+                  <span class="truncate font-semibold text-slate-700 max-w-[200px]">{{ itm.productName }}</span>
+                  <span class="text-slate-500">{{ itm.quantity }} units | {{ itm.cbm }} CBM | {{ itm.totalWeight }} kg</span>
                 </div>
               </div>
 
-              <div class="bg-slate-800/80 p-2.5 rounded-lg border border-slate-700">
-                <div class="text-[10px] text-slate-400 uppercase">Match Accuracy</div>
-                <div class="text-base font-bold font-mono text-emerald-400 mt-0.5">
-                  {{ (getDiscrepancySummary().totalItems > 0 ? (getDiscrepancySummary().matchedCount / getDiscrepancySummary().totalItems * 100) : 100) | number:'1.0-1' }}%
+              <!-- Measurement Controls & Overrides -->
+              <div class="grid grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                    Pallet Total CBM
+                  </label>
+                  <div class="relative">
+                    <input 
+                      type="number" 
+                      step="0.001"
+                      min="0"
+                      [ngModel]="group.calculatedCbm"
+                      (ngModelChange)="applyPalletCbmOverride(group, $event)"
+                      class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">m³</span>
+                  </div>
+                  <span class="text-[9px] text-slate-400">Auto-summed: {{ group.calculatedCbm }} m³</span>
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                    Pallet Total Weight
+                  </label>
+                  <div class="relative">
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      min="0"
+                      [ngModel]="group.calculatedWeight"
+                      (ngModelChange)="applyPalletWeightOverride(group, $event)"
+                      class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                    <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">kg</span>
+                  </div>
+                  <span class="text-[9px] text-slate-400">Auto-summed: {{ group.calculatedWeight }} kg</span>
                 </div>
               </div>
             </div>
@@ -528,7 +470,7 @@
     <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
       <div *ngIf="palletError" class="text-xs text-red-600 font-medium">{{ palletError }}</div>
       <div class="text-xs text-slate-500">
-        Total Items: <strong>{{ stagedItems.length }}</strong> | Flagged Discrepancies: <strong class="text-amber-700">{{ getDiscrepancySummary().flaggedCount }}</strong>
+        Total Items: <strong>{{ stagedItems.length }}</strong> | Total Pallets: <strong>{{ palletGroups.length }}</strong>
       </div>
       <div class="flex items-center gap-2">
         <button (click)="onClose()" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-100">
@@ -590,91 +532,93 @@
   </div>
 </div>
 
+<!-- PRINT LABELS MODAL -->
 <div *ngIf="isPrintModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePrintModal()"></div>
-    <div class="relative z-10 w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-      <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <lucide-icon [img]="PrinterIcon" [size]="18" class="text-blue-400"></lucide-icon>
-          <div>
-            <h3 class="text-sm font-bold">Print Pallet QR Labels</h3>
-            <p class="text-[11px] text-slate-400">Generated {{ generatedPalletLabels.length }} thermal label(s) for warehouse printer</p>
-          </div>
-        </div>
-        <button (click)="closePrintModal()" class="text-slate-400 hover:text-white">✕</button>
-      </div>
-
-      <div class="p-4 pb-16 overflow-y-auto space-y-4 bg-slate-100 flex-1">
-        <div *ngFor="let lbl of generatedPalletLabels; let idx = index" class="p-4 bg-white border-2 border-slate-800 rounded-lg shadow-sm space-y-3 font-sans text-slate-900">
-          <div class="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
-            Pallet Label #{{ idx + 1 }} of {{ generatedPalletLabels.length }} ({{ lbl.palletNumber }})
-          </div>
-
-          <div class="flex justify-center">
-            <img [src]="lbl.qrUrl" alt="Pallet QR" class="w-28 h-28 border p-1 rounded" />
-          </div>
-
-          <div class="font-bold text-sm text-slate-900 border-b pb-1 leading-snug uppercase">
-            {{ lbl.productName }}
-          </div>
-
-          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
-            <div><span class="font-normal text-slate-500">Code:</span> <strong>{{ lbl.code }}</strong></div>
-            <div><span class="font-normal text-slate-500">Weight:</span> <strong>{{ lbl.weight }} kg</strong></div>
-            <div><span class="font-normal text-slate-500">Qty:</span> <strong class="text-blue-600 font-bold">{{ lbl.quantity }}</strong></div>
-            <div><span class="font-normal text-slate-500">UoM:</span> <strong>{{ lbl.uom }}</strong></div>
-            <div><span class="font-normal text-slate-500">Lot:</span> <strong>{{ lbl.lotNumber }}</strong></div>
-            <div><span class="font-normal text-slate-500">Exp:</span> <strong>{{ lbl.expirationDate }}</strong></div>
-          </div>
-
-          <div class="text-[11px] font-mono text-slate-600 border-t pt-1">
-            Date Received: <strong>{{ lbl.dateReceived }}</strong>
-          </div>
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closePrintModal()"></div>
+  <div class="relative z-10 w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+    <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <lucide-icon [img]="PrinterIcon" [size]="18" class="text-blue-400"></lucide-icon>
+        <div>
+          <h3 class="text-sm font-bold">Print Pallet QR Labels</h3>
+          <p class="text-[11px] text-slate-400">Generated {{ generatedPalletLabels.length }} thermal label(s) for warehouse printer</p>
         </div>
       </div>
+      <button (click)="closePrintModal()" class="text-slate-400 hover:text-white">✕</button>
+    </div>
 
-      <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-        <span class="text-xs text-slate-500">Standard 4" x 6" Thermal Bluetooth Format</span>
-        <div class="flex items-center gap-2">
-          <button (click)="closePrintModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100">
-            Done
-          </button>
-          <button (click)="triggerPrint()" class="px-4 py-1.5 text-xs bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 flex items-center gap-1.5">
-            <lucide-icon [img]="PrinterIcon" [size]="14"></lucide-icon>
-            <span>Print All Labels</span>
-          </button>
+    <div class="p-4 pb-16 overflow-y-auto space-y-4 bg-slate-100 flex-1">
+      <div *ngFor="let lbl of generatedPalletLabels; let idx = index" class="p-4 bg-white border-2 border-slate-800 rounded-lg shadow-sm space-y-3 font-sans text-slate-900">
+        <div class="text-center font-bold text-xs uppercase tracking-wider text-slate-500">
+          Pallet Label #{{ idx + 1 }} of {{ generatedPalletLabels.length }} ({{ lbl.palletNumber }})
+        </div>
+
+        <div class="flex justify-center">
+          <img [src]="lbl.qrUrl" alt="Pallet QR" class="w-28 h-28 border p-1 rounded" />
+        </div>
+
+        <div class="font-bold text-sm text-slate-900 border-b pb-1 leading-snug uppercase">
+          {{ lbl.productName }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs font-mono">
+          <div><span class="font-normal text-slate-500">Code:</span> <strong>{{ lbl.code }}</strong></div>
+          <div><span class="font-normal text-slate-500">Weight:</span> <strong>{{ lbl.weight }} kg</strong></div>
+          <div><span class="font-normal text-slate-500">CBM:</span> <strong>{{ lbl.cbm }}</strong></div>
+          <div><span class="font-normal text-slate-500">Qty:</span> <strong class="text-blue-600 font-bold">{{ lbl.quantity }}</strong></div>
+          <div><span class="font-normal text-slate-500">UoM:</span> <strong>{{ lbl.uom }}</strong></div>
+          <div><span class="font-normal text-slate-500">Lot:</span> <strong>{{ lbl.lotNumber }}</strong></div>
+          <div><span class="font-normal text-slate-500">Exp:</span> <strong>{{ lbl.expirationDate }}</strong></div>
+        </div>
+
+        <div class="text-[11px] font-mono text-slate-600 border-t pt-1">
+          Date Received: <strong>{{ lbl.dateReceived }}</strong>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
-  <div #thermalPrintContainer class="hidden">
-    <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
-      <div style="text-align: center; margin-bottom: 4px;">
-        <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
-      </div>
-
-      <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
-        {{ lbl.productName }}
-      </div>
-
-      <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
-        <div><strong>Code:</strong> {{ lbl.code }}</div>
-        <div style="display: flex; justify-content: space-between;">
-          <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
-          <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
-        </div>
-        <div><strong>UoM:</strong> {{ lbl.uom }}</div>
-        <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
-        <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
-      </div>
-
-      <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
-        <strong>Date:</strong> {{ lbl.dateReceived }}
+    <div class="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+      <span class="text-xs text-slate-500">Standard 4" x 6" Thermal Bluetooth Format</span>
+      <div class="flex items-center gap-2">
+        <button (click)="closePrintModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100">
+          Done
+        </button>
+        <button (click)="triggerPrint()" class="px-4 py-1.5 text-xs bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 flex items-center gap-1.5">
+          <lucide-icon [img]="PrinterIcon" [size]="14"></lucide-icon>
+          <span>Print All Labels</span>
+        </button>
       </div>
     </div>
   </div>
+</div>
+
+<!-- PRINTABLE CONTAINER BOUND VIA #thermalPrintContainer -->
+<div #thermalPrintContainer class="hidden">
+  <div *ngFor="let lbl of generatedPalletLabels" class="thermal-label-page">
+    <div style="text-align: center; margin-bottom: 4px;">
+      <img [src]="lbl.qrUrl" style="width: 1.4in; height: 1.4in; display: inline-block;" />
+    </div>
+
+    <div style="font-weight: bold; font-size: 12pt; text-transform: uppercase; line-height: 1.2; margin-bottom: 8px;">
+      {{ lbl.productName }}
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; line-height: 1.5;">
+      <div><strong>Code:</strong> {{ lbl.code }}</div>
+      <div style="display: flex; justify-content: space-between;">
+        <span><strong>Qty:</strong> {{ lbl.quantity }}</span>
+        <span><strong>Weight:</strong> {{ lbl.weight }} kg</span>
+      </div>
+      <div><strong>UoM:</strong> {{ lbl.uom }}</div>
+      <div><strong>Lot:</strong> {{ lbl.lotNumber }}</div>
+      <div><strong>Exp:</strong> {{ lbl.expirationDate }}</div>
+    </div>
+
+    <div style="font-size: 10pt; font-family: monospace; margin-top: 8px; border-top: 1px solid #000; padding-top: 4px;">
+      <strong>Date:</strong> {{ lbl.dateReceived }}
+    </div>
+  </div>
+</div>
 
 <app-confirm-dialog
   [isOpen]="isConfirmCloseOpen"

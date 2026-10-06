@@ -182,6 +182,7 @@ namespace WMS.Api.Endpoints
                 WMSContext dbContext,
                 CancellationToken cancellationToken = default) =>
             {
+                // 1. Fetch Incoming shipment record with line items and warehouse details
                 var incoming = await dbContext.Incomings
                     .Where(inc => inc.Status != IncomingStatus.RECEIVED && inc.Status != IncomingStatus.CLOSED_SHORT)
                     .Include(inc => inc.Warehouse)
@@ -195,10 +196,10 @@ namespace WMS.Api.Endpoints
                     return Results.NotFound(new { Message = $"Unreceived incoming shipment record #{id} was not found or is already completed/closed." });
                 }
 
-                // Fetch all received products across linked receiving receipts to calculate line item balances
+                // 2. Fetch all linked received products across prior receipts (matching GET /unreceived pattern)
                 var existingReceivings = await dbContext.Receivings
                     .Include(r => r.Products)
-                    .Where(r => r.IncomingId == id)
+                    .Where(r => r.IncomingId.HasValue && r.IncomingId.Value == id)
                     .AsNoTracking()
                     .ToListAsync(cancellationToken);
 
@@ -206,11 +207,20 @@ namespace WMS.Api.Endpoints
                     .SelectMany(r => r.Products ?? new List<ReceivedProduct>())
                     .ToList();
 
-                return Results.Ok(incoming.ToResponseDto(linkedProducts));
+                // 3. Reconcile remaining line item balances via ToResponseDto waterfall pool
+                var responseDto = incoming.ToResponseDto(linkedProducts);
+
+                // 4. Verify dynamically calculated status isn't fully RECEIVED or CLOSED_SHORT
+                if (responseDto.Status == IncomingStatus.RECEIVED || responseDto.Status == IncomingStatus.CLOSED_SHORT)
+                {
+                    return Results.NotFound(new { Message = $"Incoming shipment record #{id} has been fully received or closed." });
+                }
+
+                return Results.Ok(responseDto);
             })
             .WithName("GetUnreceivedIncomingById")
             .WithSummary("Get pending or partial incoming shipment details by ID")
-            .WithDescription("Retrieves detailed information for a specific unreceived or partial incoming shipment, including calculated received and remaining balances.")
+            .WithDescription("Retrieves detailed information for a specific unreceived or partial incoming shipment, including dynamically calculated received and remaining product balances.")
             .Produces<IncomingResponseDto>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound);
 

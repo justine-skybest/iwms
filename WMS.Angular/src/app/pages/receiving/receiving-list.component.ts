@@ -25,6 +25,7 @@ export interface PalletLabelPrintData {
   code: string;
   quantity: number;
   weight: string;
+  cbm: string;
   uom: string;
   lotNumber: string;
   expirationDate: string;
@@ -250,12 +251,17 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
         );
         const uomVal = uomList.slice(0, 3).join(', ') || 'CS GLASS';
 
-        const hashCode = 100000 + palletId;
+        const hashCode = palletId;
         const qrDataUrl = await generateQrCodeDataUrl(hashCode, 180);
 
         const formattedWeight = totalWeightVal > 0 
           ? totalWeightVal.toFixed(2) 
           : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
+
+        const formattedCbm = groupItems.reduce((acc, curr) => {
+          const parsed = parseFloat(curr.cbm || '0');
+          return acc + (isNaN(parsed) ? 0 : parsed);
+        }, 0).toFixed(3);
 
         labels.push({
           palletId: palletId,
@@ -265,6 +271,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
           code: codeVal,
           quantity: totalQty,
           weight: formattedWeight,
+          cbm: formattedCbm,
           uom: uomVal,
           lotNumber: lotVal,
           expirationDate: this.formatDate(firstItem.expirationDate as string),

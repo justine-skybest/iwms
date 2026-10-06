@@ -1766,7 +1766,7 @@
       "Incomings"
     ],
     "EndpointName": "GetUnreceivedIncomingById",
-    "Description": "Retrieves detailed information for a specific unreceived or partial incoming shipment, including calculated received and remaining balances.",
+    "Description": "Retrieves detailed information for a specific unreceived or partial incoming shipment, including dynamically calculated received and remaining product balances.",
     "Summary": "Get pending or partial incoming shipment details by ID"
   },
   {

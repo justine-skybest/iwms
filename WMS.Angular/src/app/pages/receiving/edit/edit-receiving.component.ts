@@ -1,6 +1,8 @@
-import { Component, EventEmitter, OnChanges, SimpleChanges, Input, Output, inject, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnChanges, OnInit, OnDestroy, SimpleChanges, Input, Output, inject, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Api } from '../../../api/generated/api';
 import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { 
@@ -10,9 +12,9 @@ import {
   ReceivedProductDetailsDto, 
   ReceivingDetailsDto
 } from '../../../api/generated/models';
-import { updateReceiving, getReceiving, locatePalletByQrCode, getIncomingById } from '../../../api/generated/functions';
+import { updateReceiving, getReceiving, locatePalletByQrCode, getUnreceivedIncomingById, getIncomingById } from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer, Layers } from 'lucide-angular';
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
@@ -46,6 +48,34 @@ export type EditStagedProductItem = {
   lotNumber?: string;
 };
 
+export interface SelectableIncomingProduct {
+  id?: number;
+  productId: number;
+  productName?: string;
+  originalQuantity?: number;
+  quantity?: number;
+  remainingQuantity?: number;
+  cbm?: string;
+  totalWeight?: string;
+  expirationDate?: string;
+  supplier?: string;
+  unitPrice?: number;
+  totalAmount?: number;
+  remarks?: string;
+  typeOfPackage?: string;
+  status?: string;
+  selected: boolean;
+  isPreSelected?: boolean;
+}
+
+export interface PalletGroupSummary {
+  palletId: number;
+  items: EditStagedProductItem[];
+  totalQuantity: number;
+  calculatedCbm: number;
+  calculatedWeight: number;
+}
+
 export interface PalletLabelPrintData {
   palletId: number;
   palletNumber: string;
@@ -67,7 +97,7 @@ export interface PalletLabelPrintData {
   imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent, ConfirmDialogComponent],
   templateUrl: './edit-receiving.component.html',
 })
-export class EditReceivingComponent implements OnChanges {
+export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   readonly TrashIcon = Trash2;
   readonly SearchIcon = Search;
   readonly ChevronDownIcon = ChevronDown;
@@ -82,6 +112,7 @@ export class EditReceivingComponent implements OnChanges {
   readonly SummaryIcon = FileSpreadsheet;
   readonly PackageCheckIcon = PackageCheck;
   readonly PrinterIcon = Printer;
+  readonly LayersIcon = Layers;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
@@ -106,6 +137,12 @@ export class EditReceivingComponent implements OnChanges {
   stagedItems: EditStagedProductItem[] = [];
   selectedIncoming: IncomingResponseDto | null = null;
 
+  isProductDropdownOpen = false;
+  productFilterQuery = '';
+  availableIncomingProducts: SelectableIncomingProduct[] = [];
+
+  palletGroups: PalletGroupSummary[] = [];
+
   isPalletModalOpen = false;
   activeRowIndexForPallet: number | null = null;
   palletQrCodeInput = '';
@@ -116,13 +153,36 @@ export class EditReceivingComponent implements OnChanges {
   isPrintModalOpen = false;
   generatedPalletLabels: PalletLabelPrintData[] = [];
 
+  private fieldDebounce$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
+
+  ngOnInit(): void {
+    this.fieldDebounce$
+      .pipe(
+        debounceTime(300),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.updatePalletGroups();
+        this.cd.markForCheck();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen && this.selectedReceiving) {
       void this.loadAndPopulateForm(this.selectedReceiving);
-      console.log(this.selectedReceiving);
     } else if (changes['selectedReceiving'] && this.isOpen && this.selectedReceiving) {
       void this.loadAndPopulateForm(this.selectedReceiving);
     }
+  }
+
+  trackByPalletId(index: number, group: PalletGroupSummary): number {
+    return group.palletId;
   }
 
   private formatDateForInput(dateStr?: string | null): string {
@@ -170,7 +230,6 @@ export class EditReceivingComponent implements OnChanges {
     this.cd.markForCheck();
 
     try {
-      // 1. Fetch fresh receiving receipt details
       const freshReceiving = receiving.id 
         ? (await this.api.invoke(getReceiving, { id: receiving.id }) as ReceivingDetailsDto) 
         : receiving;
@@ -178,7 +237,7 @@ export class EditReceivingComponent implements OnChanges {
       this.newReceiving = {
         series: freshReceiving.series ?? '',
         driverName: freshReceiving.driverName ?? '',
-        incomingId: this.selectedReceiving?.incomingId!,
+        incomingId: freshReceiving.incomingId ?? this.selectedReceiving?.incomingId!,
         plateNumber: freshReceiving.plateNumber ?? '',
         warehouseId: freshReceiving.warehouseId ?? this.warehouseService.selectedWarehouseId() ?? undefined,
         dateReceived: this.formatDateForInput(freshReceiving.dateReceived),
@@ -195,14 +254,18 @@ export class EditReceivingComponent implements OnChanges {
         products: []
       };
 
-      // 2. Load linked Incoming shipment if available
+      // Load linked Incoming shipment via getUnreceivedIncomingById
       if (freshReceiving.incomingId) {
-        this.selectedIncoming = await this.api.invoke(getIncomingById, { id: freshReceiving.incomingId }) as IncomingResponseDto;
+        try {
+          this.selectedIncoming = await this.api.invoke(getUnreceivedIncomingById, { id: freshReceiving.incomingId }) as IncomingResponseDto;
+        } catch {
+          this.selectedIncoming = await this.api.invoke(getIncomingById, { id: freshReceiving.incomingId }) as IncomingResponseDto;
+        }
       } else {
         this.selectedIncoming = null;
       }
 
-      // 3. Build staged line items
+      // Build staged line items
       if (freshReceiving.products && freshReceiving.products.length > 0) {
         this.stagedItems = freshReceiving.products.map(p => ({
           id: p.id,
@@ -225,7 +288,7 @@ export class EditReceivingComponent implements OnChanges {
           supplier: p.supplier || undefined,
           unitPrice: p.unitPrice ?? undefined,
           totalAmount: p.totalAmount ?? undefined,
-          typeOfPackage: p.typeOfPackage || 'CS GLASS',
+          typeOfPackage: p.typeOfPackage!,
           remarks: p.remarks || '',
           palletId: p.palletId ?? undefined,
           containerName: p.containerName || '',
@@ -234,6 +297,50 @@ export class EditReceivingComponent implements OnChanges {
       } else {
         this.stagedItems = [];
       }
+
+    // Populate available incoming products list for adding additional SKUs
+    if (this.selectedIncoming?.products) {
+    this.availableIncomingProducts = this.selectedIncoming.products
+        .map(p => {
+        // Calculate actual remaining unreceived balance
+        const remaining = (p.remainingQuantity !== undefined && p.remainingQuantity !== null)
+            ? p.remainingQuantity
+            : ((p.quantity || 0) - (p.receivedQuantity || 0));
+
+        // ✅ STRICT MATCHING: Check by incomingProductId (p.id) first to avoid duplicate SKU collisions
+        const stagedItem = this.stagedItems.find(s => 
+            (p.id && s.incomingProductId && s.incomingProductId === p.id) ||
+            (!s.incomingProductId && s.productId === p.productId)
+        );
+
+        const isAlreadyStaged = !!stagedItem;
+        const activeBalance = Math.max(0, remaining);
+
+        return {
+            id: p.id, // Unique IncomingProduct.Id
+            productId: p.productId!,
+            productName: p.productName || '',
+            originalQuantity: p.quantity || 0,
+            quantity: activeBalance,
+            remainingQuantity: activeBalance,
+            cbm: p.cbm || '0',
+            totalWeight: p.totalWeight || '0',
+            expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
+            supplier: p.supplier || '',
+            unitPrice: p.unitPrice ?? undefined,
+            totalAmount: p.totalAmount ?? undefined,
+            remarks: p.remarks || '',
+            typeOfPackage: p.typeOfPackage!,
+            status: p.status,
+            selected: isAlreadyStaged && activeBalance <= 0, // ✅ Pre-select items that are already staged and have no remaining balance
+            isPreSelected: isAlreadyStaged && activeBalance <= 0 // ✅ ONLY lock items that are ALREADY in stagedItems table
+        };
+        })
+        // Show items if they have remaining balance > 0 OR are currently staged in this receipt
+        .filter(p => p.remainingQuantity > 0 || p.selected);
+    }
+
+      this.updatePalletGroups();
     } catch (err) {
       console.error('Failed to load edit receiving context:', err);
       this.toastService.error('Failed to load receiving receipt details.');
@@ -241,6 +348,238 @@ export class EditReceivingComponent implements OnChanges {
       this.isLoadingDetails = false;
       this.cd.markForCheck();
     }
+  }
+
+  toggleProductDropdown(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isProductDropdownOpen = !this.isProductDropdownOpen;
+  }
+
+toggleProductSelection(product: SelectableIncomingProduct, forceState?: boolean): void {
+  if (product.isPreSelected) return;
+
+  const newState = forceState !== undefined ? forceState : !product.selected;
+  if (product.selected === newState) return; // No change needed
+  
+  product.selected = newState;
+
+  // 1. Check if the product already exists in stagedItems (match strictly by productId)
+  const existingRow = this.stagedItems.find(s => s.productId === product.productId);
+
+  if (existingRow) {
+    // 2. If it exists, just add or deduct the quantity (No new row created)
+    if (product.selected) {
+      existingRow.quantity = (existingRow.quantity || 0) + (product.quantity || 0);
+    } else {
+      existingRow.quantity = Math.max(0, (existingRow.quantity || 0) - (product.quantity || 0));
+    }
+    
+    // Auto-recalculate CBM and Weight based on the new total quantity
+    this.onItemQuantityChange(existingRow);
+  } else {
+    // 3. If it doesn't exist, handle adding or removing the row normally
+    if (product.selected) {
+      const prodName = product.productName || '';
+      const qty = product.quantity || 0;
+      const cbmVal = product.cbm || '0';
+      const weightVal = product.totalWeight || '0';
+      const expiryVal = product.expirationDate || new Date().toISOString().split('T')[0];
+
+      this.stagedItems.push({
+        incomingProductId: product.id,
+        productId: product.productId,
+        expectedProductName: prodName,
+        expectedQuantity: qty,
+        expectedCbm: cbmVal,
+        expectedTotalWeight: weightVal,
+        expectedExpirationDate: expiryVal,
+
+        productName: prodName,
+        quantity: qty,
+        cbm: cbmVal,
+        totalWeight: weightVal,
+        expirationDate: expiryVal,
+
+        supplier: product.supplier || undefined,
+        unitPrice: product.unitPrice ?? undefined,
+        totalAmount: product.totalAmount ?? undefined,
+
+        typeOfPackage: product.typeOfPackage || 'CS GLASS',
+        remarks: product.remarks || '',
+        palletId: undefined,
+        containerName: ''
+      });
+    } else {
+      // Remove the row if unselected and it drops to 0 matches
+      const idx = this.stagedItems.findIndex(s => s.productId === product.productId);
+      if (idx > -1) {
+        this.stagedItems.splice(idx, 1);
+      }
+    }
+  }
+
+  this.updatePalletGroups();
+  this.cd.markForCheck();
+}
+
+toggleSelectAllProducts(event: Event): void {
+  const isChecked = (event.target as HTMLInputElement).checked;
+
+  this.availableIncomingProducts.forEach(p => {
+    // Only toggle items that are NOT locked and need changing
+    if (!p.isPreSelected && p.selected !== isChecked) {
+      this.toggleProductSelection(p, isChecked);
+    }
+  });
+}
+
+  get isAllProductsSelected(): boolean {
+    return this.availableIncomingProducts.length > 0 && this.availableIncomingProducts.every(p => p.selected);
+  }
+
+  get filteredAvailableProducts(): SelectableIncomingProduct[] {
+    if (!this.productFilterQuery.trim()) return this.availableIncomingProducts;
+    const query = this.productFilterQuery.toLowerCase().trim();
+    return this.availableIncomingProducts.filter(p => 
+      p.productName?.toLowerCase().includes(query) ||
+      p.supplier?.toLowerCase().includes(query)
+    );
+  }
+
+  onItemQuantityChange(item: EditStagedProductItem): void {
+    if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
+      const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
+      if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
+        const origCbm = parseFloat(parent.cbm || '0');
+        const origWgt = parseFloat(parent.totalWeight || '0');
+        const actQty = item.quantity ?? 0;
+
+        const newCbm = (origCbm / parent.originalQuantity) * actQty;
+        const newWgt = (origWgt / parent.originalQuantity) * actQty;
+
+        item.cbm = newCbm > 0 ? newCbm.toFixed(3) : '0';
+        item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
+      }
+    }
+
+    this.fieldDebounce$.next();
+  }
+
+  onItemFieldChange(): void {
+    this.fieldDebounce$.next();
+  }
+
+  updatePalletGroups(): void {
+    const groupsMap = new Map<number, EditStagedProductItem[]>();
+
+    for (const item of this.stagedItems) {
+      if (!item.palletId) continue;
+      if (!groupsMap.has(item.palletId)) {
+        groupsMap.set(item.palletId, []);
+      }
+      groupsMap.get(item.palletId)!.push(item);
+    }
+
+    const result: PalletGroupSummary[] = [];
+
+    for (const [palletId, items] of groupsMap.entries()) {
+      const totalQty = items.reduce((sum, i) => sum + (i.quantity || 0), 0);
+      
+      const calcCbm = items.reduce((sum, i) => {
+        const val = parseFloat(i.cbm || '0');
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+
+      const calcWeight = items.reduce((sum, i) => {
+        const val = parseFloat(i.totalWeight || '0');
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+
+      result.push({
+        palletId,
+        items,
+        totalQuantity: totalQty,
+        calculatedCbm: parseFloat(calcCbm.toFixed(3)),
+        calculatedWeight: parseFloat(calcWeight.toFixed(2))
+      });
+    }
+
+    this.palletGroups = result;
+  }
+
+  /**
+   * Baseline-Weighted Tail Allocation for Pallet Overrides
+   */
+  private distributePalletScaleOverride(
+    items: EditStagedProductItem[],
+    overrideCbm?: number,
+    overrideWeight?: number
+  ): void {
+    if (items.length === 0) return;
+
+    // 1. Distribute Target CBM based on Baseline CBM Ratios
+    if (overrideCbm !== undefined && overrideCbm >= 0) {
+      const totalBaselineCbm = items.reduce((sum, i) => sum + (parseFloat(i.cbm || '0') || 0), 0);
+
+      if (totalBaselineCbm > 0) {
+        let accumulatedCbm = 0;
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const isLastItem = i === items.length - 1;
+
+          if (isLastItem) {
+            const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
+            item.cbm = exactCbm.toFixed(3);
+          } else {
+            const itemBaselineCbm = parseFloat(item.cbm || '0') || 0;
+            const ratio = itemBaselineCbm / totalBaselineCbm;
+
+            const allocatedCbm = parseFloat((overrideCbm * ratio).toFixed(3));
+            item.cbm = allocatedCbm.toFixed(3);
+            accumulatedCbm += allocatedCbm;
+          }
+        }
+      }
+    }
+
+    // 2. Distribute Target Weight based on Baseline Weight Ratios
+    if (overrideWeight !== undefined && overrideWeight >= 0) {
+      const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
+
+      if (totalBaselineWeight > 0) {
+        let accumulatedWeight = 0;
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const isLastItem = i === items.length - 1;
+
+          if (isLastItem) {
+            const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
+            item.totalWeight = exactWeight.toFixed(2);
+          } else {
+            const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
+            const ratio = itemBaselineWeight / totalBaselineWeight;
+
+            const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
+            item.totalWeight = allocatedWeight.toFixed(2);
+            accumulatedWeight += allocatedWeight;
+          }
+        }
+      }
+    }
+  }
+
+  applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
+    if (!group || newTotalCbm < 0 || isNaN(newTotalCbm)) return;
+    this.distributePalletScaleOverride(group.items, newTotalCbm, undefined);
+    this.fieldDebounce$.next();
+  }
+
+  applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
+    if (!group || newTotalWeight < 0 || isNaN(newTotalWeight)) return;
+    this.distributePalletScaleOverride(group.items, undefined, newTotalWeight);
+    this.fieldDebounce$.next();
   }
 
   openPalletModal(rowIndex: number): void {
@@ -306,13 +645,26 @@ export class EditReceivingComponent implements OnChanges {
 
     this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
     this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
+    this.updatePalletGroups();
     this.closePalletModal();
   }
 
-  removeProductItem(index: number): void {
-    this.stagedItems.splice(index, 1);
-    this.cd.markForCheck();
+removeProductItem(index: number): void {
+  const removedItem = this.stagedItems[index];
+  this.stagedItems.splice(index, 1);
+
+  if (removedItem) {
+    // Uncheck and unlock ALL matching SKUs in the dropdown so they can be re-added if needed
+    const targets = this.availableIncomingProducts.filter(p => p.productId === removedItem.productId);
+    targets.forEach(t => {
+      t.selected = false;
+      t.isPreSelected = false; 
+    });
   }
+
+  this.updatePalletGroups();
+  this.cd.markForCheck();
+}
 
   private validateForm(): string | null {
     const warehouseId = this.warehouseService.selectedWarehouseId();
@@ -404,8 +756,6 @@ export class EditReceivingComponent implements OnChanges {
       timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
       products: processedProducts
     };
-
-    console.log('Submitting update payload:', payload);
 
     try {
       await this.api.invoke(updateReceiving, { id: this.selectedReceiving.id, body: payload });
@@ -522,6 +872,7 @@ export class EditReceivingComponent implements OnChanges {
   private forceCloseAndReset(): void {
     this.newReceiving = this.getInitialForm();
     this.stagedItems = [];
+    this.palletGroups = [];
     this.selectedReceiving = null;
     this.selectedIncoming = null;
     this.closePalletModal();

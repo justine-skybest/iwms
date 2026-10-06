@@ -191,7 +191,7 @@ public static class ReceivingEndpoint
         .ProducesProblem(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
-        // POST / - UPSERT RECEIVING (CREATE OR ACCUMULATE ON EXISTING RECEIPT)
+        // POST / - UPSERT RECEIVING (CREATE RECEIPT & LINK PALLETS)
         // -----------------------------------------------------------------------------
         group.MapPost("/", async (
             CreateReceivingDto newReceivingDto,
@@ -201,10 +201,15 @@ public static class ReceivingEndpoint
             CancellationToken cancellationToken) =>
         {
             // 1. Mandatory Incoming Record Lookup
+            if (!newReceivingDto.IncomingId.HasValue || newReceivingDto.IncomingId.Value <= 0)
+            {
+                return Results.BadRequest(new { Message = "A valid IncomingId is required." });
+            }
+
             var incoming = await dbContext.Incomings
                 .Include(inc => inc.Products!)
                     .ThenInclude(p => p.Product)
-                .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId, cancellationToken);
+                .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId.Value, cancellationToken);
 
             if (incoming is null)
             {
@@ -218,7 +223,7 @@ public static class ReceivingEndpoint
 
             // 2. ALWAYS CREATE A DISTINCT NEW RECEIVING RECORD
             var receiving = newReceivingDto.ToEntity();
-            receiving.Series = await GenerateReceivingSeriesAsync(newReceivingDto.IncomingId, dbContext, cancellationToken);
+            receiving.Series = await GenerateReceivingSeriesAsync(newReceivingDto.IncomingId.Value, dbContext, cancellationToken);
             dbContext.Receivings.Add(receiving);
             await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -308,11 +313,13 @@ public static class ReceivingEndpoint
             // 6. SignalR Notification
             await hubContext.Clients.All.ReceivingCreated();
 
-            // 7. Return Hydrated Response & Audit Log
+            // 7. Return Hydrated Response (INCLUDES PALLET) & Audit Log
             var createdReceiving = await dbContext.Receivings
                 .Include(r => r.Warehouse)
                 .Include(r => r.Products!)
                     .ThenInclude(p => p.Product)
+                .Include(r => r.Products!)
+                    .ThenInclude(p => p.Pallet) // ✅ Added: Hydrates Pallet navigation for frontend label printing
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == receiving.Id, cancellationToken);
 
@@ -339,6 +346,7 @@ public static class ReceivingEndpoint
                         p.Name,
                         p.Quantity,
                         p.LotNumber,
+                        p.PalletId,
                         Expiration = FormatDateKey(p.ExpirationDate),
                     })
                 }
@@ -353,10 +361,7 @@ public static class ReceivingEndpoint
         .ProducesProblem(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
-        // PUT /{id:int} - Direct Receiving Edit (Update Header & Existing Line Items Only)
-        // -----------------------------------------------------------------------------
-        // -----------------------------------------------------------------------------
-        // PUT /{id:int} - Direct Receiving Edit (Update Header & Existing Line Items Only)
+        // PUT /{id:int} - Direct Receiving Edit (Header, Line Items Update/Add/Remove)
         // -----------------------------------------------------------------------------
         group.MapPut("/{id:int}", async (
             int id,
@@ -399,18 +404,23 @@ public static class ReceivingEndpoint
             // 3. Update Header Values (Preserve Original Series & IncomingId)
             dbContext.Entry(existingReceiving).CurrentValues.SetValues(updatedReceiving.ToUpdateEntity(id));
             existingReceiving.Series = originalSeries;         // Series is never allowed to change
-            existingReceiving.IncomingId = originalIncomingId; // IncomingId is preserved from existing record
+            existingReceiving.IncomingId = originalIncomingId; // IncomingId is preserved
 
-            // 4. Update EXISTING Line Items Only (Preserve Lot Numbers & Disallow Additions)
+            // 4. Update, Add, or Remove Line Items
             if (updatedReceiving.Products != null && existingReceiving.Products != null)
             {
+                int sequenceIndex = existingReceiving.Products.Count + 1;
+
+                // A. Update Existing Items or Add Newly Staged Items
                 foreach (var updatedProduct in updatedReceiving.Products)
                 {
                     var existingProduct = existingReceiving.Products
-                        .FirstOrDefault(p => (updatedProduct.Id > 0 && p.Id == updatedProduct.Id) || p.ProductId == updatedProduct.ProductId);
+                        .FirstOrDefault(p => (updatedProduct.Id > 0 && p.Id == updatedProduct.Id) ||
+                                             (p.ProductId == updatedProduct.ProductId && p.IncomingProductId == updatedProduct.IncomingProductId));
 
                     if (existingProduct != null)
                     {
+                        // Update existing item fields
                         existingProduct.Quantity = updatedProduct.Quantity;
                         existingProduct.CBM = updatedProduct.CBM;
                         existingProduct.TotalWeight = updatedProduct.TotalWeight;
@@ -418,7 +428,63 @@ public static class ReceivingEndpoint
                         existingProduct.ExpirationDate = updatedProduct.ExpirationDate;
                         existingProduct.ContainerName = updatedProduct.ContainerName;
                         existingProduct.PalletId = updatedProduct.PalletId;
+                        existingProduct.IncomingProductId = updatedProduct.IncomingProductId;
+                        existingProduct.TypeOfPackage = updatedProduct.TypeOfPackage;
+                        existingProduct.Supplier = updatedProduct.Supplier;
+                        existingProduct.UnitPrice = updatedProduct.UnitPrice;
+                        existingProduct.TotalAmount = updatedProduct.TotalAmount;
+
+                        // Generate Lot Number if previously missing
+                        if (string.IsNullOrWhiteSpace(existingProduct.LotNumber))
+                        {
+                            existingProduct.LotNumber = LotNumberGenerator.Generate(
+                                updatedProduct.LotNumber,
+                                id,
+                                updatedProduct.ProductId,
+                                sequenceIndex++
+                            );
+                        }
                     }
+                    else
+                    {
+                        // Add newly added line item with a generated Lot Number
+                        string assignedLotNumber = LotNumberGenerator.Generate(
+                            updatedProduct.LotNumber,
+                            id,
+                            updatedProduct.ProductId,
+                            sequenceIndex++
+                        );
+
+                        existingReceiving.Products.Add(new ReceivedProduct
+                        {
+                            ProductId = updatedProduct.ProductId,
+                            IncomingProductId = updatedProduct.IncomingProductId,
+                            Quantity = updatedProduct.Quantity,
+                            LotNumber = assignedLotNumber,
+                            CBM = updatedProduct.CBM,
+                            TotalWeight = updatedProduct.TotalWeight,
+                            Remarks = updatedProduct.Remarks,
+                            ExpirationDate = updatedProduct.ExpirationDate,
+                            ContainerName = updatedProduct.ContainerName,
+                            PalletId = updatedProduct.PalletId,
+                            TypeOfPackage = updatedProduct.TypeOfPackage,
+                            Supplier = updatedProduct.Supplier,
+                            UnitPrice = updatedProduct.UnitPrice,
+                            TotalAmount = updatedProduct.TotalAmount
+                        });
+                    }
+                }
+
+                // B. Remove Line Items no longer in updatedReceiving.Products
+                var itemsToRemove = existingReceiving.Products
+                    .Where(existing => !updatedReceiving.Products.Any(updated =>
+                        (updated.Id > 0 && updated.Id == existing.Id) ||
+                        (updated.ProductId == existing.ProductId && updated.IncomingProductId == existing.IncomingProductId)))
+                    .ToList();
+
+                foreach (var itemToRemove in itemsToRemove)
+                {
+                    dbContext.ReceivedProducts.Remove(itemToRemove);
                 }
             }
 

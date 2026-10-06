@@ -13,7 +13,7 @@ import {
 } from '../../../api/generated/models';
 import { createReceiving, getReceiving, getUnreceivedIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer, Layers } from 'lucide-angular';
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
@@ -21,7 +21,6 @@ import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent } from '../../../shared/components/dialog/confirm-dialog.component';
 
-// Interface defining the exact state to preserve
 export interface ReceivingFormDraft {
   newReceiving: CreateReceivingDto;
   stagedItems: StagedProductItem[];
@@ -31,24 +30,11 @@ export interface ReceivingFormDraft {
   savedAt: string;
 }
 
-export type DiscrepancyCategory = 
-  | 'QUANTITY' 
-  | 'DESCRIPTION' 
-  | 'EXPIRY' 
-  | 'WEIGHT' 
-  | 'CBM' 
-  | 'DAMAGED' 
-  | 'OTHER';
-
-export interface DiscrepancyOption {
-  key: DiscrepancyCategory;
-  label: string;
-}
-
 export interface SelectableIncomingProduct {
   id?: number;
   productId: number;
   productName?: string;
+  originalQuantity?: number;
   quantity?: number;
   remainingQuantity?: number;
   cbm?: string;
@@ -68,14 +54,12 @@ export type StagedProductItem = {
   typeOfPackage?: string;
   measurement?: string;
 
-  isMatched: boolean;
-  discrepancies: DiscrepancyCategory[];
-  
   expectedProductName?: string;
   expectedQuantity?: number;
   expectedCbm?: string;
   expectedTotalWeight?: string;
   expectedExpirationDate?: string;
+  
   cbm?: string;
   containerName?: string;
   expirationDate?: string;
@@ -93,13 +77,12 @@ export type StagedProductItem = {
   unitPrice?: number;
 };
 
-export interface DiscrepancySummary {
-  matchedCount: number;
-  flaggedCount: number;
-  totalItems: number;
-  totalQuantityShortage: number;
-  totalQuantityExcess: number;
-  categoryCounts: Record<DiscrepancyCategory, number>;
+export interface PalletGroupSummary {
+  palletId: number;
+  items: StagedProductItem[];
+  totalQuantity: number;
+  calculatedCbm: number;
+  calculatedWeight: number;
 }
 
 export interface PalletLabelPrintData {
@@ -110,6 +93,7 @@ export interface PalletLabelPrintData {
   code: string;
   quantity: number;
   weight: string;
+  cbm: string;
   uom: string;
   lotNumber: string;
   expirationDate: string;
@@ -123,7 +107,7 @@ export interface PalletLabelPrintData {
   imports: [CommonModule, FormsModule, LucideAngularModule, QrScannerComponent, ConfirmDialogComponent],
   templateUrl: './receiving-create.component.html',
 })
-export class ReceivingCreateComponent {
+export class ReceivingCreateComponent implements OnInit, OnDestroy {
   readonly TrashIcon = Trash2;
   readonly SearchIcon = Search;
   readonly ChevronDownIcon = ChevronDown;
@@ -138,6 +122,7 @@ export class ReceivingCreateComponent {
   readonly SummaryIcon = FileSpreadsheet;
   readonly PackageCheckIcon = PackageCheck;
   readonly PrinterIcon = Printer;
+  readonly LayersIcon = Layers;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
@@ -153,27 +138,17 @@ export class ReceivingCreateComponent {
 
   isSaving = false;
   validationError = '';
-
   isConfirmCloseOpen = false;
 
   private readonly DRAFT_STORAGE_KEY = 'warehouse_receiving_draft_v1';
   private draftSave$ = new Subject<void>();
+  private fieldDebounce$ = new Subject<void>();
   private destroy$ = new Subject<void>();
   
   hasRestoredDraft = false;
 
   newReceiving: CreateReceivingDto = this.getInitialForm();
   stagedItems: StagedProductItem[] = [];
-
-  readonly discrepancyOptions: DiscrepancyOption[] = [
-    { key: 'QUANTITY', label: 'Qty Variance' },
-    { key: 'DESCRIPTION', label: 'Spelling/Desc' },
-    { key: 'EXPIRY', label: 'Expiry Date' },
-    { key: 'WEIGHT', label: 'Weight Diff' },
-    { key: 'CBM', label: 'CBM Diff' },
-    { key: 'DAMAGED', label: 'Damaged Goods' },
-    { key: 'OTHER', label: 'Other Issue' }
-  ];
 
   incomingSearchQuery = '';
   searchedIncomings: IncomingResponseDto[] = [];
@@ -198,9 +173,10 @@ export class ReceivingCreateComponent {
 
   private incomingSearchDebounce: any;
 
+  // State to hold pallet-level overrides independently without modifying line item values
+  palletOverrides = new Map<number, { manualCbm?: number; manualWeight?: number }>();
+
   ngOnInit(): void {
-    // 1. Setup debounced auto-save (400ms prevents UI lag during fast typing or barcode scanning)
-    console.log('Setting up draft auto-save with debounce...');
     this.draftSave$
       .pipe(
         debounceTime(400),
@@ -210,7 +186,15 @@ export class ReceivingCreateComponent {
         this.saveDraftToStorage();
       });
 
-    // 2. Restore any saved draft on load
+    this.fieldDebounce$
+      .pipe(
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.recalculateItemProRataAndGroups();
+      });
+
     this.restoreDraftFromStorage();
   }
 
@@ -219,15 +203,11 @@ export class ReceivingCreateComponent {
     this.destroy$.complete();
   }
 
-  /**
-   * Call this whenever form fields, staged items, or selections change
-   */
   triggerDraftSave(): void {
     this.draftSave$.next();
   }
 
   private saveDraftToStorage(): void {
-    // Only save if there is actual progress (staged items or modified header fields)
     if (!this.selectedIncoming && this.stagedItems.length === 0 && !this.newReceiving.reference) {
       return;
     }
@@ -349,46 +329,55 @@ export class ReceivingCreateComponent {
     }
   }
 
-selectIncoming(incoming: IncomingResponseDto): void {
-  this.selectedIncoming = incoming;
-  this.incomingSearchQuery = `#${incoming.id} — ${incoming.shipper}`;
-  this.isIncomingDropdownOpen = false;
-  this.newReceiving.series = this.generateSeries(incoming.id!);
+  selectIncoming(incoming: IncomingResponseDto): void {
+    this.selectedIncoming = incoming;
+    this.incomingSearchQuery = `#${incoming.id} — ${incoming.shipper}`;
+    this.isIncomingDropdownOpen = false;
+    this.newReceiving.series = this.generateSeries(incoming.id!);
 
-  this.newReceiving.shipper = incoming.shipper || '';
-  this.newReceiving.consignee = incoming.consignee || '';
-  if (incoming.warehouseId) {
-    this.newReceiving.warehouseId = incoming.warehouseId;
+    this.newReceiving.shipper = incoming.shipper || '';
+    this.newReceiving.consignee = incoming.consignee || '';
+    if (incoming.warehouseId) {
+      this.newReceiving.warehouseId = incoming.warehouseId;
+    }
+
+    this.availableIncomingProducts = (incoming.products || [])
+      .filter(p => p.status !== 'RECEIVED')
+      .map(p => {
+        const origQty = p.quantity || 1;
+        const remainingQty = p.remainingQuantity ?? (origQty - (p.receivedQuantity || 0));
+        const activeQty = remainingQty > 0 ? remainingQty : origQty;
+
+        const totalCbm = parseFloat(p.cbm || '0');
+        const totalWgt = parseFloat(p.totalWeight || '0');
+
+        // Pro-rate CBM & Total Weight based on remaining unreceived balance
+        const remainingCbm = (totalCbm / origQty) * activeQty;
+        const remainingWgt = (totalWgt / origQty) * activeQty;
+
+        return {
+          id: p.id,
+          productId: p.productId!,
+          productName: p.productName || '',
+          originalQuantity: origQty,
+          quantity: activeQty,
+          remainingQuantity: activeQty,
+          cbm: remainingCbm > 0 ? remainingCbm.toFixed(3) : '0',
+          totalWeight: remainingWgt > 0 ? remainingWgt.toFixed(2) : '0',
+          expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
+          supplier: p.supplier || '',
+          unitPrice: p.unitPrice ?? undefined,
+          totalAmount: p.totalAmount ?? undefined,
+          remarks: p.remarks || '',
+          typeOfPackage: p.typeOfPackage || 'CS GLASS',
+          status: p.status,
+          selected: false
+        };
+      });
+
+    this.syncStagedItemsFromSelection();
+    this.triggerDraftSave();
   }
-
-  this.availableIncomingProducts = (incoming.products || [])
-    .filter(p => p.status !== 'RECEIVED')
-    .map(p => {
-      const remaining = p.remainingQuantity ?? ((p.quantity || 0) - (p.receivedQuantity || 0));
-      const activeBalance = remaining > 0 ? remaining : (p.quantity || 0);
-
-      return {
-        id: p.id, // ✅ Capture the unique IncomingProduct.Id
-        productId: p.productId!,
-        productName: p.productName || '',
-        quantity: activeBalance,
-        remainingQuantity: activeBalance,
-        cbm: p.cbm || '0',
-        totalWeight: p.totalWeight || '0',
-        expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
-        supplier: p.supplier || '',
-        unitPrice: p.unitPrice ?? undefined,
-        totalAmount: p.totalAmount ?? undefined,
-        remarks: p.remarks || '',
-        typeOfPackage: p.typeOfPackage || 'CS GLASS',
-        status: p.status,
-        selected: false
-      };
-    });
-
-  this.syncStagedItemsFromSelection();
-  this.triggerDraftSave();
-}
 
   toggleProductDropdown(event?: Event): void {
     if (event) event.stopPropagation();
@@ -420,58 +409,54 @@ selectIncoming(incoming: IncomingResponseDto): void {
   }
 
   syncStagedItemsFromSelection(): void {
-  const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
-  const updatedStagedItems: StagedProductItem[] = [];
+    const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
+    const updatedStagedItems: StagedProductItem[] = [];
 
-  for (const p of selectedProducts) {
-    // Match by incomingProductId or productId
-    const existing = this.stagedItems.find(s => 
-      (p.id && s.incomingProductId === p.id) || s.productId === p.productId
-    );
+    for (const p of selectedProducts) {
+      const existing = this.stagedItems.find(s => 
+        (p.id && s.incomingProductId === p.id) || s.productId === p.productId
+      );
 
-    if (existing) {
-      updatedStagedItems.push(existing);
-    } else {
-      const prodName = p.productName || '';
-      const qty = p.quantity || 0;
-      const cbmVal = p.cbm || '0';
-      const weightVal = p.totalWeight || '0';
-      const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
+      if (existing) {
+        updatedStagedItems.push(existing);
+      } else {
+        const prodName = p.productName || '';
+        const qty = p.quantity || 0;
+        const cbmVal = p.cbm || '0';
+        const weightVal = p.totalWeight || '0';
+        const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
-      updatedStagedItems.push({
-        incomingProductId: p.id, // ✅ Store source IncomingProduct ID
-        productId: p.productId,
-        expectedProductName: prodName,
-        expectedQuantity: qty,
-        expectedCbm: cbmVal,
-        expectedTotalWeight: weightVal,
-        expectedExpirationDate: expiryVal,
+        updatedStagedItems.push({
+          incomingProductId: p.id,
+          productId: p.productId,
+          expectedProductName: prodName,
+          expectedQuantity: qty,
+          expectedCbm: cbmVal,
+          expectedTotalWeight: weightVal,
+          expectedExpirationDate: expiryVal,
 
-        productName: prodName,
-        quantity: qty,
-        cbm: cbmVal,
-        totalWeight: weightVal,
-        expirationDate: expiryVal,
+          productName: prodName,
+          quantity: qty,
+          cbm: cbmVal,
+          totalWeight: weightVal,
+          expirationDate: expiryVal,
 
-        supplier: p.supplier || undefined,
-        unitPrice: p.unitPrice ?? undefined,
-        totalAmount: p.totalAmount ?? undefined,
+          supplier: p.supplier || undefined,
+          unitPrice: p.unitPrice ?? undefined,
+          totalAmount: p.totalAmount ?? undefined,
 
-        typeOfPackage: p.typeOfPackage || 'CS GLASS',
-        remarks: p.remarks || '',
-        palletId: undefined,
-        containerName: '',
-
-        isMatched: true,
-        discrepancies: []
-      });
+          typeOfPackage: p.typeOfPackage || 'CS GLASS',
+          remarks: p.remarks || '',
+          palletId: undefined,
+          containerName: ''
+        });
+      }
     }
-  }
 
-  this.stagedItems = updatedStagedItems;
-  this.cd.markForCheck();
-  this.triggerDraftSave();
-}
+    this.stagedItems = updatedStagedItems;
+    this.cd.markForCheck();
+    this.triggerDraftSave();
+  }
 
   clearIncomingSelection(): void {
     this.selectedIncoming = null;
@@ -486,126 +471,188 @@ selectIncoming(incoming: IncomingResponseDto): void {
     this.triggerDraftSave();
   }
 
-  toggleItemMatch(item: StagedProductItem): void {
-    item.isMatched = !item.isMatched;
-
-    if (item.isMatched) {
-      item.quantity = item.expectedQuantity;
-      item.cbm = item.expectedCbm;
-      item.totalWeight = item.expectedTotalWeight;
-      item.expirationDate = item.expectedExpirationDate;
-      item.productName = item.expectedProductName;
-      item.discrepancies = [];
-    } else {
-      this.autoDetectDiscrepancies(item);
-    }
-    this.cd.markForCheck();
-    this.triggerDraftSave();
+  onItemQuantityChange(item: StagedProductItem): void {
+    this.fieldDebounce$.next();
   }
 
-  onFieldChange(item: StagedProductItem): void {
-    if (!item.isMatched) {
-      this.autoDetectDiscrepancies(item);
-    }
-    this.triggerDraftSave();
-    this.cd.markForCheck();
+  /**
+   * Computed getter that dynamically groups staged items by Pallet ID
+   */
+  palletGroups: PalletGroupSummary[] = [];
+
+  trackByPalletId(index: number, group: PalletGroupSummary): number {
+    return group.palletId;
   }
 
-  autoDetectDiscrepancies(item: StagedProductItem): void {
-    const manualFlags = item.discrepancies.filter(cat => cat === 'DAMAGED' || cat === 'OTHER');
-    const detected: DiscrepancyCategory[] = [...manualFlags];
+  /**
+   * Executes pro-rating math and updates pallet summaries after the 300ms typing debounce
+   */
+  private recalculateItemProRataAndGroups(): void {
+    // 1. Recalculate line-item CBM & Weight pro-rata for changed quantities
+    for (const item of this.stagedItems) {
+      if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
+        const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
+        if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
+          const origCbm = parseFloat(parent.cbm || '0');
+          const origWgt = parseFloat(parent.totalWeight || '0');
+          const actQty = item.quantity ?? 0;
 
-    if ((item.quantity ?? 0) !== (item.expectedQuantity ?? 0)) {
-      if (!detected.includes('QUANTITY')) detected.push('QUANTITY');
-    }
+          const newCbm = (origCbm / parent.originalQuantity) * actQty;
+          const newWgt = (origWgt / parent.originalQuantity) * actQty;
 
-    if (item.productName?.trim().toLowerCase() !== item.expectedProductName?.trim().toLowerCase()) {
-      if (!detected.includes('DESCRIPTION')) detected.push('DESCRIPTION');
-    }
-
-    if (item.cbm?.trim() !== item.expectedCbm?.trim()) {
-      if (!detected.includes('CBM')) detected.push('CBM');
-    }
-
-    if (item.totalWeight?.trim() !== item.expectedTotalWeight?.trim()) {
-      if (!detected.includes('WEIGHT')) detected.push('WEIGHT');
-    }
-
-    if (item.expirationDate !== item.expectedExpirationDate) {
-      if (!detected.includes('EXPIRY')) detected.push('EXPIRY');
-    }
-
-    if (detected.length === 0) {
-      detected.push('OTHER');
-    }
-
-    item.discrepancies = detected;
-  }
-
-  toggleDiscrepancyCategory(item: StagedProductItem, category: DiscrepancyCategory): void {
-    const idx = item.discrepancies.indexOf(category);
-    if (idx > -1) {
-      item.discrepancies.splice(idx, 1);
-    } else {
-      item.discrepancies.push(category);
-    }
-
-    if (item.discrepancies.length > 0) {
-      item.isMatched = false;
-    }
-    this.cd.markForCheck();
-  }
-
-  hasDiscrepancyCategory(item: StagedProductItem, category: DiscrepancyCategory): boolean {
-    return item.discrepancies.includes(category);
-  }
-
-  getVariance(item?: { quantity?: number | null; expectedQuantity?: number | null }): number {
-    if (!item || item.expectedQuantity === null || item.expectedQuantity === undefined) {
-      return 0;
-    }
-    return (item.quantity ?? 0) - item.expectedQuantity;
-  }
-
-  getDiscrepancySummary(): DiscrepancySummary {
-    const summary: DiscrepancySummary = {
-      matchedCount: 0,
-      flaggedCount: 0,
-      totalItems: this.stagedItems.length,
-      totalQuantityShortage: 0,
-      totalQuantityExcess: 0,
-      categoryCounts: {
-        QUANTITY: 0,
-        DESCRIPTION: 0,
-        EXPIRY: 0,
-        WEIGHT: 0,
-        CBM: 0,
-        DAMAGED: 0,
-        OTHER: 0
+          item.cbm = newCbm > 0 ? newCbm.toFixed(3) : '0';
+          item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
+        }
       }
-    };
+    }
+
+    // 2. Recompute Pallet Group Summaries
+    this.updatePalletGroups();
+
+    // 3. Trigger debounced draft auto-save
+    this.triggerDraftSave();
+
+    // 4. Mark change detection
+    this.cd.markForCheck();
+  }
+
+/**
+   * Recomputes pallet group objects explicitly
+   */
+  updatePalletGroups(): void {
+    const groupsMap = new Map<number, StagedProductItem[]>();
 
     for (const item of this.stagedItems) {
-      if (item.isMatched) {
-        summary.matchedCount++;
-      } else {
-        summary.flaggedCount++;
+      if (!item.palletId) continue;
+      if (!groupsMap.has(item.palletId)) {
+        groupsMap.set(item.palletId, []);
+      }
+      groupsMap.get(item.palletId)!.push(item);
+    }
 
-        const variance = this.getVariance(item);
-        if (variance < 0) {
-          summary.totalQuantityShortage += Math.abs(variance);
-        } else if (variance > 0) {
-          summary.totalQuantityExcess += variance;
-        }
+    const result: PalletGroupSummary[] = [];
 
-        for (const cat of item.discrepancies) {
-          summary.categoryCounts[cat] = (summary.categoryCounts[cat] || 0) + 1;
+    for (const [palletId, items] of groupsMap.entries()) {
+      const totalQty = items.reduce((sum, i) => sum + (i.quantity || 0), 0);
+      
+      const calcCbm = items.reduce((sum, i) => {
+        const val = parseFloat(i.cbm || '0');
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+
+      const calcWeight = items.reduce((sum, i) => {
+        const val = parseFloat(i.totalWeight || '0');
+        return sum + (isNaN(val) ? 0 : val);
+      }, 0);
+
+      const override = this.palletOverrides.get(palletId);
+
+      result.push({
+        palletId,
+        items,
+        totalQuantity: totalQty,
+        calculatedCbm: override?.manualCbm ?? parseFloat(calcCbm.toFixed(3)),
+        calculatedWeight: override?.manualWeight ?? parseFloat(calcWeight.toFixed(2))
+      });
+    }
+
+    this.palletGroups = result;
+  }
+
+/**
+ * Called when the warehouse worker enters a Pallet CBM override
+ */
+applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
+  if (!group || newTotalCbm < 0 || isNaN(newTotalCbm)) return;
+
+  // Apply tail-end pro-rating directly to the staged items in this pallet group
+  this.distributePalletScaleOverride(group.items, newTotalCbm, undefined);
+
+  this.updatePalletGroups();
+  this.triggerDraftSave();
+  this.cd.markForCheck();
+}
+
+/**
+ * Called when the warehouse worker enters a Pallet Total Weight scale override
+ */
+applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
+  if (!group || newTotalWeight < 0 || isNaN(newTotalWeight)) return;
+
+  // Apply tail-end pro-rating directly to the staged items in this pallet group
+  this.distributePalletScaleOverride(group.items, undefined, newTotalWeight);
+
+  this.updatePalletGroups();
+  this.triggerDraftSave();
+  this.cd.markForCheck();
+}
+
+/**
+ * Baseline-Weighted Tail Allocation:
+ * Pro-rates override target CBM & Weight based on each item's existing CBM/Weight ratio,
+ * then assigns the remaining rounding delta to the last item.
+ */
+private distributePalletScaleOverride(
+  items: StagedProductItem[],
+  overrideCbm?: number,
+  overrideWeight?: number
+): void {
+  if (items.length === 0) return;
+
+  // 1. Distribute Target CBM based on Baseline CBM Ratios
+  if (overrideCbm !== undefined && overrideCbm >= 0) {
+    const totalBaselineCbm = items.reduce((sum, i) => sum + (parseFloat(i.cbm || '0') || 0), 0);
+
+    if (totalBaselineCbm > 0) {
+      let accumulatedCbm = 0;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const isLastItem = i === items.length - 1;
+
+        if (isLastItem) {
+          // Tail item gets exact remaining delta
+          const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
+          item.cbm = exactCbm.toFixed(3);
+        } else {
+          const itemBaselineCbm = parseFloat(item.cbm || '0') || 0;
+          const ratio = itemBaselineCbm / totalBaselineCbm;
+
+          const allocatedCbm = parseFloat((overrideCbm * ratio).toFixed(3));
+          item.cbm = allocatedCbm.toFixed(3);
+          accumulatedCbm += allocatedCbm;
         }
       }
     }
-
-    return summary;
   }
+
+  // 2. Distribute Target Weight based on Baseline Weight Ratios
+  if (overrideWeight !== undefined && overrideWeight >= 0) {
+    const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
+
+    if (totalBaselineWeight > 0) {
+      let accumulatedWeight = 0;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const isLastItem = i === items.length - 1;
+
+        if (isLastItem) {
+          // Tail item gets exact remaining delta
+          const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
+          item.totalWeight = exactWeight.toFixed(2);
+        } else {
+          const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
+          const ratio = itemBaselineWeight / totalBaselineWeight;
+
+          const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
+          item.totalWeight = allocatedWeight.toFixed(2);
+          accumulatedWeight += allocatedWeight;
+        }
+      }
+    }
+  }
+}
 
   openPalletModal(rowIndex: number): void {
     this.activeRowIndexForPallet = rowIndex;
@@ -665,14 +712,18 @@ selectIncoming(incoming: IncomingResponseDto): void {
     }
   }
 
-  applyPalletToRow(): void {
-    if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
+applyPalletToRow(): void {
+  if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
 
-    this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
-    this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
-    this.closePalletModal();
-    this.triggerDraftSave();
-  }
+  this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
+  this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
+  
+  // Update pallet group calculation explicitly
+  this.updatePalletGroups();
+  
+  this.closePalletModal();
+  this.triggerDraftSave();
+}
 
   removeProductItem(index: number): void {
     const removedItem = this.stagedItems[index];
@@ -684,7 +735,6 @@ selectIncoming(incoming: IncomingResponseDto): void {
     }
 
     this.triggerDraftSave();
-
     this.cd.markForCheck();
   }
 
@@ -703,10 +753,7 @@ selectIncoming(incoming: IncomingResponseDto): void {
     for (let i = 0; i < this.stagedItems.length; i++) {
       const item = this.stagedItems[i];
       if (!item.palletId) {
-        return `Each item should be assigned to a specific pallet.`;
-      }
-      if (!item.isMatched && item.discrepancies.length === 0 && !item.remarks?.trim()) {
-        return `Line Item #${i + 1} (${item.productName}) is marked as having discrepancies, but no category or remark was provided.`;
+        return `Line Item #${i + 1} (${item.productName}) must be assigned to a specific pallet.`;
       }
     }
 
@@ -720,101 +767,91 @@ selectIncoming(incoming: IncomingResponseDto): void {
     return new Date(`${baseDate}T${formattedTime}`).toISOString();
   }
 
-async saveReceiving(): Promise<void> {
-  const error = this.validateForm();
-  if (error) {
-    this.validationError = error;
-    this.cd.markForCheck();
-    return;
-  }
-
-  this.validationError = '';
-  this.isSaving = true;
-
-  const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => {
-    let remarksText = item.remarks || '';
-    if (!item.isMatched && item.discrepancies.length > 0) {
-      const tagString = `[DISCREPANCIES: ${item.discrepancies.join(', ')}]`;
-      remarksText = remarksText ? `${tagString} ${remarksText}` : tagString;
+  async saveReceiving(): Promise<void> {
+    const error = this.validateForm();
+    if (error) {
+      this.validationError = error;
+      this.cd.markForCheck();
+      return;
     }
 
-    return {
+    this.validationError = '';
+    this.isSaving = true;
+
+    const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => ({
       id: item.id || 0,
       productId: item.productId!,
       incomingProductId: item.incomingProductId ?? undefined,
 
       expectedProductName: item.expectedProductName,
       expectedQuantity: item.expectedQuantity,
-      expectedCbm: item.expectedCbm,
+      expectedCBM: item.expectedCbm,
       expectedTotalWeight: item.expectedTotalWeight,
       expectedExpirationDate: item.expectedExpirationDate as any,
       typeOfPackage: item.typeOfPackage,
 
-      productName: item.productName,
+      name: item.productName,
       quantity: item.quantity ?? 0,
       cbm: item.cbm || '0',
       totalWeight: item.totalWeight || '0',
       expirationDate: item.expirationDate as any,
+      lotNumber: item.lotNumber || undefined,
       
       supplier: item.supplier || undefined,
       unitPrice: item.unitPrice ?? undefined,
       totalAmount: item.totalAmount ?? undefined,
 
-      remarks: remarksText,
+      remarks: item.remarks || '',
       containerName: item.containerName || '',
       palletId: item.palletId ?? undefined
+    }));
+
+    const payload: CreateReceivingDto = {
+      ...this.newReceiving,
+      warehouseId: this.warehouseService.selectedWarehouseId()!,
+      incomingId: this.selectedIncoming?.id! ?? null,
+      series: this.newReceiving.series?.trim() ?? '',
+      transportCompany: this.newReceiving.transportCompany?.trim() ?? '',
+      shipper: this.newReceiving.shipper?.trim() ?? '',
+      consignee: this.newReceiving.consignee?.trim() || undefined,
+      reference: this.newReceiving.reference?.trim() ?? '',
+      plateNumber: this.newReceiving.plateNumber?.trim() ?? '',
+      driverName: this.newReceiving.driverName?.trim() ?? '',
+      checkerName: this.newReceiving.checkerName?.trim() || undefined,
+      clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
+      dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
+      dateAdded: this.newReceiving.dateAdded || new Date().toISOString(),
+      dateTime: new Date().toISOString(),
+      timeStart: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeStart),
+      timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
+      products: processedProducts
     };
-  });
 
-  const payload: CreateReceivingDto = {
-    ...this.newReceiving,
-    warehouseId: this.warehouseService.selectedWarehouseId()!,
-    incomingId: this.selectedIncoming?.id! ?? null,
-    series: this.newReceiving.series?.trim() ?? '',
-    transportCompany: this.newReceiving.transportCompany?.trim() ?? '',
-    shipper: this.newReceiving.shipper?.trim() ?? '',
-    consignee: this.newReceiving.consignee?.trim() || undefined,
-    reference: this.newReceiving.reference?.trim() ?? '',
-    plateNumber: this.newReceiving.plateNumber?.trim() ?? '',
-    driverName: this.newReceiving.driverName?.trim() ?? '',
-    checkerName: this.newReceiving.checkerName?.trim() || undefined,
-    clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
-    dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
-    dateAdded: new Date().toISOString(),
-    dateTime: new Date().toISOString(),
-    timeStart: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeStart),
-    timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
-    products: processedProducts
-  };
+    try {
+      const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
+      this.toastService.success(`Receiving ${payload.series} successfully submitted`);
+      
+      this.clearDraft();
+      this.created.emit();
 
-  try {
-    const createdReceiving = await this.api.invoke(createReceiving, { body: payload }) as any;
-    this.toastService.success(`Receiving ${payload.series} successfully submitted`);
-    
-    // 1. Purge draft from storage
-    this.clearDraft();
+      const createdId = createdReceiving?.id;
+      const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
 
-    // 2. Notify parent component to refresh records
-    this.created.emit();
-
-    const createdId = createdReceiving?.id;
-    const hasPalletizedItems = this.stagedItems.some(p => !!p.palletId);
-
-    // 3. Prepare print labels if pallets exist; otherwise reset & close form without prompt
-    if (createdId && hasPalletizedItems) {
-      await this.preparePalletLabelsForPrinting(createdId);
-    } else {
-      this.forceCloseAndReset();
+      if (createdId && hasPalletizedItems) {
+        await this.preparePalletLabelsForPrinting(createdId);
+      } else {
+        this.forceCloseAndReset();
+      }
+    } catch (err) {
+      console.error('Failed to create receiving:', err);
+      this.toastService.error(`Failed to create receiving: ${err}`);
+      this.validationError = 'Failed to save receiving receipt. Please check server connection.';
+    } finally {
+      this.isSaving = false;
+      this.cd.markForCheck();
     }
-  } catch (err) {
-    console.error('Failed to create receiving:', err);
-    this.toastService.error(`Failed to create receiving: ${err}`);
-    this.validationError = 'Failed to save receiving receipt. Please check server connection.';
-  } finally {
-    this.isSaving = false;
-    this.cd.markForCheck();
   }
-}
+
   discardDraft(): void {
     this.clearDraft();
     this.newReceiving = this.getInitialForm();
@@ -887,6 +924,11 @@ async saveReceiving(): Promise<void> {
           ? totalWeightVal.toFixed(2) 
           : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
 
+        const formattedCbm = groupItems.reduce((acc, curr) => {
+          const parsed = parseFloat(curr.cbm || '0');
+          return acc + (isNaN(parsed) ? 0 : parsed);
+        }, 0).toFixed(3);
+
         labels.push({
           palletId: palletId,
           palletNumber: `PAL-${palletId}`,
@@ -895,6 +937,7 @@ async saveReceiving(): Promise<void> {
           code: codeVal,
           quantity: totalQty,
           weight: formattedWeight,
+          cbm: formattedCbm,
           uom: uomVal,
           lotNumber: lotVal,
           expirationDate: this.formatDate(firstItem.expirationDate as string),
@@ -995,31 +1038,24 @@ async saveReceiving(): Promise<void> {
     this.forceCloseAndReset();
   }
 
-  /**
- * Checks if the user has entered any data into the form.
- */
-private hasUnsavedChanges(): boolean {
-  if (this.selectedIncoming !== null) return true;
-  if (this.stagedItems && this.stagedItems.length > 0) return true;
+  private hasUnsavedChanges(): boolean {
+    if (this.selectedIncoming !== null) return true;
+    if (this.stagedItems && this.stagedItems.length > 0) return true;
 
-  const current = this.newReceiving;
-  const initial = this.getInitialForm();
+    const current = this.newReceiving;
 
-  return !!(
-    (current.reference && current.reference.trim() !== '') ||
-    (current.driverName && current.driverName.trim() !== '') ||
-    (current.plateNumber && current.plateNumber.trim() !== '') ||
-    (current.transportCompany && current.transportCompany.trim() !== '') ||
-    (current.shipper && current.shipper.trim() !== '') ||
-    (current.consignee && current.consignee.trim() !== '') ||
-    (current.checkerName && current.checkerName.trim() !== '') ||
-    (current.clientRepresentative && current.clientRepresentative.trim() !== '')
-  );
-}
+    return !!(
+      (current.reference && current.reference.trim() !== '') ||
+      (current.driverName && current.driverName.trim() !== '') ||
+      (current.plateNumber && current.plateNumber.trim() !== '') ||
+      (current.transportCompany && current.transportCompany.trim() !== '') ||
+      (current.shipper && current.shipper.trim() !== '') ||
+      (current.consignee && current.consignee.trim() !== '') ||
+      (current.checkerName && current.checkerName.trim() !== '') ||
+      (current.clientRepresentative && current.clientRepresentative.trim() !== '')
+    );
+  }
 
-/**
-   * Called when the user clicks '✕', Backdrop, or 'Cancel'
-   */
   onClose(): void {
     if (this.hasUnsavedChanges()) {
       this.isConfirmCloseOpen = true;
@@ -1029,27 +1065,20 @@ private hasUnsavedChanges(): boolean {
     }
   }
 
-  /**
-   * Triggered when the user confirms discarding changes in the dialog
-   */
   onConfirmClose(): void {
     this.isConfirmCloseOpen = false;
     this.forceCloseAndReset();
   }
 
-  /**
-   * Triggered when the user decides to stay and keep editing
-   */
   onCancelClose(): void {
     this.isConfirmCloseOpen = false;
     this.cd.markForCheck();
   }
 
-  /**
-   * Clears storage and resets form state completely
-   */
   private forceCloseAndReset(): void {
     this.clearDraft();
+    this.palletOverrides.clear();
+    this.palletGroups = [];
     this.newReceiving = this.getInitialForm();
     this.stagedItems = [];
     this.clearIncomingSelection();
