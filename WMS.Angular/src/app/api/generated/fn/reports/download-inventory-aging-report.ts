@@ -8,18 +8,14 @@ import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface ReportsTransactionSummaryGet$Params {
-  startDate: string;
-  endDate: string;
-  warehouseId?: number;
+export interface DownloadInventoryAgingReport$Params {
+  id: number;
 }
 
-export function reportsTransactionSummaryGet(http: HttpClient, rootUrl: string, params: ReportsTransactionSummaryGet$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, reportsTransactionSummaryGet.PATH, 'get');
+export function downloadInventoryAgingReport(http: HttpClient, rootUrl: string, params: DownloadInventoryAgingReport$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, downloadInventoryAgingReport.PATH, 'get');
   if (params) {
-    rb.query('startDate', params.startDate, {});
-    rb.query('endDate', params.endDate, {});
-    rb.query('warehouseId', params.warehouseId, {});
+    rb.path('id', params.id, {});
   }
 
   return http.request(
@@ -32,4 +28,4 @@ export function reportsTransactionSummaryGet(http: HttpClient, rootUrl: string, 
   );
 }
 
-reportsTransactionSummaryGet.PATH = '/reports/transaction-summary';
+downloadInventoryAgingReport.PATH = '/reports/inventory-aging/download/{id}';

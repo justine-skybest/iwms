@@ -1,0 +1,116 @@
+<app-page-header title="Inventory Aging Reports" subtitle="{{ totalCount }} generated reports" [showDate]="true">
+  <button (click)="openGenerateModal()" class="px-3 py-1.5 text-xs font-medium text-white bg-slate-900 rounded-md hover:bg-slate-800 flex items-center gap-1.5 shadow-sm transition-colors">
+    <lucide-icon [img]="PlusIcon" [size]="14"></lucide-icon>
+    Generate New Report
+  </button>
+</app-page-header>
+
+<!-- Job History Table -->
+<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
+  <div class="overflow-x-auto flex-1">
+    <table class="w-full text-sm text-left whitespace-nowrap">
+      <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 uppercase tracking-wider text-xs">
+        <tr>
+          <th class="p-4">Job Number</th>
+          <th class="p-4">Requested By</th>
+          <th class="p-4">Format</th>
+          <th class="p-4">Status</th>
+          <th class="p-4">Created At</th>
+          <th class="p-4 text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <tr *ngIf="isLoading && reports.length === 0">
+          <td colspan="6" class="p-12 text-center text-slate-400">
+            <lucide-icon [img]="LoaderIcon" [size]="24" class="animate-spin mx-auto mb-2 text-sky-500"></lucide-icon>
+            <p>Loading reports...</p>
+          </td>
+        </tr>
+
+        <tr *ngIf="!isLoading && reports.length === 0">
+          <td colspan="6" class="p-12 text-center text-slate-500">
+            <p class="font-bold text-slate-700">No inventory aging reports generated yet.</p>
+            <p class="text-xs mt-1">Click "Generate New Report" to queue an Excel download grouped by Shipper.</p>
+          </td>
+        </tr>
+
+        <tr *ngFor="let job of reports" class="hover:bg-slate-50 transition-colors">
+          <td class="p-4 font-mono font-bold text-sky-700">{{ job.jobNumber }}</td>
+          <td class="p-4 font-medium text-slate-700">{{ job.createdBy || 'System' }}</td>
+          <td class="p-4 text-xs font-semibold text-slate-600">{{ job.format }}</td>
+          <td class="p-4">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border"
+              [ngClass]="{
+                'bg-emerald-100 text-emerald-800 border-emerald-300': job.status === 'Completed',
+                'bg-blue-100 text-blue-800 border-blue-300': job.status === 'Processing',
+                'bg-red-100 text-red-800 border-red-300': job.status === 'Failed',
+                'bg-amber-100 text-amber-800 border-amber-300': job.status === 'Pending'
+              }">
+              {{ job.status | uppercase }}
+            </span>
+          </td>
+          <td class="p-4 text-xs text-slate-500">{{ formatDate(job.createdAt) }}</td>
+          <td class="p-4 text-center">
+            <button *ngIf="job.status === 'Completed'" (click)="downloadFile(job)" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-lg text-xs font-bold flex items-center gap-1 mx-auto">
+              <lucide-icon [img]="DownloadIcon" [size]="14"></lucide-icon> Download
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+    <div>Showing <span class="font-bold">{{ reports.length > 0 ? (page - 1) * pageSize + 1 : 0 }}</span> to <span class="font-bold">{{ Math.min(page * pageSize, totalCount) }}</span> of <span class="font-bold">{{ totalCount }}</span> entries</div>
+    <div class="flex items-center gap-2">
+      <button (click)="changePage(page - 1)" [disabled]="page === 1" class="px-3 py-1.5 border border-slate-300 bg-white rounded-lg disabled:opacity-50">Previous</button>
+      <span class="font-bold">Page {{ page }} of {{ totalPages || 1 }}</span>
+      <button (click)="changePage(page + 1)" [disabled]="page === totalPages || totalPages === 0" class="px-3 py-1.5 border border-slate-300 bg-white rounded-lg disabled:opacity-50">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- GENERATE REPORT MODAL -->
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closeGenerateModal()"></div>
+  <div class="relative z-10 w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+      <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+        <lucide-icon [img]="HourglassIcon" [size]="18" class="text-sky-600"></lucide-icon> Generate Inventory Aging Report
+      </h3>
+      <button (click)="closeGenerateModal()" class="text-slate-400 hover:text-slate-600"><lucide-icon [img]="XIcon" [size]="18"></lucide-icon></button>
+    </div>
+
+    <div class="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+      
+      <!-- Info Notice -->
+      <div class="p-3 bg-sky-50 border border-sky-200 rounded-lg text-xs text-sky-800 flex items-start gap-2">
+        <lucide-icon [img]="HourglassIcon" [size]="16" class="text-sky-600 shrink-0 mt-0.5"></lucide-icon>
+        <span>
+          Inventory aging calculates active on-hand stock and categorizes items into age buckets (0-30, 31-60, 61-90, 91-180, 180+ days) relative to today. The generated workbook will separate data into individual sheets by Shipper.
+        </span>
+      </div>
+
+      <!-- Shipper Filter -->
+      <div class="space-y-3">
+        <app-searchable-select
+          label="Target Shipper / Supplier (Optional)"
+          placeholder="Search by Shipper Name..."
+          [selected]="selectedShipperOption"
+          (selectedChange)="selectedShipperOption = $event"
+          [searchFn]="searchShippers">
+        </app-searchable-select>
+        <p class="text-[11px] text-slate-500">Leave empty to include active inventory across all shippers.</p>
+      </div>
+
+    </div>
+
+    <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-2">
+      <button (click)="closeGenerateModal()" class="px-4 py-2 text-xs font-bold text-slate-600 border border-slate-300 rounded-lg bg-white">Cancel</button>
+      <button (click)="submitGenerateReport()" [disabled]="isGenerating" class="px-4 py-2 bg-sky-600 text-white text-xs font-bold rounded-lg hover:bg-sky-700 disabled:opacity-50 flex items-center gap-2">
+        <lucide-icon *ngIf="isGenerating" [img]="LoaderIcon" [size]="14" class="animate-spin"></lucide-icon>
+        {{ isGenerating ? 'Generating...' : 'Generate Report' }}
+      </button>
+    </div>
+  </div>
+</div>

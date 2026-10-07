@@ -22,6 +22,25 @@ namespace WMS.Api.Dtos.Reporting
         string? Shipper,
         int? WarehouseId
     );
+    public record GenerateInventoryAgingReportRequest(
+        ReportFormat Format,
+        int? WarehouseId,
+        string? Shipper,
+        int? ProductId
+    );
+
+    public record AgingItemDto(
+        string ProductCode,
+        string ProductName,
+        string Shipper,
+        string WarehouseName,
+        string Location,
+        DateTime DateReceived,
+        int AgeInDays,
+        string AgingBucket,
+        int RemainingQuantity,
+        string Unit
+    );
 
     public record GenerateReportResponse(
         string Message,

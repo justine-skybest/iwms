@@ -81,6 +81,11 @@ export const routes: Routes = [
         title: 'Pick Order Reports'
       },
       {
+        path: 'inventory-aging-reports',
+        loadChildren: () => import('./pages/reports/inventory-aging-report/inventory-aging-report.routes').then((m) => m.inventoryAgingReportRoutes),
+        title: 'Inventory Aging Reports'
+      },
+      {
         path: 'warehouse-occupancy',
         loadChildren: () => import('./pages/reports/warehouse-occupancy/warehouse-occupancy.routes').then((m) => m.warehouseOccupancyRoutes),
         title: 'Warehouse Occupancy'

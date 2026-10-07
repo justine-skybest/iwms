@@ -35,6 +35,7 @@ export type { DashboardSummaryDto } from './models/dashboard-summary-dto';
 export type { DisplayCheckInProductsDto } from './models/display-check-in-products-dto';
 export type { DisplayCheckInProductsDtoPaginatedResponse } from './models/display-check-in-products-dto-paginated-response';
 export type { ExpiringProductDto } from './models/expiring-product-dto';
+export type { GenerateInventoryAgingReportRequest } from './models/generate-inventory-aging-report-request';
 export type { GeneratePickOrderReportRequest } from './models/generate-pick-order-report-request';
 export type { GenerateReceivingReportRequest } from './models/generate-receiving-report-request';
 export type { GenerateReportResponse } from './models/generate-report-response';

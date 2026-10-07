@@ -1949,117 +1949,6 @@
         }
       }
     },
-    "/reports/warehouse-occupancy": {
-      "get": {
-        "tags": [
-          "Reports"
-        ],
-        "summary": "Get warehouse bin occupancy statistics",
-        "description": "Calculates bin occupancy metrics with itemized bin check-ins and product details.",
-        "operationId": "GetWarehouseOccupancyReport",
-        "parameters": [
-          {
-            "name": "warehouseId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "rackId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OccupancyReportResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/reports/transaction-summary": {
-      "get": {
-        "tags": [
-          "Reports"
-        ],
-        "parameters": [
-          {
-            "name": "startDate",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "endDate",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "warehouseId",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/reports/generate-receiving-report": {
-      "post": {
-        "tags": [
-          "Reports"
-        ],
-        "summary": "Triggers an async job to generate a Reconciled Receiving Excel report",
-        "operationId": "GenerateReceivingReport",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GenerateReceivingReportRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "202": {
-            "description": "Accepted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenerateReportResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/reports/receiving": {
       "get": {
         "tags": [
@@ -2106,6 +1995,68 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/reports/generate-receiving-report": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Triggers an async job to generate a Reconciled Receiving Excel report",
+        "operationId": "GenerateReceivingReport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateReceivingReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateReportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/receiving/download/{id}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Downloads the generated report file",
+        "operationId": "DownloadReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -2160,37 +2111,6 @@
         }
       }
     },
-    "/reports/receiving/download/{id}": {
-      "get": {
-        "tags": [
-          "Reports"
-        ],
-        "summary": "Downloads the generated report file",
-        "operationId": "DownloadReport",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
     "/reports/pickorders/generate": {
       "post": {
         "tags": [
@@ -2229,6 +2149,155 @@
         ],
         "summary": "Downloads the generated pick order report file",
         "operationId": "DownloadPickOrderReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/reports/warehouse-occupancy": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Get warehouse bin occupancy statistics",
+        "operationId": "GetWarehouseOccupancyReport",
+        "parameters": [
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "rackId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OccupancyReportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/inventory-aging": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Retrieve list of generated inventory aging reports",
+        "operationId": "GetInventoryAgingReports",
+        "parameters": [
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Triggers an async job to generate an Excel report for Inventory Aging",
+        "operationId": "GenerateInventoryAgingReport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateInventoryAgingReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateReportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/inventory-aging/download/{id}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Downloads the generated inventory aging report file",
+        "operationId": "DownloadInventoryAgingReport",
         "parameters": [
           {
             "name": "id",
@@ -6088,6 +6157,34 @@
           },
           "warehouse": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GenerateInventoryAgingReportRequest": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "enum": [
+              "Csv",
+              "Pdf",
+              "Excel"
+            ],
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "shipper": {
+            "type": "string",
+            "nullable": true
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int32",
             "nullable": true
           }
         },
