@@ -1,3 +1,12 @@
 .env
 *.env
 .env.*
+
+# Ignore all Excel files
+*.xlsx
+*.xls
+*.csv
+
+# Ignore entire Reports directory and subfolders
+/Reports/
+**/Reports/

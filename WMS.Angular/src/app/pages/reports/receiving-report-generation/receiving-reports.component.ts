@@ -11,12 +11,16 @@ import { formatDate } from '../../../lib/utils/format-date';
 import { PageHeaderComponent } from '../../../shared/layout/page-header/page-header.component';
 import { SearchableSelectComponent, SelectOption } from '../../../shared/components/select/select.component';
 import { getIncomings, getPalletsV2 } from '../../../api/generated/functions';
+import { WarehouseService } from '../../../lib/services/warehouse.service';
+import { formatLocalYMD } from '../../../lib/utils/format-local-ymd';
 
 export enum ReportFormat {
   Excel = 'Excel',
   Pdf = 'Pdf',
   Csv = 'Csv'
 }
+
+export type DatePreset = 'today' | 'yesterday' | 'thisWeek' | 'thisMonth' | 'custom';
 
 @Component({
   selector: 'app-receiving-reports',
@@ -26,7 +30,7 @@ export enum ReportFormat {
     FormsModule, 
     LucideAngularModule, 
     PageHeaderComponent, 
-    SearchableSelectComponent // 👈 Registered SearchableSelectComponent
+    SearchableSelectComponent
   ],
   templateUrl: './receiving-reports.component.html'
 })
@@ -46,6 +50,8 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cd = inject(ChangeDetectorRef);
   private toastService = inject(ToastService);
+  private warehouseService = inject(WarehouseService);
+  private formatLocalYMD = formatLocalYMD;
 
   public formatDate = formatDate;
   public Math = Math;
@@ -68,15 +74,19 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
   selectedIncoming: SelectOption<any>[] = [];
   selectedPallet: SelectOption<any>[] = [];
 
+  // Active Date Preset Tracking
+  activePreset: DatePreset = 'thisMonth';
+
   reportForm = {
     format: ReportFormat.Excel,
     startDate: '',
     endDate: '',
-    plateNumber: ''
+    plateNumber: '',
+    warehouseId: this.warehouseService.selectedWarehouseId() || null
   };
 
   ngOnInit(): void {
-    this.setDefaultDates();
+    this.applyDatePreset('thisMonth');
     this.loadReports();
   }
 
@@ -85,14 +95,50 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  setDefaultDates(): void {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    this.reportForm.endDate = today.toISOString().split('T')[0];
-    this.reportForm.startDate = firstDay.toISOString().split('T')[0];
+  // Quick Select Date Presets Helper
+applyDatePreset(preset: DatePreset): void {
+  this.activePreset = preset;
+  const now = new Date();
+  
+  let start = new Date();
+  let end = new Date();
+
+  switch (preset) {
+    case 'today':
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      break;
+
+    case 'yesterday':
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      break;
+
+    case 'thisWeek':
+      const dayOfWeek = now.getDay(); // 0 is Sunday
+      const distanceToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - distanceToMonday);
+      end = new Date();
+      break;
+
+    case 'thisMonth':
+      start = new Date(now.getFullYear(), now.getMonth(), 1);
+      end = new Date();
+      break;
+
+    case 'custom':
+      return;
   }
 
-  // 🔍 Searchable Select Function for Incomings
+  // Uses local timezone year/month/day
+  this.reportForm.startDate = this.formatLocalYMD(start);
+  this.reportForm.endDate = this.formatLocalYMD(end);
+}
+  onManualDateChange(): void {
+    this.activePreset = 'custom';
+  }
+
+  // Searchable Select Function for Incomings
   searchIncomings = (term: string): Promise<SelectOption<any>[]> => {
     return firstValueFrom(
       getIncomings(this.http, this.api.rootUrl, { search: term, pageSize: 20 })
@@ -107,7 +153,7 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
     });
   };
 
-  // 🔍 Searchable Select Function for Pallets
+  // Searchable Select Function for Pallets
   searchPallets = (term: string): Promise<SelectOption<any>[]> => {
     return firstValueFrom(
       getPalletsV2(this.http, this.api.rootUrl, { search: term, pageSize: 20 })
@@ -126,7 +172,7 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
     if (!isSilent) this.isLoading = true;
     this.cd.markForCheck();
 
-    const url = `${this.api.rootUrl}/reports/receiving?page=${this.page}&pageSize=${this.pageSize}`;
+    const url = `${this.api.rootUrl}/reports/receiving?page=${this.page}&pageSize=${this.pageSize}&warehouseId=${this.warehouseService.selectedWarehouseId() || ''}`;
 
     this.http.get<any>(url).subscribe({
       next: (res) => {
@@ -162,7 +208,7 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
     this.selectedIncoming = [];
     this.selectedPallet = [];
     this.reportForm.plateNumber = '';
-    this.setDefaultDates();
+    this.applyDatePreset('thisMonth');
   }
 
   closeGenerateModal(): void {
@@ -186,7 +232,8 @@ export class ReceivingReportsComponent implements OnInit, OnDestroy {
       startDate: this.reportForm.startDate ? new Date(this.reportForm.startDate).toISOString() : null,
       endDate: this.reportForm.endDate ? new Date(this.reportForm.endDate).toISOString() : null,
       palletNumber: palletNumber || null,
-      plateNumber: this.reportForm.plateNumber || null
+      plateNumber: this.reportForm.plateNumber || null,
+      warehouseId: this.warehouseService.selectedWarehouseId() || null
     };
 
     this.http.post(url, payload).subscribe({

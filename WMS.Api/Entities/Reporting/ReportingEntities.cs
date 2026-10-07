@@ -14,5 +14,9 @@ namespace WMS.Api.Entities.Reporting
         public string? FilePath { get; set; }
         public string? ErrorMessage { get; set; }
         public DateTimeOffset? CompletedAt { get; set; }
+
+        public int? WarehouseId { get; set; }
+
+        public Warehouse? Warehouse { get; set; } = null!;
     }
 }

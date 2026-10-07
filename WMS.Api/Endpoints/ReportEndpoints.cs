@@ -15,7 +15,7 @@ public record GenerateReportResponse(
     string JobNumber
 );
 
-public record ReceivingReportListResponse(
+public record ReportListResponse(
     List<ReportJob> Items,
     int Page,
     int PageSize,
@@ -252,9 +252,10 @@ namespace WMS.Api.Endpoints
                     ?? user?.Identity?.Name
                     ?? "System";
 
-                // Extract dates with safe fallbacks
-                DateTime startDate = request.StartDate ?? DateTime.UtcNow.AddMonths(-1);
-                DateTime endDate = request.EndDate ?? DateTime.UtcNow;
+                DateTime startDate = (request.StartDate ?? DateTime.UtcNow.AddMonths(-1)).Date;
+
+                // Sets time to 23:59:59.9999999 (11:59:59 PM exact end of day)
+                DateTime endDate = (request.EndDate ?? DateTime.UtcNow).Date.AddDays(1).AddTicks(-1);
 
                 string jobNumber = $"REP-RCV-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 4).ToUpper()}";
 
@@ -268,7 +269,8 @@ namespace WMS.Api.Endpoints
                     PeriodEnd = endDate,
                     RequestedBy = currentUserEmail,
                     CreatedBy = currentUserEmail,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    WarehouseId = request.WarehouseId
                 };
 
                 dbContext.ReportJobs.Add(job);
@@ -305,13 +307,15 @@ namespace WMS.Api.Endpoints
 
                         // 2. Query Target Incomings & Expected Products
                         var incomingQuery = backgroundDb.Incomings
-                            .Include(i => i.Products!)
+                            .Include(i => i.Products)
                                 .ThenInclude(p => p.Product)
-                            .AsNoTracking()
-                            .AsQueryable();
+                            .AsNoTracking();
 
                         if (request.IncomingId.HasValue)
                             incomingQuery = incomingQuery.Where(i => i.Id == request.IncomingId.Value);
+
+                        if (request.WarehouseId.HasValue)
+                            incomingQuery = incomingQuery.Where(i => i.WarehouseId == request.WarehouseId.Value);
 
                         if (matchingIncomingIds != null)
                             incomingQuery = incomingQuery.Where(i => matchingIncomingIds.Contains(i.Id));
@@ -350,6 +354,15 @@ namespace WMS.Api.Endpoints
                             receivings = receivings.Where(r => r.Products != null && r.Products.Any()).ToList();
                         }
 
+                        var warehouse = request.WarehouseId.HasValue
+                            ? await backgroundDb.Warehouses
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(w => w.Id == request.WarehouseId.Value)
+                            : null;
+
+                        string warehouseDisplayName = warehouse?.Name
+                            ?? (request.WarehouseId.HasValue ? $"Warehouse #{request.WarehouseId.Value}" : "ALL");
+
                         // 4. Calculate Summary Metrics & Header Data
                         var allReceivedProducts = receivings.SelectMany(r => r.Products ?? new List<ReceivedProduct>()).ToList();
                         var allExpectedProducts = incomings.SelectMany(i => i.Products ?? new List<IncomingProduct>()).ToList();
@@ -385,25 +398,29 @@ namespace WMS.Api.Endpoints
                         ws.Cell("A5").Value = "Date Range:";
                         ws.Cell("B5").Value = $"{startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}";
 
-                        ws.Cell("A6").Value = "Packing List Filter:";
-                        ws.Cell("B6").Value = !string.IsNullOrWhiteSpace(request.PackingListNumber) ? request.PackingListNumber : (request.IncomingId.HasValue ? $"INC-{request.IncomingId}" : "ALL");
+                        // 👇 NEW WAREHOUSE FILTER
+                        ws.Cell("A6").Value = "Warehouse Filter:";
+                        ws.Cell("B6").Value = warehouseDisplayName;
 
-                        ws.Cell("A7").Value = "Pallet Filter:";
-                        ws.Cell("B7").Value = !string.IsNullOrWhiteSpace(request.PalletNumber) ? request.PalletNumber : "ALL";
+                        ws.Cell("A7").Value = "Packing List Filter:";
+                        ws.Cell("B7").Value = !string.IsNullOrWhiteSpace(request.PackingListNumber) ? request.PackingListNumber : (request.IncomingId.HasValue ? $"INC-{request.IncomingId}" : "ALL");
 
-                        ws.Cell("A8").Value = "Plate Number Filter:";
-                        ws.Cell("B8").Value = !string.IsNullOrWhiteSpace(request.PlateNumber) ? request.PlateNumber : "ALL";
+                        ws.Cell("A8").Value = "Pallet Filter:";
+                        ws.Cell("B8").Value = !string.IsNullOrWhiteSpace(request.PalletNumber) ? request.PalletNumber : "ALL";
 
-                        ws.Cell("A9").Value = "Shipper(s):";
-                        ws.Cell("B9").Value = !string.IsNullOrWhiteSpace(headerShippers) ? headerShippers : "N/A";
+                        ws.Cell("A9").Value = "Plate Number Filter:";
+                        ws.Cell("B9").Value = !string.IsNullOrWhiteSpace(request.PlateNumber) ? request.PlateNumber : "ALL";
 
-                        ws.Cell("A10").Value = "Consignee(s):";
-                        ws.Cell("B10").Value = !string.IsNullOrWhiteSpace(headerConsignees) ? headerConsignees : "N/A";
+                        ws.Cell("A10").Value = "Shipper(s):";
+                        ws.Cell("B10").Value = !string.IsNullOrWhiteSpace(headerShippers) ? headerShippers : "N/A";
 
-                        ws.Cell("A11").Value = "Incoming Status:";
-                        ws.Cell("B11").Value = !string.IsNullOrWhiteSpace(headerStatuses) ? headerStatuses : "N/A";
+                        ws.Cell("A11").Value = "Consignee(s):";
+                        ws.Cell("B11").Value = !string.IsNullOrWhiteSpace(headerConsignees) ? headerConsignees : "N/A";
 
-                        ws.Range("A3:A11").Style.Font.SetBold();
+                        ws.Cell("A12").Value = "Incoming Status:";
+                        ws.Cell("B12").Value = !string.IsNullOrWhiteSpace(headerStatuses) ? headerStatuses : "N/A";
+
+                        ws.Range("A3:A12").Style.Font.SetBold();
 
                         // -------------------------------------------------------------
                         // SECTION B: RECONCILIATION SUMMARY BOX
@@ -421,7 +438,7 @@ namespace WMS.Api.Endpoints
                         ws.Range("I3:J5").Style.Border.SetOutsideBorder(XLBorderStyleValues.Medium);
                         ws.Range("J5").Style.Font.SetFontColor(totalRemainingQuantity == 0 ? XLColor.Emerald : XLColor.Red).Font.SetBold();
 
-                        int currentRow = 13; // 👈 Updated starting row for Table 1 to accommodate the extra header row
+                        int currentRow = 14; // 👈 Shifted down from 13 to 14 to fit the new Ware
 
                         // -------------------------------------------------------------
                         // TABLE 1: RECEIVED ITEMS
@@ -613,12 +630,13 @@ namespace WMS.Api.Endpoints
             // -----------------------------------------------------------------------------
             group.MapGet("/receiving", async (
                 WMSContext dbContext,
+                int warehouseId,
                 int page = 1,
                 int pageSize = 15,
                 CancellationToken cancellationToken = default) =>
             {
                 var query = dbContext.ReportJobs
-                    .Where(r => r.ReportType == ReportType.Receiving)
+                    .Where(r => r.ReportType == ReportType.Receiving && r.WarehouseId == warehouseId)
                     .OrderByDescending(r => r.CreatedAt)
                     .AsNoTracking();
 
@@ -629,7 +647,7 @@ namespace WMS.Api.Endpoints
                     .ToListAsync(cancellationToken);
 
                 // ✅ Explicitly return TypedResults with DTO
-                return TypedResults.Ok(new ReceivingReportListResponse(
+                return TypedResults.Ok(new ReportListResponse(
                     jobs,
                     page,
                     pageSize,
@@ -637,9 +655,43 @@ namespace WMS.Api.Endpoints
                     (int)Math.Ceiling(totalCount / (double)pageSize)
                 ));
             })
-            .Produces<ReceivingReportListResponse>(StatusCodes.Status200OK)
+            .Produces<ReportListResponse>(StatusCodes.Status200OK)
             .WithName("GetReceivingReports")
             .WithSummary("Retrieve list of generated receiving reports");
+
+            // -----------------------------------------------------------------------------
+            // GET /reports/receiving
+            // -----------------------------------------------------------------------------
+            group.MapGet("/pick-orders", async (
+                WMSContext dbContext,
+                int warehouseId,
+                int page = 1,
+                int pageSize = 15,
+                CancellationToken cancellationToken = default) =>
+            {
+                var query = dbContext.ReportJobs
+                    .Where(r => r.ReportType == ReportType.PickOrder && r.WarehouseId == warehouseId)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .AsNoTracking();
+
+                var totalCount = await query.CountAsync(cancellationToken);
+                var jobs = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync(cancellationToken);
+
+                // ✅ Explicitly return TypedResults with DTO
+                return TypedResults.Ok(new ReportListResponse(
+                    jobs,
+                    page,
+                    pageSize,
+                    totalCount,
+                    (int)Math.Ceiling(totalCount / (double)pageSize)
+                ));
+            })
+            .Produces<ReportListResponse>(StatusCodes.Status200OK)
+            .WithName("GetPickOrderReports")
+            .WithSummary("Retrieve list of generated pick order reports");
 
             group.MapGet("/receiving/download/{id:int}", async (
                 int id,
@@ -677,8 +729,11 @@ namespace WMS.Api.Endpoints
             .WithName("DownloadReport")
             .WithSummary("Downloads the generated report file");
 
+            // -----------------------------------------------------------------------------
+            // POST /reports/pickorders/generate - Triggers Pick Order report generation
+            // -----------------------------------------------------------------------------
             group.MapPost("/pickorders/generate", async (
-                //GeneratePickOrderReportRequest request,
+                GeneratePickOrderReportRequest request,
                 WMSContext dbContext,
                 IServiceScopeFactory scopeFactory,
                 IHttpContextAccessor httpContextAccessor,
@@ -686,31 +741,45 @@ namespace WMS.Api.Endpoints
             {
                 var httpContext = httpContextAccessor.HttpContext;
                 var user = httpContext?.User;
+
                 Guid.TryParse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId);
                 string currentUserEmail = user?.FindFirst(ClaimTypes.Email)?.Value
                     ?? user?.FindFirst("email")?.Value
                     ?? user?.Identity?.Name
                     ?? "System";
+
+                // Extract dates with safe fallbacks
+                DateTime startDate = request.StartDate ?? DateTime.UtcNow.AddMonths(-1);
+                DateTime endDate = request.EndDate ?? DateTime.UtcNow;
+
                 string jobNumber = $"REP-PICK-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 4).ToUpper()}";
+
                 var job = new ReportJob
                 {
                     JobNumber = jobNumber,
-                    //ReportType = ReportType.PickOrder,
+                    ReportType = ReportType.PickOrder,
                     Format = ReportFormat.Excel,
                     Status = ReportStatus.Pending,
+                    PeriodStart = startDate,
+                    PeriodEnd = endDate,
                     RequestedBy = currentUserEmail,
                     CreatedBy = currentUserEmail,
-                    CreatedAt = DateTimeOffset.UtcNow
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    WarehouseId = request.WarehouseId
                 };
+
                 dbContext.ReportJobs.Add(job);
                 await dbContext.SaveChangesAsync(cancellationToken);
+                int jobId = job.Id;
+
                 _ = Task.Run(async () =>
                 {
                     using var scope = scopeFactory.CreateScope();
                     var backgroundDb = scope.ServiceProvider.GetRequiredService<WMSContext>();
+
                     try
                     {
-                        var processingJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+                        var processingJob = await backgroundDb.ReportJobs.FindAsync(jobId);
                         if (processingJob != null)
                         {
                             processingJob.Status = ReportStatus.Processing;
@@ -718,13 +787,180 @@ namespace WMS.Api.Endpoints
                             processingJob.LastModifiedBy = "System (Background Task)";
                             await backgroundDb.SaveChangesAsync();
                         }
-                        // Implement the logic to generate the pick order report here
-                        // After generating the report, update the job status to Completed
-                        var completedJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+
+                        // 1. Build Query
+                        var query = backgroundDb.ManualPickings
+                            .Include(mp => mp.Warehouse)
+                            .Include(mp => mp.Bin)
+                                .ThenInclude(b => b!.Rack)
+                            .Include(mp => mp.Bin)
+                                .ThenInclude(b => b!.Bay)
+                            .Include(mp => mp.Bin)
+                                .ThenInclude(b => b!.Level)
+                            .Include(mp => mp.Bin)
+                                .ThenInclude(b => b!.BinNames) // Add if BinNames is a navigation property
+                            .Include(mp => mp.PickedProducts)
+                                .ThenInclude(pp => pp.ReceivedProduct)
+                                    .ThenInclude(rp => rp!.Receiving)
+                            .Include(mp => mp.PickedProducts)
+                                .ThenInclude(pp => pp.ReceivedProduct)
+                                    .ThenInclude(rp => rp!.Product)
+                            .AsNoTracking()
+                            .Where(mp => mp.PickingDate >= startDate && mp.PickingDate <= endDate);
+
+                        if (request.WarehouseId.HasValue)
+                            query = query.Where(mp => mp.WarehouseId == request.WarehouseId.Value);
+
+                        if (!string.IsNullOrWhiteSpace(request.Shipper))
+                        {
+                            query = query.Where(mp => mp.PickedProducts.Any(pp =>
+                                pp.ReceivedProduct != null &&
+                                pp.ReceivedProduct.Receiving != null &&
+                                pp.ReceivedProduct.Receiving.Shipper.Contains(request.Shipper)));
+                        }
+
+                        var manualPickings = await query.ToListAsync();
+
+                        var warehouse = request.WarehouseId.HasValue
+                            ? await backgroundDb.Warehouses
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync(w => w.Id == request.WarehouseId.Value)
+                            : null;
+
+                        string warehouseDisplayName = warehouse?.Name
+                            ?? (request.WarehouseId.HasValue ? $"Warehouse #{request.WarehouseId.Value}" : "ALL");
+
+                        // 2. Calculate Summary Metrics
+                        var allPickedProducts = manualPickings.SelectMany(mp => mp.PickedProducts).ToList();
+                        int totalPickedQty = allPickedProducts.Sum(p => p.QuantityPicked);
+
+                        var uniqueShippers = allPickedProducts
+                            .Select(p => p.ReceivedProduct?.Receiving?.Shipper)
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Distinct()
+                            .ToList();
+
+                        string headerShippers = uniqueShippers.Any() ? string.Join(", ", uniqueShippers) : "ALL";
+
+                        // 3. Generate Excel Sheet
+                        using var workbook = new XLWorkbook();
+                        var ws = workbook.Worksheets.Add("Pick Orders");
+
+                        // --- SECTION A: TITLE & FILTERS ---
+                        ws.Cell("A1").Value = "PICK ORDER REPORT";
+                        ws.Range("A1:H1").Merge()
+                            .Style.Font.SetBold().Font.SetFontSize(15)
+                            .Fill.SetBackgroundColor(XLColor.FromHtml("#1E293B"))
+                            .Font.SetFontColor(XLColor.White)
+                            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                        ws.Cell("A3").Value = "Job Number:";
+                        ws.Cell("B3").Value = jobNumber;
+
+                        ws.Cell("A4").Value = "Date Generated:";
+                        ws.Cell("B4").Value = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToString("yyyy-MM-dd hh:mm tt 'PST'");
+
+                        ws.Cell("A5").Value = "Date Range:";
+                        ws.Cell("B5").Value = $"{startDate:yyyy-MM-dd} to {endDate:yyyy-MM-dd}";
+
+                        ws.Cell("A6").Value = "Warehouse Filter:";
+                        ws.Cell("B6").Value = warehouseDisplayName;
+
+                        ws.Cell("A7").Value = "Shipper(s):";
+                        ws.Cell("B7").Value = !string.IsNullOrWhiteSpace(request.Shipper) ? request.Shipper : headerShippers;
+
+                        ws.Range("A3:A7").Style.Font.SetBold();
+
+                        // --- SECTION B: SUMMARY BOX ---
+                        ws.Cell("F3").Value = "Total Picked Qty:";
+                        ws.Cell("G3").Value = totalPickedQty;
+
+                        ws.Cell("F3").Style.Font.SetBold();
+                        ws.Range("F3:G3").Style.Border.SetOutsideBorder(XLBorderStyleValues.Medium);
+                        ws.Range("G3").Style.Font.SetFontColor(XLColor.FromHtml("#0284C7")).Font.SetBold();
+
+                        int currentRow = 10;
+
+                        // --- TABLE: PICKED PRODUCTS ---
+                        ws.Cell(currentRow, 1).Value = "LIST OF PICKED PRODUCTS";
+                        ws.Range(currentRow, 1, currentRow, 9).Merge()
+                            .Style.Font.SetBold().Font.SetFontSize(12)
+                            .Fill.SetBackgroundColor(XLColor.FromHtml("#0284C7")) // Sky Blue
+                            .Font.SetFontColor(XLColor.White);
+                        currentRow++;
+
+                        string[] headers = {
+                "Pick ID", "Picking Date", "Warehouse", "Bin", "Shipper",
+                "Product Code", "Product Name", "Picked Qty", "Notes"
+            };
+
+                        for (int i = 0; i < headers.Length; i++)
+                        {
+                            var cell = ws.Cell(currentRow, i + 1);
+                            cell.Value = headers[i];
+                            cell.Style.Font.Bold = true;
+                            cell.Style.Fill.BackgroundColor = XLColor.LightGray;
+                        }
+                        currentRow++;
+
+                        if (!manualPickings.Any())
+                        {
+                            ws.Cell(currentRow, 1).Value = "No items picked for the selected parameters.";
+                            ws.Range(currentRow, 1, currentRow, 9).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            currentRow++;
+                        }
+                        else
+                        {
+                            foreach (var mp in manualPickings)
+                            {
+                                foreach (var pp in mp.PickedProducts ?? new List<PickedProduct>())
+                                {
+                                    ws.Cell(currentRow, 1).Value = $"MP-{mp.Id}";
+                                    ws.Cell(currentRow, 2).Value = mp.PickingDate.ToString("yyyy-MM-dd HH:mm");
+                                    ws.Cell(currentRow, 3).Value = mp.Warehouse?.Name ?? $"ID:{mp.WarehouseId}";
+
+                                    // Safe Bin Location Formatting
+                                    if (mp.Bin != null)
+                                    {
+                                        string rackName = mp.Bin.Rack?.Name ?? "N/A";
+                                        string bayStr = mp.Bin.Bay != null ? $"Bay{mp.Bin.Bay.BayNumber}" : "N/A";
+                                        string levelStr = mp.Bin.Level != null ? $"Level{mp.Bin.Level.LevelNumber}" : "N/A";
+                                        string binName = mp.Bin.BinNames?.BinName ?? $"Bin#{mp.BinId}";
+
+                                        ws.Cell(currentRow, 4).Value = $"{rackName}/{bayStr}/{levelStr}/{binName}";
+                                    }
+                                    else
+                                    {
+                                        ws.Cell(currentRow, 4).Value = $"Bin ID: {mp.BinId}";
+                                    }
+
+                                    ws.Cell(currentRow, 5).Value = pp.ReceivedProduct?.Receiving?.Shipper ?? "N/A";
+                                    ws.Cell(currentRow, 6).Value = pp.ReceivedProduct?.Product?.Code ?? "N/A";
+                                    ws.Cell(currentRow, 7).Value = pp.ReceivedProduct?.ExpectedProductName ?? pp.ReceivedProduct?.Product?.Name ?? "N/A";
+                                    ws.Cell(currentRow, 8).Value = pp.QuantityPicked;
+                                    ws.Cell(currentRow, 9).Value = mp.Notes ?? string.Empty;
+
+                                    currentRow++;
+                                }
+                            }
+                        }
+
+                        ws.Columns().AdjustToContents();
+
+                        // 4. Save to Disk
+                        string reportsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Reports", "PickOrders");
+                        if (!Directory.Exists(reportsDirectory)) Directory.CreateDirectory(reportsDirectory);
+
+                        string fileName = $"{jobNumber}.xlsx";
+                        string fullPath = Path.Combine(reportsDirectory, fileName);
+                        workbook.SaveAs(fullPath);
+
+                        // 5. Update Job Status
+                        var completedJob = await backgroundDb.ReportJobs.FindAsync(jobId);
                         if (completedJob != null)
                         {
                             completedJob.Status = ReportStatus.Completed;
-                            completedJob.FilePath = Path.Combine("Reports", "PickOrders", $"{jobNumber}.xlsx");
+                            completedJob.FilePath = Path.Combine("Reports", "PickOrders", fileName);
                             completedJob.CompletedAt = DateTimeOffset.UtcNow;
                             completedJob.LastModifiedAt = DateTimeOffset.UtcNow;
                             completedJob.LastModifiedBy = "System (Background Task)";
@@ -733,7 +969,7 @@ namespace WMS.Api.Endpoints
                     }
                     catch (Exception ex)
                     {
-                        var failedJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+                        var failedJob = await backgroundDb.ReportJobs.FindAsync(jobId);
                         if (failedJob != null)
                         {
                             failedJob.Status = ReportStatus.Failed;
@@ -744,10 +980,57 @@ namespace WMS.Api.Endpoints
                             await backgroundDb.SaveChangesAsync();
                         }
                     }
-
                 });
 
-            });
+                return TypedResults.Accepted($"/api/reports/{job.Id}", new GenerateReportResponse(
+                    "Report generation started.",
+                    job.Id,
+                    job.JobNumber
+                ));
+            })
+            .Produces<GenerateReportResponse>(StatusCodes.Status202Accepted)
+            .WithName("GeneratePickOrderReport")
+            .WithSummary("Triggers an async job to generate an Excel report for Manual Pickings");
+
+
+            // -----------------------------------------------------------------------------
+            // GET /reports/pickorders/download/{id} - Downloads the generated Pick Order report
+            // -----------------------------------------------------------------------------
+            group.MapGet("/pickorders/download/{id:int}", async (
+                int id,
+                WMSContext dbContext,
+                CancellationToken cancellationToken = default) =>
+            {
+                var job = await dbContext.ReportJobs.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+
+                if (job == null)
+                    return Results.NotFound(new { Message = "Report job not found." });
+
+                if (job.Status != ReportStatus.Completed || string.IsNullOrEmpty(job.FilePath))
+                    return Results.BadRequest(new { Message = $"Report is not ready. Current Status: {job.Status}" });
+
+                var absolutePath = Path.Combine(Directory.GetCurrentDirectory(), job.FilePath);
+
+                if (!File.Exists(absolutePath))
+                    return Results.NotFound(new { Message = "Physical report file missing on disk." });
+
+                string contentType = Path.GetExtension(absolutePath).ToLower() switch
+                {
+                    ".pdf" => "application/pdf",
+                    ".csv" => "text/csv",
+                    ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    _ => "application/octet-stream"
+                };
+
+                string fileName = Path.GetFileName(absolutePath);
+
+                return Results.File(absolutePath, contentType, fileName);
+            })
+            .Produces(StatusCodes.Status200OK, contentType: "application/octet-stream")
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status400BadRequest)
+            .WithName("DownloadPickOrderReport")
+            .WithSummary("Downloads the generated pick order report file");
 
 
             return group;

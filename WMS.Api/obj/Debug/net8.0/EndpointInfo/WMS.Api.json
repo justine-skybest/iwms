@@ -2069,6 +2069,15 @@
         "operationId": "GetReceivingReports",
         "parameters": [
           {
+            "name": "warehouseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "schema": {
@@ -2093,7 +2102,57 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ReceivingReportListResponse"
+                  "$ref": "#/components/schemas/ReportListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/pick-orders": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Retrieve list of generated pick order reports",
+        "operationId": "GetPickOrderReports",
+        "parameters": [
+          {
+            "name": "warehouseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportListResponse"
                 }
               }
             }
@@ -2137,9 +2196,59 @@
         "tags": [
           "Reports"
         ],
+        "summary": "Triggers an async job to generate an Excel report for Manual Pickings",
+        "operationId": "GeneratePickOrderReport",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneratePickOrderReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateReportResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/pickorders/download/{id}": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Downloads the generated pick order report file",
+        "operationId": "DownloadPickOrderReport",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       }
@@ -4891,6 +5000,23 @@
         },
         "additionalProperties": false
       },
+      "Bay": {
+        "required": [
+          "bayNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bayNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "BayDto": {
         "type": "object",
         "properties": {
@@ -4930,6 +5056,59 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Bin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rackId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rack": {
+            "$ref": "#/components/schemas/Rack"
+          },
+          "bayId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bay": {
+            "$ref": "#/components/schemas/Bay"
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "binNamesId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "binNames": {
+            "$ref": "#/components/schemas/BinNames"
+          },
+          "binHashCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "checkIns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckIn"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5027,6 +5206,23 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BinNames": {
+        "required": [
+          "binName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "binName": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -5179,6 +5375,53 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckIn": {
+        "required": [
+          "checkInType"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checkInType": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "bins": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Bin"
+            },
+            "nullable": true
+          },
+          "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pallet": {
+            "$ref": "#/components/schemas/Pallet"
+          },
+          "receivedProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedProduct"
+            },
+            "nullable": true
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -5850,6 +6093,39 @@
         },
         "additionalProperties": false
       },
+      "GeneratePickOrderReportRequest": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "enum": [
+              "Csv",
+              "Pdf",
+              "Excel"
+            ],
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "shipper": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "GenerateReceivingReportRequest": {
         "type": "object",
         "properties": {
@@ -5963,6 +6239,128 @@
           }
         },
         "additionalProperties": { }
+      },
+      "Incoming": {
+        "required": [
+          "products",
+          "shipper"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          },
+          "shipper": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "consignee": {
+            "type": "string",
+            "nullable": true
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingProduct"
+            }
+          },
+          "status": {
+            "enum": [
+              "PENDING",
+              "RECEIVED",
+              "PARTIAL",
+              "CANCELLED",
+              "CLOSED_SHORT"
+            ],
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IncomingProduct": {
+        "required": [
+          "cbm",
+          "totalWeight"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cbm": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "totalWeight": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expirationDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "supplier": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "incomingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "incoming": {
+            "$ref": "#/components/schemas/Incoming"
+          },
+          "status": {
+            "enum": [
+              "UNRECEIVED",
+              "PARTIAL",
+              "RECEIVED",
+              "CLOSED_SHORT"
+            ],
+            "type": "string"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "IncomingProductRequestDto": {
         "required": [
@@ -6346,6 +6744,23 @@
         },
         "additionalProperties": false
       },
+      "Level": {
+        "required": [
+          "levelNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "levelNumber": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "LevelDto": {
         "type": "object",
         "properties": {
@@ -6502,6 +6917,71 @@
           "occupancyRate": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Pallet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          },
+          "palletNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "palletHashCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "palletDimension": {
+            "type": "string",
+            "nullable": true
+          },
+          "capacityInKG": {
+            "type": "number",
+            "format": "double"
+          },
+          "capacityInCBM": {
+            "type": "number",
+            "format": "double"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "receivedProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedProduct"
+            },
+            "nullable": true
+          },
+          "checkIns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckIn"
+            },
+            "nullable": true
+          },
+          "totalCbm": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
+          "totalWeight": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -6754,6 +7234,46 @@
         },
         "additionalProperties": { }
       },
+      "Product": {
+        "required": [
+          "measurement",
+          "name",
+          "typeOfPackage",
+          "weight"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "typeOfPackage": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "measurement": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "ProductDetailsDto": {
         "type": "object",
         "properties": {
@@ -6839,6 +7359,128 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Rack": {
+        "required": [
+          "isFloorDocking",
+          "name",
+          "rackFloorMapObject"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          },
+          "bayId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bay": {
+            "$ref": "#/components/schemas/Bay"
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "isFloorDocking": {
+            "type": "boolean"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rackFloorMapObject": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RackFloorMapObject"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RackFloorMapObject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rackId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rack": {
+            "$ref": "#/components/schemas/Rack"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "left": {
+            "type": "number",
+            "format": "float"
+          },
+          "top": {
+            "type": "number",
+            "format": "float"
+          },
+          "width": {
+            "type": "number",
+            "format": "float"
+          },
+          "height": {
+            "type": "number",
+            "format": "float"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "fill": {
+            "type": "string",
+            "nullable": true
+          },
+          "stroke": {
+            "type": "string",
+            "nullable": true
+          },
+          "strokeWidth": {
+            "type": "number",
+            "format": "double"
+          },
+          "fontSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "scaleX": {
+            "type": "number",
+            "format": "float"
+          },
+          "scaleY": {
+            "type": "number",
+            "format": "float"
+          },
+          "angle": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false
@@ -6971,6 +7613,132 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedProduct": {
+        "required": [
+          "cbm",
+          "containerName",
+          "totalWeight"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "product": {
+            "$ref": "#/components/schemas/Product"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "cbm": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "totalWeight": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expirationDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "supplier": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "receivingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receiving": {
+            "$ref": "#/components/schemas/Receiving"
+          },
+          "expectedQuantity": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "expectedCBM": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedTotalWeight": {
+            "type": "string",
+            "nullable": true
+          },
+          "expectedExpirationDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "expectedProductName": {
+            "type": "string",
+            "nullable": true
+          },
+          "variance": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "containerName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "lotNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeOfPackage": {
+            "type": "string",
+            "nullable": true
+          },
+          "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pallet": {
+            "$ref": "#/components/schemas/Pallet"
+          },
+          "incomingProductId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "incomingProduct": {
+            "$ref": "#/components/schemas/IncomingProduct"
+          },
+          "checkIns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckIn"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -7165,6 +7933,102 @@
         },
         "additionalProperties": false
       },
+      "Receiving": {
+        "required": [
+          "driverName",
+          "plateNumber",
+          "products",
+          "reference",
+          "series",
+          "shipper",
+          "transportCompany"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          },
+          "shipper": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "consignee": {
+            "type": "string",
+            "nullable": true
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedProduct"
+            }
+          },
+          "incomingId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "incoming": {
+            "$ref": "#/components/schemas/Incoming"
+          },
+          "series": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "transportCompany": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "reference": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "plateNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "driverName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "clientRepresentative": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateReceived": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "ReceivingDetailsDto": {
         "type": "object",
         "properties": {
@@ -7250,35 +8114,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReceivingDetailsDto"
-            },
-            "nullable": true
-          },
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "pageSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ReceivingReportListResponse": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReportJob"
             },
             "nullable": true
           },
@@ -7440,6 +8275,7 @@
           "reportType": {
             "enum": [
               "Receiving",
+              "PickOrder",
               "Incoming",
               "Aging",
               "Warehouse_Occupancy",
@@ -7490,6 +8326,43 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReportListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportJob"
+            },
+            "nullable": true
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -7850,6 +8723,51 @@
             "type": "array",
             "items": {
               "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Warehouse": {
+        "required": [
+          "address",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "address": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "floorPlanImage": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "receivings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Receiving"
+            },
+            "nullable": true
+          },
+          "pallets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pallet"
             },
             "nullable": true
           }

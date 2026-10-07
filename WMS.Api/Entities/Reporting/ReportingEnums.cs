@@ -3,6 +3,8 @@
     public enum ReportType
     {
         Receiving,
+
+        PickOrder,
         Incoming,
         Aging,
         Warehouse_Occupancy,

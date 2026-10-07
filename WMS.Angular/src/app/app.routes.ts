@@ -76,6 +76,11 @@ export const routes: Routes = [
         title: 'Receiving Reports'
       },
       {
+        path: 'pickorder-reports',
+        loadChildren: () => import('./pages/reports/pick-orders-report-generation/pick-orders-report-generation.routes').then((m) => m.pickOrderReportRoutes),
+        title: 'Pick Order Reports'
+      },
+      {
         path: 'warehouse-occupancy',
         loadChildren: () => import('./pages/reports/warehouse-occupancy/warehouse-occupancy.routes').then((m) => m.warehouseOccupancyRoutes),
         title: 'Warehouse Occupancy'

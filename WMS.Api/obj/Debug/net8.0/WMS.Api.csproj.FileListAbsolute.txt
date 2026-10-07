@@ -139,5 +139,5 @@ C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\Microsoft.Extensions.Primi
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\StackExchange.Redis.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
-C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\CsvHelper.dll
+C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

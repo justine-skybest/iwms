@@ -7,16 +7,18 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { ReceivingReportListResponse } from '../../models/receiving-report-list-response';
+import type { ReportListResponse } from '../../models/report-list-response';
 
 export interface GetReceivingReports$Params {
+  warehouseId: number;
   page?: number;
   pageSize?: number;
 }
 
-export function getReceivingReports(http: HttpClient, rootUrl: string, params?: GetReceivingReports$Params, context?: HttpContext): Observable<StrictHttpResponse<ReceivingReportListResponse>> {
+export function getReceivingReports(http: HttpClient, rootUrl: string, params: GetReceivingReports$Params, context?: HttpContext): Observable<StrictHttpResponse<ReportListResponse>> {
   const rb = new RequestBuilder(rootUrl, getReceivingReports.PATH, 'get');
   if (params) {
+    rb.query('warehouseId', params.warehouseId, {});
     rb.query('page', params.page, {});
     rb.query('pageSize', params.pageSize, {});
   }
@@ -26,7 +28,7 @@ export function getReceivingReports(http: HttpClient, rootUrl: string, params?: 
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<ReceivingReportListResponse>;
+      return r as StrictHttpResponse<ReportListResponse>;
     })
   );
 }

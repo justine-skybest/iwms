@@ -113,8 +113,14 @@ export type { GenerateReceivingReport$Params as GenerateReceivingReport$Params }
 export { generateReceivingReport as generateReceivingReport } from './fn/reports/generate-receiving-report';
 export type { GetReceivingReports$Params as GetReceivingReports$Params } from './fn/reports/get-receiving-reports';
 export { getReceivingReports as getReceivingReports } from './fn/reports/get-receiving-reports';
+export type { GetPickOrderReports$Params as GetPickOrderReports$Params } from './fn/reports/get-pick-order-reports';
+export { getPickOrderReports as getPickOrderReports } from './fn/reports/get-pick-order-reports';
 export type { DownloadReport$Params as DownloadReport$Params } from './fn/reports/download-report';
 export { downloadReport as downloadReport } from './fn/reports/download-report';
+export type { GeneratePickOrderReport$Params as GeneratePickOrderReport$Params } from './fn/reports/generate-pick-order-report';
+export { generatePickOrderReport as generatePickOrderReport } from './fn/reports/generate-pick-order-report';
+export type { DownloadPickOrderReport$Params as DownloadPickOrderReport$Params } from './fn/reports/download-pick-order-report';
+export { downloadPickOrderReport as downloadPickOrderReport } from './fn/reports/download-pick-order-report';
 export type { LocatePalletByNumber$Params as LocatePalletByNumber$Params } from './fn/transfers/locate-pallet-by-number';
 export { locatePalletByNumber as locatePalletByNumber } from './fn/transfers/locate-pallet-by-number';
 export type { LocatePalletByQrCode$Params as LocatePalletByQrCode$Params } from './fn/transfers/locate-pallet-by-qr-code';
