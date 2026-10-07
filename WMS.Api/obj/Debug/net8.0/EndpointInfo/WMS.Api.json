@@ -3148,48 +3148,6 @@
         }
       }
     },
-    "/bin/CheckedIn/id/{BinId}/{WarehouseId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "summary": "Locate Checked-In Bin by Bin ID",
-        "description": "Queries a Bin ID and returns bin details if it currently contains unpicked stock.",
-        "operationId": "GetCheckedInBinById",
-        "parameters": [
-          {
-            "name": "BinId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "WarehouseId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BinSummaryDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bin/QRCode/{binHashCode}/{warehouseId}": {
       "get": {
         "tags": [

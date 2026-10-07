@@ -154,10 +154,9 @@
 
                 <!-- Revise Incoming Excel Action -->
                 <button 
-                  [disabled]="item.status === 'RECEIVED' || item.status === 'CLOSED_SHORT' || isRevising" 
                   (click)="triggerRevisionInput(revisionFileInput, item.id!)" 
                   class="p-1.5 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" 
-                  [title]="item.status === 'RECEIVED' || item.status === 'CLOSED_SHORT' ? 'Cannot revise completed or short-closed shipments' : 'Revise via Excel Upload'">
+                  [title]="'Revise via Excel Upload'">
                   <lucide-icon [img]="fileUpIcon" [size]="15"></lucide-icon>
                 </button>
 
