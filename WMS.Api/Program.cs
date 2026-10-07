@@ -125,6 +125,8 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>(); // ✅ CORRECT SINGLE REGISTRATION
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
+// Report Cleanup Hosted Service Registration
+builder.Services.AddHostedService<ReportCleanupService>();
 
 // 8. Configure Swagger
 builder.Services.AddSwaggerGen(options =>
