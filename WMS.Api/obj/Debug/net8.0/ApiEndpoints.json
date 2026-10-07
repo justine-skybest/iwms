@@ -409,7 +409,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
     "RelativePath": "bin/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -431,7 +431,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -463,7 +463,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -490,7 +490,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_17",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -568,7 +568,39 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_5",
+    "RelativePath": "bin/CheckedIn/id/{BinId:int}/{WarehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "BinId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "WarehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "GetCheckedInBinById",
+    "Description": "Queries a Bin ID and returns bin details if it currently contains unpicked stock.",
+    "Summary": "Locate Checked-In Bin by Bin ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
     "RelativePath": "bin/hashcode/{hashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -607,7 +639,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
     "RelativePath": "bin/history/{BinId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -629,7 +661,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_5",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
     "RelativePath": "bin/QRCode/{binHashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -658,7 +690,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
     "RelativePath": "bin/rack/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -682,7 +714,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
     "RelativePath": "bin/rack/{rackId}/bay/{bayId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -711,7 +743,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
     "RelativePath": "bin/stock/id/{BinId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -813,7 +845,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
     "RelativePath": "bin/v2/rack/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -847,7 +879,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
     "RelativePath": "bin/v2/rack/{rackId}/bay/{bayId}",
     "HttpMethod": "GET",
     "IsController": false,

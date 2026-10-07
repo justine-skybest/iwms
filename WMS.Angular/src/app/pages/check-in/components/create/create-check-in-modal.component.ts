@@ -29,6 +29,7 @@ import {
   receivedProductV2ToCheckInProductsWarehouseIdGet,
   locatePalletByQrCode,
   binQrCodeBinHashCodeWarehouseIdGet,
+  locatePalletByNumber,
 } from '../../../../api/generated/functions';
 import { SearchableSelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
 import { ToastService } from '../../../../lib/services/toast.service';
@@ -92,56 +93,98 @@ export class CreateCheckInModalComponent implements OnChanges {
 
   // --- PALLET QR SCANNER HANDLER ----------------------------------------
 
-  async onPalletQrScanned(decodedText: string): Promise<void> {
-    const hashCode = Number(decodedText.trim());
-    const warehouseId = this.warehouseService.selectedWarehouseId();
+async onPalletQrScanned(decodedText: string): Promise<void> {
+  const trimmedText = decodedText.trim();
 
-    if (!hashCode || isNaN(hashCode)) {
-      this.createError = 'Invalid Pallet QR code. Expected numeric HashCode.';
-      this.cd.markForCheck();
-      return;
-    }
+  console.log('Pallet QR scanned:', trimmedText);
+  const warehouseId = this.warehouseService.selectedWarehouseId();
 
-    if (!warehouseId) {
-      this.createError = 'Please select a warehouse first.';
-      this.cd.markForCheck();
-      return;
-    }
-
-    this.isLocatingPallet = true;
-    this.createError = '';
+  if (!trimmedText) {
+    this.createError = 'Invalid QR code string.';
     this.cd.markForCheck();
+    return;
+  }
 
-    try {
-      const pallet = (await this.api.invoke(locatePalletByQrCode, {
-        hashCode,
+  if (!warehouseId) {
+    this.createError = 'Please select a warehouse first.';
+    this.cd.markForCheck();
+    return;
+  }
+
+  this.isLocatingPallet = true;
+  this.createError = '';
+  this.cd.markForCheck();
+
+  try {
+    let pallet: PalletLocationDto | null = null;
+
+    // 1. Check if the QR code string has a "PAL-" or "PALLET-" prefix (e.g. "PAL-12" or "PALLET-12")
+    const prefixMatch = trimmedText.match(/^PAL(?:LET)?-(\d+)$/i);
+
+    if (prefixMatch) {
+      const palletNumber = Number(prefixMatch[1]);
+      console.log('Pallet QR scanned with prefix, locating by Pallet Number:', palletNumber);
+      pallet = (await this.api.invoke(locatePalletByNumber, {
+        palletNumber,
         warehouseId,
       })) as PalletLocationDto;
+    } else {
+      // 2. If the scanned text is purely numeric, try HashCode first, then fallback to Pallet Number
+      const numericValue = Number(trimmedText);
 
-      if (pallet && pallet.palletId) {
-        this.selectedPallet = [
-          {
-            id: pallet.palletId,
-            label: `Pallet #${pallet.palletNumber ?? pallet.palletId}`,
-            sublabel: pallet.currentBinLocation ? `Location: ${pallet.currentBinLocation}` : undefined,
-            raw: {
-              id: pallet.palletId,
-              palletNumber: pallet.palletNumber,
-              warehouse: undefined,
-            } as PalletToBeCheckInDto,
-          },
-        ];
+      if (!isNaN(numericValue) && numericValue > 0) {
+        // Attempt A: Locate by QR HashCode
+        try {
+          pallet = (await this.api.invoke(locatePalletByQrCode, {
+            hashCode: numericValue,
+            warehouseId,
+          })) as PalletLocationDto;
+        } catch {
+          // HashCode lookup failed or threw 404, proceed to Fallback
+        }
+
+        // Attempt B: Fallback to Locate by Pallet Number if HashCode returned no valid pallet
+        if (!pallet || !pallet.palletId) {
+          try {
+            pallet = (await this.api.invoke(locatePalletByNumber, {
+              palletNumber: numericValue,
+              warehouseId,
+            })) as PalletLocationDto;
+          } catch {
+            // Fallback failed
+          }
+        }
       } else {
-        this.createError = pallet?.message || 'Pallet not found for scanned QR code.';
+        this.createError = 'Unrecognized Pallet QR format.';
+        return;
       }
-    } catch (err) {
-      console.error('Pallet QR lookup failed:', err);
-      this.createError = 'Unable to locate pallet for the scanned QR code.';
-    } finally {
-      this.isLocatingPallet = false;
-      this.cd.markForCheck();
     }
+
+    // 3. Process the retrieved pallet location
+    if (pallet && pallet.palletId) {
+      this.selectedPallet = [
+        {
+          id: pallet.palletId,
+          label: `Pallet #${pallet.palletNumber ?? pallet.palletId}`,
+          sublabel: pallet.currentBinLocation ? `Location: ${pallet.currentBinLocation}` : undefined,
+          raw: {
+            id: pallet.palletId,
+            palletNumber: pallet.palletNumber,
+            warehouse: undefined,
+          } as PalletToBeCheckInDto,
+        },
+      ];
+    } else {
+      this.createError = pallet?.message || 'Pallet not found for scanned QR code.';
+    }
+  } catch (err) {
+    console.error('Pallet QR lookup failed:', err);
+    this.createError = 'Unable to locate pallet for the scanned QR code.';
+  } finally {
+    this.isLocatingPallet = false;
+    this.cd.markForCheck();
   }
+}
 
   // --- BIN QR SCANNER HANDLER -------------------------------------------
 
