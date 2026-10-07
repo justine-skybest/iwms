@@ -2132,6 +2132,18 @@
         }
       }
     },
+    "/reports/pickorders/generate": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
       "get": {
         "tags": [

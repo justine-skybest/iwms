@@ -677,6 +677,79 @@ namespace WMS.Api.Endpoints
             .WithName("DownloadReport")
             .WithSummary("Downloads the generated report file");
 
+            group.MapPost("/pickorders/generate", async (
+                //GeneratePickOrderReportRequest request,
+                WMSContext dbContext,
+                IServiceScopeFactory scopeFactory,
+                IHttpContextAccessor httpContextAccessor,
+                CancellationToken cancellationToken) =>
+            {
+                var httpContext = httpContextAccessor.HttpContext;
+                var user = httpContext?.User;
+                Guid.TryParse(user?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId);
+                string currentUserEmail = user?.FindFirst(ClaimTypes.Email)?.Value
+                    ?? user?.FindFirst("email")?.Value
+                    ?? user?.Identity?.Name
+                    ?? "System";
+                string jobNumber = $"REP-PICK-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 4).ToUpper()}";
+                var job = new ReportJob
+                {
+                    JobNumber = jobNumber,
+                    //ReportType = ReportType.PickOrder,
+                    Format = ReportFormat.Excel,
+                    Status = ReportStatus.Pending,
+                    RequestedBy = currentUserEmail,
+                    CreatedBy = currentUserEmail,
+                    CreatedAt = DateTimeOffset.UtcNow
+                };
+                dbContext.ReportJobs.Add(job);
+                await dbContext.SaveChangesAsync(cancellationToken);
+                _ = Task.Run(async () =>
+                {
+                    using var scope = scopeFactory.CreateScope();
+                    var backgroundDb = scope.ServiceProvider.GetRequiredService<WMSContext>();
+                    try
+                    {
+                        var processingJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+                        if (processingJob != null)
+                        {
+                            processingJob.Status = ReportStatus.Processing;
+                            processingJob.LastModifiedAt = DateTimeOffset.UtcNow;
+                            processingJob.LastModifiedBy = "System (Background Task)";
+                            await backgroundDb.SaveChangesAsync();
+                        }
+                        // Implement the logic to generate the pick order report here
+                        // After generating the report, update the job status to Completed
+                        var completedJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+                        if (completedJob != null)
+                        {
+                            completedJob.Status = ReportStatus.Completed;
+                            completedJob.FilePath = Path.Combine("Reports", "PickOrders", $"{jobNumber}.xlsx");
+                            completedJob.CompletedAt = DateTimeOffset.UtcNow;
+                            completedJob.LastModifiedAt = DateTimeOffset.UtcNow;
+                            completedJob.LastModifiedBy = "System (Background Task)";
+                            await backgroundDb.SaveChangesAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var failedJob = await backgroundDb.ReportJobs.FindAsync(job.Id);
+                        if (failedJob != null)
+                        {
+                            failedJob.Status = ReportStatus.Failed;
+                            failedJob.ErrorMessage = ex.Message;
+                            failedJob.CompletedAt = DateTimeOffset.UtcNow;
+                            failedJob.LastModifiedAt = DateTimeOffset.UtcNow;
+                            failedJob.LastModifiedBy = "System (Background Task)";
+                            await backgroundDb.SaveChangesAsync();
+                        }
+                    }
+
+                });
+
+            });
+
+
             return group;
         }
     }

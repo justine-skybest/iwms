@@ -15,6 +15,16 @@ namespace WMS.Api.Dtos.Reporting
         string? Supplier
     );
 
+    //public record GeneratePickOrderReportRequest(
+    //    ReportFormat Format,
+    //    DateTime? StartDate,
+    //    DateTime? EndDate,
+    //    string? Shipper,
+    //    string? PlateNumber,
+    //    string? PalletNumber,
+    //    int? WarehouseId
+    //);
+
     public record GenerateReportResponse(
         string Message,
         int JobId,

@@ -3339,6 +3339,25 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapReportEndpoints\u003Eb__0_5",
+    "RelativePath": "reports/pickorders/generate",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Reports"
+    ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.ReportEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMapReportEndpoints\u003Eb__0_3",
     "RelativePath": "reports/receiving",
     "HttpMethod": "GET",
