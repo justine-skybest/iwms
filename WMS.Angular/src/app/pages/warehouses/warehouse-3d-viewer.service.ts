@@ -7,6 +7,7 @@ import { RackSummaryDto, BinSummaryDto, Location3DDto } from '../../api/generate
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ItemLocationSummaryDto } from '../../api/generated/models/item-location-summary-dto';
 import { DisplayCheckInProductsDto } from '../../api/generated/models/display-check-in-products-dto';
+import { findOpenBinPosition } from './warehouse-bin-position.util';
 
 export interface Warehouse3DData {
   racks: Rack3D[];
@@ -162,29 +163,26 @@ export class Warehouse3DViewerService {
         page: 1,
         pageSize: 500,
       });
-      standaloneBins = (binsResponse.items ?? [])
+      const standaloneBinDtos = (binsResponse.items ?? [])
         .filter((bin): bin is BinSummaryDto & { id: number } =>
           bin.id != null && (bin.rack ?? '').toLowerCase() === 'standalone'
-        )
-        .map((bin, index) => ({
-          id: bin.id,
-          binName: bin.binName ?? null,
-          binHashCode: bin.binHashCode ?? null,
-          rack: bin.rack ?? null,
-          bay: bin.bay ?? null,
-          level: bin.level ?? null,
-          warehouse: bin.warehouse ?? null,
-          dateAdded: bin.dateAdded ?? null,
-          location3D: bin.location3D ?? {
-            positionX: 8 + (index % 5) * 3,
-            positionY: 0.6,
-            positionZ: -20 + Math.floor(index / 5) * 3,
-            rotationY: 0,
-            width: 1.5,
-            height: 1.2,
-            depth: 1.2,
-          },
-        }));
+        );
+      const occupiedLocations = standaloneBinDtos.flatMap((bin) => bin.location3D ? [bin.location3D] : []);
+      standaloneBins = standaloneBinDtos.map((bin) => {
+          const location3D = bin.location3D ?? findOpenBinPosition(occupiedLocations);
+          if (!bin.location3D) occupiedLocations.push(location3D);
+          return {
+            id: bin.id,
+            binName: bin.binName ?? null,
+            binHashCode: bin.binHashCode ?? null,
+            rack: bin.rack ?? null,
+            bay: bin.bay ?? null,
+            level: bin.level ?? null,
+            warehouse: bin.warehouse ?? null,
+            dateAdded: bin.dateAdded ?? null,
+            location3D,
+          };
+        });
     }
 
     return { racks: rack3DList, standaloneBins };
