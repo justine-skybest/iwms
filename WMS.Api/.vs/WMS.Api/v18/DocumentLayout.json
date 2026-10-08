@@ -75,8 +75,7 @@
               "RelativeToolTip": "Endpoints\\ReportEndpoints.cs",
               "ViewState": "AgIAADsAAAAAAAAAAAAswEUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-08T02:26:11.271Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T02:26:11.271Z"
             },
             {
               "$type": "Document",
@@ -88,8 +87,7 @@
               "RelativeToolTip": ".env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-10-08T01:52:17.103Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T01:52:17.103Z"
             },
             {
               "$type": "Document",
@@ -101,8 +99,7 @@
               "RelativeToolTip": "Mapping\\IncomingMapping.cs",
               "ViewState": "AgIAAB4AAAAAAAAAAAAAACkAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-08T01:47:04.603Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T01:47:04.603Z"
             },
             {
               "$type": "Document",
@@ -114,8 +111,7 @@
               "RelativeToolTip": "Endpoints\\IncomingEndpoint.cs",
               "ViewState": "AgIAAOUBAAAAAAAAAAAiwPUBAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-08T01:44:16.41Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T01:44:16.41Z"
             },
             {
               "$type": "Document",
@@ -127,8 +123,7 @@
               "RelativeToolTip": "Data\\WMSContext.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAA7wBoAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-08T01:37:01.958Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T01:37:01.958Z"
             },
             {
               "$type": "Document",
@@ -140,8 +135,7 @@
               "RelativeToolTip": "Entities\\Incoming.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAA3wA8AAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-08T01:28:50.691Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-08T01:28:50.691Z"
             },
             {
               "$type": "Document",
@@ -153,8 +147,7 @@
               "RelativeToolTip": "Endpoints\\IncomingImportEndpoint.cs",
               "ViewState": "AgIAAJIAAAAAAAAAAAAAAAoBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-07T09:26:24.842Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-07T09:26:24.842Z"
             }
           ]
         }

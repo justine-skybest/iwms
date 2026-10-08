@@ -201,9 +201,35 @@
 
       <!-- Received Products Line Items Table -->
       <div>
-        <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-2">
-          Offloaded Line Items ({{selectedReceiving?.products?.length || 0}})
-        </h3>
+        <!-- Header with Search Filter Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+          <h3 class="text-xs font-bold uppercase text-slate-500 tracking-wider">
+            Offloaded Line Items 
+            <span class="normal-case text-slate-500 font-normal">
+              ({{ filteredReceivingProducts.length }} of {{ selectedReceiving?.products?.length || 0 }})
+            </span>
+          </h3>
+
+          <!-- Line Item Search Input -->
+          <div class="relative w-full sm:w-64">
+            <lucide-icon [img]="searchIcon" [size]="14" class="text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></lucide-icon>
+            <input
+              type="text"
+              [(ngModel)]="productSearch"
+              placeholder="Filter description, lot, pallet, remarks..."
+              class="w-full pl-8 pr-7 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            />
+            <!-- Clear search button -->
+            <button 
+              *ngIf="productSearch" 
+              (click)="productSearch = ''" 
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs p-0.5">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Offloaded Products Table -->
         <div class="border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
           <table class="w-full text-xs text-left whitespace-nowrap">
             <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
@@ -220,8 +246,9 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
+              <!-- Loop over filteredReceivingProducts -->
               <tr 
-                *ngFor="let p of selectedReceiving?.products" 
+                *ngFor="let p of filteredReceivingProducts" 
                 class="hover:bg-slate-50 transition-colors"
               >
                 <td class="p-2.5 font-medium text-slate-800">
@@ -251,6 +278,13 @@
 
                 <td class="p-2.5 max-w-xs truncate" [title]="p.remarks || ''">
                   {{ p.remarks || '—' }}
+                </td>
+              </tr>
+
+              <!-- Empty State Handling -->
+              <tr *ngIf="!filteredReceivingProducts.length">
+                <td colspan="9" class="p-4 text-center text-slate-400">
+                  {{ productSearch ? 'No line items matching "' + productSearch + '"' : 'No offloaded line items recorded.' }}
                 </td>
               </tr>
             </tbody>

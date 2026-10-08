@@ -144,6 +144,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   }
 
   openView(receiving: ReceivingDetailsDto): void {
+    this.productSearch = '';
     this.selectedReceiving = receiving;
     this.isViewOpen = true;
   }
@@ -159,6 +160,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   }
 
   closeView(): void {
+    this.productSearch = '';
     this.isViewOpen = false;
     this.selectedReceiving = null;
   }
@@ -467,5 +469,22 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
 
   getTotalReceivedQuantity(receiving: ReceivingDetailsDto): number {
     return receiving.products?.reduce((sum, p) => sum + Number(p.quantity || 0), 0) ?? 0;
+  }
+
+  productSearch = '';
+
+  // Getter to filter offloaded products by description, package type, pallet ID, lot number, or remarks
+  get filteredReceivingProducts(): any[] {
+    if (!this.selectedReceiving?.products) return [];
+    const query = this.productSearch.trim().toLowerCase();
+    if (!query) return this.selectedReceiving.products;
+
+    return this.selectedReceiving.products.filter((p: any) =>
+      (p.name && p.name.toLowerCase().includes(query)) ||
+      (p.typeOfPackage && p.typeOfPackage.toLowerCase().includes(query)) ||
+      (p.palletId && p.palletId.toString().toLowerCase().includes(query)) ||
+      (p.lotNumber && p.lotNumber.toLowerCase().includes(query)) ||
+      (p.remarks && p.remarks.toLowerCase().includes(query))
+    );
   }
 }

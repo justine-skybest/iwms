@@ -21,7 +21,7 @@ import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnDestroy, 
 import { Subject, takeUntil } from "rxjs";
 import { WarehouseService } from "../../lib/services/warehouse.service";
 import { SignalRService } from "../../lib/services/signalr.service";
-import { IncomingDocumentResponseDto, IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
+import { IncomingDocumentResponseDto, IncomingProductResponseDto, IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
 import { Api } from "../../api/generated/api";
 import { deleteIncoming, downloadIncomingDocument, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel, shortCloseIncoming } from "../../api/generated/functions";
 import { formatDate } from "../../lib/utils/format-date";
@@ -331,6 +331,22 @@ export class IncomingListComponent implements OnInit, OnDestroy {
     }
   }
 
+productSearch = '';
+
+// Add a getter to dynamically filter products by code, name, supplier, or remarks
+get filteredProducts(): IncomingProductResponseDto[] {
+  if (!this.selectedIncoming?.products) return [];
+  const query = this.productSearch.trim().toLowerCase();
+  if (!query) return this.selectedIncoming.products;
+
+  return this.selectedIncoming.products.filter(p =>
+    (p.productName && p.productName.toLowerCase().includes(query)) ||
+    (p.code && p.code.toLowerCase().includes(query)) ||
+    (p.supplier && p.supplier.toLowerCase().includes(query)) ||
+    (p.remarks && p.remarks.toLowerCase().includes(query))
+  );
+}
+
   downloadingDocId: number | null = null;
   
 downloadDocument(doc: IncomingDocumentResponseDto): void {
@@ -428,6 +444,7 @@ downloadDocument(doc: IncomingDocumentResponseDto): void {
   }
 
   openView(incoming: IncomingResponseDto): void {
+    this.productSearch = '';
     this.selectedIncoming = incoming;
     this.isViewOpen = true;
   }
@@ -456,6 +473,7 @@ downloadDocument(doc: IncomingDocumentResponseDto): void {
   }
 
   closeView(): void {
+    this.productSearch = '';
     this.isViewOpen = false;
     this.selectedIncoming = null;
   }
