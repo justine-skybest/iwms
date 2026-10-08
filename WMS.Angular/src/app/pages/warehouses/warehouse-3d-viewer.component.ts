@@ -1,17 +1,25 @@
 import { 
   AfterViewInit, 
   Component, 
+  EventEmitter,
   ElementRef, 
+  Input,
+  OnChanges,
   OnDestroy, 
+  Output,
   ViewChild, 
   ChangeDetectorRef,
-  HostListener
+  HostListener,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Warehouse3DViewerService, Rack3D, Bin3D } from './warehouse-3d-viewer.service';
 import { WarehouseService } from '../../lib/services/warehouse.service';
-import { WarehouseDetailsDto } from '../../api/generated/models';
+import { BinSummaryDto, WarehouseDetailsDto } from '../../api/generated/models';
 import { ItemLocationSummaryDto } from '../../api/generated/models/item-location-summary-dto';
+import { CreateCheckInModalComponent } from '../check-in/components/create/create-check-in-modal.component';
+import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-modal.component';
+import { ReceivingCreateComponent } from '../receiving/create/receiving-create.component';
 import { 
   LucideAngularModule, 
   Warehouse, 
@@ -39,13 +47,32 @@ interface CollisionBox {
   maxZ: number;
 }
 
+export interface BinWorldPosition {
+  positionX: number;
+  positionY: number;
+  positionZ: number;
+  rotationY: number;
+}
+
+export interface EmptySpotPointer {
+  clientX: number;
+  clientY: number;
+  position: BinWorldPosition;
+}
+
 @Component({
   selector: 'app-warehouse-3d-viewer',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [
+    CommonModule,
+    LucideAngularModule,
+    CreateCheckInModalComponent,
+    CreatePickOrderModalComponent,
+    ReceivingCreateComponent,
+  ],
   templateUrl: './warehouse-3d-viewer.component.html'
 })
-export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
+export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnChanges {
   readonly WarehouseIcon = Warehouse;
   readonly BoxIcon = Box;
   readonly RefreshIcon = RefreshCw;
@@ -65,6 +92,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('joystickStick') joystickStick!: ElementRef<HTMLDivElement>;
 
   racks: Rack3D[] = [];
+  standaloneBins: Bin3D[] = [];
   selectedWarehouse: WarehouseDetailsDto | null = null;
   isLoading = true;
   isLoadingInventory = false;
@@ -81,6 +109,9 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   isFullscreen = false;
   isMobileDevice = false;
   isFlying = false;
+  isCheckInOpen = false;
+  isPickOrderOpen = false;
+  isReceivingCreateOpen = false;
 
   // First-Person Player Physics & Controls State
   private playerPos = new THREE.Vector3(0, 1.8, 45); // Height = 1.8m (Eye level)
@@ -117,6 +148,25 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   private textureLoader = new THREE.TextureLoader();
   private collisionBoxes: CollisionBox[] = [];
 
+  @Input() warehouseIdOverride: number | null = null;
+  @Input() showStandaloneBins = false;
+  @Input() binMoveMode = false;
+  @Input() isWarehouse2Layout = false;
+  @Output() binSelected = new EventEmitter<Bin3D>();
+  @Output() emptySpotChanged = new EventEmitter<EmptySpotPointer | null>();
+  @Output() emptySpotClicked = new EventEmitter<BinWorldPosition>();
+  @Output() binMoveRequested = new EventEmitter<Bin3D>();
+  @Output() binMoveDropped = new EventEmitter<{ binId: number; position: BinWorldPosition }>();
+  @Output() binMoveCancelled = new EventEmitter<void>();
+  @Output() receivingCreateRequested = new EventEmitter<void>();
+
+  private movingBinOriginalPosition: THREE.Vector3 | null = null;
+  private movingBinOriginalRotation = 0;
+  private carriedBinForwardOffset = 2.5;
+  private carriedBinLateralOffset = 0;
+  private receivingActionMesh: THREE.Mesh | null = null;
+  private preventPointerLockForNextClick = false;
+
   constructor(
     private warehouse3DService: Warehouse3DViewerService,
     private warehouseService: WarehouseService,
@@ -125,7 +175,17 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     this.isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['binMoveMode']) {
+      if (this.binMoveMode) this.captureMovingBinPosition();
+      else this.restoreMovingBinPosition();
+    }
+  }
+
   ngAfterViewInit(): void {
+    if (this.warehouseIdOverride !== null) {
+      this.warehouseService.setWarehouse(this.warehouseIdOverride);
+    }
     this.initScene();
     void this.loadWarehouseData();
     this.setupResizeObserver();
@@ -149,9 +209,10 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
       await this.warehouseService.ensureInitialized();
       this.selectedWarehouse = this.warehouseService.activeWarehouse();
 
-      const data = await this.warehouse3DService.fetchWarehouse3DData();
-      await this.warehouse3DService.preloadBinInventory(data.racks);
+      const data = await this.warehouse3DService.fetchWarehouse3DData(this.showStandaloneBins);
+      await this.warehouse3DService.preloadBinInventory(data.racks, 8, data.standaloneBins);
       this.racks = data.racks;
+      this.standaloneBins = data.standaloneBins;
       this.totalRacks = data.racks.length;
       this.totalBays = data.racks.reduce((sum, rack) => sum + rack.bays.length, 0);
       this.totalLevels = data.racks.reduce(
@@ -164,10 +225,15 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
           0
         ),
         0
-      );
+      ) + data.standaloneBins.length;
 
-      this.buildFloorPlanZones();
-      this.buildFloorPlanRacks(data.racks);
+      if (this.isWarehouse2Layout) {
+        this.buildWarehouse2FloorPlan();
+      } else {
+        this.buildFloorPlanZones();
+        this.buildFloorPlanRacks(data.racks);
+      }
+      if (this.showStandaloneBins) this.buildStandaloneBins(data.standaloneBins);
 
       setTimeout(() => {
         this.resize();
@@ -179,6 +245,69 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     } finally {
       this.isLoading = false;
       this.cd.markForCheck();
+    }
+  }
+
+  completeBinMove(position: BinWorldPosition): void {
+    const bin = this.selectedBin;
+    const mesh = bin ? this.binMeshes.get(bin.id) : undefined;
+    if (!bin || !mesh) return;
+
+    mesh.position.set(position.positionX, position.positionY, position.positionZ);
+    mesh.rotation.y = position.rotationY;
+    bin.location3D = {
+      ...bin.location3D,
+      positionX: position.positionX,
+      positionY: position.positionY,
+      positionZ: position.positionZ,
+      rotationY: position.rotationY,
+    };
+    this.movingBinOriginalPosition = null;
+    this.movingBinOriginalRotation = position.rotationY;
+  }
+
+  addCreatedStandaloneBin(bin: Bin3D): void {
+    if (!bin.location3D) {
+      throw new Error(`Created bin ${bin.id} has no 3D location.`);
+    }
+    if (this.binMeshes.has(bin.id)) return;
+
+    const width = bin.location3D.width ?? 1.5;
+    const height = bin.location3D.height ?? 1.2;
+    const depth = bin.location3D.depth ?? 1.2;
+    const mesh = this.createBinMesh(bin, width, height, depth);
+    mesh.position.set(
+      bin.location3D.positionX ?? 0,
+      bin.location3D.positionY ?? height / 2,
+      bin.location3D.positionZ ?? 0
+    );
+    mesh.rotation.y = bin.location3D.rotationY ?? 0;
+    this.rackGroup.add(mesh);
+    this.binMeshes.set(bin.id, mesh);
+    this.standaloneBins.push(bin);
+    this.totalBins += 1;
+    this.attachCornerQrBadge(mesh, bin, width, height, depth);
+    this.addCollisionBox(
+      mesh.position.x - width / 2,
+      mesh.position.x + width / 2,
+      mesh.position.z - depth / 2,
+      mesh.position.z + depth / 2
+    );
+    this.binSelected.emit(bin);
+    void this.selectBin(bin, mesh);
+  }
+
+  exitNavigation(): void {
+    this.moveForward = false;
+    this.moveBackward = false;
+    this.moveLeft = false;
+    this.moveRight = false;
+    this.moveUp = false;
+    this.moveDown = false;
+    this.touchJoystickActive = false;
+    this.joystickVector = { x: 0, y: 0 };
+    if (document.pointerLockElement === this.renderer?.domElement) {
+      document.exitPointerLock();
     }
   }
 
@@ -215,16 +344,24 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     this.scene.add(mainLight);
 
     // Ground Floor
-    const groundGeometry = new THREE.PlaneGeometry(120, 120);
-    const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+    const groundGeometry = new THREE.PlaneGeometry(
+      this.isWarehouse2Layout ? 96 : 120,
+      this.isWarehouse2Layout ? 72 : 120
+    );
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: this.isWarehouse2Layout ? 0x73777a : 0x1e293b,
+      roughness: 0.8,
+    });
     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
     ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = !this.isMobileDevice;
     this.scene.add(ground);
 
-    const grid = new THREE.GridHelper(120, 60, 0x334155, 0x1e293b);
-    grid.position.y = 0.02;
-    this.scene.add(grid);
+    if (!this.isWarehouse2Layout) {
+      const grid = new THREE.GridHelper(120, 60, 0x334155, 0x1e293b);
+      grid.position.y = 0.02;
+      this.scene.add(grid);
+    }
 
     this.floorZonesGroup = new THREE.Group();
     this.scene.add(this.floorZonesGroup);
@@ -235,6 +372,10 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     // Event listeners for Desktop Pointer Lock & Mouse Look
     const canvas = this.renderer.domElement;
     canvas.addEventListener('click', () => {
+      if (this.preventPointerLockForNextClick) {
+        this.preventPointerLockForNextClick = false;
+        return;
+      }
       if (!this.isMobileDevice && !this.isPointerLocked) {
         canvas.requestPointerLock();
       }
@@ -254,6 +395,9 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     });
 
     canvas.addEventListener('pointerdown', this.onCanvasPointerDown.bind(this));
+    canvas.addEventListener('pointermove', this.onCanvasPointerMove.bind(this));
+    canvas.addEventListener('pointerleave', () => this.emptySpotChanged.emit(null));
+    canvas.addEventListener('contextmenu', this.onCanvasContextMenu.bind(this));
 
     this.animate();
   }
@@ -261,6 +405,49 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   // Keyboard Controls
   @HostListener('window:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null;
+    const editing = target?.isContentEditable ||
+      ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '');
+    if (editing) return;
+
+    if (this.binMoveMode) {
+      switch (event.code) {
+        case 'Escape':
+          event.preventDefault();
+          this.binMoveCancelled.emit();
+          return;
+        case 'Enter':
+          event.preventDefault();
+          this.dropMovingBin();
+          return;
+        case 'KeyR':
+          event.preventDefault();
+          this.rotateMovingBin();
+          return;
+        case 'ArrowUp':
+          event.preventDefault();
+          this.nudgeCarriedBin(0.25, 0);
+          return;
+        case 'ArrowDown':
+          event.preventDefault();
+          this.nudgeCarriedBin(-0.25, 0);
+          return;
+        case 'ArrowLeft':
+          event.preventDefault();
+          this.nudgeCarriedBin(0, -0.25);
+          return;
+        case 'ArrowRight':
+          event.preventDefault();
+          this.nudgeCarriedBin(0, 0.25);
+          return;
+      }
+    } else if (this.showStandaloneBins && event.code === 'KeyM' && !event.repeat && this.selectedBin &&
+      (this.selectedBin.rack ?? '').toLowerCase() === 'standalone') {
+      event.preventDefault();
+      this.binMoveRequested.emit(this.selectedBin);
+      return;
+    }
+
     switch (event.code) {
       case 'KeyW': case 'ArrowUp': this.moveForward = true; break;
       case 'KeyS': case 'ArrowDown': this.moveBackward = true; break;
@@ -401,6 +588,37 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   private buildFloorPlanZones(): void {
     this.collisionBoxes = [];
 
+    const perimeterMaterial = new THREE.MeshStandardMaterial({
+      color: 0x64717b,
+      roughness: 0.8,
+    });
+    const addPerimeterWall = (
+      width: number,
+      height: number,
+      depth: number,
+      x: number,
+      y: number,
+      z: number
+    ): void => {
+      const wall = new THREE.Mesh(
+        new THREE.BoxGeometry(width, height, depth),
+        perimeterMaterial
+      );
+      wall.position.set(x, y, z);
+      wall.castShadow = !this.isMobileDevice;
+      wall.receiveShadow = !this.isMobileDevice;
+      this.floorZonesGroup.add(wall);
+    };
+
+    const wallHeight = 18;
+    const wallCenterY = wallHeight / 2;
+    addPerimeterWall(1.5, wallHeight, 104, -51, wallCenterY, 0);
+    addPerimeterWall(1.5, wallHeight, 104, 51, wallCenterY, 0);
+    addPerimeterWall(104, wallHeight, 1.5, 0, wallCenterY, -51);
+    addPerimeterWall(42, wallHeight, 1.5, -31, wallCenterY, 51);
+    addPerimeterWall(42, wallHeight, 1.5, 31, wallCenterY, 51);
+    this.addConcreteRoof(104, 104, 18);
+
     // 1. Office / Comfort Room Zone (Bottom Left)
     const officeGeo = new THREE.BoxGeometry(22, 4, 18);
     const officeMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7, transparent: true, opacity: 0.85 });
@@ -444,6 +662,21 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     this.floorZonesGroup.add(bayMesh);
     this.addZoneLabel('LOADING & UNLOADING BAY', 4, 0.2, 46);
 
+    const receivingPad = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 0.65, 2.4),
+      new THREE.MeshStandardMaterial({
+        color: 0x059669,
+        roughness: 0.35,
+        emissive: 0x064e3b,
+        emissiveIntensity: 0.8,
+      })
+    );
+    receivingPad.position.set(-8, 0.34, 24);
+    receivingPad.userData['type'] = 'receiving-create';
+    this.floorZonesGroup.add(receivingPad);
+    this.receivingActionMesh = receivingPad;
+    this.addZoneLabel('CREATE RECEIVING', -8, 1.3, 24);
+
     // 6. Empty Pallet Area (Bottom Right)
     const palletZoneGeo = new THREE.PlaneGeometry(14, 10);
     const palletZoneMat = new THREE.MeshBasicMaterial({ color: 0x64748b, side: THREE.DoubleSide, transparent: true, opacity: 0.2 });
@@ -463,9 +696,111 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
 
     // Outer Warehouse Perimeter Walls Collision Boundaries
     this.addCollisionBox(-52, 52, -52, -50); // Back Wall
-    this.addCollisionBox(-52, 52, 50, 52);   // Front Wall
+    this.addCollisionBox(-52, -10, 50, 52);  // Front wall, left of loading entrance
+    this.addCollisionBox(10, 52, 50, 52);    // Front wall, right of loading entrance
     this.addCollisionBox(-52, -50, -52, 52); // Left Wall
     this.addCollisionBox(50, 52, -52, 52);   // Right Wall
+  }
+
+  private addConcreteRoof(width: number, depth: number, undersideY: number): void {
+    const thickness = 1.2;
+    const roof = new THREE.Mesh(
+      new THREE.BoxGeometry(width, thickness, depth),
+      new THREE.MeshStandardMaterial({
+        color: 0x9ca3a3,
+        roughness: 0.92,
+        metalness: 0.02,
+      })
+    );
+    roof.position.set(0, undersideY + thickness / 2, 0);
+    roof.receiveShadow = !this.isMobileDevice;
+    roof.castShadow = !this.isMobileDevice;
+    this.floorZonesGroup.add(roof);
+  }
+
+  private buildWarehouse2FloorPlan(): void {
+    this.collisionBoxes = [];
+
+    const floorGrid = new THREE.GridHelper(96, 48, 0x8b8e8e, 0x797d7d);
+    floorGrid.position.y = 0.04;
+    this.floorZonesGroup.add(floorGrid);
+
+    const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x64717b, roughness: 0.8 });
+    const addWall = (width: number, height: number, depth: number, x: number, y: number, z: number): void => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), wallMaterial);
+      wall.position.set(x, y, z);
+      wall.castShadow = !this.isMobileDevice;
+      wall.receiveShadow = !this.isMobileDevice;
+      this.floorZonesGroup.add(wall);
+    };
+
+    addWall(1, 12, 72, -48, 6, 0);
+    addWall(1, 12, 72, 48, 6, 0);
+    addWall(96, 12, 1, 0, 6, -36);
+    addWall(36, 12, 1, -30, 6, 36);
+    addWall(36, 12, 1, 30, 6, 36);
+    this.addConcreteRoof(96, 72, 12);
+    this.addCollisionBox(-49, -47, -36, 36);
+    this.addCollisionBox(47, 49, -36, 36);
+    this.addCollisionBox(-48, 48, -37, -35);
+    this.addCollisionBox(-48, -18, 35, 37);
+    this.addCollisionBox(18, 48, 35, 37);
+
+    const yellowMaterial = new THREE.LineDashedMaterial({
+      color: 0xfacc15,
+      dashSize: 0.8,
+      gapSize: 0.55,
+    });
+    const addAisleLine = (start: THREE.Vector3, end: THREE.Vector3): void => {
+      const line = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([start, end]),
+        yellowMaterial
+      );
+      line.computeLineDistances();
+      this.floorZonesGroup.add(line);
+    };
+    for (const x of [-16, 16]) {
+      addAisleLine(new THREE.Vector3(x, 0.08, -31), new THREE.Vector3(x, 0.08, 31));
+    }
+    for (const z of [-9, 9]) {
+      addAisleLine(new THREE.Vector3(-44, 0.08, z), new THREE.Vector3(44, 0.08, z));
+    }
+
+    const elevator = new THREE.Mesh(
+      new THREE.BoxGeometry(10, 4, 9),
+      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.75 })
+    );
+    elevator.position.set(-40, 2, -28);
+    this.floorZonesGroup.add(elevator);
+    this.addZoneLabel('ELEVATOR', -40, 4.5, -28);
+    this.addCollisionBox(-46, -34, -33, -23);
+
+    const loadingMat = new THREE.MeshStandardMaterial({
+      color: 0xfacc15,
+      roughness: 0.65,
+      emissive: 0x3d3200,
+    });
+    const loadingMark = new THREE.Mesh(new THREE.BoxGeometry(12, 0.08, 1.2), loadingMat);
+    loadingMark.position.set(0, 0.06, 35);
+    this.floorZonesGroup.add(loadingMark);
+    this.addZoneLabel('ACCESS / LOADING', 0, 0.25, 40);
+
+    const receivingButton = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 0.65, 2.4),
+      new THREE.MeshStandardMaterial({
+        color: 0x059669,
+        roughness: 0.35,
+        emissive: 0x064e3b,
+        emissiveIntensity: 0.8,
+      })
+    );
+    receivingButton.position.set(0, 0.34, 31);
+    receivingButton.userData['type'] = 'receiving-create';
+    receivingButton.castShadow = !this.isMobileDevice;
+    receivingButton.receiveShadow = !this.isMobileDevice;
+    this.floorZonesGroup.add(receivingButton);
+    this.receivingActionMesh = receivingButton;
+    this.addZoneLabel('CREATE RECEIVING', 0, 1.3, 31);
   }
 
   private buildFloorPlanRacks(racks: Rack3D[]): void {
@@ -525,6 +860,33 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
       this.registerRackCollisionBoundary(position.x, position.z, bayWidth, bayDepth, position.rotateY);
       this.rackGroup.add(rackMeshGroup);
     });
+  }
+
+  private buildStandaloneBins(bins: Bin3D[]): void {
+    for (const bin of bins) {
+      const location = bin.location3D;
+      if (!location) continue;
+
+      const width = location.width ?? 1.5;
+      const height = location.height ?? 1.2;
+      const depth = location.depth ?? 1.2;
+      const mesh = this.createBinMesh(bin, width, height, depth);
+      mesh.position.set(
+        location.positionX ?? 0,
+        location.positionY ?? height / 2,
+        location.positionZ ?? 0
+      );
+      mesh.rotation.y = location.rotationY ?? 0;
+      this.rackGroup.add(mesh);
+      this.binMeshes.set(bin.id, mesh);
+      this.attachCornerQrBadge(mesh, bin, width, height, depth);
+      this.addCollisionBox(
+        mesh.position.x - width / 2,
+        mesh.position.x + width / 2,
+        mesh.position.z - depth / 2,
+        mesh.position.z + depth / 2
+      );
+    }
   }
 
   // Multi-Level Pallet Racks (Left, Back, Right)
@@ -828,6 +1190,34 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
 
   // Pointer/Tap Raycasting for Bin Selection
   private onCanvasPointerDown(event: PointerEvent): void {
+    if (event.button === 2) {
+      event.preventDefault();
+      this.setPointerFromEvent(event);
+      this.raycaster.setFromCamera(this.pointer, this.camera);
+      const hit = this.raycaster.intersectObjects(Array.from(this.binMeshes.values()), true)[0];
+      const bin = this.getBinFromObject(hit?.object ?? null);
+      if (this.isWarehouse2Layout && bin && (bin.rack ?? '').toLowerCase() === 'standalone') {
+        this.selectedBin = bin;
+        this.binSelected.emit(bin);
+        const mesh = this.binMeshes.get(bin.id);
+        if (mesh) void this.selectBin(bin, mesh);
+        this.binMoveRequested.emit(bin);
+      } else if (!hit && this.showStandaloneBins) {
+        const position = this.getGroundPosition();
+        if (position) this.emptySpotClicked.emit(position);
+      }
+      return;
+    }
+
+    if (event.button !== 0) return;
+
+    if (this.binMoveMode) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.dropMovingBin();
+      return;
+    }
+
     if (this.isPointerLocked) {
       // Direct center crosshair selection when pointer locked
       this.pointer.x = 0;
@@ -839,19 +1229,143 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     }
 
     this.raycaster.setFromCamera(this.pointer, this.camera);
-    const intersects = this.raycaster.intersectObjects(Array.from(this.binMeshes.values()), true);
+    const interactiveObjects = Array.from(this.binMeshes.values());
+    if (this.receivingActionMesh) {
+      interactiveObjects.push(this.receivingActionMesh);
+    }
+
+    const intersects = this.raycaster.intersectObjects(interactiveObjects, true);
 
     if (intersects.length > 0) {
-      let targetObj: THREE.Object3D | null = intersects[0].object;
-      while (targetObj && targetObj.userData?.['type'] !== 'bin') {
-        targetObj = targetObj.parent;
+      if (intersects[0].object.userData['type'] === 'receiving-create') {
+        this.preventPointerLockForNextClick = true;
+        this.exitNavigation();
+        if (!this.isWarehouse2Layout) {
+          this.isReceivingCreateOpen = true;
+          this.cd.markForCheck();
+        }
+        this.receivingCreateRequested.emit();
+        return;
       }
-
-      if (targetObj && targetObj.userData?.['binId']) {
-        const bin = targetObj.userData['bin'] as Bin3D;
-        void this.selectBin(bin, targetObj as THREE.Mesh);
+      const targetObj = this.getBinFromObject(intersects[0].object);
+      if (targetObj) {
+        this.preventPointerLockForNextClick = true;
+        this.exitNavigation();
+        const bin = targetObj;
+        this.binSelected.emit(bin);
+        const mesh = this.binMeshes.get(bin.id);
+        if (mesh) void this.selectBin(bin, mesh);
       }
     }
+  }
+
+  private onCanvasPointerMove(event: PointerEvent): void {
+    if (!this.renderer || !this.camera) return;
+    this.setPointerFromEvent(event);
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+
+    if (this.binMoveMode) {
+      this.emptySpotChanged.emit(null);
+      return;
+    }
+
+    if (!this.showStandaloneBins) return;
+    const binHit = this.raycaster.intersectObjects(Array.from(this.binMeshes.values()), true)[0];
+    if (binHit) {
+      this.emptySpotChanged.emit(null);
+      return;
+    }
+    const position = this.getGroundPosition();
+    if (position) {
+      this.emptySpotChanged.emit({
+        clientX: event.clientX,
+        clientY: event.clientY,
+        position,
+      });
+    } else {
+      this.emptySpotChanged.emit(null);
+    }
+  }
+
+  private onCanvasContextMenu(event: MouseEvent): void {
+    if (this.showStandaloneBins) event.preventDefault();
+  }
+
+  private setPointerFromEvent(event: PointerEvent): void {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  }
+
+  private getGroundPosition(): BinWorldPosition | null {
+    const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const point = new THREE.Vector3();
+    if (!this.raycaster.ray.intersectPlane(ground, point) ||
+      Math.abs(point.x) > 50 || Math.abs(point.z) > 50) return null;
+    return {
+      positionX: point.x,
+      positionY: 0.6,
+      positionZ: point.z,
+      rotationY: this.selectedBin?.location3D?.rotationY ?? 0,
+    };
+  }
+
+  private getBinFromObject(object: THREE.Object3D | null): Bin3D | null {
+    let current = object;
+    while (current && current.userData?.['type'] !== 'bin') current = current.parent;
+    return current?.userData?.['bin'] as Bin3D | undefined ?? null;
+  }
+
+  private captureMovingBinPosition(): void {
+    const mesh = this.selectedBin ? this.binMeshes.get(this.selectedBin.id) : undefined;
+    if (!mesh) return;
+    this.movingBinOriginalPosition = mesh.position.clone();
+    this.movingBinOriginalRotation = mesh.rotation.y;
+    this.carriedBinForwardOffset = 2.5;
+    this.carriedBinLateralOffset = 0;
+  }
+
+  private restoreMovingBinPosition(): void {
+    const mesh = this.selectedBin ? this.binMeshes.get(this.selectedBin.id) : undefined;
+    if (mesh && this.movingBinOriginalPosition) {
+      mesh.position.copy(this.movingBinOriginalPosition);
+      mesh.rotation.y = this.movingBinOriginalRotation;
+    }
+    this.movingBinOriginalPosition = null;
+    this.emptySpotChanged.emit(null);
+  }
+
+  private nudgeCarriedBin(forwardDelta: number, lateralDelta: number): void {
+    this.carriedBinForwardOffset = THREE.MathUtils.clamp(
+      this.carriedBinForwardOffset + forwardDelta,
+      1.25,
+      5
+    );
+    this.carriedBinLateralOffset = THREE.MathUtils.clamp(
+      this.carriedBinLateralOffset + lateralDelta,
+      -2,
+      2
+    );
+  }
+
+  private rotateMovingBin(): void {
+    const mesh = this.selectedBin ? this.binMeshes.get(this.selectedBin.id) : undefined;
+    if (mesh) mesh.rotation.y += Math.PI / 2;
+  }
+
+  private dropMovingBin(): void {
+    const binId = this.selectedBin?.id;
+    const mesh = binId ? this.binMeshes.get(binId) : undefined;
+    if (!binId || !mesh || !this.binMoveMode) return;
+    this.binMoveDropped.emit({
+      binId,
+      position: {
+        positionX: mesh.position.x,
+        positionY: (this.selectedBin?.location3D?.height ?? 1.2) / 2,
+        positionZ: mesh.position.z,
+        rotationY: mesh.rotation.y,
+      },
+    });
   }
 
   get warehouseAddress(): string {
@@ -881,7 +1395,13 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
       .join('');
   }
 
-  private async selectBin(bin: Bin3D, mesh: THREE.Mesh): Promise<void> {
+  async refreshSelectedBinInventory(): Promise<void> {
+    const bin = this.selectedBin;
+    const mesh = bin ? this.binMeshes.get(bin.id) : undefined;
+    if (bin && mesh) await this.selectBin(bin, mesh, true);
+  }
+
+  private async selectBin(bin: Bin3D, mesh: THREE.Mesh, forceRefresh = false): Promise<void> {
     this.selectedBin = bin;
     this.isLoadingInventory = true;
     this.selectedBinItems = [];
@@ -894,7 +1414,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     }
 
     // Query checked-in stock in the bin using getBinStockById.
-    this.warehouse3DService.fetchBinInventory(bin.id).subscribe({
+    this.warehouse3DService.fetchBinInventory(bin.id, forceRefresh).subscribe({
       next: (items) => {
         this.selectedBinItems = items;
         const isOccupied = items.length > 0;
@@ -931,6 +1451,51 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     this.selectedBin = null;
     this.selectedBinItems = [];
     this.cd.markForCheck();
+  }
+
+  get selectedBinDto(): BinSummaryDto | null {
+    if (!this.selectedBin) return null;
+    return {
+      id: this.selectedBin.id,
+      binName: this.selectedBin.binName,
+      binHashCode: this.selectedBin.binHashCode,
+      rack: this.selectedBin.rack,
+      bay: this.selectedBin.bay,
+      level: this.selectedBin.level,
+      warehouse: this.selectedBin.warehouse,
+      dateAdded: this.selectedBin.dateAdded ?? undefined,
+      location3D: this.selectedBin.location3D,
+    };
+  }
+
+  openCheckIn(): void {
+    this.exitNavigation();
+    this.isCheckInOpen = true;
+  }
+
+  openPickOrder(): void {
+    this.exitNavigation();
+    this.isPickOrderOpen = true;
+  }
+
+  closeCheckIn(): void {
+    this.isCheckInOpen = false;
+  }
+
+  closePickOrder(): void {
+    this.isPickOrderOpen = false;
+  }
+
+  closeReceivingCreate(): void {
+    this.isReceivingCreateOpen = false;
+  }
+
+  onWorkflowCreated(): void {
+    void this.loadWarehouseData();
+  }
+
+  onBinWorkflowCreated(): void {
+    void this.refreshSelectedBinInventory();
   }
 
   // Animation Loop with Movement Physics & Collision Detection
@@ -997,6 +1562,19 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     );
     this.camera.lookAt(this.playerPos.clone().add(dir));
 
+    if (this.binMoveMode && this.selectedBin) {
+      const carriedMesh = this.binMeshes.get(this.selectedBin.id);
+      if (carriedMesh) {
+        carriedMesh.position.set(
+          this.playerPos.x + forwardVec.x * this.carriedBinForwardOffset +
+            sideVec.x * this.carriedBinLateralOffset,
+          1.15,
+          this.playerPos.z + forwardVec.z * this.carriedBinForwardOffset +
+            sideVec.z * this.carriedBinLateralOffset
+        );
+      }
+    }
+
     if (this.renderer && this.scene) {
       this.renderer.render(this.scene, this.camera);
     }
@@ -1022,6 +1600,12 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
   }
 
   resetPlayerPosition(): void {
+    if (this.isWarehouse2Layout) {
+      this.playerPos.set(0, 1.8, 29);
+      this.yaw = 0;
+      this.pitch = -0.25;
+      return;
+    }
     this.playerPos.set(0, 1.8, 45);
     this.yaw = -Math.PI / 2;
     this.pitch = 0;
@@ -1048,6 +1632,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy {
     if (this.floorZonesGroup) this.floorZonesGroup.clear();
     this.binMeshes.clear();
     this.qrSpriteMap.clear();
+    this.receivingActionMesh = null;
     this.closeBinPanel();
   }
 

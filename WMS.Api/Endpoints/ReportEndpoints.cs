@@ -39,7 +39,7 @@ namespace WMS.Api.Endpoints
     public record BinOccupancyDto(
         int Id,
         string? BinName,
-        int RackId,
+        int? RackId,
         string? RackName,
         int? BayNumber,
         int? LevelNumber,

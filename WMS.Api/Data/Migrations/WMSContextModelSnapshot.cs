@@ -305,7 +305,7 @@ namespace WMS.Api.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BayId")
+                    b.Property<int?>("BayId")
                         .HasColumnType("int");
 
                     b.Property<int>("BinHashCode")
@@ -317,10 +317,28 @@ namespace WMS.Api.Data.Migrations
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("LevelId")
+                    b.Property<int?>("LevelId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RackId")
+                    b.Property<int?>("Location3DId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RackId")
+                        .HasColumnType("int");
+
+                    b.Property<float?>("RelativeX")
+                        .HasColumnType("float");
+
+                    b.Property<float?>("RelativeY")
+                        .HasColumnType("float");
+
+                    b.Property<float?>("RelativeZ")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("StandaloneLocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -331,7 +349,11 @@ namespace WMS.Api.Data.Migrations
 
                     b.HasIndex("LevelId");
 
+                    b.HasIndex("Location3DId");
+
                     b.HasIndex("RackId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("Bins");
 
@@ -1696,6 +1718,40 @@ namespace WMS.Api.Data.Migrations
                             Id = 10,
                             LevelNumber = 10
                         });
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.Location3D", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("Depth")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<float>("PositionX")
+                        .HasColumnType("float");
+
+                    b.Property<float>("PositionY")
+                        .HasColumnType("float");
+
+                    b.Property<float>("PositionZ")
+                        .HasColumnType("float");
+
+                    b.Property<float>("RotationY")
+                        .HasColumnType("float");
+
+                    b.Property<float>("Width")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Location3D");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.ManualPicking", b =>
@@ -3972,7 +4028,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2472),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2259),
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Ube-Filled Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -3981,7 +4037,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2473),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2263),
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Chocolate Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -3990,7 +4046,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2475),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2264),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Toasted Garlic 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -3999,7 +4055,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 4,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2477),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2265),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4008,7 +4064,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 5,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2477),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2266),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4017,7 +4073,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 6,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2478),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2267),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Buttered Toast 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4026,7 +4082,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 7,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2479),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2268),
                             Measurement = "56 X 24 X 40",
                             Name = "Miggos Sweet Corn Tortilla Chips L28g",
                             TypeOfPackage = "Carton",
@@ -4035,7 +4091,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 8,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2480),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2269),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Chocolate Cream Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4044,7 +4100,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 9,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2480),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2270),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Mango Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4053,7 +4109,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 10,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2481),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2270),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Ube Marshmallow OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4062,7 +4118,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 11,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2482),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2271),
                             Measurement = "56 X 24 X 40",
                             Name = "Onion Rings L-16gx100",
                             TypeOfPackage = "Carton",
@@ -4071,7 +4127,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 12,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2483),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2272),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Prawn Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4080,7 +4136,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 13,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2484),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2273),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries BBQ LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4089,7 +4145,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 14,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2484),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2274),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries Cheese LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4098,7 +4154,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 15,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2485),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2275),
                             Measurement = "56 X 24 X 40",
                             Name = "Potato Fries Tomato Ketchup LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4107,7 +4163,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 16,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2488),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2278),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Fishda Fish Kropeck LF-22gx100",
                             TypeOfPackage = "Carton",
@@ -4116,7 +4172,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 17,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2488),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2278),
                             Measurement = "56 X 24 X 40",
                             Name = "Fish Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4125,7 +4181,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 18,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2489),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2279),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Mango Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4134,7 +4190,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 19,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2490),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2280),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4143,7 +4199,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 20,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2491),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2281),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange-Mango Blends 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4152,7 +4208,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 21,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2492),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2282),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES BBQ 50gX50",
                             TypeOfPackage = "Carton",
@@ -4161,7 +4217,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 22,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2493),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2283),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES CHEESE 50gX50",
                             TypeOfPackage = "Carton",
@@ -4170,7 +4226,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 23,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2494),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2284),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES KETCHUP FLAVOR 50gX50",
                             TypeOfPackage = "Carton",
@@ -4179,7 +4235,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 24,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2525),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2284),
                             Measurement = "56 X 24 X 40",
                             Name = "OISHI PILLOWS CHOCOLATE CRACKERS 150gX20",
                             TypeOfPackage = "Carton",
@@ -4188,7 +4244,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 25,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2526),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2285),
                             Measurement = "56 X 24 X 40",
                             Name = "MIGGOS NACHO CHEESE TORTILLA CHIPS L28gX100",
                             TypeOfPackage = "Carton",
@@ -4197,7 +4253,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 26,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2527),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2286),
                             Measurement = "56 X 24 X 40",
                             Name = "SELECTA MOO MILK",
                             TypeOfPackage = "Carton",
@@ -4206,7 +4262,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 27,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2528),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2287),
                             Measurement = "56 X 24 X 40",
                             Name = "SKYFLAKES",
                             TypeOfPackage = "Carton",
@@ -4215,7 +4271,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 28,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2528),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2288),
                             Measurement = "56 X 24 X 40",
                             Name = "ISDALICIOUS FISH CRACKER",
                             TypeOfPackage = "Carton",
@@ -4224,7 +4280,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 29,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2531),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2290),
                             Measurement = "56 X 24 X 40",
                             Name = "RICE & CORN CHEESE",
                             TypeOfPackage = "Carton",
@@ -4233,7 +4289,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 30,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2535),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2294),
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE RING 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4242,7 +4298,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 31,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2535),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2295),
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE BALL 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4251,7 +4307,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 32,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2536),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2295),
                             Measurement = "71 X 42 X 13",
                             Name = "GOLDEN SWEET CORN 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4260,7 +4316,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 33,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2537),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2296),
                             Measurement = "60 X 46 X 46",
                             Name = "FAN MOTOR 24V 10' FAN BASE 10' FAN BLADE",
                             TypeOfPackage = "PCS",
@@ -4269,7 +4325,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 34,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2537),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2297),
                             Measurement = "62 X 28 X 16",
                             Name = "CIRCUIT BOARD TS26F CONTROLLER NEW SENSORS CPR WITH O RING FUSE DETECTION BOARD",
                             TypeOfPackage = "PCS",
@@ -4278,7 +4334,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 35,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2538),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2298),
                             Measurement = "39 X 32 X 21",
                             Name = "COPPER HOSE BENDABLE",
                             TypeOfPackage = "PCS",
@@ -4287,7 +4343,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 36,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2539),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2298),
                             Measurement = "40 X 29 X 20",
                             Name = "RECEIVER DRIER 15NF RECEIVER DRIER 20NF",
                             TypeOfPackage = "PCS",
@@ -4296,7 +4352,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 37,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2539),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2299),
                             Measurement = "100 X 6 X 4",
                             Name = "CURTAIN ROD",
                             TypeOfPackage = "PCS",
@@ -4305,7 +4361,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 38,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2540),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2300),
                             Measurement = "38 X 38 X 23",
                             Name = "PLASTIC CURTAIN",
                             TypeOfPackage = "PCS",
@@ -4314,7 +4370,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 39,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2541),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2301),
                             Measurement = "38 X 38 X 23",
                             Name = "ELIMINATOR FILTER DRIER",
                             TypeOfPackage = "PCS",
@@ -4323,7 +4379,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 40,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2541),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2301),
                             Measurement = "40 X 29 X 20",
                             Name = "THERMOSTATIC EXPANSION VALVE 15NF THERMOSTATIC EXPANSION VALVE 20NF",
                             TypeOfPackage = "PCS",
@@ -4332,7 +4388,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 41,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2542),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2302),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE STRAWBERRY 144/19G",
                             TypeOfPackage = "Carton",
@@ -4341,7 +4397,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 42,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2543),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2303),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4350,7 +4406,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 43,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2545),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2305),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE I.TEA LEMON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4359,7 +4415,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 44,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2546),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2306),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE GRAPE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4368,7 +4424,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 45,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2546),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2307),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE 12/12/19G",
                             TypeOfPackage = "Carton",
@@ -4377,7 +4433,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 46,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2547),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2307),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4386,7 +4442,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 47,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2548),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2308),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4395,7 +4451,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 48,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2548),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2309),
                             Measurement = "27 X 40 X 63",
                             Name = "OISHI FISH CRACKERS UA 90gX30",
                             TypeOfPackage = "Sack",
@@ -4404,7 +4460,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 49,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2549),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2310),
                             Measurement = "29 X 49 X 66",
                             Name = "Miggos Sweet Corn Tortilla Chips UA 105gX30",
                             TypeOfPackage = "Sack",
@@ -4413,7 +4469,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 50,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2550),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2311),
                             Measurement = "60.5 X 43 X 17.5",
                             Name = "DL-2000A DC12V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4422,7 +4478,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 51,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2550),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2311),
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2000F1 DC12V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4431,7 +4487,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 52,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2551),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2312),
                             Measurement = "61 X 42 X 27",
                             Name = "DL-2600A1 DC24V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4440,7 +4496,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 53,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2552),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2313),
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2600F DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4449,7 +4505,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 54,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2553),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2314),
                             Measurement = "78 X 50 X 32",
                             Name = "DL-2600FT-BY DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4458,7 +4514,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 55,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2553),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2314),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800 DC12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4467,7 +4523,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 56,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2554),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2318),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800BY DC24V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4476,7 +4532,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 57,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2555),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2318),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800-12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4485,7 +4541,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 58,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2555),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2319),
                             Measurement = "41 X 23 X 17",
                             Name = "Zesto Big 250 Grapes",
                             TypeOfPackage = "Carton",
@@ -4494,7 +4550,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 59,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2556),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2320),
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4503,7 +4559,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 60,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2557),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2321),
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4512,7 +4568,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 61,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2558),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2322),
                             Measurement = "25 X 36 X 28",
                             Name = "KOPIKO BLANCA POUCH 24X10X30G",
                             TypeOfPackage = "Carton",
@@ -4521,7 +4577,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 62,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2558),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2322),
                             Measurement = "24 X 43 X 28",
                             Name = "KOPIKO BLACK 3IN1 POUCH 24X1024X 10 X 30G",
                             TypeOfPackage = "Carton",
@@ -4530,7 +4586,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 63,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2559),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2323),
                             Measurement = "30 X 50 X 20",
                             Name = "JUMBO PUSH POP 24 X 12 X 30G",
                             TypeOfPackage = "Carton",
@@ -4539,7 +4595,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 64,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2560),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2324),
                             Measurement = "17 X 52 X 26",
                             Name = "PUSH POP LOLLIPOP 20 X 20 X 14G",
                             TypeOfPackage = "Carton",
@@ -4548,7 +4604,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 65,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2561),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2325),
                             Measurement = "21 X 24 X 19",
                             Name = "KOJIE SL CLASSIC SOAP 135G X 24 X 20",
                             TypeOfPackage = "Carton",
@@ -4557,7 +4613,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 66,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2562),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2326),
                             Measurement = "18 X 16 X 32",
                             Name = "AJI CRISPY FRY ORIG 24/238G",
                             TypeOfPackage = "Carton",
@@ -4566,7 +4622,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 67,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2562),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2327),
                             Measurement = "18 X 16 X 32",
                             Name = "MODESS BODY ADAPT LONGS UT 24/4S",
                             TypeOfPackage = "Carton",
@@ -4575,7 +4631,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 68,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2563),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2327),
                             Measurement = "38 X 18 X 37",
                             Name = "MODESS C.SFT LONG W 24/8'S",
                             TypeOfPackage = "Carton",
@@ -4584,7 +4640,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 69,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2565),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2330),
                             Measurement = "35 X 18 X 27",
                             Name = "DM PINEAPPLE SLICES 24/432G",
                             TypeOfPackage = "Carton",
@@ -4593,7 +4649,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 70,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2566),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2331),
                             Measurement = "24 X 18 X 29",
                             Name = "MODESS ALL NIGHT W 24/4'S",
                             TypeOfPackage = "Carton",
@@ -4602,7 +4658,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 71,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2567),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2332),
                             Measurement = "48 X 31 X 24",
                             Name = "MODESS C.SFT REG MAXI W 12/32/1S",
                             TypeOfPackage = "Carton",
@@ -4611,7 +4667,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 72,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2568),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2372),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE LYCHEE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4620,7 +4676,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 73,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2568),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2372),
                             Measurement = "17 X 48 X 32",
                             Name = "FIESTA FRT COCKTL 6/3033G",
                             TypeOfPackage = "Carton",
@@ -4629,7 +4685,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 74,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2569),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2373),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE APPLE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4638,7 +4694,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 75,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2570),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2374),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE-MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4647,7 +4703,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 76,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2570),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2375),
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH TSOKOLATE 30/10",
                             TypeOfPackage = "Carton",
@@ -4656,7 +4712,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 77,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2571),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2375),
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH CONDENSADA 30/10",
                             TypeOfPackage = "Carton",
@@ -4665,7 +4721,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 78,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2572),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2376),
                             Measurement = "33 X 13 X 17",
                             Name = "SELECTA MOO MILK CHOCO 24/245ML",
                             TypeOfPackage = "Carton",
@@ -4674,7 +4730,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 79,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2572),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2377),
                             Measurement = "33 X 22 X 27",
                             Name = "SNOWTIME ICE POPS 15/8/90ML",
                             TypeOfPackage = "Carton",
@@ -4683,7 +4739,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 80,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2573),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2378),
                             Measurement = "37 X 70 X 40",
                             Name = "PARTY PACK SUPER CRUNCH CHEESE RINGS 370G X 12S",
                             TypeOfPackage = "Carton",
@@ -4692,7 +4748,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 81,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2574),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2379),
                             Measurement = "44 X 30 X 39",
                             Name = "MUNCHER KID'S CHOICE GREEN PEAS CHICKEN",
                             TypeOfPackage = "Carton",
@@ -4701,7 +4757,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 82,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2575),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2381),
                             Measurement = "40 X 19 X 20",
                             Name = "Muncher G. Peas Orig 70gX10packsX10pcs",
                             TypeOfPackage = "Carton",
@@ -4710,7 +4766,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 83,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2577),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2386),
                             Measurement = "72 X 40 X 17",
                             Name = "Super Q Golden Bihon 15x1KG",
                             TypeOfPackage = "Carton",
@@ -4719,7 +4775,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 84,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2578),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2387),
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O ORANGE 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4728,7 +4784,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 85,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2579),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2388),
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O MANGO 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4737,7 +4793,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 86,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2579),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2388),
                             Measurement = "84 X 36 X 13",
                             Name = "Cheese Ring Snack Cheese 25x60g",
                             TypeOfPackage = "Carton",
@@ -4746,7 +4802,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 87,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2580),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2390),
                             Measurement = "78 X 33 X 13",
                             Name = "Snacku Vegetable Snack 30/50G",
                             TypeOfPackage = "Carton",
@@ -4755,7 +4811,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 88,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2581),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2392),
                             Measurement = "37 X 34 X 21",
                             Name = "Maya Cornstarch 12x1kg",
                             TypeOfPackage = "Carton",
@@ -4764,7 +4820,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 89,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2582),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2393),
                             Measurement = "44 X 30 X 21",
                             Name = "American Gumball 24x40",
                             TypeOfPackage = "Carton",
@@ -4773,7 +4829,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 90,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2583),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2394),
                             Measurement = "86 X 51 X 39",
                             Name = "Ordinary Mattress 4x36x75",
                             TypeOfPackage = "Carton",
@@ -4782,7 +4838,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 91,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2583),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2395),
                             Measurement = "164 X 61 X 33",
                             Name = "Ordinary Mattress 4x54x75",
                             TypeOfPackage = "Carton",
@@ -4791,7 +4847,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 92,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2584),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2397),
                             Measurement = "54 X 98 X 77",
                             Name = "Jumbo Rack 4 layer",
                             TypeOfPackage = "Carton",
@@ -4800,7 +4856,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 93,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2585),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2400),
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4809,7 +4865,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 94,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2586),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2402),
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4818,7 +4874,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 95,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2587),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2403),
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY DALANDAN 40/50S",
                             TypeOfPackage = "Carton",
@@ -4827,7 +4883,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 96,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2589),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2407),
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY CHERRY 40/50S",
                             TypeOfPackage = "Carton",
@@ -4836,7 +4892,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 97,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2590),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2408),
                             Measurement = "48 X 31 X 17",
                             Name = "TODAY'S MIXED FRUIT 6/2.9L",
                             TypeOfPackage = "Carton",
@@ -4845,7 +4901,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 98,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2590),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2410),
                             Measurement = "43 X 29 X 26",
                             Name = "965 COL.MONAMI STRAW CRM 40/50'S",
                             TypeOfPackage = "Carton",
@@ -4854,7 +4910,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 99,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2591),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2412),
                             Measurement = "37 X 15 X 28",
                             Name = "ABSOLUTE DISTILLED WATER 3/5000ML",
                             TypeOfPackage = "Carton",
@@ -4863,7 +4919,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 100,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2592),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2414),
                             Measurement = "44 X 13 X 33",
                             Name = "ABSOLUTE DISTILLED WATER 3/6000ML",
                             TypeOfPackage = "Carton",
@@ -4872,7 +4928,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 101,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2593),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2417),
                             Measurement = "29 X 24 X 30",
                             Name = "ABSOLUTE DISTILLED WATER 4/4000ML",
                             TypeOfPackage = "Carton",
@@ -4881,7 +4937,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 102,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2593),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2418),
                             Measurement = "30 X 22 X 17",
                             Name = "AJINAMOTO GINISA MIX 48/100G",
                             TypeOfPackage = "Carton",
@@ -4890,7 +4946,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 103,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2594),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2418),
                             Measurement = "40 X 25 X 24",
                             Name = "AJINAMOTO GINISA MIX 54/16/8G",
                             TypeOfPackage = "Carton",
@@ -4899,7 +4955,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 104,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2595),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2419),
                             Measurement = "39 X 28 X 15",
                             Name = "AJINAMOTO VETSIN BLUE 48/250G",
                             TypeOfPackage = "Carton",
@@ -4908,7 +4964,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 105,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2595),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2420),
                             Measurement = "35 X 22 X 18",
                             Name = "AJINAMOTO VETSIN RED 8X12X100G",
                             TypeOfPackage = "Carton",
@@ -4917,7 +4973,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 106,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2596),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2422),
                             Measurement = "77 X 31 X 13",
                             Name = "CHEESE RING SNACK CHEESE 30/25G",
                             TypeOfPackage = "Carton",
@@ -4926,7 +4982,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 107,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2598),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2424),
                             Measurement = "29 X 30 X 32",
                             Name = "DATU PUTI VINEGAR PCON 4/1GAL",
                             TypeOfPackage = "Carton",
@@ -4935,7 +4991,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 108,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2599),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2425),
                             Measurement = "44 X 24 X 31",
                             Name = "DATU PUTI VINEGAR 8/1.893",
                             TypeOfPackage = "Carton",
@@ -4944,7 +5000,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 109,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2599),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2425),
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -4953,7 +5009,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 110,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2600),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2426),
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -4962,7 +5018,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 111,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2601),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2427),
                             Measurement = "51 X 38 X 82",
                             Name = "FITA CRACKER SINGLES 20/15/30G",
                             TypeOfPackage = "Carton",
@@ -4971,7 +5027,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 112,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2601),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2428),
                             Measurement = "48 X 24 X 31",
                             Name = "HAPPY TIME BISCUIT ASSORTMENT 4/1.5K",
                             TypeOfPackage = "Carton",
@@ -4980,7 +5036,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 113,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2602),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2429),
                             Measurement = "25 X 25 X 20",
                             Name = "KNR MIX SNGNG ORIG 12/12/22G",
                             TypeOfPackage = "Carton",
@@ -4989,7 +5045,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 114,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2604),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2434),
                             Measurement = "34 X 14 X 20",
                             Name = "KNR SOUP CRAB & CORN 72/37G",
                             TypeOfPackage = "Carton",
@@ -4998,7 +5054,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 115,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2605),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2435),
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5007,7 +5063,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 116,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2605),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2436),
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5016,7 +5072,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 117,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2606),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2437),
                             Measurement = "18 X 14 X 12",
                             Name = "MCCORMICK BLACK PEPPER GRND 12/35G",
                             TypeOfPackage = "Carton",
@@ -5025,7 +5081,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 118,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2607),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2437),
                             Measurement = "55 X 41 X 19",
                             Name = "OISHI CHEESE CLUBS 100X23G",
                             TypeOfPackage = "Carton",
@@ -5034,7 +5090,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 119,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2607),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2438),
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS CHOCO 100/38G",
                             TypeOfPackage = "Carton",
@@ -5043,7 +5099,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 120,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2608),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2439),
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS UBE 100/38G",
                             TypeOfPackage = "Carton",
@@ -5052,7 +5108,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 121,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2609),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2440),
                             Measurement = "30 X 18 X 26",
                             Name = "OREO SND.CKIE CHOCO 12/9/27G",
                             TypeOfPackage = "Carton",
@@ -5061,7 +5117,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 122,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2610),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2441),
                             Measurement = "41 X 14 X 17",
                             Name = "QUEEN BAKING SODA 48/125G",
                             TypeOfPackage = "Carton",
@@ -5070,7 +5126,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 123,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2612),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2443),
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5079,7 +5135,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 124,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2612),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2444),
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5088,7 +5144,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 125,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2613),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2444),
                             Measurement = "40 X 26 X 19",
                             Name = "VIVA CARAMEL CANDY 20/100'S",
                             TypeOfPackage = "Carton",
@@ -5097,7 +5153,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 126,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2614),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2445),
                             Measurement = "37 X 25 X 21",
                             Name = "UFC BANANA CATSUP 24/320G",
                             TypeOfPackage = "Carton",
@@ -5106,7 +5162,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 127,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2614),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2446),
                             Measurement = "44 X 18 X 69",
                             Name = "SUPER Q GOLDEN BIHON 60/227G",
                             TypeOfPackage = "Carton",
@@ -5115,7 +5171,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 128,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2615),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2446),
                             Measurement = "69 X 38 X 18",
                             Name = "SUPER Q GOLDEN BIHON 30/500 G",
                             TypeOfPackage = "Carton",
@@ -5124,7 +5180,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 129,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2616),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2448),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O STRAW WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5133,7 +5189,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 130,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2616),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2449),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O UBE WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5142,7 +5198,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 131,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2617),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2449),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O CHOCO WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5151,7 +5207,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 132,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2618),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2450),
                             Measurement = "27 X 26 X 29",
                             Name = "ROYAL SPAGHETTI 18/900G",
                             TypeOfPackage = "Carton",
@@ -5160,7 +5216,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 133,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2618),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2451),
                             Measurement = "50 X 37 X 28",
                             Name = "SKYFLAKES REG 30/10/25G",
                             TypeOfPackage = "Carton",
@@ -5169,7 +5225,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 134,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2619),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2452),
                             Measurement = "31 X 20 X 17",
                             Name = "STIK-O CHOCO WAFER MINI 30/60G",
                             TypeOfPackage = "Carton",
@@ -5178,7 +5234,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 135,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2620),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2452),
                             Measurement = "43 X 18 X 54",
                             Name = "OISHI PRAWN CRACKER 100/24G",
                             TypeOfPackage = "Carton",
@@ -5187,7 +5243,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 136,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2622),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2455),
                             Measurement = "68 X 37 X 28",
                             Name = "OISHI PRAWN CRACKER 30/95G",
                             TypeOfPackage = "Carton",
@@ -5196,7 +5252,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 137,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2622),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2455),
                             Measurement = "56 X 35 X 40",
                             Name = "OISHI PRAWN CRACKER 50/60G",
                             TypeOfPackage = "Carton",
@@ -5205,7 +5261,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 138,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2652),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2456),
                             Measurement = "31 X 20 X 17",
                             Name = "SNACKU VEGETABLE SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5214,7 +5270,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 139,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2653),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2457),
                             Measurement = "73 X 33 X 13",
                             Name = "SWEET CORN SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5223,7 +5279,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 140,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2654),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2457),
                             Measurement = "31 X 13 X 70",
                             Name = "SWEET CORN SNACK 30/25",
                             TypeOfPackage = "Carton",
@@ -5232,7 +5288,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 141,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2654),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2458),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FRSH SCNT 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5241,7 +5297,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 142,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2655),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2460),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH ORIGINAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5250,7 +5306,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 143,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2656),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2461),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FLORAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5259,7 +5315,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 144,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2656),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2461),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH COLORSAFE 24/900ML",
                             TypeOfPackage = "Carton",
@@ -5268,7 +5324,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 145,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2657),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2462),
                             Measurement = "32 X 26 X 32",
                             Name = "MENTOS CANDY TROPICAL MIX 40/50",
                             TypeOfPackage = "Carton",
@@ -5277,7 +5333,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 146,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2658),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2463),
                             Measurement = "29 X 15 X 23",
                             Name = "KJSN SOAP SKIN LGHTNNG 24/2/135G",
                             TypeOfPackage = "Carton",
@@ -5286,7 +5342,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 147,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2658),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2464),
                             Measurement = "34 X 30 X 11",
                             Name = "TIDE BAR NAT FRSH 36/380G",
                             TypeOfPackage = "Carton",
@@ -5295,7 +5351,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 148,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2659),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2464),
                             Measurement = "31 X 22 X 15",
                             Name = "SURF BAR W/FBCN BLOSFRSH",
                             TypeOfPackage = "Carton",
@@ -5304,7 +5360,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 149,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2660),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2465),
                             Measurement = "22 X 19 X 24",
                             Name = "KJSN SOAP SKIN LGHTNNG 48/2/65G",
                             TypeOfPackage = "Carton",
@@ -5313,7 +5369,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 150,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2662),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2468),
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET NW 36X8",
                             TypeOfPackage = "Carton",
@@ -5322,7 +5378,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 151,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2663),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2468),
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET W 36X8",
                             TypeOfPackage = "Carton",
@@ -5331,7 +5387,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 152,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2663),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2469),
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L PURE",
                             TypeOfPackage = "Carton",
@@ -5340,7 +5396,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 153,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2664),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2470),
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L DISTILLED",
                             TypeOfPackage = "Carton",
@@ -5349,7 +5405,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 154,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2665),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2471),
                             Measurement = "50 X 41 X 19",
                             Name = "KENDI MINT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5358,7 +5414,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 155,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2665),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2471),
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY ORIGINAL 13/14/62",
                             TypeOfPackage = "Carton",
@@ -5367,7 +5423,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 156,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2666),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2472),
                             Measurement = "32 X 22 X 34",
                             Name = "MIRINDA ORANGE PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5376,7 +5432,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 157,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2667),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2473),
                             Measurement = "35 X 26 X 22",
                             Name = "108080 SPRITE REG PET BOT 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5385,7 +5441,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 158,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2667),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2473),
                             Measurement = "46 X 30 X 15",
                             Name = "AJINAMOTO GINISA MIX 120/40G",
                             TypeOfPackage = "Carton",
@@ -5394,7 +5450,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 159,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2668),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2474),
                             Measurement = "32 X 22 X 34",
                             Name = "PEPSI REG PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5403,7 +5459,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 160,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2669),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2475),
                             Measurement = "38 X 30 X 24",
                             Name = "MENTOS CANDY MINT BAG 40/50",
                             TypeOfPackage = "Carton",
@@ -5412,7 +5468,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 161,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2669),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2476),
                             Measurement = "50 X 41 X 19",
                             Name = "VIVA CARAMEL CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5421,7 +5477,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 162,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2670),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2476),
                             Measurement = "32 X 22 X 34",
                             Name = "MOUNTAIN DEW PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5430,7 +5486,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 163,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2672),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2479),
                             Measurement = "33 X 16 X 21",
                             Name = "STING ENERGY DRINK STRAWBERRY 24/320",
                             TypeOfPackage = "Carton",
@@ -5439,7 +5495,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 164,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2673),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2480),
                             Measurement = "40 X 23 X 22",
                             Name = "PEPSI REG PET BOT 24/500ML",
                             TypeOfPackage = "Carton",
@@ -5448,7 +5504,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 165,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2674),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2481),
                             Measurement = "72 X 40 X 17",
                             Name = "SUPER Q PALABOK 12/500G",
                             TypeOfPackage = "Carton",
@@ -5457,7 +5513,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 166,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2674),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2482),
                             Measurement = "33 X 27 X 29",
                             Name = "LORINS PATIS PLASTIC 12/1000ML",
                             TypeOfPackage = "Carton",
@@ -5466,7 +5522,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 167,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2675),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2483),
                             Measurement = "37 X 26 X 19",
                             Name = "LORINS PATIS PLASTIC 24/350ML",
                             TypeOfPackage = "Carton",
@@ -5475,7 +5531,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 168,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2676),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2483),
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY GARLIC 13/14/62G",
                             TypeOfPackage = "Carton",
@@ -5484,7 +5540,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 169,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2677),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2484),
                             Measurement = "50 X 41 X 19",
                             Name = "WHITE RABBIT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5493,7 +5549,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 170,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2678),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2485),
                             Measurement = "39 X 31 X 21",
                             Name = "RICOA FLAT TOPS 12/100",
                             TypeOfPackage = "Carton",
@@ -5502,7 +5558,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 171,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2678),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2486),
                             Measurement = "30 X 22 X 17",
                             Name = "SURF BAR KALAMANSI 36/360G",
                             TypeOfPackage = "Carton",
@@ -5511,7 +5567,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 172,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2679),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2486),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 APPLE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5520,7 +5576,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 173,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2680),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2487),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 GRAPE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5529,7 +5585,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 174,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2680),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2488),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 ORANGE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5538,7 +5594,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 175,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2681),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2489),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG MANGO 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5547,7 +5603,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 176,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2682),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2489),
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 1KG",
                             TypeOfPackage = "Carton",
@@ -5556,7 +5612,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 177,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2685),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2492),
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 500G",
                             TypeOfPackage = "Carton",
@@ -5565,7 +5621,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 178,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2685),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2492),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP SINIGANG MIX 20G",
                             TypeOfPackage = "Carton",
@@ -5574,7 +5630,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 179,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2686),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2493),
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5583,7 +5639,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 180,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2687),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2494),
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5592,7 +5648,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 181,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2687),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2495),
                             Measurement = "33 X 19 X 15",
                             Name = "LASAP SINIGANG MIX W/GABI 22G",
                             TypeOfPackage = "Carton",
@@ -5601,7 +5657,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 182,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2688),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2495),
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP OYSTER SAUCE 170 G",
                             TypeOfPackage = "Carton",
@@ -5610,7 +5666,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 183,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2689),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2496),
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP KARE KARE MIX 75G",
                             TypeOfPackage = "Carton",
@@ -5619,7 +5675,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 184,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2689),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2497),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP TOCINO MIX",
                             TypeOfPackage = "Carton",
@@ -5628,7 +5684,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 185,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2690),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2498),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP BBQ MIX 50G",
                             TypeOfPackage = "Carton",
@@ -5637,7 +5693,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 186,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2691),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2536),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT TEMPURA SHRIMP 25/100G",
                             TypeOfPackage = "Carton",
@@ -5646,7 +5702,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 187,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2692),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2537),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT LABSTER 25/100G",
                             TypeOfPackage = "Carton",
@@ -5655,7 +5711,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 188,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2693),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2538),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT ISDALICIOUS 25/85G",
                             TypeOfPackage = "Carton",
@@ -5664,7 +5720,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 189,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2693),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2538),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT UBE CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5673,7 +5729,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 190,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2696),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2541),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT SAND CAKE MELON 8/10S",
                             TypeOfPackage = "Carton",
@@ -5682,7 +5738,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 191,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2697),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2542),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT MOCHA CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5691,7 +5747,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 192,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2697),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2542),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE UBE CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5700,7 +5756,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 193,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2698),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2543),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHOKORETO CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5709,7 +5765,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 194,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2699),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2544),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHEESECAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5718,7 +5774,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 195,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2702),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2545),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI MANGO 240G",
                             TypeOfPackage = "Carton",
@@ -5727,7 +5783,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 196,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2702),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2546),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI UBE 240 G",
                             TypeOfPackage = "Carton",
@@ -5736,7 +5792,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 197,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2703),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2546),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT BUKO PANDAN 240G",
                             TypeOfPackage = "Carton",
@@ -5745,7 +5801,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 198,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2703),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2547),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI ASSORTED",
                             TypeOfPackage = "Carton",
@@ -5754,7 +5810,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 199,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2704),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2548),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5763,7 +5819,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 200,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2705),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2549),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5772,7 +5828,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 201,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2705),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2549),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SEAWEED 60G",
                             TypeOfPackage = "Carton",
@@ -5781,7 +5837,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 202,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2706),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2550),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SAL VINEGAR 60G",
                             TypeOfPackage = "Carton",
@@ -5790,7 +5846,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 203,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2707),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2551),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S CHEESE",
                             TypeOfPackage = "Carton",
@@ -5799,7 +5855,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 204,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2709),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2553),
                             Measurement = "40 X 21 X 18",
                             Name = "POTATO CRACKERS",
                             TypeOfPackage = "Carton",
@@ -5808,7 +5864,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 205,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2710),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2554),
                             Measurement = "61 X 39 X 41",
                             Name = "KING CRAB",
                             TypeOfPackage = "Carton",
@@ -5817,7 +5873,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 206,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2711),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2555),
                             Measurement = "60 X 30 X 33",
                             Name = "GOLDEN SWEET CORN",
                             TypeOfPackage = "Carton",
@@ -5826,7 +5882,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 207,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2712),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2556),
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING JALAPENO",
                             TypeOfPackage = "Carton",
@@ -5835,7 +5891,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 208,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2712),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2557),
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING CHEESE",
                             TypeOfPackage = "Carton",
@@ -5844,7 +5900,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 209,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2713),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2557),
                             Measurement = "61 X 39 X 41",
                             Name = "FRENCH FRIES",
                             TypeOfPackage = "Carton",
@@ -5853,7 +5909,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 210,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2713),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2558),
                             Measurement = "61 X 39 X 41",
                             Name = "SHRIMP FRITTERS",
                             TypeOfPackage = "Carton",
@@ -5862,7 +5918,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 211,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2714),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2559),
                             Measurement = "54 X 35 X 38",
                             Name = "MOBY CARAMEL 90G",
                             TypeOfPackage = "Carton",
@@ -5871,7 +5927,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 212,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2715),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2560),
                             Measurement = "64 X 46 X 18",
                             Name = "CHEESE IT CHEESE 60G",
                             TypeOfPackage = "Carton",
@@ -5880,7 +5936,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 213,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2716),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2560),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE CHIPS 60G",
                             TypeOfPackage = "Carton",
@@ -5889,7 +5945,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 214,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2716),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2561),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL PUFFS 60G",
                             TypeOfPackage = "Carton",
@@ -5898,7 +5954,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 215,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2717),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2562),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE 25G",
                             TypeOfPackage = "Carton",
@@ -5907,7 +5963,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 216,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2718),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2563),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL 25G",
                             TypeOfPackage = "Carton",
@@ -5916,7 +5972,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 217,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2720),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2565),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCO CUM CHOC BU",
                             TypeOfPackage = "Carton",
@@ -5925,7 +5981,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 218,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2721),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2566),
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED CHOCO FILLED 65G",
                             TypeOfPackage = "Carton",
@@ -5934,7 +5990,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 219,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2721),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2567),
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED WHITE CHOCO 65G",
                             TypeOfPackage = "Carton",
@@ -5943,7 +5999,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 220,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2722),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2567),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5952,7 +6008,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 221,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2723),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2568),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5961,7 +6017,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 222,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2724),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2569),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5970,7 +6026,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 223,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2724),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2570),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -5979,7 +6035,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 224,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2725),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2570),
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -5988,7 +6044,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 225,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2726),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2571),
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -5997,7 +6053,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 226,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2726),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2572),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT STRAWBERRY CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6006,7 +6062,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 227,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2727),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2573),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT PANDAN CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6015,7 +6071,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 228,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2728),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2573),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT ASSORTED CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6024,7 +6080,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 229,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2728),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2574),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT BANANA CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6033,7 +6089,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 230,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2730),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2576),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN WAFFLE 30G",
                             TypeOfPackage = "Carton",
@@ -6042,7 +6098,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 231,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2731),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2577),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6051,7 +6107,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 232,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2732),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2578),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6060,7 +6116,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 233,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2732),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2579),
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE MACAPUNO 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6069,7 +6125,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 234,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2733),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2580),
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE JACKFRUIT 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6078,7 +6134,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 235,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2734),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2581),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE KAONG RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6087,7 +6143,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 236,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2735),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2582),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO WHITE 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6096,7 +6152,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 237,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2736),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2582),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO GREEN 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6105,7 +6161,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 238,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2736),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2583),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6114,7 +6170,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 240,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2737),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2584),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE JACKFRUIT 24X12OZ",
                             TypeOfPackage = "Carton",
@@ -6123,7 +6179,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 241,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2738),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2584),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6132,7 +6188,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 242,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2738),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2586),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6141,7 +6197,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 243,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2739),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2587),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO WHITE 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6150,7 +6206,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 244,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2740),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2588),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO GREEN 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6159,7 +6215,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 245,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2741),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2588),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO RED 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6168,7 +6224,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 246,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2742),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2589),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE SALTED SHRIMP 24/340G",
                             TypeOfPackage = "Carton",
@@ -6177,7 +6233,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 247,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2742),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2590),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SWEET",
                             TypeOfPackage = "Carton",
@@ -6186,7 +6242,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 248,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2743),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2591),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP REGULAR",
                             TypeOfPackage = "Carton",
@@ -6195,7 +6251,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 249,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2744),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2591),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SPICY",
                             TypeOfPackage = "Carton",
@@ -6204,7 +6260,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 250,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2744),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2592),
                             Measurement = "39 X 28 X 13",
                             Name = "FLORENCE BAGOONG BALAYAN",
                             TypeOfPackage = "Carton",
@@ -6213,7 +6269,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 251,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2745),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2593),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR CHOCO",
                             TypeOfPackage = "Carton",
@@ -6222,7 +6278,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 252,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2746),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2594),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR MATHCA",
                             TypeOfPackage = "Carton",
@@ -6231,7 +6287,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 253,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2763),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2594),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR STRAWBERRY",
                             TypeOfPackage = "Carton",
@@ -6240,7 +6296,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 254,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2765),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2595),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6249,7 +6305,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 255,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2766),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2596),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6258,7 +6314,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 256,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2766),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2597),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 80G",
                             TypeOfPackage = "Carton",
@@ -6267,7 +6323,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 257,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2767),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2599),
                             Measurement = "53 X 34 X 30",
                             Name = "COCONUT ENERGY BAR NUTS 24/400",
                             TypeOfPackage = "Carton",
@@ -6276,7 +6332,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 258,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2770),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2600),
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6285,7 +6341,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 259,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2770),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2600),
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM STRAWBERRY 24/300",
                             TypeOfPackage = "Carton",
@@ -6294,7 +6350,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 260,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2771),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2601),
                             Measurement = "54 X 36 X 16",
                             Name = "COCO CREAM BAR CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6303,7 +6359,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 261,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2772),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2602),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 APPLE",
                             TypeOfPackage = "Carton",
@@ -6312,7 +6368,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 262,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2772),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2603),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 GRAPE",
                             TypeOfPackage = "Carton",
@@ -6321,7 +6377,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 263,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(2773),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2604),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 ORANGE",
                             TypeOfPackage = "Carton",
@@ -6371,7 +6427,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 1,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1941),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1642),
                             IsFloorDocking = false,
                             LevelId = 3,
                             Name = "Metal Shelving 1",
@@ -6381,7 +6437,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 2,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1959),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1660),
                             IsFloorDocking = false,
                             LevelId = 5,
                             Name = "Metal Shelving 2",
@@ -6391,7 +6447,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 3,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1960),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1660),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 1",
@@ -6401,7 +6457,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 4,
                             BayId = 6,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1960),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1661),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 2",
@@ -6411,7 +6467,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 5,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1961),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1662),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 3",
@@ -6421,7 +6477,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 6,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1962),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1663),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 1",
@@ -6431,7 +6487,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 7,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1963),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1663),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 2",
@@ -6441,7 +6497,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 8,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1963),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1664),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 3",
@@ -6451,7 +6507,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 9,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 9, 38, 58, 616, DateTimeKind.Local).AddTicks(1964),
+                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1704),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 4",
@@ -13268,9 +13324,7 @@ namespace WMS.Api.Data.Migrations
                 {
                     b.HasOne("WMS.Api.Entities.Bay", "Bay")
                         .WithMany()
-                        .HasForeignKey("BayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BayId");
 
                     b.HasOne("WMS.Api.Entities.BinNames", "BinNames")
                         .WithMany()
@@ -13280,15 +13334,19 @@ namespace WMS.Api.Data.Migrations
 
                     b.HasOne("WMS.Api.Entities.Level", "Level")
                         .WithMany()
-                        .HasForeignKey("LevelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LevelId");
+
+                    b.HasOne("WMS.Api.Entities.Location3D", "Location3D")
+                        .WithMany()
+                        .HasForeignKey("Location3DId");
 
                     b.HasOne("WMS.Api.Entities.Rack", "Rack")
                         .WithMany()
-                        .HasForeignKey("RackId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RackId");
+
+                    b.HasOne("WMS.Api.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId");
 
                     b.Navigation("Bay");
 
@@ -13296,7 +13354,11 @@ namespace WMS.Api.Data.Migrations
 
                     b.Navigation("Level");
 
+                    b.Navigation("Location3D");
+
                     b.Navigation("Rack");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.CheckIn", b =>

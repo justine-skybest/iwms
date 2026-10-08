@@ -140,5 +140,13 @@ C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\Pipelines.Sockets.Unoffici
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\StackExchange.Redis.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\CsvHelper.dll
-C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\changelog.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\appsettings.Development.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\appsettings.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\changelog.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\WMS.Api.staticwebassets.endpoints.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\WMS.Api.deps.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\WMS.Api.runtimeconfig.json
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\WMS.Api.dll
+C:\Users\justi\AppData\Local\Temp\wms-api-build-check-b336484c\WMS.Api.pdb
+C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

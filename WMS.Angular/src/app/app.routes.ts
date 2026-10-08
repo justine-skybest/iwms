@@ -41,6 +41,11 @@ export const routes: Routes = [
         data: { hideLayout: true, breadcrumb: '3D Warehouse Viewer' },
       },
       {
+        path: 'warehouse-2-3d',
+        loadComponent: () => import('./pages/warehouses/warehouse-2-3d.component').then(m => m.Warehouse2ThreeDComponent),
+        data: { hideLayout: true, breadcrumb: 'Warehouse 2 3D Operations' },
+      },
+      {
         path: 'pallets',
         loadChildren: () => import('./pages/pallets/pallets.routes').then((m) => m.palletsRoutes),
         title: 'Pallets'

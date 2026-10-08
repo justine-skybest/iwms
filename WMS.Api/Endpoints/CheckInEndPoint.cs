@@ -53,6 +53,8 @@ public static class CheckInEndPoint
                     .ThenInclude(bin => bin.Level)
                 .Include(ci => ci.Bins)
                     .ThenInclude(bin => bin.BinNames)
+                .Include(ci => ci.Bins)
+                    .ThenInclude(bin => bin.Warehouse)
                 .Include(ci => ci.Pallet)
                     .ThenInclude(pallet => pallet!.Warehouse)
                 .Include(ci => ci.Pallet)
@@ -68,7 +70,9 @@ public static class CheckInEndPoint
             {
                 query = query.Where(ci =>
                     (ci.Pallet != null && ci.Pallet.WarehouseId == warehouseId.Value) ||
-                    ci.Bins.Any(b => b.Rack!.WarehouseId == warehouseId.Value));
+                    ci.Bins.Any(b =>
+                        b.WarehouseId == warehouseId.Value ||
+                        (b.Rack != null && b.Rack.WarehouseId == warehouseId.Value)));
             }
 
             if (!string.IsNullOrWhiteSpace(search))
@@ -193,6 +197,7 @@ public static class CheckInEndPoint
                 .Include(b => b.Bay)
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
+                .Include(b => b.Warehouse)
                 .ToListAsync();
 
             if (bins.Count != newCheckIn.BinIds.Count)
@@ -229,7 +234,9 @@ public static class CheckInEndPoint
                     PalletId = newCheckIn.PalletId ?? 0,
                     TargetBins = bins.Select(b => new
                     {
-                        BinLocation = $"{b.Rack!.Name} / Bay {b.Bay!.BayNumber} / Level {b.Level!.LevelNumber} / {b.BinNames!.BinName}"
+                        BinLocation = b.Rack is null
+                            ? $"Standalone / {b.BinNames?.BinName ?? $"Bin #{b.Id}"}"
+                            : $"{b.Rack.Name} / Bay {b.Bay?.BayNumber.ToString() ?? "N/A"} / Level {b.Level?.LevelNumber.ToString() ?? "N/A"} / {b.BinNames?.BinName ?? "Unassigned"}"
                     }).ToList(),
                     TotalItemsCheckedIn = receivedProducts.Count,
                     newCheckIn.CheckInDate,

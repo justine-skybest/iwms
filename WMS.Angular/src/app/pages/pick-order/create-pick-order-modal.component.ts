@@ -36,6 +36,7 @@ import { ToastService } from '../../lib/services/toast.service';
 export class CreatePickOrderModalComponent implements OnChanges {
   protected readonly Math = Math;
   @Input() isOpen = false;
+  @Input() initialBin: BinSummaryDto | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
@@ -71,6 +72,11 @@ export class CreatePickOrderModalComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
       this.resetForm();
+      if (this.initialBin?.id) {
+        this.scannedBin = this.initialBin;
+        this.binNumber = this.formatBinNumber(this.initialBin);
+        void this.loadBinItems(this.initialBin.id);
+      }
     }
   }
 

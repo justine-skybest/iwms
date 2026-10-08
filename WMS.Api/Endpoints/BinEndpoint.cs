@@ -55,11 +55,15 @@ public static class BinEndpoint
                 .Include(bin => bin.Bay)
                 .Include(bin => bin.Level)
                 .Include(bin => bin.BinNames)
+                .Include(bin => bin.Warehouse)
+                .Include(bin => bin.Location3D)
                 .AsNoTracking();
 
             if (warehouseId.HasValue)
             {
-                query = query.Where(bi => bi.Rack!.WarehouseId == warehouseId.Value);
+                query = query.Where(bi =>
+                    bi.WarehouseId == warehouseId.Value ||
+                    (bi.Rack != null && bi.Rack.WarehouseId == warehouseId.Value));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);
@@ -280,23 +284,23 @@ public static class BinEndpoint
         // -----------------------------------------------------------------------------
         // GET /rack/{id} (v1 & v2)
         // -----------------------------------------------------------------------------
-        group.MapGet("/rack/{id}", async (int id, WMSContext dbContext) =>
-           await dbContext.Bins
-               .Include(bin => bin.Rack)
-                   .ThenInclude(rack => rack!.Warehouse)
-               .Include(bin => bin.Bay)
-               .Include(bin => bin.Level)
-               .Include(bin => bin.BinNames)
-               .Where(bin => bin.RackId == id)
-               .OrderBy(bin => bin.Rack!.Warehouse)
-                   .ThenBy(bin => bin.Rack)
-                   .ThenBy(bin => bin.Bay)
-                   .ThenBy(bin => bin.Level)
-                   .ThenBy(bin => bin.BinNames)
-               .Select(bin => bin.ToSummaryDto())
-               .AsNoTracking()
-               .ToListAsync()
-        ).Produces<BinSummaryDto>(StatusCodes.Status200OK);
+        //group.MapGet("/rack/{id}", async (int id, WMSContext dbContext) =>
+        //   await dbContext.Bins
+        //       .Include(bin => bin.Rack)
+        //           .ThenInclude(rack => rack!.Warehouse)
+        //       .Include(bin => bin.Bay)
+        //       .Include(bin => bin.Level)
+        //       .Include(bin => bin.BinNames)
+        //       .Where(bin => bin.RackId == id)
+        //       .OrderBy(bin => bin.Rack!.Warehouse)
+        //           .ThenBy(bin => bin.Rack)
+        //           .ThenBy(bin => bin.Bay)
+        //           .ThenBy(bin => bin.Level)
+        //           .ThenBy(bin => bin.BinNames)
+        //       .Select(bin => bin.ToSummaryDto())
+        //       .AsNoTracking()
+        //       .ToListAsync()
+        //).Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
         group.MapGet("/v2/rack/{id}", async (
             int id,
@@ -347,23 +351,23 @@ public static class BinEndpoint
         // -----------------------------------------------------------------------------
         // GET /rack/{rackId}/bay/{bayId} (v1 & v2)
         // -----------------------------------------------------------------------------
-        group.MapGet("/rack/{rackId}/bay/{bayId}", async (int rackId, int bayId, WMSContext dbContext) =>
-            await dbContext.Bins
-                .Include(bin => bin.Rack)
-                    .ThenInclude(rack => rack!.Warehouse)
-                .Include(bin => bin.Bay)
-                .Include(bin => bin.Level)
-                .Include(bin => bin.BinNames)
-                .Where(bin => bin.RackId == rackId && bin.BayId == bayId)
-                .OrderBy(bin => bin.Rack!.Warehouse)
-                    .ThenBy(bin => bin.Rack)
-                    .ThenBy(bin => bin.Bay)
-                    .ThenBy(bin => bin.Level)
-                    .ThenBy(bin => bin.BinNames)
-                .Select(bin => bin.ToSummaryDto())
-                .AsNoTracking()
-                .ToListAsync()
-        );
+        //group.MapGet("/rack/{rackId}/bay/{bayId}", async (int rackId, int bayId, WMSContext dbContext) =>
+        //    await dbContext.Bins
+        //        .Include(bin => bin.Rack)
+        //            .ThenInclude(rack => rack!.Warehouse)
+        //        .Include(bin => bin.Bay)
+        //        .Include(bin => bin.Level)
+        //        .Include(bin => bin.BinNames)
+        //        .Where(bin => bin.RackId == rackId && bin.BayId == bayId)
+        //        .OrderBy(bin => bin.Rack!.Warehouse)
+        //            .ThenBy(bin => bin.Rack)
+        //            .ThenBy(bin => bin.Bay)
+        //            .ThenBy(bin => bin.Level)
+        //            .ThenBy(bin => bin.BinNames)
+        //        .Select(bin => bin.ToSummaryDto())
+        //        .AsNoTracking()
+        //        .ToListAsync()
+        //);
 
         group.MapGet("/v2/rack/{rackId}/bay/{bayId}", async (
             int rackId,
@@ -596,24 +600,58 @@ public static class BinEndpoint
         });
 
         // -----------------------------------------------------------------------------
+        // GET /rack/{id} & GET /rack/{rackId}/bay/{bayId}
+        // -----------------------------------------------------------------------------
+        group.MapGet("/rack/{id:int}", async (int id, WMSContext dbContext) =>
+           await dbContext.Bins
+               .Include(bin => bin.Warehouse)
+               .Include(bin => bin.Rack)
+                   .ThenInclude(rack => rack!.Warehouse)
+               .Include(bin => bin.Bay)
+               .Include(bin => bin.Level)
+               .Include(bin => bin.BinNames)
+               .Include(bin => bin.Location3D)
+               .Where(bin => bin.RackId == id)
+               .Select(bin => bin.ToSummaryDto())
+               .AsNoTracking()
+               .ToListAsync()
+        ).Produces<List<BinSummaryDto>>(StatusCodes.Status200OK);
+
+        group.MapGet("/rack/{rackId:int}/bay/{bayId:int}", async (int rackId, int bayId, WMSContext dbContext) =>
+            await dbContext.Bins
+                .Include(bin => bin.Warehouse)
+                .Include(bin => bin.Rack)
+                    .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Bay)
+                .Include(bin => bin.Level)
+                .Include(bin => bin.BinNames)
+                .Include(bin => bin.Location3D)
+                .Where(bin => bin.RackId == rackId && bin.BayId == bayId)
+                .Select(bin => bin.ToSummaryDto())
+                .AsNoTracking()
+                .ToListAsync()
+        );
+
+        // -----------------------------------------------------------------------------
         // MUTATION ENDPOINTS (CREATE / UPDATE / DELETE) WITH AUDIT LOGGING
         // -----------------------------------------------------------------------------
         group.MapPost("/", async (
-            CreateBinDto newBin,
-            WMSContext dbContext,
-            IAuditLogService auditLogService) =>
+                    CreateBinDto newBin,
+                    WMSContext dbContext,
+                    IAuditLogService auditLogService) =>
         {
             Bin bin = newBin.ToEntity();
             dbContext.Bins.Add(bin);
             await dbContext.SaveChangesAsync();
 
-            // Re-query created bin with navigation metadata for clean audit log summary
             var createdBin = await dbContext.Bins
+                .Include(b => b.Warehouse)
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
                 .Include(b => b.Bay)
                 .Include(b => b.Level)
                 .Include(b => b.BinNames)
+                .Include(b => b.Location3D)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(b => b.Id == bin.Id);
 
@@ -631,12 +669,47 @@ public static class BinEndpoint
                     RackId = bin.RackId,
                     BayId = bin.BayId,
                     LevelId = bin.LevelId,
-                    BinNamesId = bin.BinNamesId
+                    BinNamesId = bin.BinNamesId,
+                    IsStandalone = bin.RackId == null
                 }
             );
 
             return Results.CreatedAtRoute(GetBinEndpointName, new { id = bin.Id }, details);
-        });
+        })
+                .WithName("CreateBin")
+                .Accepts<CreateBinDto>("application/json")
+                .Produces<BinSummaryDto>(StatusCodes.Status201Created);
+        // -----------------------------------------------------------------------------
+        // PATCH /{id:int}/location (Optimized endpoint for 3D Drag & Move in Three.js)
+        // -----------------------------------------------------------------------------
+        group.MapPatch("/{id:int}/location", async (
+            int id,
+            UpdateBinLocation3DDto locationDto,
+            WMSContext dbContext) =>
+        {
+            var bin = await dbContext.Bins
+                .Include(b => b.Location3D)
+                .FirstOrDefaultAsync(b => b.Id == id);
+
+            if (bin is null) return Results.NotFound();
+
+            if (bin.Location3D is null)
+            {
+                bin.Location3D = new Location3D();
+            }
+
+            bin.Location3D.PositionX = locationDto.PositionX;
+            bin.Location3D.PositionY = locationDto.PositionY;
+            bin.Location3D.PositionZ = locationDto.PositionZ;
+            bin.Location3D.RotationY = locationDto.RotationY;
+
+            await dbContext.SaveChangesAsync();
+            return Results.Ok(bin.ToSummaryDto());
+        })
+        .WithName("UpdateBin3DLocation")
+        .WithSummary("Update 3D Spatial Position")
+        .WithDescription("Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.")
+        .Produces<BinSummaryDto>(StatusCodes.Status200OK);
 
         group.MapPut("/{id:int}", async (
             int id,
@@ -689,14 +762,11 @@ public static class BinEndpoint
         });
 
         group.MapDelete("/{id:int}", async (
-            int id,
-            WMSContext dbContext,
-            IAuditLogService auditLogService) =>
+                    int id,
+                    WMSContext dbContext,
+                    IAuditLogService auditLogService) =>
         {
             var existingBin = await dbContext.Bins
-                .Include(b => b.Rack)
-                .Include(b => b.Bay)
-                .Include(b => b.Level)
                 .Include(b => b.BinNames)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
@@ -713,13 +783,8 @@ public static class BinEndpoint
             await auditLogService.LogAsync(
                 category: "Warehouse Structure",
                 action: "Deleted",
-                description: $"Deleted Bin location '{snapshotDetails.BinName}' (Hash Code: {snapshotDetails.BinHashCode}, ID: {id}).",
-                details: new
-                {
-                    DeletedBinId = id,
-                    BinName = snapshotDetails.BinName,
-                    BinHashCode = snapshotDetails.BinHashCode
-                }
+                description: $"Deleted Bin location '{snapshotDetails.BinName}' (ID: {id}).",
+                details: new { DeletedBinId = id, BinName = snapshotDetails.BinName }
             );
 
             return Results.NoContent();

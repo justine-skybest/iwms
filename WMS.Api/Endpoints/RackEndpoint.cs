@@ -185,7 +185,14 @@ public static class RackEndpoint
             await dbContext.SaveChangesAsync();
 
             return Results.CreatedAtRoute(GetRacksEndpointName, new { id = rack.Id }, rack.ToRackDetailsDto());
-        });
+        })
+        .WithName("CreateRack")
+        .WithSummary("Create a new warehouse rack")
+        .WithDescription("Creates a new rack entity and returns its detailed representation.")
+        .Accepts<CreateRackDto>("application/json")
+        .Produces<RackDetailsDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+        .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPut("/{id}", async (int id, UpdateRackDto updatedRack, WMSContext dbContext) =>
         {

@@ -108,8 +108,9 @@ export class WarehousesListComponent implements OnInit {
       if (warehouse.id !== undefined) {
         this.warehouseService.setWarehouse(warehouse.id);
 
+        const route = warehouse.id === 2 ? '/warehouse-2-3d' : '/warehouse-3d';
         const url = this.router.serializeUrl(
-          this.router.createUrlTree(['/warehouse-3d'], {
+          this.router.createUrlTree([route], {
             queryParams: { warehouseId: warehouse.id }
           })
         );

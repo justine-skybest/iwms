@@ -9,12 +9,26 @@ public static class BinMapping
     {
         return new()
         {
+            WarehouseId = bin.WarehouseId,
             RackId = bin.RackId,
             BayId = bin.BayId,
             LevelId = bin.LevelId,
-            BinNamesId = bin.BinId,
+            BinNamesId = bin.BinNamesId,
             BinHashCode = bin.BinHashCode,
-            DateAdded = bin.DateAdded
+            DateAdded = bin.DateAdded == default ? DateTime.UtcNow : bin.DateAdded,
+            RelativeX = bin.RelativeX,
+            RelativeY = bin.RelativeY,
+            RelativeZ = bin.RelativeZ,
+            Location3D = bin.Location3D is null ? null : new Location3D
+            {
+                PositionX = bin.Location3D.PositionX,
+                PositionY = bin.Location3D.PositionY,
+                PositionZ = bin.Location3D.PositionZ,
+                RotationY = bin.Location3D.RotationY,
+                Width = bin.Location3D.Width,
+                Height = bin.Location3D.Height,
+                Depth = bin.Location3D.Depth
+            }
         };
     }
 
@@ -23,12 +37,26 @@ public static class BinMapping
         return new()
         {
             Id = id,
+            WarehouseId = bin.WarehouseId,
             RackId = bin.RackId,
             BayId = bin.BayId,
             LevelId = bin.LevelId,
-            BinNamesId = bin.BinId,
+            BinNamesId = bin.BinNamesId,
             BinHashCode = bin.BinHashCode,
-            DateAdded = bin.DateAdded
+            DateAdded = bin.DateAdded,
+            RelativeX = bin.RelativeX,
+            RelativeY = bin.RelativeY,
+            RelativeZ = bin.RelativeZ,
+            Location3D = bin.Location3D is null ? null : new Location3D
+            {
+                PositionX = bin.Location3D.PositionX,
+                PositionY = bin.Location3D.PositionY,
+                PositionZ = bin.Location3D.PositionZ,
+                RotationY = bin.Location3D.RotationY,
+                Width = bin.Location3D.Width,
+                Height = bin.Location3D.Height,
+                Depth = bin.Location3D.Depth
+            }
         };
     }
 
@@ -36,29 +64,54 @@ public static class BinMapping
     {
         return new(
             bin.Id,
+            bin.WarehouseId,
             bin.RackId,
             bin.BayId,
             bin.LevelId,
             bin.BinNamesId,
             bin.BinHashCode,
-            bin.DateAdded
+            bin.DateAdded,
+            bin.Location3D is null ? null : new Location3DDto(
+                bin.Location3D.PositionX,
+                bin.Location3D.PositionY,
+                bin.Location3D.PositionZ,
+                bin.Location3D.RotationY,
+                bin.Location3D.Width,
+                bin.Location3D.Height,
+                bin.Location3D.Depth
+            ),
+            bin.RelativeX ?? 0f,
+            bin.RelativeY ?? 0f,
+            bin.RelativeZ ?? 0f
         );
     }
 
-public static BinSummaryDto ToSummaryDto(this Bin bin)
-{
-    return new(
-        bin.Id,
-        bin.Rack?.Warehouse?.Name,
-        bin.Rack?.Name,
-        bin.Bay?.BayNumber.ToString(),
-        bin.Level?.LevelNumber.ToString(),
-        bin.BinNames?.BinName,
-        bin.BinHashCode.ToString(),
-        bin.DateAdded
-    );
-}
-    
+    public static BinSummaryDto ToSummaryDto(this Bin bin)
+    {
+        return new(
+            bin.Id,
+            bin.Rack?.Warehouse?.Name ?? bin.Warehouse?.Name ?? "N/A",
+            bin.Rack?.Name ?? "Standalone",
+            bin.Bay?.BayNumber.ToString() ?? "N/A",
+            bin.Level?.LevelNumber.ToString() ?? "N/A",
+            bin.BinNames?.BinName ?? "Unassigned",
+            bin.BinHashCode.ToString(),
+            bin.DateAdded,
+            bin.Location3D is null ? null : new Location3DDto(
+                bin.Location3D.PositionX,
+                bin.Location3D.PositionY,
+                bin.Location3D.PositionZ,
+                bin.Location3D.RotationY,
+                bin.Location3D.Width,
+                bin.Location3D.Height,
+                bin.Location3D.Depth
+            ),
+            bin.RelativeX ?? 0f,
+            bin.RelativeY ?? 0f,
+            bin.RelativeZ ?? 0f
+        );
+    }
+
     public static BinMovementHistoryDto ToMovementHistoryDto(this CheckIn ci)
     {
         string checkInMode;
@@ -132,7 +185,7 @@ public static BinSummaryDto ToSummaryDto(this Bin bin)
             MovementType: "Manual Picking",
             MovementId: mp.Id,
             Date: mp.PickingDate,
-            PalletNumber: palletNumber, // Could include pallet if needed
+            PalletNumber: palletNumber,
             Products: products,
             Notes: mp.Notes,
             CheckInMode: null

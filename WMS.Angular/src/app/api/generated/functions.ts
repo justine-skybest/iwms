@@ -73,8 +73,8 @@ export type { GetPalletsV2$Params as GetPalletsV2$Params } from './fn/pallets/ge
 export { getPalletsV2 as getPalletsV2 } from './fn/pallets/get-pallets-v-2';
 export type { GetRacks$Params as GetRacks$Params } from './fn/racks/get-racks';
 export { getRacks as getRacks } from './fn/racks/get-racks';
-export type { RackPost$Params as RackPost$Params } from './fn/racks/rack-post';
-export { rackPost as rackPost } from './fn/racks/rack-post';
+export type { CreateRack$Params as CreateRack$Params } from './fn/racks/create-rack';
+export { createRack as createRack } from './fn/racks/create-rack';
 export type { RackV2Get$Params as RackV2Get$Params } from './fn/racks/rack-v-2-get';
 export { rackV2Get as rackV2Get } from './fn/racks/rack-v-2-get';
 export type { RackWarehouseIdGet$Params as RackWarehouseIdGet$Params } from './fn/racks/rack-warehouse-id-get';
@@ -163,8 +163,8 @@ export type { WarehouseIdDelete$Params as WarehouseIdDelete$Params } from './fn/
 export { warehouseIdDelete as warehouseIdDelete } from './fn/wms-api/warehouse-id-delete';
 export type { BinGet$Params as BinGet$Params } from './fn/wms-api/bin-get';
 export { binGet as binGet } from './fn/wms-api/bin-get';
-export type { BinPost$Params as BinPost$Params } from './fn/wms-api/bin-post';
-export { binPost as binPost } from './fn/wms-api/bin-post';
+export type { CreateBin$Params as CreateBin$Params } from './fn/wms-api/create-bin';
+export { createBin as createBin } from './fn/wms-api/create-bin';
 export type { BinV2Get$Params as BinV2Get$Params } from './fn/wms-api/bin-v-2-get';
 export { binV2Get as binV2Get } from './fn/wms-api/bin-v-2-get';
 export type { BinAvailableBinWarehouseIdGet$Params as BinAvailableBinWarehouseIdGet$Params } from './fn/wms-api/bin-available-bin-warehouse-id-get';
@@ -175,12 +175,8 @@ export type { GetCheckedInBinByQrCode$Params as GetCheckedInBinByQrCode$Params }
 export { getCheckedInBinByQrCode as getCheckedInBinByQrCode } from './fn/wms-api/get-checked-in-bin-by-qr-code';
 export type { BinQrCodeBinHashCodeWarehouseIdGet$Params as BinQrCodeBinHashCodeWarehouseIdGet$Params } from './fn/wms-api/bin-qr-code-bin-hash-code-warehouse-id-get';
 export { binQrCodeBinHashCodeWarehouseIdGet as binQrCodeBinHashCodeWarehouseIdGet } from './fn/wms-api/bin-qr-code-bin-hash-code-warehouse-id-get';
-export type { BinRackIdGet$Params as BinRackIdGet$Params } from './fn/wms-api/bin-rack-id-get';
-export { binRackIdGet as binRackIdGet } from './fn/wms-api/bin-rack-id-get';
 export type { BinV2RackIdGet$Params as BinV2RackIdGet$Params } from './fn/wms-api/bin-v-2-rack-id-get';
 export { binV2RackIdGet as binV2RackIdGet } from './fn/wms-api/bin-v-2-rack-id-get';
-export type { BinRackRackIdBayBayIdGet$Params as BinRackRackIdBayBayIdGet$Params } from './fn/wms-api/bin-rack-rack-id-bay-bay-id-get';
-export { binRackRackIdBayBayIdGet as binRackRackIdBayBayIdGet } from './fn/wms-api/bin-rack-rack-id-bay-bay-id-get';
 export type { BinV2RackRackIdBayBayIdGet$Params as BinV2RackRackIdBayBayIdGet$Params } from './fn/wms-api/bin-v-2-rack-rack-id-bay-bay-id-get';
 export { binV2RackRackIdBayBayIdGet as binV2RackRackIdBayBayIdGet } from './fn/wms-api/bin-v-2-rack-rack-id-bay-bay-id-get';
 export type { GetBin$Params as GetBin$Params } from './fn/wms-api/get-bin';
@@ -195,6 +191,12 @@ export type { GetBinStockById$Params as GetBinStockById$Params } from './fn/wms-
 export { getBinStockById as getBinStockById } from './fn/wms-api/get-bin-stock-by-id';
 export type { BinHistoryBinIdGet$Params as BinHistoryBinIdGet$Params } from './fn/wms-api/bin-history-bin-id-get';
 export { binHistoryBinIdGet as binHistoryBinIdGet } from './fn/wms-api/bin-history-bin-id-get';
+export type { BinRackIdGet$Params as BinRackIdGet$Params } from './fn/wms-api/bin-rack-id-get';
+export { binRackIdGet as binRackIdGet } from './fn/wms-api/bin-rack-id-get';
+export type { BinRackRackIdBayBayIdGet$Params as BinRackRackIdBayBayIdGet$Params } from './fn/wms-api/bin-rack-rack-id-bay-bay-id-get';
+export { binRackRackIdBayBayIdGet as binRackRackIdBayBayIdGet } from './fn/wms-api/bin-rack-rack-id-bay-bay-id-get';
+export type { UpdateBin3DLocation$Params as UpdateBin3DLocation$Params } from './fn/wms-api/update-bin-3-d-location';
+export { updateBin3DLocation as updateBin3DLocation } from './fn/wms-api/update-bin-3-d-location';
 export type { BayGet$Params as BayGet$Params } from './fn/wms-api/bay-get';
 export { bayGet as bayGet } from './fn/wms-api/bay-get';
 export type { BayV2Get$Params as BayV2Get$Params } from './fn/wms-api/bay-v-2-get';
