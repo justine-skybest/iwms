@@ -17,6 +17,7 @@ import { binV2Get, createBin } from '../../../api/generated/functions';
 import { BinNamesDto, CreateBinDto, BinNamesDtoPaginatedResponse, BinSummaryDto } from '../../../api/generated/models';
 import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { firstValueFrom } from 'rxjs';
+import { findOpenBinPosition } from '../../../pages/warehouses/warehouse-bin-position.util';
 
 export interface CreateBinPosition {
   positionX: number;
@@ -153,9 +154,16 @@ export class CreateBinDialogComponent implements OnChanges {
 
     try {
       const bins = await this.api.invoke(binV2Get, { warehouseId, page: 1, pageSize: 500 });
-      const standaloneCount = (bins.items ?? []).filter(
+      const existingStandaloneBins = (bins.items ?? []).filter(
         (bin) => (bin.rack ?? '').toLowerCase() === 'standalone'
-      ).length;
+      );
+      const occupiedLocations = existingStandaloneBins.flatMap((bin) =>
+        bin.location3D ? [bin.location3D] : []
+      );
+      for (const bin of existingStandaloneBins) {
+        if (!bin.location3D) occupiedLocations.push(findOpenBinPosition(occupiedLocations));
+      }
+      const defaultPosition = findOpenBinPosition(occupiedLocations);
       const payload: CreateBinDto = {
         warehouseId,
         rackId: null,
@@ -165,10 +173,10 @@ export class CreateBinDialogComponent implements OnChanges {
         binHashCode: this.binHashCode,
         dateAdded: new Date().toISOString(),
         location3D: {
-          positionX: this.initialPosition?.positionX ?? 8 + (standaloneCount % 5) * 3,
-          positionY: this.initialPosition?.positionY ?? 0.6,
-          positionZ: this.initialPosition?.positionZ ?? -20 + Math.floor(standaloneCount / 5) * 3,
-          rotationY: this.initialPosition?.rotationY ?? 0,
+          positionX: this.initialPosition?.positionX ?? defaultPosition.positionX ?? 0,
+          positionY: this.initialPosition?.positionY ?? defaultPosition.positionY ?? 0.6,
+          positionZ: this.initialPosition?.positionZ ?? defaultPosition.positionZ ?? 0,
+          rotationY: this.initialPosition?.rotationY ?? defaultPosition.rotationY ?? 0,
           width: 1.5,
           height: 1.2,
           depth: 1.2,
