@@ -1,5 +1,16 @@
 [
   {
+    "version": "1.7.1",
+    "releaseDate": "2026-10-08",
+    "title": "Receiving Report Bug Fix",
+    "changes": [
+      {
+        "type": "FIX",
+        "description": "Fixed bug in Receiving Reconciliation Report where duplicate items remaining quantity was not calculated correctly."
+      }
+    ]
+  },
+  {
     "version": "1.7.0",
     "releaseDate": "2026-10-08",
     "title": "Packing List Versioning, File Downloads & Enhanced Drawer Search",
