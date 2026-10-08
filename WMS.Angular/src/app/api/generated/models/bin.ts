@@ -5,10 +5,12 @@ import type { Bay } from '../models/bay';
 import type { BinNames } from '../models/bin-names';
 import type { CheckIn } from '../models/check-in';
 import type { Level } from '../models/level';
+import type { Location3D } from '../models/location-3-d';
 import type { Rack } from '../models/rack';
+import type { Warehouse } from '../models/warehouse';
 export interface Bin {
   bay?: Bay;
-  bayId?: number;
+  bayId?: number | null;
   binHashCode?: number;
   binNames?: BinNames;
   binNamesId?: number;
@@ -16,7 +18,14 @@ export interface Bin {
   dateAdded?: string;
   id?: number;
   level?: Level;
-  levelId?: number;
+  levelId?: number | null;
+  location3D?: Location3D;
   rack?: Rack;
-  rackId?: number;
+  rackId?: number | null;
+  relativeX?: number | null;
+  relativeY?: number | null;
+  relativeZ?: number | null;
+  standaloneLocationId?: number | null;
+  warehouse?: Warehouse;
+  warehouseId?: number | null;
 }

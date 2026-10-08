@@ -1,5 +1,28 @@
 [
   {
+    "version": "1.7.2",
+    "releaseDate": "2026-10-08",
+    "title": "Warehouse 3D Operations & Enclosures",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added Warehouse 2's dedicated open-floor 3D layout with standalone-bin creation, relocation, and bin inventory inspection."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added in-scene receiving creation at the loading entrance, plus bin check-in and pick-order workflows for Warehouse 1 and Warehouse 2."
+      },
+      {
+        "type": "IMPROVEMENT",
+        "description": "Added perimeter walls and concrete roof slabs to both 3D warehouse views while preserving walk-through navigation."
+      },
+      {
+        "type": "IMPROVEMENT",
+        "description": "Preserved the current 3D scene and player position when moving bins or completing bin check-in and pick-order workflows."
+      }
+    ]
+  },
+  {
     "version": "1.7.1",
     "releaseDate": "2026-10-08",
     "title": "Receiving Report Bug Fix",

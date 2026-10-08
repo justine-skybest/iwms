@@ -2,14 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom, from, of, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Api } from '../../api/generated/api';
-import { rackV2WarehouseIdGet, binRackIdGet, getBinStockById } from '../../api/generated/functions';
-import { RackSummaryDto, BinSummaryDto } from '../../api/generated/models';
+import { rackV2WarehouseIdGet, binRackIdGet, binV2Get, getBinStockById } from '../../api/generated/functions';
+import { RackSummaryDto, BinSummaryDto, Location3DDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ItemLocationSummaryDto } from '../../api/generated/models/item-location-summary-dto';
 import { DisplayCheckInProductsDto } from '../../api/generated/models/display-check-in-products-dto';
 
 export interface Warehouse3DData {
   racks: Rack3D[];
+  standaloneBins: Bin3D[];
 }
 
 export interface Rack3D {
@@ -44,6 +45,7 @@ export interface Bin3D {
   warehouse: string | null;
   dateAdded: string | null;
   isOccupied?: boolean;
+  location3D?: Location3DDto;
 }
 
 @Injectable({
@@ -56,7 +58,7 @@ export class Warehouse3DViewerService {
   // Inventory cache to avoid repeated API hits
   private inventoryCache = new Map<number, ItemLocationSummaryDto[]>();
 
-  async fetchWarehouse3DData(): Promise<Warehouse3DData> {
+  async fetchWarehouse3DData(includeStandaloneBins = false): Promise<Warehouse3DData> {
     const warehouseId = await this.warehouseService.ensureInitialized();
 
     if (!warehouseId) {
@@ -66,7 +68,7 @@ export class Warehouse3DViewerService {
     const racksResponse = await this.api.invoke(rackV2WarehouseIdGet, {
       id: warehouseId,
       page: 1,
-      pageSize: 1000
+      pageSize: 500
     });
     const racks = ((racksResponse.items ?? []) as RackSummaryDto[]).filter((rack) => {
       const normalizedName = (rack.name ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -153,13 +155,46 @@ export class Warehouse3DViewerService {
       })
     );
 
-    return { racks: rack3DList };
+    let standaloneBins: Bin3D[] = [];
+    if (includeStandaloneBins) {
+      const binsResponse = await this.api.invoke(binV2Get, {
+        warehouseId,
+        page: 1,
+        pageSize: 500,
+      });
+      standaloneBins = (binsResponse.items ?? [])
+        .filter((bin): bin is BinSummaryDto & { id: number } =>
+          bin.id != null && (bin.rack ?? '').toLowerCase() === 'standalone'
+        )
+        .map((bin, index) => ({
+          id: bin.id,
+          binName: bin.binName ?? null,
+          binHashCode: bin.binHashCode ?? null,
+          rack: bin.rack ?? null,
+          bay: bin.bay ?? null,
+          level: bin.level ?? null,
+          warehouse: bin.warehouse ?? null,
+          dateAdded: bin.dateAdded ?? null,
+          location3D: bin.location3D ?? {
+            positionX: 8 + (index % 5) * 3,
+            positionY: 0.6,
+            positionZ: -20 + Math.floor(index / 5) * 3,
+            rotationY: 0,
+            width: 1.5,
+            height: 1.2,
+            depth: 1.2,
+          },
+        }));
+    }
+
+    return { racks: rack3DList, standaloneBins };
   }
 
-  async preloadBinInventory(racks: Rack3D[], concurrency = 8): Promise<void> {
+  async preloadBinInventory(racks: Rack3D[], concurrency = 8, additionalBins: Bin3D[] = []): Promise<void> {
     const seenBinIds = new Set<number>();
     const bins = racks
       .flatMap((rack) => rack.bays.flatMap((bay) => bay.levels.flatMap((level) => level.bins)))
+      .concat(additionalBins)
       .filter((bin) => {
         if (bin.id <= 0 || seenBinIds.has(bin.id)) return false;
         seenBinIds.add(bin.id);
@@ -171,7 +206,7 @@ export class Warehouse3DViewerService {
       while (nextBinIndex < bins.length) {
         const bin = bins[nextBinIndex++];
         try {
-          const items = await firstValueFrom(this.fetchBinInventory(bin.id));
+          const items = await firstValueFrom(this.fetchBinInventory(bin.id, true));
           bin.isOccupied = items.length > 0;
         } catch (err) {
           console.error(`Unable to preload stock status for bin ${bin.id}:`, err);

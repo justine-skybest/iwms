@@ -423,15 +423,25 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
       }
-    ]
+    ],
+    "EndpointName": "CreateBin"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -463,7 +473,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -482,15 +492,17 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
+        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
       }
     ]
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_17",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -509,6 +521,38 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "RelativePath": "bin/{id:int}/location",
+    "HttpMethod": "PATCH",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "locationDto",
+        "Type": "WMS.Api.Dtos.Bin.UpdateBinLocation3DDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "EndpointName": "UpdateBin3DLocation",
+    "Description": "Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.",
+    "Summary": "Update 3D Spatial Position"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
@@ -568,7 +612,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
     "RelativePath": "bin/hashcode/{hashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -607,7 +651,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
     "RelativePath": "bin/history/{BinId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -658,8 +702,8 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
-    "RelativePath": "bin/rack/{id}",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "RelativePath": "bin/rack/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -672,7 +716,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "WMS.Api.Dtos.Bin.BinSummaryDto",
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],
@@ -682,8 +726,8 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
-    "RelativePath": "bin/rack/{rackId}/bay/{bayId}",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "RelativePath": "bin/rack/{rackId:int}/bay/{bayId:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -711,7 +755,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
     "RelativePath": "bin/stock/id/{BinId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -813,7 +857,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
     "RelativePath": "bin/v2/rack/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -847,7 +891,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
     "RelativePath": "bin/v2/rack/{rackId}/bay/{bayId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -2781,11 +2825,28 @@
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.RackDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 500
       }
     ],
     "Tags": [
       "Racks"
-    ]
+    ],
+    "EndpointName": "CreateRack",
+    "Description": "Creates a new rack entity and returns its detailed representation.",
+    "Summary": "Create a new warehouse rack"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.RackEndpoint\u002B\u003C\u003Ec",

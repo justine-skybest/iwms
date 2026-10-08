@@ -114,8 +114,10 @@ public static class PickingEndpoint
                 .AsNoTracking()
                 .Where(b =>
                     b.Id == newManualPicking.BinId &&
-                    b.Rack != null &&
-                    b.Rack.WarehouseId == newManualPicking.WarehouseId)
+                    (b.Rack != null
+                        ? b.Rack.WarehouseId == newManualPicking.WarehouseId
+                        : b.WarehouseId == newManualPicking.WarehouseId))
+                .Include(b => b.Warehouse)
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
                 .Include(b => b.BinNames)

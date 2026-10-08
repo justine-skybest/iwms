@@ -7,26 +7,27 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { CreateBinDto } from '../../models/create-bin-dto';
+import type { CreateRackDto } from '../../models/create-rack-dto';
+import type { RackDetailsDto } from '../../models/rack-details-dto';
 
-export interface BinPost$Params {
-      body: CreateBinDto
+export interface CreateRack$Params {
+      body: CreateRackDto
 }
 
-export function binPost(http: HttpClient, rootUrl: string, params: BinPost$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, binPost.PATH, 'post');
+export function createRack(http: HttpClient, rootUrl: string, params: CreateRack$Params, context?: HttpContext): Observable<StrictHttpResponse<RackDetailsDto>> {
+  const rb = new RequestBuilder(rootUrl, createRack.PATH, 'post');
   if (params) {
     rb.body(params.body, 'application/json');
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<RackDetailsDto>;
     })
   );
 }
 
-binPost.PATH = '/bin';
+createRack.PATH = '/rack';

@@ -1405,6 +1405,9 @@
         "tags": [
           "Racks"
         ],
+        "summary": "Create a new warehouse rack",
+        "description": "Creates a new rack entity and returns its detailed representation.",
+        "operationId": "CreateRack",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1422,6 +1425,26 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RackDetailsDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -3019,6 +3042,7 @@
         "tags": [
           "WMS.Api"
         ],
+        "operationId": "CreateBin",
         "requestBody": {
           "content": {
             "application/json": {
@@ -3030,8 +3054,25 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
           }
         }
       }
@@ -3245,36 +3286,6 @@
         }
       }
     },
-    "/bin/rack/{id}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BinSummaryDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bin/v2/rack/{id}": {
       "get": {
         "tags": [
@@ -3316,48 +3327,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/bin/rack/{rackId}/bay/{bayId}": {
-      "get": {
-        "tags": [
-          "WMS.Api"
-        ],
-        "parameters": [
-          {
-            "name": "rackId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "bayId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BinSummaryDto"
-                  }
                 }
               }
             }
@@ -3483,8 +3452,15 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
           }
         }
       },
@@ -3627,6 +3603,124 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/bin/rack/{id}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BinSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bin/rack/{rackId}/bay/{bayId}": {
+      "get": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "parameters": [
+          {
+            "name": "rackId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "bayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BinSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bin/{id}/location": {
+      "patch": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Update 3D Spatial Position",
+        "description": "Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.",
+        "operationId": "UpdateBin3DLocation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBinLocation3DDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinSummaryDto"
+                }
+              }
+            }
           }
         }
       }
@@ -5194,23 +5288,34 @@
             "type": "integer",
             "format": "int32"
           },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "warehouse": {
+            "$ref": "#/components/schemas/Warehouse"
+          },
           "rackId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "rack": {
             "$ref": "#/components/schemas/Rack"
           },
           "bayId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "bay": {
             "$ref": "#/components/schemas/Bay"
           },
           "levelId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "level": {
             "$ref": "#/components/schemas/Level"
@@ -5235,6 +5340,29 @@
             "items": {
               "$ref": "#/components/schemas/CheckIn"
             },
+            "nullable": true
+          },
+          "standaloneLocationId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "location3D": {
+            "$ref": "#/components/schemas/Location3D"
+          },
+          "relativeX": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "relativeY": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "relativeZ": {
+            "type": "number",
+            "format": "float",
             "nullable": true
           }
         },
@@ -5281,19 +5409,27 @@
             "type": "integer",
             "format": "int32"
           },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "rackId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "bayId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "levelId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "binId": {
+          "binNamesId": {
             "type": "integer",
             "format": "int32"
           },
@@ -5304,6 +5440,21 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          },
+          "location3D": {
+            "$ref": "#/components/schemas/Location3DDto"
+          },
+          "relativeX": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeY": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeZ": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false
@@ -5410,7 +5561,8 @@
           },
           "rackId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "rackName": {
             "type": "string",
@@ -5473,6 +5625,21 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          },
+          "location3D": {
+            "$ref": "#/components/schemas/Location3DDto"
+          },
+          "relativeX": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeY": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeZ": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false
@@ -5734,19 +5901,27 @@
       "CreateBinDto": {
         "type": "object",
         "properties": {
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "rackId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "bayId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "levelId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "binId": {
+          "binNamesId": {
             "type": "integer",
             "format": "int32"
           },
@@ -5757,6 +5932,21 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          },
+          "location3D": {
+            "$ref": "#/components/schemas/Location3DDto"
+          },
+          "relativeX": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeY": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeZ": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false
@@ -7074,6 +7264,78 @@
         },
         "additionalProperties": false
       },
+      "Location3D": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "positionX": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionY": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionZ": {
+            "type": "number",
+            "format": "float"
+          },
+          "rotationY": {
+            "type": "number",
+            "format": "float"
+          },
+          "width": {
+            "type": "number",
+            "format": "float"
+          },
+          "height": {
+            "type": "number",
+            "format": "float"
+          },
+          "depth": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Location3DDto": {
+        "type": "object",
+        "properties": {
+          "positionX": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionY": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionZ": {
+            "type": "number",
+            "format": "float"
+          },
+          "rotationY": {
+            "type": "number",
+            "format": "float"
+          },
+          "width": {
+            "type": "number",
+            "format": "float"
+          },
+          "height": {
+            "type": "number",
+            "format": "float"
+          },
+          "depth": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
       "LoginRequestDto": {
         "type": "object",
         "properties": {
@@ -7682,6 +7944,46 @@
             "items": {
               "$ref": "#/components/schemas/RackFloorMapObject"
             }
+          }
+        },
+        "additionalProperties": false
+      },
+      "RackDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bayId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "levelId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rackFloorMapObject": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RackFloorMapObjectDetails"
+            },
+            "nullable": true
+          },
+          "isFloorDocking": {
+            "type": "boolean"
+          },
+          "dateAdded": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -8893,19 +9195,27 @@
       "UpdateBinDto": {
         "type": "object",
         "properties": {
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "rackId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "bayId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "levelId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
-          "binId": {
+          "binNamesId": {
             "type": "integer",
             "format": "int32"
           },
@@ -8916,6 +9226,43 @@
           "dateAdded": {
             "type": "string",
             "format": "date-time"
+          },
+          "location3D": {
+            "$ref": "#/components/schemas/Location3DDto"
+          },
+          "relativeX": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeY": {
+            "type": "number",
+            "format": "float"
+          },
+          "relativeZ": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateBinLocation3DDto": {
+        "type": "object",
+        "properties": {
+          "positionX": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionY": {
+            "type": "number",
+            "format": "float"
+          },
+          "positionZ": {
+            "type": "number",
+            "format": "float"
+          },
+          "rotationY": {
+            "type": "number",
+            "format": "float"
           }
         },
         "additionalProperties": false

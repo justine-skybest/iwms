@@ -9,6 +9,6 @@ export interface BinOccupancyDto {
   id?: number;
   isOccupied?: boolean;
   levelNumber?: number | null;
-  rackId?: number;
+  rackId?: number | null;
   rackName?: string | null;
 }

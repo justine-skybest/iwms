@@ -33,6 +33,7 @@ import {
 } from '../../../../api/generated/functions';
 import { SearchableSelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
 import { ToastService } from '../../../../lib/services/toast.service';
+import { CreateBinDialogComponent } from '../../../../shared/components/dialog/create-bin-dialog.component';
 
 type CheckInType = 'Pallet' | 'Item';
 
@@ -45,12 +46,14 @@ type CheckInType = 'Pallet' | 'Item';
     IconComponent,
     SearchableSelectComponent,
     QrScannerComponent,
+    CreateBinDialogComponent
   ],
   templateUrl: './create-check-in-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCheckInModalComponent implements OnChanges {
   @Input() isOpen = false;
+  @Input() initialBin: BinSummaryDto | null = null;
   @Output() closed = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
@@ -63,6 +66,8 @@ export class CreateCheckInModalComponent implements OnChanges {
   isLocatingPallet = false;
   isLocatingBin = false;
   createError = '';
+
+  isCreateBinOpen = false;
 
   checkInType: CheckInType = 'Pallet';
   checkInDate = this.today();
@@ -78,6 +83,14 @@ export class CreateCheckInModalComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
       this.resetForm();
+      if (this.initialBin?.id) {
+        this.selectedBins = [{
+          id: this.initialBin.id,
+          label: this.initialBin.binName ?? `Bin #${this.initialBin.id}`,
+          sublabel: [this.initialBin.rack, this.initialBin.level, this.initialBin.bay].filter(Boolean).join(' / '),
+          raw: this.initialBin,
+        }];
+      }
     }
   }
 
@@ -365,6 +378,30 @@ async onPalletQrScanned(decodedText: string): Promise<void> {
       return 'Please select or scan at least one bin location.';
     }
     return null;
+  }
+
+openCreateBinDialog(): void {
+    this.isCreateBinOpen = true;
+    this.cd.markForCheck();
+  }
+
+onBinCreated(bin: BinSummaryDto): void {
+    if (bin && bin.id) {
+      const binOption: SelectOption<BinSummaryDto> = {
+        id: bin.id,
+        label: bin.binName ?? `Bin #${bin.id}`,
+        sublabel: [bin.rack, bin.level, bin.bay].filter(Boolean).join(' / '),
+        raw: bin,
+      };
+
+      if (!this.selectedBins.some((b) => b.id === binOption.id)) {
+        this.selectedBins = [...this.selectedBins, binOption];
+      }
+
+      this.binsPromise = null;
+    }
+    this.isCreateBinOpen = false;
+    this.cd.markForCheck();
   }
 
   async submitCreateCheckIn(): Promise<void> {

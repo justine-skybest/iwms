@@ -1,0 +1,122 @@
+<div class="relative h-screen w-full overflow-hidden">
+  <app-warehouse-3d-viewer
+    [warehouseIdOverride]="warehouseId"
+    [showStandaloneBins]="true"
+    [isWarehouse2Layout]="true"
+    [binMoveMode]="binMoveMode"
+    (binSelected)="onBinSelected($event)"
+    (emptySpotChanged)="onEmptySpotChanged($event)"
+    (emptySpotClicked)="onEmptySpotClicked($event)"
+    (binMoveRequested)="onMoveRequested($event)"
+    (binMoveDropped)="saveDroppedLocation($event)"
+    (binMoveCancelled)="cancelBinMove()"
+    (receivingCreateRequested)="openReceivingCreate()"
+  ></app-warehouse-3d-viewer>
+
+  <div
+    *ngIf="emptySpot && !binMoveMode"
+    [style.left.px]="emptySpot.clientX"
+    [style.top.px]="emptySpot.clientY"
+    class="fixed z-50 -translate-x-1/2 -translate-y-1/2 flex items-center gap-2 rounded-full border border-blue-300 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-xl pointer-events-none"
+  >
+    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white text-lg leading-none text-blue-700">+</span>
+    Right-click to create bin here
+  </div>
+
+  <div class="absolute top-20 right-5 z-40 pointer-events-auto">
+    <!-- <button
+      type="button"
+      (click)="openCreateBinDialog()"
+      class="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-blue-700"
+    >
+      + Add Stand-alone Bin
+    </button> -->
+  </div>
+
+  <div
+    *ngIf="binMoveMode"
+    class="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-xl border border-sky-500/50 bg-slate-950/90 px-4 py-3 text-center text-xs text-white shadow-xl backdrop-blur pointer-events-none"
+  >
+    <p class="font-semibold text-sky-300">Moving {{ selectedBin?.binName || 'bin' }}</p>
+    <p class="mt-1 text-slate-300">WASD to walk with the bin · Mouse to look · Arrows to position · R rotate · Click / Enter drop · Esc cancel</p>
+  </div>
+
+  <p
+    *ngIf="isSavingLocation"
+    class="absolute bottom-6 right-6 z-40 rounded-lg bg-slate-950/90 px-3 py-2 text-xs text-white shadow-lg"
+  >Saving bin location...</p>
+
+  <section
+    *ngIf="selectedBin"
+    class="absolute top-20 left-5 z-40 w-80 max-w-[calc(100vw-2.5rem)] rounded-xl border border-slate-700 bg-slate-950/95 p-4 text-white shadow-2xl backdrop-blur pointer-events-auto"
+  >
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-wide text-sky-300">Selected bin</p>
+        <h2 class="mt-1 text-base font-bold">{{ selectedBin.binName || 'Bin #' + selectedBin.id }}</h2>
+        <p class="mt-1 text-xs text-slate-400">{{ selectedBin.rack || 'Standalone' }} · {{ selectedBin.warehouse || 'Warehouse 2' }}</p>
+      </div>
+      <button type="button" aria-label="Close selected bin actions" (click)="selectedBin = null" class="text-slate-400 hover:text-white">✕</button>
+    </div>
+
+    <p *ngIf="actionError" class="mt-3 rounded-lg border border-red-800 bg-red-950/70 px-3 py-2 text-xs text-red-200">
+      {{ actionError }}
+    </p>
+
+    <div class="mt-4 grid grid-cols-2 gap-2">
+      <button
+        type="button"
+        (click)="openCheckIn()"
+        class="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold hover:bg-emerald-700"
+      >
+        Check in pallet
+      </button>
+      <button
+        type="button"
+        (click)="openPickOrder()"
+        class="rounded-lg bg-violet-600 px-3 py-2 text-xs font-semibold hover:bg-violet-700"
+      >
+        Create pick order
+      </button>
+      <button
+        *ngIf="selectedBin.rack?.toLowerCase() === 'standalone'"
+        type="button"
+        (click)="openMoveForm()"
+        class="col-span-2 rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-xs font-semibold hover:bg-slate-700"
+      >
+        Move bin location · M
+      </button>
+    </div>
+  </section>
+
+  <div class="absolute bottom-20 left-1/2 z-40 -translate-x-1/2 rounded-lg bg-emerald-950/90 px-3 py-2 text-center text-xs text-emerald-100 shadow-lg pointer-events-none">
+    Click the green loading-entrance pad in the 3D floor to create a receiving
+  </div>
+</div>
+
+<app-create-bin-dialog
+  [isOpen]="isCreateBinOpen"
+  [initialPosition]="createBinPosition"
+  (closed)="closeCreateBinDialog()"
+  (created)="onBinCreated($event)"
+></app-create-bin-dialog>
+
+<app-create-check-in-modal
+  [isOpen]="isCheckInOpen"
+  [initialBin]="selectedBinDto"
+  (closed)="isCheckInOpen = false"
+  (created)="onBinWorkflowCreated()"
+></app-create-check-in-modal>
+
+<app-create-pick-order-modal
+  [isOpen]="isPickOrderOpen"
+  [initialBin]="selectedBinDto"
+  (closed)="isPickOrderOpen = false"
+  (created)="onBinWorkflowCreated()"
+></app-create-pick-order-modal>
+
+<app-receiving-create
+  [isOpen]="isReceivingCreateOpen"
+  (close)="closeReceivingCreate()"
+  (created)="onWorkflowCreated()"
+></app-receiving-create>
