@@ -186,7 +186,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         using var workbook = new XLWorkbook();
                         var ws = workbook.Worksheets.Add("Receiving Report");
 
-                        // Header Banner (Expanded range to column N for 14 columns)
+                        // Header Banner
                         ws.Cell("A1").Value = "RECEIVING RECONCILIATION REPORT";
                         ws.Range("A1:N1").Merge()
                             .Style.Font.SetBold().Font.SetFontSize(15)
@@ -252,10 +252,10 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         currentRow++;
 
                         string[] receivedHeaders = {
-                "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
-                "Product Code", "Product Name", "Supplier", "Received Qty", "UOM", "CBM", "Weight (KG)",
-                "Pallet / Plate", "Remarks"
-            };
+                            "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
+                            "Product Code", "Product Name", "Supplier", "Received Qty", "UOM", "CBM", "Weight (KG)",
+                            "Pallet / Plate", "Remarks"
+                        };
 
                         for (int i = 0; i < receivedHeaders.Length; i++)
                         {
@@ -285,13 +285,13 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 5).Value = SanitizeXml(r.Consignee ?? r.Incoming?.Consignee ?? "N/A");
                                     ws.Cell(currentRow, 6).Value = SanitizeXml(rp.Product?.Code ?? "N/A");
                                     ws.Cell(currentRow, 7).Value = SanitizeXml(rp.Product?.Name ?? rp.ExpectedProductName ?? "N/A");
-                                    ws.Cell(currentRow, 8).Value = SanitizeXml(rp.Supplier ?? "—"); // ✅ Supplier after ProductName
+                                    ws.Cell(currentRow, 8).Value = SanitizeXml(rp.Supplier ?? "—");
                                     ws.Cell(currentRow, 9).Value = rp.Quantity;
                                     ws.Cell(currentRow, 10).Value = SanitizeXml(rp.TypeOfPackage);
                                     ws.Cell(currentRow, 11).Value = SanitizeXml(rp.CBM);
                                     ws.Cell(currentRow, 12).Value = SanitizeXml(rp.TotalWeight);
                                     ws.Cell(currentRow, 13).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {SanitizeXml(r.PlateNumber)}";
-                                    ws.Cell(currentRow, 14).Value = SanitizeXml(rp.Remarks ?? "—"); // ✅ Remarks as last column
+                                    ws.Cell(currentRow, 14).Value = SanitizeXml(rp.Remarks ?? "—");
                                     currentRow++;
                                 }
                             }
@@ -310,9 +310,9 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         currentRow++;
 
                         string[] remainingHeaders = {
-                "Packing List Ref", "Shipper", "Consignee", "Product Code",
-                "Product Name", "Supplier", "Expected Qty", "Received Qty", "Remaining Shortage Qty", "Remarks"
-            };
+                            "Packing List Ref", "Shipper", "Consignee", "Product Code",
+                            "Product Name", "Supplier", "Expected Qty", "Received Qty", "Remaining Shortage Qty", "Remarks"
+                        };
 
                         for (int i = 0; i < remainingHeaders.Length; i++)
                         {
@@ -322,6 +322,17 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                             cell.Style.Fill.BackgroundColor = XLColor.LightGray;
                         }
                         currentRow++;
+
+                        // --- BUG FIX: Create allocation pools to prevent double-counting duplicate products ---
+                        var exactReceivedMap = allReceivedProducts
+                            .Where(rp => rp.IncomingProductId.HasValue)
+                            .GroupBy(rp => rp.IncomingProductId.Value)
+                            .ToDictionary(g => g.Key, g => g.Sum(rp => rp.Quantity));
+
+                        var fallbackPool = allReceivedProducts
+                            .Where(rp => !rp.IncomingProductId.HasValue)
+                            .GroupBy(rp => rp.ProductId)
+                            .ToDictionary(g => g.Key, g => g.Sum(rp => rp.Quantity));
 
                         bool hasRemaining = false;
                         foreach (var inc in incomings)
@@ -333,9 +344,24 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
 
                             foreach (var ep in inc.Products ?? new List<IncomingProduct>())
                             {
-                                int actualReceived = allReceivedProducts
-                                    .Where(rp => rp.IncomingProductId == ep.Id || rp.ProductId == ep.ProductId)
-                                    .Sum(rp => rp.Quantity);
+                                int actualReceived = 0;
+
+                                // Priority 1: Match directly by explicitly mapped IncomingProductId
+                                if (exactReceivedMap.TryGetValue(ep.Id, out int exactQty))
+                                {
+                                    actualReceived += exactQty;
+                                }
+
+                                // Priority 2: Match unmapped records by ProductId, deducting from the shared pool
+                                if (actualReceived < ep.Quantity && fallbackPool.TryGetValue(ep.ProductId, out int fallbackQty) && fallbackQty > 0)
+                                {
+                                    int needed = ep.Quantity - actualReceived;
+                                    int take = Math.Min(needed, fallbackQty);
+                                    actualReceived += take;
+
+                                    // Deduct so the next duplicate line item doesn't count the same quantity again
+                                    fallbackPool[ep.ProductId] -= take;
+                                }
 
                                 int remaining = Math.Max(0, ep.Quantity - actualReceived);
 
@@ -347,12 +373,12 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 3).Value = SanitizeXml(inc.Consignee ?? "N/A");
                                     ws.Cell(currentRow, 4).Value = SanitizeXml(ep.Product?.Code ?? "N/A");
                                     ws.Cell(currentRow, 5).Value = SanitizeXml(ep.Product?.Name ?? "N/A");
-                                    ws.Cell(currentRow, 6).Value = SanitizeXml(ep.Supplier ?? "—"); // ✅ Supplier after ProductName
+                                    ws.Cell(currentRow, 6).Value = SanitizeXml(ep.Supplier ?? "—");
                                     ws.Cell(currentRow, 7).Value = ep.Quantity;
                                     ws.Cell(currentRow, 8).Value = actualReceived;
                                     ws.Cell(currentRow, 9).Value = remaining;
                                     ws.Cell(currentRow, 9).Style.Font.SetFontColor(XLColor.Red).Font.SetBold();
-                                    ws.Cell(currentRow, 10).Value = SanitizeXml(ep.Remarks ?? "—"); // ✅ Remarks as last column
+                                    ws.Cell(currentRow, 10).Value = SanitizeXml(ep.Remarks ?? "—");
                                     currentRow++;
                                 }
                             }
