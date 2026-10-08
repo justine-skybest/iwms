@@ -41,6 +41,8 @@ export type { UpdateIncoming$Params as UpdateIncoming$Params } from './fn/incomi
 export { updateIncoming as updateIncoming } from './fn/incomings/update-incoming';
 export type { DeleteIncoming$Params as DeleteIncoming$Params } from './fn/incomings/delete-incoming';
 export { deleteIncoming as deleteIncoming } from './fn/incomings/delete-incoming';
+export type { DownloadIncomingDocument$Params as DownloadIncomingDocument$Params } from './fn/incomings/download-incoming-document';
+export { downloadIncomingDocument as downloadIncomingDocument } from './fn/incomings/download-incoming-document';
 export type { InspectInventoryCode$Params as InspectInventoryCode$Params } from './fn/inventory/inspect-inventory-code';
 export { inspectInventoryCode as inspectInventoryCode } from './fn/inventory/inspect-inventory-code';
 export type { PalletGet$Params as PalletGet$Params } from './fn/pallet/pallet-get';
@@ -169,8 +171,6 @@ export type { BinV2AvailableBinWarehouseIdGet$Params as BinV2AvailableBinWarehou
 export { binV2AvailableBinWarehouseIdGet as binV2AvailableBinWarehouseIdGet } from './fn/wms-api/bin-v-2-available-bin-warehouse-id-get';
 export type { GetCheckedInBinByQrCode$Params as GetCheckedInBinByQrCode$Params } from './fn/wms-api/get-checked-in-bin-by-qr-code';
 export { getCheckedInBinByQrCode as getCheckedInBinByQrCode } from './fn/wms-api/get-checked-in-bin-by-qr-code';
-export type { GetCheckedInBinById$Params as GetCheckedInBinById$Params } from './fn/wms-api/get-checked-in-bin-by-id';
-export { getCheckedInBinById as getCheckedInBinById } from './fn/wms-api/get-checked-in-bin-by-id';
 export type { BinQrCodeBinHashCodeWarehouseIdGet$Params as BinQrCodeBinHashCodeWarehouseIdGet$Params } from './fn/wms-api/bin-qr-code-bin-hash-code-warehouse-id-get';
 export { binQrCodeBinHashCodeWarehouseIdGet as binQrCodeBinHashCodeWarehouseIdGet } from './fn/wms-api/bin-qr-code-bin-hash-code-warehouse-id-get';
 export type { BinRackIdGet$Params as BinRackIdGet$Params } from './fn/wms-api/bin-rack-id-get';

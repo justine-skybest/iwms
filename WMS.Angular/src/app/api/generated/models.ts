@@ -41,6 +41,8 @@ export type { GenerateReceivingReportRequest } from './models/generate-receiving
 export type { GenerateReportResponse } from './models/generate-report-response';
 export type { HttpValidationProblemDetails } from './models/http-validation-problem-details';
 export type { Incoming } from './models/incoming';
+export type { IncomingDocument } from './models/incoming-document';
+export type { IncomingDocumentResponseDto } from './models/incoming-document-response-dto';
 export type { IncomingProduct } from './models/incoming-product';
 export type { IncomingProductRequestDto } from './models/incoming-product-request-dto';
 export type { IncomingProductResponseDto } from './models/incoming-product-response-dto';

@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\WMS.Api"
   ],
+  "SelectedNode": "\\WMS.Api\\.gitignore",
   "PreviewInSolutionExplorer": false
 }

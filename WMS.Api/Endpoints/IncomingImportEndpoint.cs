@@ -5,6 +5,7 @@ using System.Data;
 using WMS.Api.Data;
 using WMS.Api.Entities;
 using WMS.Api.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WMS.Api.Endpoints
 {
@@ -24,6 +25,7 @@ namespace WMS.Api.Endpoints
                 int warehouseId,
                 WMSContext dbContext,
                 IAuditLogService auditLogService,
+                IWebHostEnvironment env,
                 CancellationToken cancellationToken) =>
             {
                 var parseResult = await ParseExcelAsync(file, dbContext, cancellationToken);
@@ -39,6 +41,11 @@ namespace WMS.Api.Endpoints
                 };
 
                 dbContext.Incomings.Add(incoming);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                // --- NEW: SAVE EXCEL FILE AND TRACK VERSION 1 ---
+                var doc = await SaveExcelFileAsync(file, incoming.Id, 1, env.ContentRootPath);
+                dbContext.IncomingDocuments.Add(doc);
                 await dbContext.SaveChangesAsync(cancellationToken);
 
                 // --- ADD AUDIT LOG ENTRY ---
@@ -98,11 +105,13 @@ namespace WMS.Api.Endpoints
                             IFormFile file,
                             WMSContext dbContext,
                             IAuditLogService auditLogService,
+                            IWebHostEnvironment env,
                             CancellationToken cancellationToken) =>
             {
                 var existingIncoming = await dbContext.Incomings
                     .Include(i => i.Products!)
                         .ThenInclude(p => p.Product)
+                    .Include(i => i.Documents)
                     .FirstOrDefaultAsync(i => i.Id == incomingId, cancellationToken);
 
                 if (existingIncoming is null)
@@ -246,6 +255,18 @@ namespace WMS.Api.Endpoints
 
                 await dbContext.SaveChangesAsync(cancellationToken);
 
+                int currentVersion = existingIncoming.Documents?.Any() == true
+                    ? existingIncoming.Documents.Max(d => d.Version)
+                    : 0;
+                int nextVersion = currentVersion + 1;
+
+                var doc = await SaveExcelFileAsync(file, existingIncoming.Id, nextVersion, env.ContentRootPath);
+
+                if (existingIncoming.Documents == null) existingIncoming.Documents = new List<IncomingDocument>();
+                existingIncoming.Documents.Add(doc);
+
+                await dbContext.SaveChangesAsync(cancellationToken);
+
                 // --- ADD AUDIT LOG ENTRY ---
                 await auditLogService.LogAsync(
                     category: "Incoming Import",
@@ -314,6 +335,42 @@ namespace WMS.Api.Endpoints
             }
 
             return ($"Product #{p.ProductId}", "N/A");
+        }
+
+        private static async Task<IncomingDocument> SaveExcelFileAsync(
+            IFormFile file,
+            int incomingId,
+            int version,
+            string contentRootPath)
+        {
+            // E.g., AppRoot/Uploads/Incoming/105/
+            var uploadDir = Path.Combine(contentRootPath, "Uploads", "Incoming", incomingId.ToString());
+
+            if (!Directory.Exists(uploadDir))
+            {
+                Directory.CreateDirectory(uploadDir);
+            }
+
+            // Create a unique file name to avoid overwrites (e.g. v2_20231024.xlsx)
+            var extension = Path.GetExtension(file.FileName);
+            var safeFileName = $"v{version}_{DateTime.UtcNow:yyyyMMddHHmmss}{extension}";
+            var filePath = Path.Combine(uploadDir, safeFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return new IncomingDocument
+            {
+                IncomingId = incomingId,
+                Version = version,
+                OriginalFileName = file.FileName,
+                FilePath = filePath,
+                ContentType = file.ContentType,
+                FileSize = file.Length,
+                UploadedAt = DateTime.UtcNow
+            };
         }
 
         // ====================================================================

@@ -795,6 +795,43 @@
         }
       }
     },
+    "/incoming/{incomingId}/documents/{documentId}/download": {
+      "get": {
+        "tags": [
+          "Incomings"
+        ],
+        "summary": "Download a specific version of an incoming packing list Excel document",
+        "operationId": "DownloadIncomingDocument",
+        "parameters": [
+          {
+            "name": "incomingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "documentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/inventory/inspect/{code}/{warehouseId}": {
       "get": {
         "tags": [
@@ -6378,6 +6415,96 @@
               "CLOSED_SHORT"
             ],
             "type": "string"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingDocument"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "IncomingDocument": {
+        "required": [
+          "filePath",
+          "originalFileName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "incomingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "incoming": {
+            "$ref": "#/components/schemas/Incoming"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "originalFileName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "filePath": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "IncomingDocumentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "incomingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "originalFileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "filePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          },
+          "fileSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -6659,6 +6786,17 @@
               "CLOSED_SHORT"
             ],
             "type": "string"
+          },
+          "currentVersion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IncomingDocumentResponseDto"
+            },
+            "nullable": true
           },
           "products": {
             "type": "array",

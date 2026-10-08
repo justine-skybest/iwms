@@ -1,16 +1,29 @@
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
-import { ReceivingCreateComponent } from "../receiving/create/receiving-create.component";
-import { AlertTriangle, CheckCircle, ChevronLeft, ChevronRight, CircleAlertIcon, Download, EyeIcon, FileUp, LucideAngularModule, PlusIcon, SearchIcon, TrashIcon, Upload } from "lucide-angular";
+import { 
+  AlertTriangle, 
+  CheckCircle, 
+  ChevronLeft, 
+  ChevronRight, 
+  Download, 
+  EyeIcon, 
+  FileText, 
+  FileUp, 
+  LucideAngularModule, 
+  PlusIcon, 
+  SearchIcon, 
+  TrashIcon, 
+  Upload 
+} from "lucide-angular";
 import { PageHeaderComponent } from "../../shared/layout/page-header/page-header.component";
 import { ChangeDetectorRef, Component, effect, EventEmitter, inject, OnDestroy, OnInit, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 import { WarehouseService } from "../../lib/services/warehouse.service";
 import { SignalRService } from "../../lib/services/signalr.service";
-import { IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
+import { IncomingDocumentResponseDto, IncomingResponseDto, IncomingResponseDtoPaginatedResponse } from "../../api/generated/models";
 import { Api } from "../../api/generated/api";
-import { deleteIncoming, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel, shortCloseIncoming } from "../../api/generated/functions";
+import { deleteIncoming, downloadIncomingDocument, getIncomings, importIncomingFromExcel, reviseIncomingFromExcel, shortCloseIncoming } from "../../api/generated/functions";
 import { formatDate } from "../../lib/utils/format-date";
 import { formatTime } from "../../lib/utils/format-time";
 import { ToastService } from "../../lib/services/toast.service";
@@ -51,6 +64,7 @@ export class IncomingListComponent implements OnInit, OnDestroy {
   readonly fileUpIcon = FileUp;
   readonly alertIcon = AlertTriangle;
   readonly checkCircleIcon = CheckCircle;
+  readonly fileTextIcon = FileText;
 
   private destroy$ = new Subject<void>();
 
@@ -148,10 +162,7 @@ export class IncomingListComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Permanently short-closes an incoming shipment with missing/lost balance
-   */
-async handleExecuteShortClose(): Promise<void> {
+  async handleExecuteShortClose(): Promise<void> {
     if (!this.itemToShortClose?.id) return;
 
     const targetId = this.itemToShortClose.id;
@@ -163,7 +174,6 @@ async handleExecuteShortClose(): Promise<void> {
       await this.api.invoke(shortCloseIncoming, { id: targetId });
       this.toastService.success(`Incoming shipment #${targetId} short-closed successfully.`);
 
-      // Update status locally for immediate UI update
       if (this.itemToShortClose) {
         this.itemToShortClose.status = 'CLOSED_SHORT' as any;
       }
@@ -198,9 +208,6 @@ async handleExecuteShortClose(): Promise<void> {
     this.cd.markForCheck();
   }
 
-  /**
-   * Cancels/closes the Short Close dialog
-   */
   cancelShortClose(): void {
     this.isConfirmShortCloseOpen = false;
     this.itemToShortClose = null;
@@ -324,7 +331,54 @@ async handleExecuteShortClose(): Promise<void> {
     }
   }
 
+  downloadingDocId: number | null = null;
+  
+downloadDocument(doc: IncomingDocumentResponseDto): void {
+    if (!doc?.id || !doc?.incomingId) return;
+
+    const docId = doc.id;
+    const incomingId = doc.incomingId;
+
+    this.downloadingDocId = docId;
+    this.cd.markForCheck();
+
+    // Dynamically replace the route parameters using the generated API PATH
+    const path = downloadIncomingDocument.PATH
+      .replace('{incomingId}', incomingId.toString())
+      .replace('{documentId}', docId.toString());
+
+    const url = `${this.api.rootUrl}${path}`;
+
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob: Blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = blobUrl;
+        anchor.download = doc.originalFileName || `PackingList_v${doc.version || docId}.xlsx`;
+        anchor.click();
+        window.URL.revokeObjectURL(blobUrl);
+
+        this.downloadingDocId = null;
+        this.cd.markForCheck();
+      },
+      error: (err) => {
+        console.error('Failed to download document:', err);
+        this.toastService.error('Unable to download the selected document version.');
+        this.downloadingDocId = null;
+        this.cd.markForCheck();
+      }
+    });
+  }
+
   // --- HELPER METHODS ---
+  formatFileSize(bytes?: number): string {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  }
+
   private isValidExcelFile(file: File, fileInput: HTMLInputElement): boolean {
     const validExtensions = ['.xlsx', '.xls'];
     const fileName = file.name.toLowerCase();

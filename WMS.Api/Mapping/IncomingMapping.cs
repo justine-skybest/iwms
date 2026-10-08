@@ -30,10 +30,33 @@ namespace WMS.Api.Mapping
             };
         }
 
+        public static IncomingDocumentResponseDto ToResponseDto(this IncomingDocument doc)
+        {
+            return new IncomingDocumentResponseDto
+            {
+                Id = doc.Id,
+                IncomingId = doc.IncomingId,
+                Version = doc.Version,
+                OriginalFileName = doc.OriginalFileName,
+                FilePath = doc.FilePath,
+                ContentType = doc.ContentType,
+                FileSize = doc.FileSize,
+                UploadedAt = doc.UploadedAt
+            };
+        }
+
         public static IncomingResponseDto ToResponseDto(
             this Incoming entity,
             List<ReceivedProduct>? receivedProductsList = null)
         {
+            // Map document version history (newest version first)
+            var documentDtos = entity.Documents?
+                .OrderByDescending(d => d.Version)
+                .Select(d => d.ToResponseDto())
+                .ToList() ?? new List<IncomingDocumentResponseDto>();
+
+            int currentVersion = documentDtos.FirstOrDefault()?.Version ?? 1;
+
             var allReceived = receivedProductsList ?? new List<ReceivedProduct>();
 
             // Create a local pool to deduct quantities without mutating EF entities
@@ -160,6 +183,8 @@ namespace WMS.Api.Mapping
                 Shipper = entity.Shipper,
                 Consignee = entity.Consignee,
                 Status = dynamicOverallStatus, // ✅ Reflects true calculated status
+                CurrentVersion = currentVersion, // ✅ Latest version number
+                Documents = documentDtos,       // ✅ Full list of document versions
                 Products = productDtos
             };
         }

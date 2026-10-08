@@ -14,5 +14,6 @@ namespace WMS.Api.Entities
     {
         // Inherits all base properties directly; no re-declarations needed
         public IncomingStatus Status { get; set; } = IncomingStatus.PENDING;
+        public List<IncomingDocument> Documents { get; set; } = new();
     }
 }

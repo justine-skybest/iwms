@@ -37,6 +37,7 @@ namespace WMS.Api.Endpoints
                     .Include(inc => inc.Products!)
                         .ThenInclude(p => p.Product)
                     .Include(inc => inc.Warehouse)
+                    .Include(inc => inc.Documents)
                     .AsNoTracking();
 
                 if (warehouseId.HasValue)
@@ -466,6 +467,41 @@ namespace WMS.Api.Endpoints
             .WithSummary("Delete an incoming shipment")
             .WithDescription("Deletes an incoming shipment record from the system.")
             .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status404NotFound);
+
+            group.MapGet("/{incomingId:int}/documents/{documentId:int}/download", async (
+                int incomingId,
+                int documentId,
+                WMSContext dbContext,
+                CancellationToken cancellationToken) =>
+            {
+                var doc = await dbContext.IncomingDocuments
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(d => d.Id == documentId && d.IncomingId == incomingId, cancellationToken);
+
+                if (doc is null)
+                {
+                    return Results.NotFound($"Document with ID {documentId} was not found for incoming shipment {incomingId}.");
+                }
+
+                if (!System.IO.File.Exists(doc.FilePath))
+                {
+                    return Results.NotFound("The requested physical file no longer exists on the server disk.");
+                }
+
+                var contentType = !string.IsNullOrWhiteSpace(doc.ContentType)
+                    ? doc.ContentType
+                    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                return Results.File(
+                    path: doc.FilePath,
+                    contentType: contentType,
+                    fileDownloadName: doc.OriginalFileName
+                );
+            })
+            .WithName("DownloadIncomingDocument")
+            .WithSummary("Download a specific version of an incoming packing list Excel document")
+            .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
 
             return group;

@@ -1682,6 +1682,43 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapIncomingEndpoints\u003Eb__0_8",
+    "RelativePath": "incoming/{incomingId:int}/documents/{documentId:int}/download",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "incomingId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "documentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Incomings"
+    ],
+    "EndpointName": "DownloadIncomingDocument",
+    "Summary": "Download a specific version of an incoming packing list Excel document"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.IncomingEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapIncomingEndpoints\u003Eb__0_1",
     "RelativePath": "incoming/unreceived",
     "HttpMethod": "GET",

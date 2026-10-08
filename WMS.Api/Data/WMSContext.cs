@@ -33,6 +33,8 @@ public class WMSContext(
     public DbSet<Receiving> Receivings => Set<Receiving>();
     public DbSet<Incoming> Incomings => Set<Incoming>();
 
+    public DbSet<IncomingDocument> IncomingDocuments { get; set; }
+
     public DbSet<ReceivedProduct> ReceivedProducts => Set<ReceivedProduct>();
 
     public DbSet<CheckIn> CheckIns => Set<CheckIn>();

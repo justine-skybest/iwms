@@ -118,7 +118,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         }
 
                         var incomingQuery = backgroundDb.Incomings
-                            .Include(i => i.Products)
+                            .Include(i => i.Products!)
                                 .ThenInclude(p => p.Product)
                             .AsNoTracking();
 
@@ -186,8 +186,9 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         using var workbook = new XLWorkbook();
                         var ws = workbook.Worksheets.Add("Receiving Report");
 
+                        // Header Banner (Expanded range to column N for 14 columns)
                         ws.Cell("A1").Value = "RECEIVING RECONCILIATION REPORT";
-                        ws.Range("A1:L1").Merge()
+                        ws.Range("A1:N1").Merge()
                             .Style.Font.SetBold().Font.SetFontSize(15)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#1E293B"))
                             .Font.SetFontColor(XLColor.White)
@@ -240,18 +241,21 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
 
                         int currentRow = 14;
 
+                        // ====================================================================
+                        // SECTION 1: RECEIVED ITEMS (14 Columns)
+                        // ====================================================================
                         ws.Cell(currentRow, 1).Value = "1. LIST OF RECEIVED ITEMS";
-                        ws.Range(currentRow, 1, currentRow, 12).Merge()
+                        ws.Range(currentRow, 1, currentRow, 14).Merge()
                             .Style.Font.SetBold().Font.SetFontSize(12)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#059669"))
                             .Font.SetFontColor(XLColor.White);
                         currentRow++;
 
                         string[] receivedHeaders = {
-                            "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
-                            "Product Code", "Product Name", "Received Qty", "UOM", "CBM", "Weight (KG)",
-                            "Pallet / Plate"
-                        };
+                "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
+                "Product Code", "Product Name", "Supplier", "Received Qty", "UOM", "CBM", "Weight (KG)",
+                "Pallet / Plate", "Remarks"
+            };
 
                         for (int i = 0; i < receivedHeaders.Length; i++)
                         {
@@ -265,7 +269,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         if (!allReceivedProducts.Any())
                         {
                             ws.Cell(currentRow, 1).Value = "No items received for the selected parameters.";
-                            ws.Range(currentRow, 1, currentRow, 12).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            ws.Range(currentRow, 1, currentRow, 14).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                             currentRow++;
                         }
                         else
@@ -281,11 +285,13 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 5).Value = SanitizeXml(r.Consignee ?? r.Incoming?.Consignee ?? "N/A");
                                     ws.Cell(currentRow, 6).Value = SanitizeXml(rp.Product?.Code ?? "N/A");
                                     ws.Cell(currentRow, 7).Value = SanitizeXml(rp.Product?.Name ?? rp.ExpectedProductName ?? "N/A");
-                                    ws.Cell(currentRow, 8).Value = rp.Quantity;
-                                    ws.Cell(currentRow, 9).Value = SanitizeXml(rp.TypeOfPackage);
-                                    ws.Cell(currentRow, 10).Value = SanitizeXml(rp.CBM);
-                                    ws.Cell(currentRow, 11).Value = SanitizeXml(rp.TotalWeight);
-                                    ws.Cell(currentRow, 12).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {SanitizeXml(r.PlateNumber)}";
+                                    ws.Cell(currentRow, 8).Value = SanitizeXml(rp.Supplier ?? "—"); // ✅ Supplier after ProductName
+                                    ws.Cell(currentRow, 9).Value = rp.Quantity;
+                                    ws.Cell(currentRow, 10).Value = SanitizeXml(rp.TypeOfPackage);
+                                    ws.Cell(currentRow, 11).Value = SanitizeXml(rp.CBM);
+                                    ws.Cell(currentRow, 12).Value = SanitizeXml(rp.TotalWeight);
+                                    ws.Cell(currentRow, 13).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {SanitizeXml(r.PlateNumber)}";
+                                    ws.Cell(currentRow, 14).Value = SanitizeXml(rp.Remarks ?? "—"); // ✅ Remarks as last column
                                     currentRow++;
                                 }
                             }
@@ -293,17 +299,20 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
 
                         currentRow += 2;
 
+                        // ====================================================================
+                        // SECTION 2: REMAINING ITEMS (10 Columns)
+                        // ====================================================================
                         ws.Cell(currentRow, 1).Value = "2. LIST OF REMAINING ITEMS (PENDING RECEIPT)";
-                        ws.Range(currentRow, 1, currentRow, 8).Merge()
+                        ws.Range(currentRow, 1, currentRow, 10).Merge()
                             .Style.Font.SetBold().Font.SetFontSize(12)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#DC2626"))
                             .Font.SetFontColor(XLColor.White);
                         currentRow++;
 
                         string[] remainingHeaders = {
-                            "Packing List Ref", "Shipper", "Consignee", "Product Code",
-                            "Product Name", "Expected Qty", "Received Qty", "Remaining Shortage Qty"
-                        };
+                "Packing List Ref", "Shipper", "Consignee", "Product Code",
+                "Product Name", "Supplier", "Expected Qty", "Received Qty", "Remaining Shortage Qty", "Remarks"
+            };
 
                         for (int i = 0; i < remainingHeaders.Length; i++)
                         {
@@ -338,10 +347,12 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 3).Value = SanitizeXml(inc.Consignee ?? "N/A");
                                     ws.Cell(currentRow, 4).Value = SanitizeXml(ep.Product?.Code ?? "N/A");
                                     ws.Cell(currentRow, 5).Value = SanitizeXml(ep.Product?.Name ?? "N/A");
-                                    ws.Cell(currentRow, 6).Value = ep.Quantity;
-                                    ws.Cell(currentRow, 7).Value = actualReceived;
-                                    ws.Cell(currentRow, 8).Value = remaining;
-                                    ws.Cell(currentRow, 8).Style.Font.SetFontColor(XLColor.Red).Font.SetBold();
+                                    ws.Cell(currentRow, 6).Value = SanitizeXml(ep.Supplier ?? "—"); // ✅ Supplier after ProductName
+                                    ws.Cell(currentRow, 7).Value = ep.Quantity;
+                                    ws.Cell(currentRow, 8).Value = actualReceived;
+                                    ws.Cell(currentRow, 9).Value = remaining;
+                                    ws.Cell(currentRow, 9).Style.Font.SetFontColor(XLColor.Red).Font.SetBold();
+                                    ws.Cell(currentRow, 10).Value = SanitizeXml(ep.Remarks ?? "—"); // ✅ Remarks as last column
                                     currentRow++;
                                 }
                             }
@@ -350,7 +361,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         if (!hasRemaining)
                         {
                             ws.Cell(currentRow, 1).Value = "All items under the selected incoming packing list(s) have been fully received!";
-                            ws.Range(currentRow, 1, currentRow, 9).Merge().Style.Font.SetFontColor(XLColor.Emerald).Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center).Font.SetBold();
+                            ws.Range(currentRow, 1, currentRow, 10).Merge().Style.Font.SetFontColor(XLColor.Emerald).Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center).Font.SetBold();
                         }
 
                         ws.Columns().AdjustToContents();

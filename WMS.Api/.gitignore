@@ -10,3 +10,6 @@
 # Ignore entire Reports directory and subfolders
 /Reports/
 **/Reports/
+
+# Ignore all uploaded files
+**/Uploads/
