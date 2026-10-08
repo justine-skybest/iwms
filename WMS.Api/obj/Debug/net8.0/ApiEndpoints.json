@@ -3695,6 +3695,29 @@
     "Summary": "Get warehouse bin occupancy statistics"
   },
   {
+    "ContainingType": "WMS.Api.Endpoints.SystemEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapSystemEndpoints\u003Eb__0_0",
+    "RelativePath": "system/version",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Endpoints.SystemVersionResponseDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "System"
+    ],
+    "EndpointName": "GetSystemVersion",
+    "Summary": "Retrieves the current application release version and changelog history"
+  },
+  {
     "ContainingType": "WMS.Api.Endpoints.TransferV2Endpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapTransferV2Endpoints\u003Eb__0_0",
     "RelativePath": "transfers-v2/bin",

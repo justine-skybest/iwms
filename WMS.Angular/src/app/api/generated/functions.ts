@@ -127,6 +127,8 @@ export type { GenerateInventoryAgingReport$Params as GenerateInventoryAgingRepor
 export { generateInventoryAgingReport as generateInventoryAgingReport } from './fn/reports/generate-inventory-aging-report';
 export type { DownloadInventoryAgingReport$Params as DownloadInventoryAgingReport$Params } from './fn/reports/download-inventory-aging-report';
 export { downloadInventoryAgingReport as downloadInventoryAgingReport } from './fn/reports/download-inventory-aging-report';
+export type { GetSystemVersion$Params as GetSystemVersion$Params } from './fn/system/get-system-version';
+export { getSystemVersion as getSystemVersion } from './fn/system/get-system-version';
 export type { LocatePalletByNumber$Params as LocatePalletByNumber$Params } from './fn/transfers/locate-pallet-by-number';
 export { locatePalletByNumber as locatePalletByNumber } from './fn/transfers/locate-pallet-by-number';
 export type { LocatePalletByQrCode$Params as LocatePalletByQrCode$Params } from './fn/transfers/locate-pallet-by-qr-code';

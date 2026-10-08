@@ -217,5 +217,6 @@ app.MapIncomingImportEndpoints();
 app.MapIncomingTemplateEndpoints();
 app.MapReportEndpoints();
 app.MapAuditLogEndpoints();
+app.MapSystemEndpoints();
 
 app.Run();

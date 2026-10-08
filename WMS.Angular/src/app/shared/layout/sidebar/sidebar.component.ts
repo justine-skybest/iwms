@@ -5,9 +5,23 @@ import { IconComponent } from '../../components/icon/icon.component';
 import { filter } from 'rxjs/operators';
 import { LayoutService } from '../../../lib/services/layout.service';
 import { AuthService } from '../../../lib/services/auth.service';
-import { ArrowLeftRight, Download, FileCheck, AArrowUp, House, Inbox, LogsIcon, LucideAngularModule, Warehouse, ListOrdered, RotateCcwIcon, PackageSearch } from 'lucide-angular';
-import { UserResponseDto } from '../../../api/generated/models';
-import { Grid3x3, LayersPlusIcon, User, UserPlus, Users } from 'lucide-angular/src/icons';
+import { 
+  ArrowLeftRight, 
+  Download, 
+  FileCheck, 
+  House, 
+  Inbox, 
+  LogsIcon, 
+  LucideAngularModule, 
+  Warehouse, 
+  RotateCcwIcon, 
+  PackageSearch,
+  Sparkles // <-- IMPORTED SPARKLES ICON
+} from 'lucide-angular';
+import { ReleaseNoteDto, SystemVersionResponseDto, UserResponseDto } from '../../../api/generated/models';
+import { Grid3x3, Users } from 'lucide-angular/src/icons';
+import { getSystemVersion } from '../../../api/generated/functions';
+import { Api } from '../../../api/generated/api';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,6 +33,9 @@ export class SidebarComponent implements OnInit {
   public layoutService = inject(LayoutService);
   public authService = inject(AuthService);
   private router = inject(Router);
+  private api = inject(Api);
+
+  readonly changelogIcon = RotateCcwIcon;
 
   mainNavItems = [
     { path: '/home', label: 'Dashboard', icon: House },
@@ -44,7 +61,6 @@ export class SidebarComponent implements OnInit {
     { path: '/receiving-reports', label: 'Receiving Reports', icon: FileCheck },
     { path: '/pickorder-reports', label: 'Pick Order Reports', icon: FileCheck },
     { path: '/inventory-aging-reports', label: 'Inventory Aging Reports', icon: FileCheck }
-    // { path: '/reconcillation-report', label: 'Receiving Reconciliation', icon: Warehouse }
   ];
 
   isMasterDataOpen = false;
@@ -52,11 +68,11 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkActiveRoute();
+    this.fetchVersionAndChangelog();
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.checkActiveRoute());
 
-    // Fetch user info on load if state is empty
     if (!this.authService.currentUserValue) {
       this.authService.getCurrentUser().subscribe();
     }
@@ -93,6 +109,17 @@ export class SidebarComponent implements OnInit {
     }
     return user?.email!.split('@')[0];
   }
+
+  currentVersion = '1.7.0';
+
+  async fetchVersionAndChangelog(): Promise<void> {
+      try {
+        const response = await this.api.invoke(getSystemVersion) as SystemVersionResponseDto;
+        this.currentVersion = response.currentVersion ?? 'Unknown';
+      } catch (err) {
+        console.error('Failed to load changelog data:', err);
+      }
+    }
 
   getUserInitials(user: UserResponseDto | null): string {
     if (!user) return 'U';

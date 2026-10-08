@@ -2359,6 +2359,27 @@
         }
       }
     },
+    "/system/version": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Retrieves the current application release version and changelog history",
+        "operationId": "GetSystemVersion",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemVersionResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
       "get": {
         "tags": [
@@ -5485,6 +5506,20 @@
         },
         "additionalProperties": false
       },
+      "ChangeItemDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CheckIn": {
         "required": [
           "checkInType"
@@ -8478,6 +8513,31 @@
         },
         "additionalProperties": false
       },
+      "ReleaseNoteDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "nullable": true
+          },
+          "releaseDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChangeItemDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ReportJob": {
         "type": "object",
         "properties": {
@@ -8598,6 +8658,27 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SystemVersionResponseDto": {
+        "type": "object",
+        "properties": {
+          "currentVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "environment": {
+            "type": "string",
+            "nullable": true
+          },
+          "releaseNotes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseNoteDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

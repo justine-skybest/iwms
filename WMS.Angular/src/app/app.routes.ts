@@ -91,6 +91,11 @@ export const routes: Routes = [
         title: 'Warehouse Occupancy'
       },
       {
+        path: 'changelog',
+        loadChildren: () => import('./pages/changelog/changelog.routes').then((m) => m.changelogRoutes),
+        title: 'Changelog'
+      },
+      {
         path: 'mobile',
         component: MobileAppComponent,
         data: { hideLayout: true, breadcrumb: 'Mobile Operations' },
