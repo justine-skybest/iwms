@@ -15,7 +15,8 @@ namespace WMS.Api.Dtos.Incoming
         public int RemainingQuantity { get; init; }  // Balance remaining to receive
         public required decimal CBM { get; init; }
         public decimal TotalCbm { get; set; }
-        public required string TotalWeight { get; init; }
+        public decimal? Weight { get; init; }
+        public decimal TotalWeight { get; init; }
 
         public string? TypeOfPackage { get; set; }
         public DateOnly? ExpirationDate { get; init; }

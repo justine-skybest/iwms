@@ -8,5 +8,5 @@ export interface IncomingProductRequestDto {
   quantity?: number;
   remarks?: string | null;
   totalCbm: number;
-  totalWeight: string;
+  weight: number;
 }

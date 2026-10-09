@@ -68,13 +68,14 @@ public class WMSContext(
         {
             builder.Property(p => p.UnitPrice).HasPrecision(18, 2);
             builder.Property(p => p.TotalAmount).HasPrecision(18, 2);
-            builder.Property(p => p.TotalWeight).HasPrecision(18, 2);
+            builder.Property(p => p.Weight).HasPrecision(18, 6);
             builder.Property(p => p.CBM).HasPrecision(18, 4);
         });
 
         modelBuilder.Entity<ReceivedProduct>(builder =>
         {
-            builder.Property(p => p.TotalWeight).HasPrecision(18, 2);
+            builder.Property(p => p.Weight).HasPrecision(18, 6);
+            builder.Property(p => p.ExpectedTotalWeight).HasPrecision(18, 2);
             builder.Property(p => p.CBM).HasPrecision(18, 4);
         });
 

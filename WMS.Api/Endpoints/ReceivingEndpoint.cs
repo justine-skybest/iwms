@@ -423,7 +423,7 @@ public static class ReceivingEndpoint
                         // Update existing item fields
                         existingProduct.Quantity = updatedProduct.Quantity;
                         existingProduct.CBM = updatedProduct.CBM;
-                        existingProduct.TotalWeight = updatedProduct.TotalWeight;
+                        existingProduct.Weight = updatedProduct.Weight;
                         existingProduct.Remarks = updatedProduct.Remarks;
                         existingProduct.ExpirationDate = updatedProduct.ExpirationDate;
                         existingProduct.ContainerName = updatedProduct.ContainerName;
@@ -462,7 +462,7 @@ public static class ReceivingEndpoint
                             Quantity = updatedProduct.Quantity,
                             LotNumber = assignedLotNumber,
                             CBM = updatedProduct.CBM,
-                            TotalWeight = updatedProduct.TotalWeight,
+                            Weight = updatedProduct.Weight,
                             Remarks = updatedProduct.Remarks,
                             ExpirationDate = updatedProduct.ExpirationDate,
                             ContainerName = updatedProduct.ContainerName,

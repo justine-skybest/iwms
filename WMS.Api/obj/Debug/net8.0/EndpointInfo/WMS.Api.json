@@ -5867,7 +5867,8 @@
             "format": "double"
           },
           "totalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expirationDate": {
@@ -6735,9 +6736,6 @@
         "additionalProperties": false
       },
       "IncomingProduct": {
-        "required": [
-          "totalWeight"
-        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6770,15 +6768,21 @@
             "format": "double",
             "nullable": true
           },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalWeight": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
           "totalCbm": {
             "type": "number",
             "format": "double",
             "nullable": true,
             "readOnly": true
-          },
-          "totalWeight": {
-            "minLength": 1,
-            "type": "string"
           },
           "expirationDate": {
             "type": "string",
@@ -6822,7 +6826,7 @@
           "cbm",
           "productId",
           "totalCbm",
-          "totalWeight"
+          "weight"
         ],
         "type": "object",
         "properties": {
@@ -6844,9 +6848,9 @@
             "type": "number",
             "format": "double"
           },
-          "totalWeight": {
-            "minLength": 1,
-            "type": "string"
+          "weight": {
+            "type": "number",
+            "format": "double"
           },
           "expirationDate": {
             "type": "string",
@@ -6862,8 +6866,7 @@
       },
       "IncomingProductResponseDto": {
         "required": [
-          "cbm",
-          "totalWeight"
+          "cbm"
         ],
         "type": "object",
         "properties": {
@@ -6913,9 +6916,14 @@
             "type": "number",
             "format": "double"
           },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
           "totalWeight": {
-            "minLength": 1,
-            "type": "string"
+            "type": "number",
+            "format": "double"
           },
           "typeOfPackage": {
             "type": "string",
@@ -8207,8 +8215,7 @@
       },
       "ReceivedProduct": {
         "required": [
-          "containerName",
-          "totalWeight"
+          "containerName"
         ],
         "type": "object",
         "properties": {
@@ -8242,15 +8249,21 @@
             "format": "double",
             "nullable": true
           },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalWeight": {
+            "type": "number",
+            "format": "double",
+            "readOnly": true
+          },
           "totalCbm": {
             "type": "number",
             "format": "double",
             "nullable": true,
             "readOnly": true
-          },
-          "totalWeight": {
-            "minLength": 1,
-            "type": "string"
           },
           "expirationDate": {
             "type": "string",
@@ -8283,7 +8296,8 @@
             "nullable": true
           },
           "expectedTotalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedExpirationDate": {
@@ -8369,7 +8383,8 @@
             "nullable": true
           },
           "expectedTotalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedExpirationDate": {
@@ -8389,9 +8404,14 @@
             "type": "number",
             "format": "double"
           },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
           "totalWeight": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "format": "double",
+            "readOnly": true
           },
           "totalAmount": {
             "type": "number",
@@ -8480,7 +8500,8 @@
             "nullable": true
           },
           "expectedTotalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedExpirationDate": {
@@ -8497,7 +8518,8 @@
             "format": "double"
           },
           "totalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expirationDate": {
@@ -9042,7 +9064,8 @@
             "format": "double"
           },
           "totalWeight": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expirationDate": {

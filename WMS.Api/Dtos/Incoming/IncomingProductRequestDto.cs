@@ -13,7 +13,7 @@ namespace WMS.Api.Dtos.Incoming
         public required decimal CBM { get; init; }
         public required decimal TotalCbm { get; init; }
 
-        public required string TotalWeight { get; init; }
+        public required decimal Weight { get; init; }
 
         public DateOnly? ExpirationDate { get; init; }
 

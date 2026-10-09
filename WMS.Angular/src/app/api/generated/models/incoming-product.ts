@@ -18,6 +18,7 @@ export interface IncomingProduct {
   supplier?: string | null;
   totalAmount?: number | null;
   totalCbm?: number | null;
-  totalWeight: string;
+  totalWeight?: number;
   unitPrice?: number | null;
+  weight?: number | null;
 }

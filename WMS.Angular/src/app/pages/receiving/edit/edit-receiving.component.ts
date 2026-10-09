@@ -33,8 +33,8 @@ export type EditStagedProductItem = {
   expectedQuantity?: number;
   cbm?: number;
   expectedCbm?: number;
-  totalWeight?: string;
-  expectedTotalWeight?: string;
+  weight?: number;
+  expectedTotalWeight?: number;
   expirationDate?: string;
   expectedExpirationDate?: string;
 
@@ -56,7 +56,8 @@ export interface SelectableIncomingProduct {
   quantity?: number;
   remainingQuantity?: number;
   cbm?: number;
-  totalWeight?: string;
+  weight?: number;
+  totalWeight?: number;
   expirationDate?: string;
   supplier?: string;
   unitPrice?: number;
@@ -277,14 +278,14 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
           expectedProductName: p.expectedProductName || p.name || '',
           expectedQuantity: p.expectedQuantity ?? p.quantity ?? 0,
           expectedCbm: p.expectedCBM || p.cbm || 0,
-          expectedTotalWeight: p.expectedTotalWeight || p.totalWeight || '0',
+          expectedTotalWeight: p.expectedTotalWeight ?? p.totalWeight ?? 0,
           expectedExpirationDate: p.expectedExpirationDate ? this.formatDateForInput(p.expectedExpirationDate) : '',
 
           productName: p.name || p.expectedProductName || '',
           quantity: p.quantity ?? 0,
 
           cbm: p.cbm || 0,
-          totalWeight: p.totalWeight || '0',
+          weight: p.weight ?? this.getLegacyUnitWeight(p),
           expirationDate: p.expirationDate ? this.formatDateForInput(p.expirationDate) : '',
 
           supplier: p.supplier || undefined,
@@ -326,7 +327,8 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
             quantity: activeBalance,
             remainingQuantity: activeBalance,
             cbm: p.cbm || 0,
-            totalWeight: p.totalWeight || '0',
+            weight: p.weight ?? this.getLegacyUnitWeight(p),
+            totalWeight: (p.weight ?? this.getLegacyUnitWeight(p)) * activeBalance,
             expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
             supplier: p.supplier || '',
             unitPrice: p.unitPrice ?? undefined,
@@ -384,7 +386,7 @@ toggleProductSelection(product: SelectableIncomingProduct, forceState?: boolean)
       const prodName = product.productName || '';
       const qty = product.quantity || 0;
       const cbmVal = product.cbm || 0;
-      const weightVal = product.totalWeight || '0';
+      const weightVal = product.weight ?? this.getLegacyUnitWeight(product);
       const expiryVal = product.expirationDate || new Date().toISOString().split('T')[0];
 
       this.stagedItems.push({
@@ -393,13 +395,13 @@ toggleProductSelection(product: SelectableIncomingProduct, forceState?: boolean)
         expectedProductName: prodName,
         expectedQuantity: qty,
         expectedCbm: cbmVal,
-        expectedTotalWeight: weightVal,
+        expectedTotalWeight: product.totalWeight ?? this.getTotalWeight({ weight: weightVal, quantity: qty }),
         expectedExpirationDate: expiryVal,
 
         productName: prodName,
         quantity: qty,
         cbm: cbmVal,
-        totalWeight: weightVal,
+        weight: weightVal,
         expirationDate: expiryVal,
 
         supplier: product.supplier || undefined,
@@ -448,19 +450,28 @@ toggleSelectAllProducts(event: Event): void {
     );
   }
 
+  getTotalWeight(item: { weight?: number; quantity?: number }): number {
+    return Number(((item.weight ?? 0) * (item.quantity ?? 0)).toFixed(2));
+  }
+
+  private getLegacyUnitWeight(item: { weight?: number | null; totalWeight?: number | string; quantity?: number }): number {
+    if (item.weight !== undefined && item.weight !== null && Number.isFinite(item.weight)) return item.weight;
+    const totalWeight = Number(item.totalWeight ?? 0);
+    const quantity = item.quantity ?? 0;
+    return Number.isFinite(totalWeight) && quantity > 0 ? totalWeight / quantity : 0;
+  }
+
   onItemQuantityChange(item: EditStagedProductItem): void {
     if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
       const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
       if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
         const origCbm = parent.cbm || 0;
-        const origWgt = parseFloat(parent.totalWeight || '0');
         const actQty = item.quantity ?? 0;
 
         const newCbm = (origCbm / parent.originalQuantity) * actQty;
-        const newWgt = (origWgt / parent.originalQuantity) * actQty;
 
         item.cbm = newCbm > 0 ? Number(newCbm.toFixed(4)) : 0;
-        item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
+        item.weight = this.getLegacyUnitWeight(parent);
       }
     }
 
@@ -493,8 +504,7 @@ toggleSelectAllProducts(event: Event): void {
       }, 0);
 
       const calcWeight = items.reduce((sum, i) => {
-        const val = parseFloat(i.totalWeight || '0');
-        return sum + (isNaN(val) ? 0 : val);
+        return sum + this.getTotalWeight(i);
       }, 0);
 
       result.push({
@@ -579,7 +589,7 @@ toggleSelectAllProducts(event: Event): void {
 
     // 2. Distribute Target Weight based on Baseline Weight Ratios
     if (overrideWeight !== undefined && overrideWeight >= 0) {
-      const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
+      const totalBaselineWeight = items.reduce((sum, i) => sum + this.getTotalWeight(i), 0);
 
       if (totalBaselineWeight >= 0) {
         let accumulatedWeight = 0;
@@ -590,13 +600,13 @@ toggleSelectAllProducts(event: Event): void {
 
           if (isLastItem) {
             const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
-            item.totalWeight = exactWeight.toFixed(2);
+            item.weight = item.quantity ? exactWeight / item.quantity : 0;
           } else {
-            const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
+            const itemBaselineWeight = this.getTotalWeight(item);
             const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
 
             const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
-            item.totalWeight = allocatedWeight.toFixed(2);
+            item.weight = item.quantity ? allocatedWeight / item.quantity : 0;
             accumulatedWeight += allocatedWeight;
           }
         }
@@ -761,7 +771,7 @@ removeProductItem(index: number): void {
       name: item.productName,
       quantity: item.quantity ?? 0,
       cbm: item.cbm || 0,
-      totalWeight: item.totalWeight || '0',
+      weight: item.weight ?? 0,
       expirationDate: item.expirationDate as any,
       lotNumber: item.lotNumber || undefined,
       

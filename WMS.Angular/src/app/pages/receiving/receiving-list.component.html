@@ -262,7 +262,7 @@
                 </td>
 
                 <td class="p-2.5 text-center font-mono text-slate-700">{{ p.cbm || '0' }}</td>
-                <td class="p-2.5 text-center font-mono text-slate-700">{{ p.totalWeight || '0' }}</td>
+                <td class="p-2.5 text-center font-mono text-slate-700">{{ p.totalWeight ?? 0 }}</td>
                 <td class="p-2.5 text-center font-mono text-slate-700">{{ formatDate(p.expirationDate!) }}</td>
 
                 <td class="p-2.5 font-mono">

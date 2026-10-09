@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 using WMS.Api.Entities;
 
 namespace WMS.Api.Interfaces
@@ -20,10 +21,15 @@ namespace WMS.Api.Interfaces
         [Precision(18, 4)]
         public decimal? CBM { get; set; }
 
-        [Precision(18, 4)]
-        public decimal? TotalCbm => CBM.HasValue ? CBM.Value * Quantity : null;
+        [Precision(18, 6)]
+        public decimal? Weight { get; set; }
 
-        public required string TotalWeight { get; set; }
+        [NotMapped]
+        public decimal TotalWeight => Math.Round((Weight ?? 0m) * Quantity, 2, MidpointRounding.AwayFromZero);
+
+        [Precision(18, 4)]
+        [NotMapped]
+        public decimal? TotalCbm => CBM.HasValue ? CBM.Value * Quantity : null;
         public DateOnly? ExpirationDate { get; set; }
 
         public string? Supplier { get; set; }
