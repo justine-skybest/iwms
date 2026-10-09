@@ -343,6 +343,7 @@
                 <th class="p-2.5 text-right">Unit Price</th>
                 <th class="p-2.5 text-right">Total Amount</th>
                 <th class="p-2.5 text-right">CBM</th>
+                <th class="p-2.5 text-right">Total CBM</th>
                 <th class="p-2.5 text-right">Total Weight</th>
                 <th class="p-2.5">Expiration Date</th>
                 <th class="p-2.5">Supplier</th>
@@ -373,6 +374,7 @@
                 <td class="p-2.5 text-right font-mono font-semibold text-slate-800">{{p.unitPrice != null ? p.unitPrice : '—'}}</td>
                 <td class="p-2.5 text-right font-mono font-semibold text-slate-800">{{p.totalAmount != null ? p.totalAmount : '—'}}</td>
                 <td class="p-2.5 text-right font-mono text-slate-600">{{p.cbm}}</td>
+                <td class="p-2.5 text-right font-mono text-slate-600">{{p.totalCbm != null ? (p.totalCbm | number:'1.0-4') : '—'}}</td>
                 <td class="p-2.5 text-right font-mono text-slate-600">{{p.totalWeight}}</td>
                 <td class="p-2.5 font-mono text-slate-500">{{p.expirationDate || '—'}}</td>
                 <td class="p-2.5 text-slate-500 max-w-xs truncate">{{p.supplier || '—'}}</td>
@@ -382,7 +384,7 @@
 
               <!-- Empty State Handling -->
               <tr *ngIf="!filteredProducts.length">
-                <td colspan="14" class="p-4 text-center text-slate-400">
+                <td colspan="15" class="p-4 text-center text-slate-400">
                   {{ productSearch ? 'No products matching "' + productSearch + '"' : 'No products listed.' }}
                 </td>
               </tr>

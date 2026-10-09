@@ -267,3 +267,4 @@ C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\ru\Microsoft.CodeAnaly
 C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
