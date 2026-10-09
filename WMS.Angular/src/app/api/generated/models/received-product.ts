@@ -7,10 +7,10 @@ import type { Pallet } from '../models/pallet';
 import type { Product } from '../models/product';
 import type { Receiving } from '../models/receiving';
 export interface ReceivedProduct {
-  cbm: string;
+  cbm?: number | null;
   checkIns?: Array<CheckIn> | null;
   containerName: string;
-  expectedCBM?: string | null;
+  expectedCBM?: number | null;
   expectedExpirationDate?: string | null;
   expectedProductName?: string | null;
   expectedQuantity?: number | null;
@@ -30,6 +30,7 @@ export interface ReceivedProduct {
   remarks?: string | null;
   supplier?: string | null;
   totalAmount?: number | null;
+  totalCbm?: number | null;
   totalWeight: string;
   typeOfPackage?: string | null;
   unitPrice?: number | null;

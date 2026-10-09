@@ -4,7 +4,7 @@
 import type { Incoming } from '../models/incoming';
 import type { Product } from '../models/product';
 export interface IncomingProduct {
-  cbm: string;
+  cbm?: number | null;
   dateAdded?: string | null;
   expirationDate?: string | null;
   id?: number;
@@ -17,6 +17,7 @@ export interface IncomingProduct {
   status?: 'UNRECEIVED' | 'PARTIAL' | 'RECEIVED' | 'CLOSED_SHORT';
   supplier?: string | null;
   totalAmount?: number | null;
+  totalCbm?: number | null;
   totalWeight: string;
   unitPrice?: number | null;
 }

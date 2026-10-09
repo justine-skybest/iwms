@@ -13,14 +13,14 @@ public record class ReceivedProductDetailsDto
     // --- Expected Baseline Fields ---
     public string? ExpectedProductName { get; init; }
     public int? ExpectedQuantity { get; init; }
-    public string? ExpectedCBM { get; init; }
+    public decimal? ExpectedCBM { get; init; }
     public string? ExpectedTotalWeight { get; init; }
     public DateOnly? ExpectedExpirationDate { get; init; }
 
     // --- Actual Counted / Received Fields ---
     public string? Name { get; init; }
     public int Quantity { get; init; }
-    public string CBM { get; init; } = "0";
+    public decimal CBM { get; init; } = 0m;
     public string TotalWeight { get; init; } = "0";
     public decimal TotalAmount { get; set; }
     public decimal UnitPrice { get; set; }

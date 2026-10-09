@@ -14,6 +14,17 @@ export interface Warehouse3DData {
   standaloneBins: Bin3D[];
 }
 
+export interface BinInventoryItem extends ItemLocationSummaryDto {
+  cbm?: number | null;
+}
+
+export function sumBinInventoryCbm(items: readonly BinInventoryItem[]): number {
+  return items.reduce((total, item) => {
+    const cbm = Number(item.cbm);
+    return Number.isFinite(cbm) && cbm > 0 ? total + cbm : total;
+  }, 0);
+}
+
 export interface Rack3D {
   id: number;
   name: string | null;
@@ -47,6 +58,7 @@ export interface Bin3D {
   dateAdded: string | null;
   isOccupied?: boolean;
   location3D?: Location3DDto;
+  totalStoredCbm?: number;
 }
 
 @Injectable({
@@ -57,7 +69,7 @@ export class Warehouse3DViewerService {
   private warehouseService = inject(WarehouseService);
 
   // Inventory cache to avoid repeated API hits
-  private inventoryCache = new Map<number, ItemLocationSummaryDto[]>();
+  private inventoryCache = new Map<number, BinInventoryItem[]>();
 
   async fetchWarehouse3DData(includeStandaloneBins = false): Promise<Warehouse3DData> {
     const warehouseId = await this.warehouseService.ensureInitialized();
@@ -169,7 +181,7 @@ export class Warehouse3DViewerService {
         );
       const occupiedLocations = standaloneBinDtos.flatMap((bin) => bin.location3D ? [bin.location3D] : []);
       standaloneBins = standaloneBinDtos.map((bin) => {
-          const location3D = bin.location3D ?? findOpenBinPosition(occupiedLocations);
+          const location3D = bin.location3D ?? findOpenBinPosition(occupiedLocations, warehouseId);
           if (!bin.location3D) occupiedLocations.push(location3D);
           return {
             id: bin.id,
@@ -206,6 +218,7 @@ export class Warehouse3DViewerService {
         try {
           const items = await firstValueFrom(this.fetchBinInventory(bin.id, true));
           bin.isOccupied = items.length > 0;
+          bin.totalStoredCbm = sumBinInventoryCbm(items);
         } catch (err) {
           console.error(`Unable to preload stock status for bin ${bin.id}:`, err);
         }
@@ -218,7 +231,7 @@ export class Warehouse3DViewerService {
   /**
    * Fetches checked-in stock inside a bin using the generated getBinStockById API with local caching.
    */
-  fetchBinInventory(binId: number, forceRefresh = false): Observable<ItemLocationSummaryDto[]> {
+  fetchBinInventory(binId: number, forceRefresh = false): Observable<BinInventoryItem[]> {
     if (!forceRefresh && this.inventoryCache.has(binId)) {
       return of(this.inventoryCache.get(binId)!);
     }
@@ -230,6 +243,7 @@ export class Warehouse3DViewerService {
             checkInId: checkIn.id,
             productName: product.name ?? null,
             quantity: product.quantity,
+            cbm: product.cbm,
             receivedProductId: product.id,
             receivingSeries: product.receivingSeries ?? null,
             typeOfPackage: product.typeOfPackage ?? null

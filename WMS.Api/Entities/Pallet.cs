@@ -27,7 +27,7 @@ public class Pallet
     public ICollection<CheckIn>? CheckIns { get; set; }
 
     public decimal TotalCbm => ReceivedProducts?
-        .Sum(rp => decimal.TryParse(rp.CBM, out var cbm) ? cbm : 0m) ?? 0m;
+        .Sum(rp => rp.TotalCbm) ?? 0m;
 
     public decimal TotalWeight => ReceivedProducts?
         .Sum(rp => decimal.TryParse(rp.TotalWeight, out var w) ? w : 0m) ?? 0m;

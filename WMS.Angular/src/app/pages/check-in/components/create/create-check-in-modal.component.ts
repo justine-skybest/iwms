@@ -145,7 +145,9 @@ async onPalletQrScanned(decodedText: string): Promise<void> {
       // 2. If the scanned text is purely numeric, try HashCode first, then fallback to Pallet Number
       const numericValue = Number(trimmedText);
 
-      if (!isNaN(numericValue) && numericValue > 0) {
+      console.log('Pallet QR scanned without prefix, numeric value:', numericValue);
+
+      if (!isNaN(numericValue)) {
         // Attempt A: Locate by QR HashCode
         try {
           pallet = (await this.api.invoke(locatePalletByQrCode, {

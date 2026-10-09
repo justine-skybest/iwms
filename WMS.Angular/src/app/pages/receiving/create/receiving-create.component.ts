@@ -37,7 +37,8 @@ export interface SelectableIncomingProduct {
   originalQuantity?: number;
   quantity?: number;
   remainingQuantity?: number;
-  cbm?: string;
+  cbm?: number;
+  totalCBm?: number;
   totalWeight?: string;
   expirationDate?: string;
   supplier?: string;
@@ -56,11 +57,11 @@ export type StagedProductItem = {
 
   expectedProductName?: string;
   expectedQuantity?: number;
-  expectedCbm?: string;
+  expectedCbm?: number;
   expectedTotalWeight?: string;
   expectedExpirationDate?: string;
   
-  cbm?: string;
+  cbm?: number;
   containerName?: string;
   expirationDate?: string;
   id?: number;
@@ -175,6 +176,8 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
 
   // State to hold pallet-level overrides independently without modifying line item values
   palletOverrides = new Map<number, { manualCbm?: number; manualWeight?: number }>();
+  palletCbmDrafts: Record<number, string> = {};
+  palletWeightDrafts: Record<number, string> = {};
 
   ngOnInit(): void {
     this.draftSave$
@@ -348,7 +351,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
         const remainingQty = p.remainingQuantity ?? (origQty - (p.receivedQuantity || 0));
         const activeQty = remainingQty > 0 ? remainingQty : origQty;
 
-        const totalCbm = parseFloat(p.cbm || '0');
+        const totalCbm = p.totalCbm ?? 0;
         const totalWgt = parseFloat(p.totalWeight || '0');
 
         // Pro-rate CBM & Total Weight based on remaining unreceived balance
@@ -362,7 +365,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
           originalQuantity: origQty,
           quantity: activeQty,
           remainingQuantity: activeQty,
-          cbm: remainingCbm > 0 ? remainingCbm.toFixed(3) : '0',
+          cbm: remainingCbm > 0 ? remainingCbm : 0,
           totalWeight: remainingWgt > 0 ? remainingWgt.toFixed(2) : '0',
           expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
           supplier: p.supplier || '',
@@ -422,7 +425,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       } else {
         const prodName = p.productName || '';
         const qty = p.quantity || 0;
-        const cbmVal = p.cbm || '0';
+        const cbmVal = p.cbm || 0;
         const weightVal = p.totalWeight || '0';
         const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
@@ -493,14 +496,14 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
         const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
         if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
-          const origCbm = parseFloat(parent.cbm || '0');
+          const origCbm = parent.cbm ?? 0;
           const origWgt = parseFloat(parent.totalWeight || '0');
           const actQty = item.quantity ?? 0;
 
           const newCbm = (origCbm / parent.originalQuantity) * actQty;
           const newWgt = (origWgt / parent.originalQuantity) * actQty;
 
-          item.cbm = newCbm > 0 ? newCbm.toFixed(3) : '0';
+          item.cbm = newCbm > 0 ? newCbm : 0;
           item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
         }
       }
@@ -536,7 +539,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       const totalQty = items.reduce((sum, i) => sum + (i.quantity || 0), 0);
       
       const calcCbm = items.reduce((sum, i) => {
-        const val = parseFloat(i.cbm || '0');
+        const val = i.cbm ?? 0;
         return sum + (isNaN(val) ? 0 : val);
       }, 0);
 
@@ -551,7 +554,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
         palletId,
         items,
         totalQuantity: totalQty,
-        calculatedCbm: override?.manualCbm ?? parseFloat(calcCbm.toFixed(3)),
+        calculatedCbm: override?.manualCbm ?? parseFloat(calcCbm.toFixed(4)),
         calculatedWeight: override?.manualWeight ?? parseFloat(calcWeight.toFixed(2))
       });
     }
@@ -559,14 +562,51 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
     this.palletGroups = result;
   }
 
+  getPalletCbmInputValue(group: PalletGroupSummary): string {
+    return this.palletCbmDrafts[group.palletId] ?? group.calculatedCbm.toFixed(4);
+  }
+
+  getPalletWeightInputValue(group: PalletGroupSummary): string {
+    return this.palletWeightDrafts[group.palletId] ?? group.calculatedWeight.toFixed(2);
+  }
+
+  updatePalletCbmDraft(group: PalletGroupSummary, value: string): void {
+    this.palletCbmDrafts[group.palletId] = value;
+  }
+
+  updatePalletWeightDraft(group: PalletGroupSummary, value: string): void {
+    this.palletWeightDrafts[group.palletId] = value;
+  }
+
+  commitPalletCbmDraft(group: PalletGroupSummary): void {
+    const draft = this.palletCbmDrafts[group.palletId]?.trim() ?? '';
+    delete this.palletCbmDrafts[group.palletId];
+    if (!draft) return;
+    const value = Number(draft.replace(',', '.'));
+    if (Number.isFinite(value) && value >= 0) this.applyPalletCbmOverride(group, value);
+  }
+
+  commitPalletWeightDraft(group: PalletGroupSummary): void {
+    const draft = this.palletWeightDrafts[group.palletId]?.trim() ?? '';
+    delete this.palletWeightDrafts[group.palletId];
+    if (!draft) return;
+    const value = Number(draft.replace(',', '.'));
+    if (Number.isFinite(value) && value >= 0) this.applyPalletWeightOverride(group, value);
+  }
+
 /**
  * Called when the warehouse worker enters a Pallet CBM override
  */
 applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
-  if (!group || newTotalCbm < 0 || isNaN(newTotalCbm)) return;
+  if (!group || !Number.isFinite(newTotalCbm) || newTotalCbm < 0) return;
+  const roundedCbm = Number(newTotalCbm.toFixed(4));
+  this.palletOverrides.set(group.palletId, {
+    ...this.palletOverrides.get(group.palletId),
+    manualCbm: roundedCbm,
+  });
 
   // Apply tail-end pro-rating directly to the staged items in this pallet group
-  this.distributePalletScaleOverride(group.items, newTotalCbm, undefined);
+  this.distributePalletScaleOverride(group.items, roundedCbm, undefined);
 
   this.updatePalletGroups();
   this.triggerDraftSave();
@@ -577,10 +617,15 @@ applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
  * Called when the warehouse worker enters a Pallet Total Weight scale override
  */
 applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
-  if (!group || newTotalWeight < 0 || isNaN(newTotalWeight)) return;
+  if (!group || !Number.isFinite(newTotalWeight) || newTotalWeight < 0) return;
+  const roundedWeight = Number(newTotalWeight.toFixed(2));
+  this.palletOverrides.set(group.palletId, {
+    ...this.palletOverrides.get(group.palletId),
+    manualWeight: roundedWeight,
+  });
 
   // Apply tail-end pro-rating directly to the staged items in this pallet group
-  this.distributePalletScaleOverride(group.items, undefined, newTotalWeight);
+  this.distributePalletScaleOverride(group.items, undefined, roundedWeight);
 
   this.updatePalletGroups();
   this.triggerDraftSave();
@@ -601,9 +646,9 @@ private distributePalletScaleOverride(
 
   // 1. Distribute Target CBM based on Baseline CBM Ratios
   if (overrideCbm !== undefined && overrideCbm >= 0) {
-    const totalBaselineCbm = items.reduce((sum, i) => sum + (parseFloat(i.cbm || '0') || 0), 0);
+    const totalBaselineCbm = items.reduce((sum, i) => sum + i.cbm!, 0);
 
-    if (totalBaselineCbm > 0) {
+    if (totalBaselineCbm >= 0) {
       let accumulatedCbm = 0;
 
       for (let i = 0; i < items.length; i++) {
@@ -613,13 +658,13 @@ private distributePalletScaleOverride(
         if (isLastItem) {
           // Tail item gets exact remaining delta
           const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
-          item.cbm = exactCbm.toFixed(3);
+          item.cbm = Number(exactCbm.toFixed(4));
         } else {
-          const itemBaselineCbm = parseFloat(item.cbm || '0') || 0;
-          const ratio = itemBaselineCbm / totalBaselineCbm;
+          const itemBaselineCbm = item.cbm ?? 0;
+          const ratio = totalBaselineCbm > 0 ? itemBaselineCbm / totalBaselineCbm : 1 / items.length;
 
-          const allocatedCbm = parseFloat((overrideCbm * ratio).toFixed(3));
-          item.cbm = allocatedCbm.toFixed(3);
+          const allocatedCbm = Number((overrideCbm * ratio).toFixed(4));
+          item.cbm = allocatedCbm;
           accumulatedCbm += allocatedCbm;
         }
       }
@@ -630,7 +675,7 @@ private distributePalletScaleOverride(
   if (overrideWeight !== undefined && overrideWeight >= 0) {
     const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
 
-    if (totalBaselineWeight > 0) {
+    if (totalBaselineWeight >= 0) {
       let accumulatedWeight = 0;
 
       for (let i = 0; i < items.length; i++) {
@@ -643,7 +688,7 @@ private distributePalletScaleOverride(
           item.totalWeight = exactWeight.toFixed(2);
         } else {
           const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
-          const ratio = itemBaselineWeight / totalBaselineWeight;
+          const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
 
           const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
           item.totalWeight = allocatedWeight.toFixed(2);
@@ -792,7 +837,7 @@ applyPalletToRow(): void {
 
       name: item.productName,
       quantity: item.quantity ?? 0,
-      cbm: item.cbm || '0',
+      cbm: item.cbm || 0,
       totalWeight: item.totalWeight || '0',
       expirationDate: item.expirationDate as any,
       lotNumber: item.lotNumber || undefined,
@@ -925,9 +970,9 @@ applyPalletToRow(): void {
           : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
 
         const formattedCbm = groupItems.reduce((acc, curr) => {
-          const parsed = parseFloat(curr.cbm || '0');
+          const parsed = curr.cbm ?? 0;
           return acc + (isNaN(parsed) ? 0 : parsed);
-        }, 0).toFixed(3);
+        }, 0).toFixed(4);
 
         labels.push({
           palletId: palletId,

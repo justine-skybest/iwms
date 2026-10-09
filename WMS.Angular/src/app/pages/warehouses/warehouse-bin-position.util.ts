@@ -2,14 +2,30 @@ import { Location3DDto } from '../../api/generated/models';
 
 const BIN_FOOTPRINT = { width: 1.5, depth: 1.2 };
 const BIN_SPACING = 2.5;
-const OPEN_AREA_LIMIT = 20;
 
-export function findOpenBinPosition(occupiedLocations: readonly Location3DDto[]): Location3DDto {
+export function findOpenBinPosition(
+  occupiedLocations: readonly Location3DDto[],
+  warehouseId?: number
+): Location3DDto {
+  const isWarehouseOne = warehouseId === 1;
+  const area = isWarehouseOne
+    ? { centerX: 38, centerZ: 36, limitX: 6, limitZ: 4 }
+    : { centerX: 0, centerZ: 0, limitX: 20, limitZ: 20 };
   const candidates: Array<{ positionX: number; positionZ: number; distance: number }> = [];
 
-  for (let x = -OPEN_AREA_LIMIT; x <= OPEN_AREA_LIMIT; x += BIN_SPACING) {
-    for (let z = -OPEN_AREA_LIMIT; z <= OPEN_AREA_LIMIT; z += BIN_SPACING) {
-      candidates.push({ positionX: x, positionZ: z, distance: x * x + z * z });
+  const stepsX = Math.floor(area.limitX / BIN_SPACING);
+  const stepsZ = Math.floor(area.limitZ / BIN_SPACING);
+  for (let xStep = -stepsX; xStep <= stepsX; xStep += 1) {
+    for (let zStep = -stepsZ; zStep <= stepsZ; zStep += 1) {
+      const offsetX = xStep * BIN_SPACING;
+      const offsetZ = zStep * BIN_SPACING;
+      const positionX = area.centerX + offsetX;
+      const positionZ = area.centerZ + offsetZ;
+      candidates.push({
+        positionX,
+        positionZ,
+        distance: offsetX * offsetX + offsetZ * offsetZ,
+      });
     }
   }
 

@@ -16,8 +16,12 @@ namespace WMS.Api.Interfaces
         public decimal? UnitPrice { get; set; }
         [Precision(18, 2)]
         public decimal? TotalAmount { get; set; }
+
         [Precision(18, 4)]
-        public required string CBM { get; set; }
+        public decimal? CBM { get; set; }
+
+        [Precision(18, 4)]
+        public decimal? TotalCbm => CBM.HasValue ? CBM.Value * Quantity : null;
 
         public required string TotalWeight { get; set; }
         public DateOnly? ExpirationDate { get; set; }

@@ -430,11 +430,13 @@
                   </label>
                   <div class="relative">
                     <input 
-                      type="number" 
-                      step="0.001"
-                      min="0"
-                      [ngModel]="group.calculatedCbm"
-                      (ngModelChange)="applyPalletCbmOverride(group, $event)"
+                      type="text"
+                      inputmode="decimal"
+                      autocomplete="off"
+                      [ngModel]="getPalletCbmInputValue(group)"
+                      (ngModelChange)="updatePalletCbmDraft(group, $event)"
+                      (blur)="commitPalletCbmDraft(group)"
+                      (keydown.enter)="$event.preventDefault(); commitPalletCbmDraft(group)"
                       class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
                     />
                     <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">m³</span>
@@ -448,11 +450,13 @@
                   </label>
                   <div class="relative">
                     <input 
-                      type="number" 
-                      step="0.01"
-                      min="0"
-                      [ngModel]="group.calculatedWeight"
-                      (ngModelChange)="applyPalletWeightOverride(group, $event)"
+                      type="text"
+                      inputmode="decimal"
+                      autocomplete="off"
+                      [ngModel]="getPalletWeightInputValue(group)"
+                      (ngModelChange)="updatePalletWeightDraft(group, $event)"
+                      (blur)="commitPalletWeightDraft(group)"
+                      (keydown.enter)="$event.preventDefault(); commitPalletWeightDraft(group)"
                       class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded-lg font-mono font-bold text-slate-800 bg-amber-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
                     />
                     <span class="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-400">kg</span>

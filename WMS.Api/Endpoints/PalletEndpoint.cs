@@ -163,7 +163,7 @@ public static class PalletEndpoint
                     Measurement: rp.Product?.Measurement ?? "",
                     Weight: rp.Product?.Weight ?? 0,
                     Quantity: availableQty, // Net unpicked stock
-                    CBM: rp.CBM,
+                    CBM: rp.CBM ?? 0m,
                     TotalWeight: rp.TotalWeight,
                     ExpirationDate: rp.ExpirationDate ?? rp.ExpectedExpirationDate,
                     Remarks: rp.Remarks,

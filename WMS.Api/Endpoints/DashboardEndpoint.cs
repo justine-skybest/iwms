@@ -79,7 +79,7 @@ public static class DashboardEndpoint
 
             var todayReceivingCBM = todayReceivings
                 .SelectMany(r => r.Products)
-                .Sum(p => decimal.TryParse(p.CBM, out var cbm) ? cbm : 0);
+                .Sum(p => p.TotalCbm);
 
             var todayPickedQuantity = await dbContext.PickedProducts
                 .Where(pp => pp.DatePicked >= todayStart && pp.DatePicked < todayEnd)
@@ -303,7 +303,7 @@ public static class DashboardEndpoint
                 expiringSoonCount,
                 expiredCount,
                 todayReceivings.Count,
-                todayReceivingCBM,
+                todayReceivingCBM ?? 0m,
                 todayPickedQuantity,
                 recentReceivings,
                 expiringProducts,

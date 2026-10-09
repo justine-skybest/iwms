@@ -12,13 +12,13 @@ public record class ReceivedProductSummaryDto(
     // --- Baseline Expected Fields ---
     string? ExpectedProductName,
     int? ExpectedQuantity,
-    string? ExpectedCBM,
+    decimal? ExpectedCBM,
     string? ExpectedTotalWeight,
     DateOnly? ExpectedExpirationDate,
 
     // --- Actual Counted / Received Fields ---
     int Quantity,
-    string CBM,
+    decimal CBM,
     string TotalWeight,
     DateOnly? ExpirationDate,
     string Remarks,

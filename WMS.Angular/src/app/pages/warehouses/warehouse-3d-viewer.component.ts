@@ -10,13 +10,15 @@ import {
   ViewChild, 
   ChangeDetectorRef,
   HostListener,
-  SimpleChanges
+  SimpleChanges,
+  inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Warehouse3DViewerService, Rack3D, Bin3D } from './warehouse-3d-viewer.service';
+import { Warehouse3DViewerService, Rack3D, Bin3D, BinInventoryItem, sumBinInventoryCbm } from './warehouse-3d-viewer.service';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { BinSummaryDto, WarehouseDetailsDto } from '../../api/generated/models';
-import { ItemLocationSummaryDto } from '../../api/generated/models/item-location-summary-dto';
+import { Api } from '../../api/generated/api';
+import { updateBin3DLocation } from '../../api/generated/fn/wms-api/update-bin-3-d-location';
 import { CreateCheckInModalComponent } from '../check-in/components/create/create-check-in-modal.component';
 import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-modal.component';
 import { ReceivingCreateComponent } from '../receiving/create/receiving-create.component';
@@ -45,6 +47,12 @@ interface CollisionBox {
   maxX: number;
   minZ: number;
   maxZ: number;
+}
+
+interface BinVisualDimensions {
+  width: number;
+  height: number;
+  depth: number;
 }
 
 export interface BinWorldPosition {
@@ -100,7 +108,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   showInfo = true;
   hoveredBin: Bin3D | null = null;
   selectedBin: Bin3D | null = null;
-  selectedBinItems: ItemLocationSummaryDto[] = [];
+  selectedBinItems: BinInventoryItem[] = [];
   selectedBinQrUrl = '';
   totalBins = 0;
   totalRacks = 0;
@@ -112,6 +120,8 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   isCheckInOpen = false;
   isPickOrderOpen = false;
   isReceivingCreateOpen = false;
+  isLocalBinMoveActive = false;
+  binMoveError = '';
 
   // First-Person Player Physics & Controls State
   private playerPos = new THREE.Vector3(0, 1.8, 45); // Height = 1.8m (Eye level)
@@ -147,6 +157,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   private qrSpriteMap = new Map<number, THREE.Sprite>();
   private textureLoader = new THREE.TextureLoader();
   private collisionBoxes: CollisionBox[] = [];
+  private standaloneBinCollisionBoxes = new Map<number, CollisionBox>();
 
   @Input() warehouseIdOverride: number | null = null;
   @Input() showStandaloneBins = false;
@@ -166,6 +177,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   private carriedBinLateralOffset = 0;
   private receivingActionMesh: THREE.Mesh | null = null;
   private preventPointerLockForNextClick = false;
+  private readonly api = inject(Api);
 
   constructor(
     private warehouse3DService: Warehouse3DViewerService,
@@ -177,7 +189,10 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['binMoveMode']) {
-      if (this.binMoveMode) this.captureMovingBinPosition();
+      if (this.binMoveMode) {
+        this.captureMovingBinPosition();
+        if (this.selectedBin) this.removeStandaloneBinCollision(this.selectedBin.id);
+      }
       else this.restoreMovingBinPosition();
     }
   }
@@ -209,7 +224,8 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       await this.warehouseService.ensureInitialized();
       this.selectedWarehouse = this.warehouseService.activeWarehouse();
 
-      const data = await this.warehouse3DService.fetchWarehouse3DData(this.showStandaloneBins);
+      const includeStandaloneBins = this.shouldShowStandaloneBins;
+      const data = await this.warehouse3DService.fetchWarehouse3DData(includeStandaloneBins);
       await this.warehouse3DService.preloadBinInventory(data.racks, 8, data.standaloneBins);
       this.racks = data.racks;
       this.standaloneBins = data.standaloneBins;
@@ -233,7 +249,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
         this.buildFloorPlanZones();
         this.buildFloorPlanRacks(data.racks);
       }
-      if (this.showStandaloneBins) this.buildStandaloneBins(data.standaloneBins);
+      if (includeStandaloneBins) this.buildStandaloneBins(data.standaloneBins);
 
       setTimeout(() => {
         this.resize();
@@ -246,6 +262,18 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       this.isLoading = false;
       this.cd.markForCheck();
     }
+  }
+
+  get shouldShowStandaloneBins(): boolean {
+    return this.showStandaloneBins || this.selectedWarehouse?.id === 1;
+  }
+
+  get isMovingBin(): boolean {
+    return this.binMoveMode || this.isLocalBinMoveActive;
+  }
+
+  get selectedBinTotalCbm(): number {
+    return sumBinInventoryCbm(this.selectedBinItems);
   }
 
   completeBinMove(position: BinWorldPosition): void {
@@ -262,6 +290,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       positionZ: position.positionZ,
       rotationY: position.rotationY,
     };
+    this.setStandaloneBinCollision(bin, mesh);
     this.movingBinOriginalPosition = null;
     this.movingBinOriginalRotation = position.rotationY;
   }
@@ -272,13 +301,12 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
     }
     if (this.binMeshes.has(bin.id)) return;
 
-    const width = bin.location3D.width ?? 1.5;
-    const height = bin.location3D.height ?? 1.2;
-    const depth = bin.location3D.depth ?? 1.2;
-    const mesh = this.createBinMesh(bin, width, height, depth);
+    const dimensions = this.getBinVisualDimensions(bin);
+    const mesh = this.createBinMesh(bin, dimensions.width, dimensions.height, dimensions.depth);
+    mesh.userData['standaloneBinDimensions'] = dimensions;
     mesh.position.set(
       bin.location3D.positionX ?? 0,
-      bin.location3D.positionY ?? height / 2,
+      dimensions.height / 2,
       bin.location3D.positionZ ?? 0
     );
     mesh.rotation.y = bin.location3D.rotationY ?? 0;
@@ -286,13 +314,12 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
     this.binMeshes.set(bin.id, mesh);
     this.standaloneBins.push(bin);
     this.totalBins += 1;
-    this.attachCornerQrBadge(mesh, bin, width, height, depth);
-    this.addCollisionBox(
-      mesh.position.x - width / 2,
-      mesh.position.x + width / 2,
-      mesh.position.z - depth / 2,
-      mesh.position.z + depth / 2
-    );
+    this.attachCornerQrBadge(mesh, bin, dimensions.width, dimensions.height, dimensions.depth);
+    if (this.isMovingBin && this.selectedBin?.id === bin.id) {
+      this.removeStandaloneBinCollision(bin.id);
+    } else {
+      this.setStandaloneBinCollision(bin, mesh);
+    }
     this.binSelected.emit(bin);
     void this.selectBin(bin, mesh);
   }
@@ -410,11 +437,11 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '');
     if (editing) return;
 
-    if (this.binMoveMode) {
+    if (this.isMovingBin) {
       switch (event.code) {
         case 'Escape':
           event.preventDefault();
-          this.binMoveCancelled.emit();
+          this.cancelStandaloneBinMove();
           return;
         case 'Enter':
           event.preventDefault();
@@ -441,10 +468,10 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
           this.nudgeCarriedBin(0, 0.25);
           return;
       }
-    } else if (this.showStandaloneBins && event.code === 'KeyM' && !event.repeat && this.selectedBin &&
+    } else if (this.shouldShowStandaloneBins && event.code === 'KeyM' && !event.repeat && this.selectedBin &&
       (this.selectedBin.rack ?? '').toLowerCase() === 'standalone') {
       event.preventDefault();
-      this.binMoveRequested.emit(this.selectedBin);
+      this.requestStandaloneBinMove(this.selectedBin);
       return;
     }
 
@@ -587,6 +614,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
 
   private buildFloorPlanZones(): void {
     this.collisionBoxes = [];
+    this.standaloneBinCollisionBoxes.clear();
 
     const perimeterMaterial = new THREE.MeshStandardMaterial({
       color: 0x64717b,
@@ -677,14 +705,14 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
     this.receivingActionMesh = receivingPad;
     this.addZoneLabel('CREATE RECEIVING', -8, 1.3, 24);
 
-    // 6. Empty Pallet Area (Bottom Right)
+    // 6. Stand-alone Bin Area (Bottom Right)
     const palletZoneGeo = new THREE.PlaneGeometry(14, 10);
-    const palletZoneMat = new THREE.MeshBasicMaterial({ color: 0x64748b, side: THREE.DoubleSide, transparent: true, opacity: 0.2 });
+    const palletZoneMat = new THREE.MeshBasicMaterial({ color: 0x0ea5e9, side: THREE.DoubleSide, transparent: true, opacity: 0.16 });
     const palletZoneMesh = new THREE.Mesh(palletZoneGeo, palletZoneMat);
     palletZoneMesh.rotation.x = -Math.PI / 2;
     palletZoneMesh.position.set(38, 0.05, 36);
     this.floorZonesGroup.add(palletZoneMesh);
-    this.addZoneLabel('EMPTY PALLET AREA', 38, 0.2, 36);
+    this.addZoneLabel('STAND-ALONE BIN AREA', 45, 0.2, 36);
 
     // 7. Fire Exit (Top Left)
     const exitGeo = new THREE.BoxGeometry(4, 4, 0.4);
@@ -720,6 +748,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
 
   private buildWarehouse2FloorPlan(): void {
     this.collisionBoxes = [];
+    this.standaloneBinCollisionBoxes.clear();
 
     const floorGrid = new THREE.GridHelper(96, 48, 0x8b8e8e, 0x797d7d);
     floorGrid.position.y = 0.04;
@@ -867,25 +896,19 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       const location = bin.location3D;
       if (!location) continue;
 
-      const width = location.width ?? 1.5;
-      const height = location.height ?? 1.2;
-      const depth = location.depth ?? 1.2;
-      const mesh = this.createBinMesh(bin, width, height, depth);
+      const dimensions = this.getBinVisualDimensions(bin);
+      const mesh = this.createBinMesh(bin, dimensions.width, dimensions.height, dimensions.depth);
+      mesh.userData['standaloneBinDimensions'] = dimensions;
       mesh.position.set(
         location.positionX ?? 0,
-        location.positionY ?? height / 2,
+        dimensions.height / 2,
         location.positionZ ?? 0
       );
       mesh.rotation.y = location.rotationY ?? 0;
       this.rackGroup.add(mesh);
       this.binMeshes.set(bin.id, mesh);
-      this.attachCornerQrBadge(mesh, bin, width, height, depth);
-      this.addCollisionBox(
-        mesh.position.x - width / 2,
-        mesh.position.x + width / 2,
-        mesh.position.z - depth / 2,
-        mesh.position.z + depth / 2
-      );
+      this.attachCornerQrBadge(mesh, bin, dimensions.width, dimensions.height, dimensions.depth);
+      this.setStandaloneBinCollision(bin, mesh);
     }
   }
 
@@ -1126,9 +1149,10 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
         sprite.scale.set(0.4, 0.4, 1);
 
         // Position on top-right front corner of bin
-        const cornerX = binWidth / 2 - 0.1;
-        const cornerY = binHeight / 2 + 0.2;
-        const cornerZ = binDepth / 2 + 0.05;
+        const dimensions = binMesh.userData['standaloneBinDimensions'] as BinVisualDimensions | undefined;
+        const cornerX = (dimensions?.width ?? binWidth) / 2 - 0.1;
+        const cornerY = (dimensions?.height ?? binHeight) / 2 + 0.2;
+        const cornerZ = (dimensions?.depth ?? binDepth) / 2 + 0.05;
         sprite.position.set(cornerX, cornerY, cornerZ);
 
         binMesh.add(sprite);
@@ -1139,6 +1163,60 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
 
   private addCollisionBox(minX: number, maxX: number, minZ: number, maxZ: number): void {
     this.collisionBoxes.push({ minX, maxX, minZ, maxZ });
+  }
+
+  private setStandaloneBinCollision(bin: Bin3D, mesh: THREE.Mesh): void {
+    this.removeStandaloneBinCollision(bin.id);
+    const dimensions = mesh.userData['standaloneBinDimensions'] as BinVisualDimensions | undefined;
+    const width = dimensions?.width ?? bin.location3D?.width ?? 1.5;
+    const depth = dimensions?.depth ?? bin.location3D?.depth ?? 1.2;
+    const rotation = mesh.rotation.y;
+    const axisAlignedWidth = Math.abs(Math.cos(rotation)) * width + Math.abs(Math.sin(rotation)) * depth;
+    const axisAlignedDepth = Math.abs(Math.sin(rotation)) * width + Math.abs(Math.cos(rotation)) * depth;
+    const box: CollisionBox = {
+      minX: mesh.position.x - axisAlignedWidth / 2,
+      maxX: mesh.position.x + axisAlignedWidth / 2,
+      minZ: mesh.position.z - axisAlignedDepth / 2,
+      maxZ: mesh.position.z + axisAlignedDepth / 2,
+    };
+    this.collisionBoxes.push(box);
+    this.standaloneBinCollisionBoxes.set(bin.id, box);
+  }
+
+  private getBinVisualDimensions(bin: Bin3D): BinVisualDimensions {
+    const width = bin.location3D?.width ?? 1.5;
+    const height = bin.location3D?.height ?? 1.2;
+    const depth = bin.location3D?.depth ?? 1.2;
+    const baseVolume = width * height * depth;
+    const scale = bin.totalStoredCbm && baseVolume > 0
+      ? THREE.MathUtils.clamp(Math.cbrt(bin.totalStoredCbm / baseVolume), 0.65, 1.5)
+      : 1;
+    return { width: width * scale, height: height * scale, depth: depth * scale };
+  }
+
+  private updateStandaloneBinSize(bin: Bin3D, mesh: THREE.Mesh, totalCbm: number): void {
+    bin.totalStoredCbm = totalCbm;
+    const dimensions = this.getBinVisualDimensions(bin);
+    mesh.geometry.dispose();
+    mesh.geometry = new THREE.BoxGeometry(dimensions.width, dimensions.height, dimensions.depth);
+    mesh.userData['standaloneBinDimensions'] = dimensions;
+    mesh.position.y = dimensions.height / 2;
+    const badge = this.qrSpriteMap.get(bin.id);
+    if (badge) {
+      badge.position.set(dimensions.width / 2 - 0.1, dimensions.height / 2 + 0.2, dimensions.depth / 2 + 0.05);
+    }
+    if (this.isMovingBin && this.selectedBin?.id === bin.id) {
+      this.removeStandaloneBinCollision(bin.id);
+    } else {
+      this.setStandaloneBinCollision(bin, mesh);
+    }
+  }
+
+  private removeStandaloneBinCollision(binId: number): void {
+    const box = this.standaloneBinCollisionBoxes.get(binId);
+    if (!box) return;
+    this.collisionBoxes = this.collisionBoxes.filter((collisionBox) => collisionBox !== box);
+    this.standaloneBinCollisionBoxes.delete(binId);
   }
 
   private registerRackCollisionBoundary(x: number, z: number, width: number, depth: number, rotationY: number): void {
@@ -1196,13 +1274,13 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       this.raycaster.setFromCamera(this.pointer, this.camera);
       const hit = this.raycaster.intersectObjects(Array.from(this.binMeshes.values()), true)[0];
       const bin = this.getBinFromObject(hit?.object ?? null);
-      if (this.isWarehouse2Layout && bin && (bin.rack ?? '').toLowerCase() === 'standalone') {
+      if (this.shouldShowStandaloneBins && bin && (bin.rack ?? '').toLowerCase() === 'standalone') {
         this.selectedBin = bin;
         this.binSelected.emit(bin);
         const mesh = this.binMeshes.get(bin.id);
         if (mesh) void this.selectBin(bin, mesh);
-        this.binMoveRequested.emit(bin);
-      } else if (!hit && this.showStandaloneBins) {
+        this.requestStandaloneBinMove(bin);
+      } else if (!hit && this.shouldShowStandaloneBins) {
         const position = this.getGroundPosition();
         if (position) this.emptySpotClicked.emit(position);
       }
@@ -1211,7 +1289,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
 
     if (event.button !== 0) return;
 
-    if (this.binMoveMode) {
+    if (this.isMovingBin) {
       event.preventDefault();
       event.stopPropagation();
       this.dropMovingBin();
@@ -1264,12 +1342,12 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
     this.setPointerFromEvent(event);
     this.raycaster.setFromCamera(this.pointer, this.camera);
 
-    if (this.binMoveMode) {
+    if (this.isMovingBin) {
       this.emptySpotChanged.emit(null);
       return;
     }
 
-    if (!this.showStandaloneBins) return;
+    if (!this.shouldShowStandaloneBins) return;
     const binHit = this.raycaster.intersectObjects(Array.from(this.binMeshes.values()), true)[0];
     if (binHit) {
       this.emptySpotChanged.emit(null);
@@ -1288,10 +1366,14 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   }
 
   private onCanvasContextMenu(event: MouseEvent): void {
-    if (this.showStandaloneBins) event.preventDefault();
+    if (this.shouldShowStandaloneBins) event.preventDefault();
   }
 
   private setPointerFromEvent(event: PointerEvent): void {
+    if (this.isPointerLocked) {
+      this.pointer.set(0, 0);
+      return;
+    }
     const rect = this.renderer.domElement.getBoundingClientRect();
     this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -1331,8 +1413,60 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
       mesh.position.copy(this.movingBinOriginalPosition);
       mesh.rotation.y = this.movingBinOriginalRotation;
     }
+    if (mesh && this.selectedBin && (this.selectedBin.rack ?? '').toLowerCase() === 'standalone') {
+      this.setStandaloneBinCollision(this.selectedBin, mesh);
+    }
     this.movingBinOriginalPosition = null;
     this.emptySpotChanged.emit(null);
+  }
+
+  requestStandaloneBinMove(bin: Bin3D): void {
+    if (this.binMoveMode || this.isLocalBinMoveActive) return;
+    this.selectedBin = bin;
+    this.binMoveError = '';
+    if (this.isWarehouse2Layout) {
+      this.binMoveRequested.emit(bin);
+      return;
+    }
+
+    this.captureMovingBinPosition();
+    this.removeStandaloneBinCollision(bin.id);
+    this.isLocalBinMoveActive = true;
+    if (!this.isMobileDevice && !this.isPointerLocked) {
+      void this.renderer.domElement.requestPointerLock();
+    }
+    this.cd.markForCheck();
+  }
+
+  private cancelStandaloneBinMove(): void {
+    if (this.binMoveMode) {
+      this.binMoveCancelled.emit();
+      return;
+    }
+    if (!this.isLocalBinMoveActive) return;
+    this.restoreMovingBinPosition();
+    this.isLocalBinMoveActive = false;
+    this.cd.markForCheck();
+  }
+
+  private async saveLocalStandaloneBinMove(position: BinWorldPosition): Promise<void> {
+    const bin = this.selectedBin;
+    if (!bin || !this.isLocalBinMoveActive) return;
+    try {
+      await this.api.invoke(updateBin3DLocation, {
+        id: bin.id,
+        body: position,
+      });
+      this.completeBinMove(position);
+      this.isLocalBinMoveActive = false;
+    } catch (err) {
+      console.error('Failed to move standalone bin:', err);
+      this.binMoveError = 'Unable to save the bin location. The bin was returned to its previous position.';
+      this.restoreMovingBinPosition();
+      this.isLocalBinMoveActive = false;
+    } finally {
+      this.cd.markForCheck();
+    }
   }
 
   private nudgeCarriedBin(forwardDelta: number, lateralDelta: number): void {
@@ -1356,16 +1490,19 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
   private dropMovingBin(): void {
     const binId = this.selectedBin?.id;
     const mesh = binId ? this.binMeshes.get(binId) : undefined;
-    if (!binId || !mesh || !this.binMoveMode) return;
-    this.binMoveDropped.emit({
-      binId,
-      position: {
-        positionX: mesh.position.x,
-        positionY: (this.selectedBin?.location3D?.height ?? 1.2) / 2,
-        positionZ: mesh.position.z,
-        rotationY: mesh.rotation.y,
-      },
-    });
+    if (!binId || !mesh || !this.isMovingBin) return;
+    const dimensions = mesh.userData['standaloneBinDimensions'] as BinVisualDimensions | undefined;
+    const position = {
+      positionX: mesh.position.x,
+      positionY: (dimensions?.height ?? this.selectedBin?.location3D?.height ?? 1.2) / 2,
+      positionZ: mesh.position.z,
+      rotationY: mesh.rotation.y,
+    };
+    if (this.binMoveMode) {
+      this.binMoveDropped.emit({ binId, position });
+    } else {
+      void this.saveLocalStandaloneBinMove(position);
+    }
   }
 
   get warehouseAddress(): string {
@@ -1419,6 +1556,9 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
         this.selectedBinItems = items;
         const isOccupied = items.length > 0;
         bin.isOccupied = isOccupied;
+        if ((bin.rack ?? '').toLowerCase() === 'standalone') {
+          this.updateStandaloneBinSize(bin, mesh, sumBinInventoryCbm(items));
+        }
 
         // Dynamically update visual material based on actual inventory
         this.updateBinVisualState(mesh, isOccupied);
@@ -1562,7 +1702,7 @@ export class Warehouse3DViewerComponent implements AfterViewInit, OnDestroy, OnC
     );
     this.camera.lookAt(this.playerPos.clone().add(dir));
 
-    if (this.binMoveMode && this.selectedBin) {
+    if (this.isMovingBin && this.selectedBin) {
       const carriedMesh = this.binMeshes.get(this.selectedBin.id);
       if (carriedMesh) {
         carriedMesh.position.set(
