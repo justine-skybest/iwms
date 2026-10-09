@@ -95,7 +95,7 @@ public static class CheckInMapping
             receivedProduct.Product!.Measurement,
             receivedProduct.Product!.Weight,
             receivedProduct.Quantity,
-            receivedProduct.CBM,
+            receivedProduct.CBM ?? 0m,
             receivedProduct.TotalWeight,
             receivedProduct.ExpirationDate,
             receivedProduct.Remarks,

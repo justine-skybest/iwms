@@ -1,5 +1,31 @@
 [
   {
+    "version": "1.7.4",
+    "releaseDate": "2026-10-09",
+    "title": "CBM-Based Stand-Alone Bin Sizing",
+    "changes": [
+      {
+        "type": "IMPROVEMENT",
+        "description": "Scaled stand-alone bin width, height, and depth proportionally to the total CBM of checked-in items, with bounded dimensions and automatic updates after inventory changes."
+      }
+    ]
+  },
+  {
+    "version": "1.7.3",
+    "releaseDate": "2026-10-09",
+    "title": "Warehouse 1 Stand-Alone Bin Management",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added a dedicated Warehouse 1 floor area for stand-alone bins, with automatic placement of newly created and previously unpositioned bins."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Enabled stand-alone bin relocation in Warehouse 1 with in-place location saving and updated movement collision handling."
+      }
+    ]
+  },
+  {
     "version": "1.7.2",
     "releaseDate": "2026-10-08",
     "title": "Warehouse 3D Operations & Enclosures",

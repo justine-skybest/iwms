@@ -85,7 +85,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 ItemDescription = p.Product != null ? p.Product.Name : (p.ExpectedProductName ?? "N/A"),
                 Quantity = p.Quantity,
                 UOM = p.TypeOfPackage ?? "CS",
-                CBM = p.CBM ?? "0",
+                CBM = p.CBM ?? 0m,
                 Weight = p.TotalWeight ?? "0",
                 PlateNumber = r.PlateNumber,
                 ReceivingDate = r.DateReceived.ToString("yyyy-MM-dd"),
@@ -154,7 +154,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 PalletCount = r.Products!.Where(p => p.PalletId.HasValue).Select(p => p.PalletId).Distinct().Count(),
                 ItemCount = r.Products!.Count,
                 QuantityReceived = r.Products!.Sum(p => p.Quantity),
-                CBM = r.Products!.Sum(p => Convert.ToDecimal(p.CBM ?? "0")),
+                CBM = r.Products!.Sum(p => Convert.ToDecimal(p.CBM ?? 0m)),
                 Weight = r.Products!.Sum(p => Convert.ToDecimal(p.TotalWeight ?? "0")),
                 Status = r.Incoming != null ? r.Incoming.Status.ToString() : "RECEIVED"
             })
@@ -340,7 +340,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 PalletCount = g.SelectMany(x => x.Products!).Where(p => p.PalletId.HasValue).Select(p => p.PalletId).Distinct().Count(),
                 ItemCount = g.SelectMany(x => x.Products!).Count(),
                 QuantityReceived = g.SelectMany(x => x.Products!).Sum(p => p.Quantity),
-                CBM = g.SelectMany(x => x.Products!).Sum(p => Convert.ToDecimal(p.CBM ?? "0")),
+                CBM = g.SelectMany(x => x.Products!).Sum(p => Convert.ToDecimal(p.CBM ?? 0m)),
                 Weight = g.SelectMany(x => x.Products!).Sum(p => Convert.ToDecimal(p.TotalWeight ?? "0")),
                 Status = g.Select(x => x.Incoming != null ? x.Incoming.Status.ToString() : "RECEIVED").FirstOrDefault() ?? "RECEIVED"
             })

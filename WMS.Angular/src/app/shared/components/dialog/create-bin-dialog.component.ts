@@ -161,9 +161,9 @@ export class CreateBinDialogComponent implements OnChanges {
         bin.location3D ? [bin.location3D] : []
       );
       for (const bin of existingStandaloneBins) {
-        if (!bin.location3D) occupiedLocations.push(findOpenBinPosition(occupiedLocations));
+        if (!bin.location3D) occupiedLocations.push(findOpenBinPosition(occupiedLocations, warehouseId));
       }
-      const defaultPosition = findOpenBinPosition(occupiedLocations);
+      const defaultPosition = findOpenBinPosition(occupiedLocations, warehouseId);
       const payload: CreateBinDto = {
         warehouseId,
         rackId: null,

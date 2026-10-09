@@ -5863,8 +5863,8 @@
             "format": "double"
           },
           "cbm": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "type": "string",
@@ -6736,7 +6736,6 @@
       },
       "IncomingProduct": {
         "required": [
-          "cbm",
           "totalWeight"
         ],
         "type": "object",
@@ -6767,8 +6766,15 @@
             "nullable": true
           },
           "cbm": {
-            "minLength": 1,
-            "type": "string"
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalCbm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
           },
           "totalWeight": {
             "minLength": 1,
@@ -6815,6 +6821,7 @@
         "required": [
           "cbm",
           "productId",
+          "totalCbm",
           "totalWeight"
         ],
         "type": "object",
@@ -6830,8 +6837,12 @@
             "format": "int32"
           },
           "cbm": {
-            "minLength": 1,
-            "type": "string"
+            "type": "number",
+            "format": "double"
+          },
+          "totalCbm": {
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "minLength": 1,
@@ -6895,8 +6906,12 @@
             "format": "int32"
           },
           "cbm": {
-            "minLength": 1,
-            "type": "string"
+            "type": "number",
+            "format": "double"
+          },
+          "totalCbm": {
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "minLength": 1,
@@ -7090,7 +7105,8 @@
             "format": "int32"
           },
           "cbm": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "totalWeight": {
@@ -8191,7 +8207,6 @@
       },
       "ReceivedProduct": {
         "required": [
-          "cbm",
           "containerName",
           "totalWeight"
         ],
@@ -8223,8 +8238,15 @@
             "nullable": true
           },
           "cbm": {
-            "minLength": 1,
-            "type": "string"
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalCbm": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
           },
           "totalWeight": {
             "minLength": 1,
@@ -8256,7 +8278,8 @@
             "nullable": true
           },
           "expectedCBM": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedTotalWeight": {
@@ -8341,7 +8364,8 @@
             "nullable": true
           },
           "expectedCBM": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedTotalWeight": {
@@ -8362,8 +8386,8 @@
             "format": "int32"
           },
           "cbm": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "type": "string",
@@ -8451,7 +8475,8 @@
             "nullable": true
           },
           "expectedCBM": {
-            "type": "string",
+            "type": "number",
+            "format": "double",
             "nullable": true
           },
           "expectedTotalWeight": {
@@ -8468,8 +8493,8 @@
             "format": "int32"
           },
           "cbm": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "type": "string",
@@ -9013,8 +9038,8 @@
             "format": "double"
           },
           "cbm": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "format": "double"
           },
           "totalWeight": {
             "type": "string",

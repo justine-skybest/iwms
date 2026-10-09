@@ -543,9 +543,9 @@ namespace WMS.Api.Endpoints
                     : null;
 
                 string cbmRaw = row[8]?.ToString()?.Trim() ?? row[9]?.ToString()?.Trim() ?? "0";
-                string cbm = decimal.TryParse(cbmRaw, out decimal parsedCbm)
-                    ? Math.Round(parsedCbm, 4, MidpointRounding.AwayFromZero).ToString("0.####")
-                    : "0";
+                decimal cbm = decimal.TryParse(cbmRaw, out decimal parsedCbm)
+                    ? parsedCbm
+                    : 0m;
 
                 string totalWeightRaw = row[11]?.ToString()?.Trim() ?? "0";
                 string totalWeight = decimal.TryParse(totalWeightRaw, out decimal parsedTotalWeight)

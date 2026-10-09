@@ -11,7 +11,7 @@ public record InventoryCheckItemDto(
     string? Measurement,
     decimal Weight,
     int Quantity,
-    string? CBM,
+    decimal? CBM,
     decimal TotalWeight,
     DateOnly? ExpirationDate,
     string? ReceivingSeries,

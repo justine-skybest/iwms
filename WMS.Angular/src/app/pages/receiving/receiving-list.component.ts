@@ -261,9 +261,9 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
           : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
 
         const formattedCbm = groupItems.reduce((acc, curr) => {
-          const parsed = parseFloat(curr.cbm || '0');
+          const parsed = curr.cbm ?? 0;
           return acc + (isNaN(parsed) ? 0 : parsed);
-        }, 0).toFixed(3);
+        }, 0).toFixed(4);
 
         labels.push({
           palletId: palletId,

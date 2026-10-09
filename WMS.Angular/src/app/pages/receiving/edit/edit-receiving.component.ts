@@ -31,8 +31,8 @@ export type EditStagedProductItem = {
   quantity: number;
 
   expectedQuantity?: number;
-  cbm?: string;
-  expectedCbm?: string;
+  cbm?: number;
+  expectedCbm?: number;
   totalWeight?: string;
   expectedTotalWeight?: string;
   expirationDate?: string;
@@ -55,7 +55,7 @@ export interface SelectableIncomingProduct {
   originalQuantity?: number;
   quantity?: number;
   remainingQuantity?: number;
-  cbm?: string;
+  cbm?: number;
   totalWeight?: string;
   expirationDate?: string;
   supplier?: string;
@@ -142,6 +142,8 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   availableIncomingProducts: SelectableIncomingProduct[] = [];
 
   palletGroups: PalletGroupSummary[] = [];
+  palletCbmDrafts: Record<number, string> = {};
+  palletWeightDrafts: Record<number, string> = {};
 
   isPalletModalOpen = false;
   activeRowIndexForPallet: number | null = null;
@@ -274,14 +276,14 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
 
           expectedProductName: p.expectedProductName || p.name || '',
           expectedQuantity: p.expectedQuantity ?? p.quantity ?? 0,
-          expectedCbm: p.expectedCBM || p.cbm || '0',
+          expectedCbm: p.expectedCBM || p.cbm || 0,
           expectedTotalWeight: p.expectedTotalWeight || p.totalWeight || '0',
           expectedExpirationDate: p.expectedExpirationDate ? this.formatDateForInput(p.expectedExpirationDate) : '',
 
           productName: p.name || p.expectedProductName || '',
           quantity: p.quantity ?? 0,
 
-          cbm: p.cbm || '0',
+          cbm: p.cbm || 0,
           totalWeight: p.totalWeight || '0',
           expirationDate: p.expirationDate ? this.formatDateForInput(p.expirationDate) : '',
 
@@ -323,7 +325,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
             originalQuantity: p.quantity || 0,
             quantity: activeBalance,
             remainingQuantity: activeBalance,
-            cbm: p.cbm || '0',
+            cbm: p.cbm || 0,
             totalWeight: p.totalWeight || '0',
             expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
             supplier: p.supplier || '',
@@ -381,7 +383,7 @@ toggleProductSelection(product: SelectableIncomingProduct, forceState?: boolean)
     if (product.selected) {
       const prodName = product.productName || '';
       const qty = product.quantity || 0;
-      const cbmVal = product.cbm || '0';
+      const cbmVal = product.cbm || 0;
       const weightVal = product.totalWeight || '0';
       const expiryVal = product.expirationDate || new Date().toISOString().split('T')[0];
 
@@ -450,14 +452,14 @@ toggleSelectAllProducts(event: Event): void {
     if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
       const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
       if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
-        const origCbm = parseFloat(parent.cbm || '0');
+        const origCbm = parent.cbm || 0;
         const origWgt = parseFloat(parent.totalWeight || '0');
         const actQty = item.quantity ?? 0;
 
         const newCbm = (origCbm / parent.originalQuantity) * actQty;
         const newWgt = (origWgt / parent.originalQuantity) * actQty;
 
-        item.cbm = newCbm > 0 ? newCbm.toFixed(3) : '0';
+        item.cbm = newCbm > 0 ? Number(newCbm.toFixed(4)) : 0;
         item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
       }
     }
@@ -486,8 +488,8 @@ toggleSelectAllProducts(event: Event): void {
       const totalQty = items.reduce((sum, i) => sum + (i.quantity || 0), 0);
       
       const calcCbm = items.reduce((sum, i) => {
-        const val = parseFloat(i.cbm || '0');
-        return sum + (isNaN(val) ? 0 : val);
+        const val = i.cbm || 0;
+        return sum + (Number.isFinite(val) ? val : 0);
       }, 0);
 
       const calcWeight = items.reduce((sum, i) => {
@@ -499,7 +501,7 @@ toggleSelectAllProducts(event: Event): void {
         palletId,
         items,
         totalQuantity: totalQty,
-        calculatedCbm: parseFloat(calcCbm.toFixed(3)),
+        calculatedCbm: parseFloat(calcCbm.toFixed(4)),
         calculatedWeight: parseFloat(calcWeight.toFixed(2))
       });
     }
@@ -510,6 +512,38 @@ toggleSelectAllProducts(event: Event): void {
   /**
    * Baseline-Weighted Tail Allocation for Pallet Overrides
    */
+  getPalletCbmInputValue(group: PalletGroupSummary): string {
+    return this.palletCbmDrafts[group.palletId] ?? group.calculatedCbm.toFixed(4);
+  }
+
+  getPalletWeightInputValue(group: PalletGroupSummary): string {
+    return this.palletWeightDrafts[group.palletId] ?? group.calculatedWeight.toFixed(2);
+  }
+
+  updatePalletCbmDraft(group: PalletGroupSummary, value: string): void {
+    this.palletCbmDrafts[group.palletId] = value;
+  }
+
+  updatePalletWeightDraft(group: PalletGroupSummary, value: string): void {
+    this.palletWeightDrafts[group.palletId] = value;
+  }
+
+  commitPalletCbmDraft(group: PalletGroupSummary): void {
+    const draft = this.palletCbmDrafts[group.palletId]?.trim() ?? '';
+    delete this.palletCbmDrafts[group.palletId];
+    if (!draft) return;
+    const value = Number(draft.replace(',', '.'));
+    if (Number.isFinite(value) && value >= 0) this.applyPalletCbmOverride(group, value);
+  }
+
+  commitPalletWeightDraft(group: PalletGroupSummary): void {
+    const draft = this.palletWeightDrafts[group.palletId]?.trim() ?? '';
+    delete this.palletWeightDrafts[group.palletId];
+    if (!draft) return;
+    const value = Number(draft.replace(',', '.'));
+    if (Number.isFinite(value) && value >= 0) this.applyPalletWeightOverride(group, value);
+  }
+
   private distributePalletScaleOverride(
     items: EditStagedProductItem[],
     overrideCbm?: number,
@@ -519,9 +553,9 @@ toggleSelectAllProducts(event: Event): void {
 
     // 1. Distribute Target CBM based on Baseline CBM Ratios
     if (overrideCbm !== undefined && overrideCbm >= 0) {
-      const totalBaselineCbm = items.reduce((sum, i) => sum + (parseFloat(i.cbm || '0') || 0), 0);
+      const totalBaselineCbm = items.reduce((sum, i) => sum + (i.cbm || 0), 0);
 
-      if (totalBaselineCbm > 0) {
+      if (totalBaselineCbm >= 0) {
         let accumulatedCbm = 0;
 
         for (let i = 0; i < items.length; i++) {
@@ -530,13 +564,13 @@ toggleSelectAllProducts(event: Event): void {
 
           if (isLastItem) {
             const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
-            item.cbm = exactCbm.toFixed(3);
+            item.cbm = Number(exactCbm.toFixed(4));
           } else {
-            const itemBaselineCbm = parseFloat(item.cbm || '0') || 0;
-            const ratio = itemBaselineCbm / totalBaselineCbm;
+            const itemBaselineCbm = item.cbm || 0;
+            const ratio = totalBaselineCbm > 0 ? itemBaselineCbm / totalBaselineCbm : 1 / items.length;
 
-            const allocatedCbm = parseFloat((overrideCbm * ratio).toFixed(3));
-            item.cbm = allocatedCbm.toFixed(3);
+            const allocatedCbm = Number((overrideCbm * ratio).toFixed(4));
+            item.cbm = allocatedCbm;
             accumulatedCbm += allocatedCbm;
           }
         }
@@ -547,7 +581,7 @@ toggleSelectAllProducts(event: Event): void {
     if (overrideWeight !== undefined && overrideWeight >= 0) {
       const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
 
-      if (totalBaselineWeight > 0) {
+      if (totalBaselineWeight >= 0) {
         let accumulatedWeight = 0;
 
         for (let i = 0; i < items.length; i++) {
@@ -559,7 +593,7 @@ toggleSelectAllProducts(event: Event): void {
             item.totalWeight = exactWeight.toFixed(2);
           } else {
             const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
-            const ratio = itemBaselineWeight / totalBaselineWeight;
+            const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
 
             const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
             item.totalWeight = allocatedWeight.toFixed(2);
@@ -571,14 +605,17 @@ toggleSelectAllProducts(event: Event): void {
   }
 
   applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
-    if (!group || newTotalCbm < 0 || isNaN(newTotalCbm)) return;
-    this.distributePalletScaleOverride(group.items, newTotalCbm, undefined);
+    if (!group || !Number.isFinite(newTotalCbm) || newTotalCbm < 0) return;
+    const roundedCbm = Number(newTotalCbm.toFixed(4));
+    this.distributePalletScaleOverride(group.items, roundedCbm, undefined);
+    this.updatePalletGroups();
     this.fieldDebounce$.next();
   }
 
   applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
-    if (!group || newTotalWeight < 0 || isNaN(newTotalWeight)) return;
+    if (!group || !Number.isFinite(newTotalWeight) || newTotalWeight < 0) return;
     this.distributePalletScaleOverride(group.items, undefined, newTotalWeight);
+    this.updatePalletGroups();
     this.fieldDebounce$.next();
   }
 
@@ -723,7 +760,7 @@ removeProductItem(index: number): void {
 
       name: item.productName,
       quantity: item.quantity ?? 0,
-      cbm: item.cbm || '0',
+      cbm: item.cbm || 0,
       totalWeight: item.totalWeight || '0',
       expirationDate: item.expirationDate as any,
       lotNumber: item.lotNumber || undefined,

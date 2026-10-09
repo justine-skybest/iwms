@@ -9,7 +9,7 @@ public record class CheckedInProductSumamryDto(
     string Measurement,
     decimal Weight,
     decimal Quantity,
-    string CBM,
+    decimal CBM,
     string TotalWeight,
     DateOnly? ExpirationDate,
     string Remarks,

@@ -13,7 +13,8 @@ namespace WMS.Api.Dtos.Incoming
         public int Quantity { get; init; }           // Total planned quantity
         public int ReceivedQuantity { get; init; }   // Quantity already received across linked receipts
         public int RemainingQuantity { get; init; }  // Balance remaining to receive
-        public required string CBM { get; init; }
+        public required decimal CBM { get; init; }
+        public decimal TotalCbm { get; set; }
         public required string TotalWeight { get; init; }
 
         public string? TypeOfPackage { get; set; }

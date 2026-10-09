@@ -2518,3093 +2518,3093 @@ public class WMSContext(
             }
       );
 
-      modelBuilder.Entity<ReceivedProduct>().HasData(
-            new
-            {
-                  Id = 1, ReceivingId = 1, ProductId = 30, Quantity = 400, CBM = "15.51", TotalWeight = "1400",
-                  ExpirationDate = DateOnly.Parse("2026-01-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 2, ReceivingId = 1, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2026-01-10"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 3, ReceivingId = 1, ProductId = 32, Quantity = 600, CBM = "23.26", TotalWeight = "2100",
-                  ExpirationDate = DateOnly.Parse("2026-01-10"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 4, ReceivingId = 2, ProductId = 17, Quantity = 288, CBM = "15.48", TotalWeight = "1008",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 5, ReceivingId = 3, ProductId = 4, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 6, ReceivingId = 3, ProductId = 6, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 7, ReceivingId = 4, ProductId = 17, Quantity = 216, CBM = "11.61", TotalWeight = "756",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 8, ReceivingId = 5, ProductId = 17, Quantity = 232, CBM = "12.47", TotalWeight = "812",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 10, ReceivingId = 6, ProductId = 11, Quantity = 300, CBM = "16.13", TotalWeight = "1050",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 11, ReceivingId = 6, ProductId = 2, Quantity = 171, CBM = "5.91", TotalWeight = "598.5",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 12, ReceivingId = 7, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 13, ReceivingId = 7, ProductId = 17, Quantity = 144, CBM = "7.74", TotalWeight = "504",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 14, ReceivingId = 8, ProductId = 2, Quantity = 19, CBM = "0.66", TotalWeight = "66.5",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 15, ReceivingId = 8, ProductId = 13, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2025-01-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 16, ReceivingId = 8, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 17, ReceivingId = 9, ProductId = 17, Quantity = 120, CBM = "6.45", TotalWeight = "420",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 18, ReceivingId = 9, ProductId = 12, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 19, ReceivingId = 10, ProductId = 7, Quantity = 318, CBM = "17.1", TotalWeight = "1113",
-                  ExpirationDate = DateOnly.Parse("2026-01-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 20, ReceivingId = 11, ProductId = 1, Quantity = 200, CBM = "6.91", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2026-01-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 21, ReceivingId = 11, ProductId = 24, Quantity = 200, CBM = "10.75", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2026-01-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 22, ReceivingId = 11, ProductId = 2, Quantity = 10, CBM = "0.35", TotalWeight = "35",
-                  ExpirationDate = DateOnly.Parse("2026-01-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 23, ReceivingId = 12, ProductId = 7, Quantity = 247, CBM = "13.28", TotalWeight = "864.5",
-                  ExpirationDate = DateOnly.Parse("2026-01-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 24, ReceivingId = 13, ProductId = 18, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 25, ReceivingId = 13, ProductId = 19, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 26, ReceivingId = 13, ProductId = 20, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 27, ReceivingId = 14, ProductId = 3, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 28, ReceivingId = 14, ProductId = 7, Quantity = 35, CBM = "1.88", TotalWeight = "122.5",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 29, ReceivingId = 14, ProductId = 22, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 30, ReceivingId = 14, ProductId = 23, Quantity = 12, CBM = "0.65", TotalWeight = "42",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 37, ReceivingId = 18, ProductId = 41, Quantity = 50, CBM = "0.56", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2025-10-10"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 1,
-            },
-            new
-            {
-                  Id = 38, ReceivingId = 18, ProductId = 42, Quantity = 49, CBM = "0.55", TotalWeight = "147",
-                  ExpirationDate = DateOnly.Parse("2025-09-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 1,
-            },
-            new
-            {
-                  Id = 39, ReceivingId = 19, ProductId = 45, Quantity = 50, CBM = "0.56", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2025-09-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 2,
-            },
-            new
-            {
-                  Id = 40, ReceivingId = 19, ProductId = 46, Quantity = 50, CBM = "0.56", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2025-10-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 2,
-            },
-            new
-            {
-                  Id = 41, ReceivingId = 20, ProductId = 43, Quantity = 46, CBM = "0.52", TotalWeight = "138",
-                  ExpirationDate = DateOnly.Parse("2025-10-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 3,
-            },
-            new
-            {
-                  Id = 42, ReceivingId = 20, ProductId = 44, Quantity = 50, CBM = "0.56", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2025-10-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 3,
-            },
-            new
-            {
-                  Id = 43, ReceivingId = 21, ProductId = 33, Quantity = 1, CBM = "0.13", TotalWeight = "0",
-                  ExpirationDate = DateOnly.Parse("2025-01-25"),
-                  Remarks = "CONTROLLER-3PCS",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 44, ReceivingId = 21, ProductId = 34, Quantity = 1, CBM = "0.03", TotalWeight = "0",
-                  ExpirationDate = DateOnly.Parse("2025-01-25"),
-                  Remarks = @"CIRCUIT BOARD(TS26F)-10PCS
-                  CONTROLLER-3PCS
-                  CONTROLLER(NEW)-3PCS
-                  SENSORS-18PCS
-                  CPR(WITH O-RING)-3PCS
-                  FUSE DETECTION BOARD(TS55F)-5PCS",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 45, ReceivingId = 21, ProductId = 38, Quantity = 8, CBM = "0.27", TotalWeight = "0",
-                  ExpirationDate = DateOnly.Parse("2025-01-25"),
-                  Remarks = "16SETS",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 46, ReceivingId = 21, ProductId = 37, Quantity = 1, CBM = "0", TotalWeight = "0",
-                  ExpirationDate = DateOnly.Parse("2025-01-25"),
-                  Remarks = "6SET - 3SETS OF BY 3's AND 3SETS OF BY 2's",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 47, ReceivingId = 22, ProductId = 32, Quantity = 600, CBM = "23.26", TotalWeight = "2100",
-                  ExpirationDate = DateOnly.Parse("2026-02-25"),
-                  Remarks = "Good Condition",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 48, ReceivingId = 22, ProductId = 30, Quantity = 400, CBM = "15.51", TotalWeight = "1400",
-                  ExpirationDate = DateOnly.Parse("2026-02-25"),
-                  Remarks = "Good Condition",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 49, ReceivingId = 22, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2026-02-25"),
-                  Remarks = "Good Condition",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 50, ReceivingId = 23, ProductId = 17, Quantity = 747, CBM = "40.16", TotalWeight = "2614.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-14"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 51, ReceivingId = 23, ProductId = 11, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-10"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 52, ReceivingId = 24, ProductId = 17, Quantity = 20, CBM = "1.08", TotalWeight = "70",
-                  ExpirationDate = DateOnly.Parse("2026-02-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 53, ReceivingId = 24, ProductId = 12, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-02-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 54, ReceivingId = 24, ProductId = 7, Quantity = 125, CBM = "6.72", TotalWeight = "437.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 55, ReceivingId = 25, ProductId = 7, Quantity = 270, CBM = "14.52", TotalWeight = "945",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 56, ReceivingId = 26, ProductId = 7, Quantity = 205, CBM = "11.02", TotalWeight = "717.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 57, ReceivingId = 27, ProductId = 18, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2026-02-07"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 4,
-            },
-            new
-            {
-                  Id = 58, ReceivingId = 27, ProductId = 20, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2026-02-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 5,
-            },
-            new
-            {
-                  Id = 59, ReceivingId = 27, ProductId = 19, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2025-12-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 7,
-            },
-            new
-            {
-                  Id = 60, ReceivingId = 28, ProductId = 11, Quantity = 285, CBM = "15.32", TotalWeight = "997.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-10"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 61, ReceivingId = 29, ProductId = 17, Quantity = 233, CBM = "12.53", TotalWeight = "815.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-14"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 62, ReceivingId = 30, ProductId = 24, Quantity = 39, CBM = "2.1", TotalWeight = "136.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 8,
-            },
-            new
-            {
-                  Id = 63, ReceivingId = 30, ProductId = 23, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 10,
-            },
-            new
-            {
-                  Id = 64, ReceivingId = 30, ProductId = 23, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 11,
-            },
-            new
-            {
-                  Id = 65, ReceivingId = 30, ProductId = 23, Quantity = 20, CBM = "1.08", TotalWeight = "70",
-                  ExpirationDate = DateOnly.Parse("2026-02-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 13,
-            },
-            new
-            {
-                  Id = 66, ReceivingId = 30, ProductId = 21, Quantity = 2, CBM = "0.11", TotalWeight = "7",
-                  ExpirationDate = DateOnly.Parse("2026-02-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 14,
-            },
-            new
-            {
-                  Id = 67, ReceivingId = 30, ProductId = 4, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 15,
-            },
-            new
-            {
-                  Id = 68, ReceivingId = 30, ProductId = 4, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 16,
-            },
-            new
-            {
-                  Id = 69, ReceivingId = 30, ProductId = 6, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 17,
-            },
-            new
-            {
-                  Id = 70, ReceivingId = 30, ProductId = 6, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 18,
-            },
-            new
-            {
-                  Id = 71, ReceivingId = 30, ProductId = 3, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 19,
-            },
-            new
-            {
-                  Id = 72, ReceivingId = 30, ProductId = 3, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 20,
-            },
-            new
-            {
-                  Id = 73, ReceivingId = 31, ProductId = 13, Quantity = 72, CBM = "3.87", TotalWeight = "252",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 74, ReceivingId = 31, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-02-07"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 75, ReceivingId = 31, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-02-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 76, ReceivingId = 32, ProductId = 13, Quantity = 28, CBM = "1.51", TotalWeight = "98",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 77, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-02-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 21,
-            },
-            new
-            {
-                  Id = 78, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 22,
-            },
-            new
-            {
-                  Id = 79, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 23,
-            },
-            new
-            {
-                  Id = 80, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 24,
-            },
-            new
-            {
-                  Id = 81, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 25,
-            },
-            new
-            {
-                  Id = 82, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 26,
-            },
-            new
-            {
-                  Id = 83, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 27,
-            },
-            new
-            {
-                  Id = 84, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-03-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 28,
-            },
-            new
-            {
-                  Id = 85, ReceivingId = 33, ProductId = 24, Quantity = 61, CBM = "3.28", TotalWeight = "213.5",
-                  ExpirationDate = DateOnly.Parse("2025-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 29,
-            },
-            new
-            {
-                  Id = 86, ReceivingId = 33, ProductId = 24, Quantity = 60, CBM = "3.23", TotalWeight = "210",
-                  ExpirationDate = DateOnly.Parse("2025-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 30,
-            },
-            new
-            {
-                  Id = 87, ReceivingId = 33, ProductId = 24, Quantity = 40, CBM = "2.15", TotalWeight = "140",
-                  ExpirationDate = DateOnly.Parse("2025-03-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 31,
-            },
-            new
-            {
-                  Id = 88, ReceivingId = 33, ProductId = 48, Quantity = 100, CBM = "6.8", TotalWeight = "300",
-                  ExpirationDate = DateOnly.Parse("2026-02-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 89, ReceivingId = 33, ProductId = 49, Quantity = 100, CBM = "9.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-02-18"),
-                  Remarks = "WRONG FLAVOR ON INVOICE ORDER MUST BE MIGGOS SWEETCORN 105G",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 90, ReceivingId = 34, ProductId = 50, Quantity = 1, CBM = "0.05", TotalWeight = "7",
-                  ExpirationDate = DateOnly.Parse("2025-03-11"),
-                  Remarks = "A20221125002",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 91, ReceivingId = 34, ProductId = 51, Quantity = 1, CBM = "0.13", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221125028",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 92, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117020",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 93, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 94, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 95, ReceivingId = 34, ProductId = 54, Quantity = 1, CBM = "0.13", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221114003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 96, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20211115003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 97, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20211115008",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 98, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20231129001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 99, ReceivingId = 34, ProductId = 54, Quantity = 1, CBM = "0.13", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20231129001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 100, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117016",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 101, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 102, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117016",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 103, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 104, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117018",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 105, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122002",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 106, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20211115005",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 107, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20201112003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 108, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117021",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 109, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122004",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 110, ReceivingId = 34, ProductId = 50, Quantity = 1, CBM = "0.05", TotalWeight = "7",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221125001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 111, ReceivingId = 34, ProductId = 51, Quantity = 1, CBM = "0.13", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221125027",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 112, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221117022",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 113, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "A20221122005",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 114, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20201112002",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 115, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20201112004",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 116, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20240604001",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 117, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20240604002",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 118, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20240604003",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 119, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20211115006",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 120, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20201112009",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 121, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-03-13"),
-                  Remarks = "20211115007",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 122, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 398,
-            },
-            new
-            {
-                  Id = 123, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 399,
-            },
-            new
-            {
-                  Id = 124, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-06-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 400,
-            },
-            new
-            {
-                  Id = 125, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-06-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 401,
-            },
-            new
-            {
-                  Id = 126, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-06-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 402,
-            },
-            new
-            {
-                  Id = 127, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
-                  ExpirationDate = DateOnly.Parse("2025-06-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 403,
-            },
-            new
-            {
-                  Id = 128, ReceivingId = 36, ProductId = 18, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2026-05-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 404,
-            },
-            new
-            {
-                  Id = 129, ReceivingId = 36, ProductId = 20, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2026-05-07"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 405,
-            },
-            new
-            {
-                  Id = 130, ReceivingId = 36, ProductId = 19, Quantity = 80, CBM = "4.3", TotalWeight = "280",
-                  ExpirationDate = DateOnly.Parse("2026-05-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 406,
-            },
-            new
-            {
-                  Id = 131, ReceivingId = 37, ProductId = 17, Quantity = 500, CBM = "26.88", TotalWeight = "1750",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 132, ReceivingId = 37, ProductId = 49, Quantity = 100, CBM = "9.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 133, ReceivingId = 37, ProductId = 11, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 134, ReceivingId = 38, ProductId = 12, Quantity = 28, CBM = "1.51", TotalWeight = "98",
-                  ExpirationDate = DateOnly.Parse("2026-04-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 135, ReceivingId = 38, ProductId = 11, Quantity = 150, CBM = "8.06", TotalWeight = "525",
-                  ExpirationDate = DateOnly.Parse("2026-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 136, ReceivingId = 38, ProductId = 13, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-04-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 137, ReceivingId = 38, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-04-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 138, ReceivingId = 38, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 139, ReceivingId = 39, ProductId = 6, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 407,
-            },
-            new
-            {
-                  Id = 140, ReceivingId = 39, ProductId = 4, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 408,
-            },
-            new
-            {
-                  Id = 141, ReceivingId = 39, ProductId = 3, Quantity = 50, CBM = "2.69", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 409,
-            },
-            new
-            {
-                  Id = 142, ReceivingId = 39, ProductId = 25, Quantity = 300, CBM = "16.13", TotalWeight = "1050",
-                  ExpirationDate = DateOnly.Parse("2026-04-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 143, ReceivingId = 39, ProductId = 12, Quantity = 72, CBM = "3.87", TotalWeight = "252",
-                  ExpirationDate = DateOnly.Parse("2026-04-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 144, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 410,
-            },
-            new
-            {
-                  Id = 145, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 411,
-            },
-            new
-            {
-                  Id = 146, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 412,
-            },
-            new
-            {
-                  Id = 147, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 413,
-            },
-            new
-            {
-                  Id = 148, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 414,
-            },
-            new
-            {
-                  Id = 149, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 415,
-            },
-            new
-            {
-                  Id = 150, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 416,
-            },
-            new
-            {
-                  Id = 151, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
-                  ExpirationDate = DateOnly.Parse("2026-04-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 417,
-            },
-            new
-            {
-                  Id = 152, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 423,
-            },
-            new
-            {
-                  Id = 153, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 424,
-            },
-            new
-            {
-                  Id = 154, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 425,
-            },
-            new
-            {
-                  Id = 155, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 426,
-            },
-            new
-            {
-                  Id = 156, ReceivingId = 40, ProductId = 21, Quantity = 4, CBM = "0.22", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2026-04-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 427,
-            },
-            new
-            {
-                  Id = 157, ReceivingId = 40, ProductId = 23, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 428,
-            },
-            new
-            {
-                  Id = 158, ReceivingId = 40, ProductId = 23, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
-                  ExpirationDate = DateOnly.Parse("2026-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 429,
-            },
-            new
-            {
-                  Id = 159, ReceivingId = 40, ProductId = 22, Quantity = 24, CBM = "1.29", TotalWeight = "84",
-                  ExpirationDate = DateOnly.Parse("2026-04-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 430,
-            },
-            new
-            {
-                  Id = 160, ReceivingId = 41, ProductId = 60, Quantity = 20, CBM = "0.48", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2026-08-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 434,
-            },
-            new
-            {
-                  Id = 161, ReceivingId = 41, ProductId = 61, Quantity = 20, CBM = "0.5", TotalWeight = "180",
-                  ExpirationDate = DateOnly.Parse("2026-07-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 434,
-            },
-            new
-            {
-                  Id = 162, ReceivingId = 41, ProductId = 62, Quantity = 30, CBM = "0.87", TotalWeight = "240",
-                  ExpirationDate = DateOnly.Parse("2026-06-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 435,
-            },
-            new
-            {
-                  Id = 163, ReceivingId = 41, ProductId = 65, Quantity = 100, CBM = "0.96", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2026-05-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 436,
-            },
-            new
-            {
-                  Id = 164, ReceivingId = 42, ProductId = 63, Quantity = 20, CBM = "0.6", TotalWeight = "290",
-                  ExpirationDate = DateOnly.Parse("2026-11-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 439,
-            },
-            new
-            {
-                  Id = 165, ReceivingId = 42, ProductId = 64, Quantity = 20, CBM = "0.46", TotalWeight = "230",
-                  ExpirationDate = DateOnly.Parse("2027-03-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 440,
-            },
-            new
-            {
-                  Id = 166, ReceivingId = 43, ProductId = 32, Quantity = 500, CBM = "19.38", TotalWeight = "1000",
-                  ExpirationDate = DateOnly.Parse("2026-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 167, ReceivingId = 43, ProductId = 30, Quantity = 300, CBM = "11.63", TotalWeight = "600",
-                  ExpirationDate = DateOnly.Parse("2026-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 168, ReceivingId = 43, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "400",
-                  ExpirationDate = DateOnly.Parse("2026-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = (int?)null,
-            },
-            new
-            {
-                  Id = 169, ReceivingId = 44, ProductId = 66, Quantity = 15, CBM = "0.14", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2027-03-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 444,
-            },
-            new
-            {
-                  Id = 170, ReceivingId = 44, ProductId = 67, Quantity = 5, CBM = "0.05", TotalWeight = "5",
-                  ExpirationDate = DateOnly.Parse("2025-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 444,
-            },
-            new
-            {
-                  Id = 171, ReceivingId = 44, ProductId = 68, Quantity = 10, CBM = "0.25", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2025-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 444,
-            },
-            new
-            {
-                  Id = 172, ReceivingId = 44, ProductId = 69, Quantity = 29, CBM = "0.49", TotalWeight = "362.5",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "1 CARTON FOR RETURN MISSING 2CANS. RECEIVED 29CARTONS ONLY",
-                  ContainerName = string.Empty,
-                  PalletId = 445,
-            },
-            new
-            {
-                  Id = 173, ReceivingId = 44, ProductId = 70, Quantity = 10, CBM = "0.13", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2025-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 444,
-            },
-            new
-            {
-                  Id = 174, ReceivingId = 44, ProductId = 71, Quantity = 10, CBM = "0.36", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2025-05-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 444,
-            },
-            new
-            {
-                  Id = 175, ReceivingId = 44, ProductId = 44, Quantity = 6, CBM = "0.07", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2026-02-08"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 446,
-            },
-            new
-            {
-                  Id = 176, ReceivingId = 44, ProductId = 72, Quantity = 12, CBM = "0.14", TotalWeight = "36",
-                  ExpirationDate = DateOnly.Parse("2026-02-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 446,
-            },
-            new
-            {
-                  Id = 177, ReceivingId = 45, ProductId = 73, Quantity = 15, CBM = "0.39", TotalWeight = "307.5",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 447,
-            },
-            new
-            {
-                  Id = 178, ReceivingId = 46, ProductId = 41, Quantity = 76, CBM = "0.86", TotalWeight = "228",
-                  ExpirationDate = DateOnly.Parse("2026-01-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 448,
-            },
-            new
-            {
-                  Id = 179, ReceivingId = 47, ProductId = 74, Quantity = 30, CBM = "0.34", TotalWeight = "90",
-                  ExpirationDate = DateOnly.Parse("2026-01-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 449,
-            },
-            new
-            {
-                  Id = 180, ReceivingId = 47, ProductId = 42, Quantity = 50, CBM = "0.56", TotalWeight = "150",
-                  ExpirationDate = DateOnly.Parse("2026-02-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 450,
-            },
-            new
-            {
-                  Id = 181, ReceivingId = 47, ProductId = 75, Quantity = 5, CBM = "0.06", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2026-02-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 449,
-            },
-            new
-            {
-                  Id = 182, ReceivingId = 48, ProductId = 76, Quantity = 10, CBM = "0.32", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 451,
-            },
-            new
-            {
-                  Id = 183, ReceivingId = 48, ProductId = 77, Quantity = 10, CBM = "0.32", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 451,
-            },
-            new
-            {
-                  Id = 184, ReceivingId = 49, ProductId = 78, Quantity = 100, CBM = "0.73", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2025-12-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 452,
-            },
-            new
-            {
-                  Id = 185, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
-                  ExpirationDate = DateOnly.Parse("2026-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 457,
-            },
-            new
-            {
-                  Id = 186, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 458,
-            },
-            new
-            {
-                  Id = 187, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 459,
-            },
-            new
-            {
-                  Id = 188, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 460,
-            },
-            new
-            {
-                  Id = 189, ReceivingId = 51, ProductId = 79, Quantity = 50, CBM = "0.98", TotalWeight = "575",
-                  ExpirationDate = DateOnly.Parse("2026-03-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 461,
-            },
-            new
-            {
-                  Id = 190, ReceivingId = 51, ProductId = 79, Quantity = 25, CBM = "0.49", TotalWeight = "287.5",
-                  ExpirationDate = DateOnly.Parse("2026-03-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 462,
-            },
-            new
-            {
-                  Id = 191, ReceivingId = 51, ProductId = 79, Quantity = 25, CBM = "0.49", TotalWeight = "287.5",
-                  ExpirationDate = DateOnly.Parse("2026-03-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 463,
-            },
-            new
-            {
-                  Id = 192, ReceivingId = 52, ProductId = 80, Quantity = 20, CBM = "2.07", TotalWeight = "110",
-                  ExpirationDate = DateOnly.Parse("2025-05-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 464,
-            },
-            new
-            {
-                  Id = 193, ReceivingId = 52, ProductId = 80, Quantity = 20, CBM = "2.07", TotalWeight = "110",
-                  ExpirationDate = DateOnly.Parse("2025-05-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 465,
-            },
-            new
-            {
-                  Id = 194, ReceivingId = 53, ProductId = 81, Quantity = 25, CBM = "1.29", TotalWeight = "337.5",
-                  ExpirationDate = DateOnly.Parse("2027-03-20"),
-                  Remarks = "GOODS CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 466,
-            },
-            new
-            {
-                  Id = 195, ReceivingId = 53, ProductId = 81, Quantity = 25, CBM = "1.29", TotalWeight = "337.5",
-                  ExpirationDate = DateOnly.Parse("2027-03-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 467,
-            },
-            new
-            {
-                  Id = 196, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2025-05-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 468,
-            },
-            new
-            {
-                  Id = 197, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-05-05"),
-                  Remarks = "good condition",
-                  ContainerName = string.Empty,
-                  PalletId = 469,
-            },
-            new
-            {
-                  Id = 198, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-05-05"),
-                  Remarks = "Good Condition",
-                  ContainerName = string.Empty,
-                  PalletId = 470,
-            },
-            new
-            {
-                  Id = 199, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2026-05-05"),
-                  Remarks = "Good condition",
-                  ContainerName = string.Empty,
-                  PalletId = 471,
-            },
-            new
-            {
-                  Id = 201, ReceivingId = 55, ProductId = 83, Quantity = 30, CBM = "1.47", TotalWeight = "450",
-                  ExpirationDate = DateOnly.Parse("2026-12-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 472,
-            },
-            new
-            {
-                  Id = 202, ReceivingId = 56, ProductId = 84, Quantity = 200, CBM = "0.63", TotalWeight = "400",
-                  ExpirationDate = DateOnly.Parse("2025-11-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 477,
-            },
-            new
-            {
-                  Id = 203, ReceivingId = 56, ProductId = 85, Quantity = 333, CBM = "1.05", TotalWeight = "666",
-                  ExpirationDate = DateOnly.Parse("2025-11-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 478,
-            },
-            new
-            {
-                  Id = 204, ReceivingId = 57, ProductId = 86, Quantity = 15, CBM = "0.59", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2025-11-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 480,
-            },
-            new
-            {
-                  Id = 205, ReceivingId = 57, ProductId = 88, Quantity = 5, CBM = "0.13", TotalWeight = "62.5",
-                  ExpirationDate = DateOnly.Parse("2025-11-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 480,
-            },
-            new
-            {
-                  Id = 206, ReceivingId = 57, ProductId = 87, Quantity = 5, CBM = "0.17", TotalWeight = "10",
-                  ExpirationDate = DateOnly.Parse("2025-11-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 480,
-            },
-            new
-            {
-                  Id = 207, ReceivingId = 58, ProductId = 89, Quantity = 40, CBM = "1.11", TotalWeight = "160",
-                  ExpirationDate = DateOnly.Parse("2026-11-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 481,
-            },
-            new
-            {
-                  Id = 208, ReceivingId = 59, ProductId = 90, Quantity = 6, CBM = "1.03", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2025-05-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 482,
-            },
-            new
-            {
-                  Id = 209, ReceivingId = 59, ProductId = 91, Quantity = 6, CBM = "1.98", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2025-05-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 483,
-            },
-            new
-            {
-                  Id = 210, ReceivingId = 59, ProductId = 91, Quantity = 6, CBM = "1.98", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2025-05-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 484,
-            },
-            new
-            {
-                  Id = 211, ReceivingId = 60, ProductId = 90, Quantity = 6, CBM = "1.03", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2025-05-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 485,
-            },
-            new
-            {
-                  Id = 212, ReceivingId = 60, ProductId = 92, Quantity = 20, CBM = "8.15", TotalWeight = "230",
-                  ExpirationDate = DateOnly.Parse("2025-05-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 486,
-            },
-            new
-            {
-                  Id = 232, ReceivingId = 62, ProductId = 121, Quantity = 10, CBM = "0.14", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2026-04-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 233, ReceivingId = 62, ProductId = 133, Quantity = 3, CBM = "0.16", TotalWeight = "27",
-                  ExpirationDate = DateOnly.Parse("2025-10-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 234, ReceivingId = 62, ProductId = 96, Quantity = 3, CBM = "0.1", TotalWeight = "27",
-                  ExpirationDate = DateOnly.Parse("2025-10-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 235, ReceivingId = 62, ProductId = 134, Quantity = 3, CBM = "0.03", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2025-12-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 236, ReceivingId = 62, ProductId = 106, Quantity = 10, CBM = "0.31", TotalWeight = "10",
-                  ExpirationDate = DateOnly.Parse("2025-10-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 237, ReceivingId = 62, ProductId = 118, Quantity = 10, CBM = "0.43", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2025-10-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 238, ReceivingId = 62, ProductId = 136, Quantity = 10, CBM = "0.7", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2025-10-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 239, ReceivingId = 62, ProductId = 137, Quantity = 4, CBM = "0.31", TotalWeight = "8",
-                  ExpirationDate = DateOnly.Parse("2025-11-07"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 240, ReceivingId = 62, ProductId = 138, Quantity = 5, CBM = "0.05", TotalWeight = "5",
-                  ExpirationDate = DateOnly.Parse("2025-10-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 241, ReceivingId = 62, ProductId = 140, Quantity = 3, CBM = "0.08", TotalWeight = "3",
-                  ExpirationDate = DateOnly.Parse("2025-11-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 242, ReceivingId = 62, ProductId = 119, Quantity = 8, CBM = "0.42", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-10-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 243, ReceivingId = 62, ProductId = 104, Quantity = 10, CBM = "0.16", TotalWeight = "130",
-                  ExpirationDate = DateOnly.Parse("2026-04-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 244, ReceivingId = 62, ProductId = 128, Quantity = 25, CBM = "1.18", TotalWeight = "400",
-                  ExpirationDate = DateOnly.Parse("2025-12-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 497,
-            },
-            new
-            {
-                  Id = 245, ReceivingId = 62, ProductId = 93, Quantity = 20, CBM = "0.36", TotalWeight = "220",
-                  ExpirationDate = DateOnly.Parse("2027-03-14"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 498,
-            },
-            new
-            {
-                  Id = 246, ReceivingId = 62, ProductId = 105, Quantity = 5, CBM = "0.07", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2026-04-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 498,
-            },
-            new
-            {
-                  Id = 247, ReceivingId = 62, ProductId = 127, Quantity = 10, CBM = "0.55", TotalWeight = "140",
-                  ExpirationDate = DateOnly.Parse("2027-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 498,
-            },
-            new
-            {
-                  Id = 248, ReceivingId = 62, ProductId = 123, Quantity = 13, CBM = "0.36", TotalWeight = "156",
-                  ExpirationDate = DateOnly.Parse("2027-03-08"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 499,
-            },
-            new
-            {
-                  Id = 249, ReceivingId = 62, ProductId = 107, Quantity = 30, CBM = "0.84", TotalWeight = "480",
-                  ExpirationDate = DateOnly.Parse("2026-04-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 499,
-            },
-            new
-            {
-                  Id = 250, ReceivingId = 62, ProductId = 97, Quantity = 50, CBM = "1.26", TotalWeight = "1000",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 500,
-            },
-            new
-            {
-                  Id = 251, ReceivingId = 62, ProductId = 97, Quantity = 50, CBM = "1.26", TotalWeight = "1000",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 501,
-            },
-            new
-            {
-                  Id = 252, ReceivingId = 63, ProductId = 100, Quantity = 50, CBM = "0.94", TotalWeight = "950",
-                  ExpirationDate = DateOnly.Parse("2026-04-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 520,
-            },
-            new
-            {
-                  Id = 253, ReceivingId = 63, ProductId = 99, Quantity = 50, CBM = "0.78", TotalWeight = "750",
-                  ExpirationDate = DateOnly.Parse("2026-04-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 521,
-            },
-            new
-            {
-                  Id = 254, ReceivingId = 63, ProductId = 101, Quantity = 50, CBM = "1.04", TotalWeight = "800",
-                  ExpirationDate = DateOnly.Parse("2026-04-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 522,
-            },
-            new
-            {
-                  Id = 255, ReceivingId = 63, ProductId = 139, Quantity = 5, CBM = "0.16", TotalWeight = "5",
-                  ExpirationDate = DateOnly.Parse("2025-11-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 256, ReceivingId = 63, ProductId = 123, Quantity = 3, CBM = "0.08", TotalWeight = "36",
-                  ExpirationDate = DateOnly.Parse("2027-03-08"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 257, ReceivingId = 63, ProductId = 126, Quantity = 2, CBM = "0.04", TotalWeight = "26",
-                  ExpirationDate = DateOnly.Parse("2026-02-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 258, ReceivingId = 63, ProductId = 95, Quantity = 5, CBM = "0.17", TotalWeight = "45",
-                  ExpirationDate = DateOnly.Parse("2025-11-08"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 259, ReceivingId = 63, ProductId = 98, Quantity = 10, CBM = "0.32", TotalWeight = "70",
-                  ExpirationDate = DateOnly.Parse("2026-09-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 260, ReceivingId = 63, ProductId = 102, Quantity = 3, CBM = "0.03", TotalWeight = "27",
-                  ExpirationDate = DateOnly.Parse("2026-04-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 523,
-            },
-            new
-            {
-                  Id = 261, ReceivingId = 63, ProductId = 129, Quantity = 10, CBM = "0.25", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 262, ReceivingId = 63, ProductId = 129, Quantity = 10, CBM = "0.25", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 263, ReceivingId = 63, ProductId = 77, Quantity = 5, CBM = "0.16", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 264, ReceivingId = 63, ProductId = 111, Quantity = 5, CBM = "0.79", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 265, ReceivingId = 63, ProductId = 117, Quantity = 5, CBM = "0.02", TotalWeight = "10",
-                  ExpirationDate = DateOnly.Parse("2029-03-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 266, ReceivingId = 63, ProductId = 76, Quantity = 5, CBM = "0.16", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 267, ReceivingId = 63, ProductId = 109, Quantity = 5, CBM = "0.21", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-12-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 268, ReceivingId = 63, ProductId = 115, Quantity = 3, CBM = "0.09", TotalWeight = "27",
-                  ExpirationDate = DateOnly.Parse("2026-03-31"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 269, ReceivingId = 63, ProductId = 113, Quantity = 2, CBM = "0.03", TotalWeight = "8",
-                  ExpirationDate = DateOnly.Parse("2026-06-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 270, ReceivingId = 63, ProductId = 114, Quantity = 3, CBM = "0.03", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2026-09-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 271, ReceivingId = 63, ProductId = 108, Quantity = 20, CBM = "0.65", TotalWeight = "320",
-                  ExpirationDate = DateOnly.Parse("2026-02-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 524,
-            },
-            new
-            {
-                  Id = 272, ReceivingId = 63, ProductId = 132, Quantity = 2, CBM = "0.04", TotalWeight = "32",
-                  ExpirationDate = DateOnly.Parse("2027-02-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 273, ReceivingId = 63, ProductId = 122, Quantity = 2, CBM = "0.02", TotalWeight = "13",
-                  ExpirationDate = DateOnly.Parse("2025-10-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 274, ReceivingId = 63, ProductId = 125, Quantity = 5, CBM = "0.1", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2026-08-23"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 275, ReceivingId = 63, ProductId = 103, Quantity = 2, CBM = "0.05", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2026-04-15"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 276, ReceivingId = 63, ProductId = 120, Quantity = 10, CBM = "0.52", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-10-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 277, ReceivingId = 63, ProductId = 130, Quantity = 10, CBM = "0.25", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2025-12-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 278, ReceivingId = 63, ProductId = 12, Quantity = 10, CBM = "0.54", TotalWeight = "35",
-                  ExpirationDate = DateOnly.Parse("2025-10-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 279, ReceivingId = 63, ProductId = 112, Quantity = 15, CBM = "0.54", TotalWeight = "120",
-                  ExpirationDate = DateOnly.Parse("2025-10-22"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 525,
-            },
-            new
-            {
-                  Id = 280, ReceivingId = 64, ProductId = 141, Quantity = 15, CBM = "0.73", TotalWeight = "405",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 530,
-            },
-            new
-            {
-                  Id = 281, ReceivingId = 64, ProductId = 150, Quantity = 5, CBM = "0.15", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 530,
-            },
-            new
-            {
-                  Id = 282, ReceivingId = 64, ProductId = 151, Quantity = 5, CBM = "0.15", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 530,
-            },
-            new
-            {
-                  Id = 283, ReceivingId = 64, ProductId = 145, Quantity = 2, CBM = "0.05", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2027-02-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 530,
-            },
-            new
-            {
-                  Id = 284, ReceivingId = 64, ProductId = 142, Quantity = 15, CBM = "0.73", TotalWeight = "405",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 531,
-            },
-            new
-            {
-                  Id = 285, ReceivingId = 64, ProductId = 147, Quantity = 3, CBM = "0.03", TotalWeight = "42",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 531,
-            },
-            new
-            {
-                  Id = 286, ReceivingId = 64, ProductId = 148, Quantity = 3, CBM = "0.03", TotalWeight = "39",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 531,
-            },
-            new
-            {
-                  Id = 287, ReceivingId = 64, ProductId = 146, Quantity = 5, CBM = "0.05", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 531,
-            },
-            new
-            {
-                  Id = 288, ReceivingId = 64, ProductId = 149, Quantity = 5, CBM = "0.05", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 531,
-            },
-            new
-            {
-                  Id = 289, ReceivingId = 64, ProductId = 143, Quantity = 15, CBM = "0.73", TotalWeight = "405",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 532,
-            },
-            new
-            {
-                  Id = 290, ReceivingId = 64, ProductId = 144, Quantity = 25, CBM = "1.22", TotalWeight = "675",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 533,
-            },
-            new
-            {
-                  Id = 291, ReceivingId = 65, ProductId = 152, Quantity = 53, CBM = "1.65", TotalWeight = "1060",
-                  ExpirationDate = DateOnly.Parse("2026-11-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 534,
-            },
-            new
-            {
-                  Id = 292, ReceivingId = 65, ProductId = 152, Quantity = 34, CBM = "1.06", TotalWeight = "680",
-                  ExpirationDate = DateOnly.Parse("2026-11-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 535,
-            },
-            new
-            {
-                  Id = 293, ReceivingId = 65, ProductId = 153, Quantity = 18, CBM = "0.56", TotalWeight = "360",
-                  ExpirationDate = DateOnly.Parse("2026-11-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 535,
-            },
-            new
-            {
-                  Id = 294, ReceivingId = 65, ProductId = 153, Quantity = 52, CBM = "1.62", TotalWeight = "1040",
-                  ExpirationDate = DateOnly.Parse("2026-11-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 536,
-            },
-            new
-            {
-                  Id = 295, ReceivingId = 66, ProductId = 165, Quantity = 15, CBM = "0.73", TotalWeight = "90",
-                  ExpirationDate = DateOnly.Parse("2027-01-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 296, ReceivingId = 66, ProductId = 128, Quantity = 10, CBM = "0.47", TotalWeight = "160",
-                  ExpirationDate = DateOnly.Parse("2027-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 297, ReceivingId = 66, ProductId = 103, Quantity = 6, CBM = "0.14", TotalWeight = "48",
-                  ExpirationDate = DateOnly.Parse("2026-04-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 298, ReceivingId = 66, ProductId = 167, Quantity = 3, CBM = "0.05", TotalWeight = "33",
-                  ExpirationDate = DateOnly.Parse("2027-05-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 299, ReceivingId = 66, ProductId = 171, Quantity = 3, CBM = "0.03", TotalWeight = "37.5",
-                  ExpirationDate = DateOnly.Parse("2025-06-04"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 300, ReceivingId = 66, ProductId = 102, Quantity = 5, CBM = "0.06", TotalWeight = "45",
-                  ExpirationDate = DateOnly.Parse("2026-04-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 301, ReceivingId = 66, ProductId = 158, Quantity = 6, CBM = "0.12", TotalWeight = "36",
-                  ExpirationDate = DateOnly.Parse("2026-04-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 302, ReceivingId = 66, ProductId = 155, Quantity = 4, CBM = "0.09", TotalWeight = "48",
-                  ExpirationDate = DateOnly.Parse("2027-03-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 303, ReceivingId = 66, ProductId = 168, Quantity = 2, CBM = "0.04", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2027-04-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 304, ReceivingId = 66, ProductId = 166, Quantity = 5, CBM = "0.13", TotalWeight = "75",
-                  ExpirationDate = DateOnly.Parse("2027-05-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 542,
-            },
-            new
-            {
-                  Id = 305, ReceivingId = 66, ProductId = 134, Quantity = 6, CBM = "0.06", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2025-11-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 306, ReceivingId = 66, ProductId = 130, Quantity = 5, CBM = "0.12", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2026-01-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 307, ReceivingId = 66, ProductId = 131, Quantity = 5, CBM = "0.12", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2026-01-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 308, ReceivingId = 66, ProductId = 129, Quantity = 5, CBM = "0.12", TotalWeight = "25",
-                  ExpirationDate = DateOnly.Parse("2026-01-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 309, ReceivingId = 66, ProductId = 169, Quantity = 1, CBM = "0.04", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2026-11-09"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 310, ReceivingId = 66, ProductId = 161, Quantity = 1, CBM = "0.04", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2026-10-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 311, ReceivingId = 66, ProductId = 154, Quantity = 1, CBM = "0.04", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2026-10-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 312, ReceivingId = 66, ProductId = 170, Quantity = 1, CBM = "0.03", TotalWeight = "7",
-                  ExpirationDate = DateOnly.Parse("2027-02-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 313, ReceivingId = 66, ProductId = 160, Quantity = 2, CBM = "0.05", TotalWeight = "14",
-                  ExpirationDate = DateOnly.Parse("2027-02-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 543,
-            },
-            new
-            {
-                  Id = 314, ReceivingId = 66, ProductId = 97, Quantity = 35, CBM = "0.89", TotalWeight = "700",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 544,
-            },
-            new
-            {
-                  Id = 315, ReceivingId = 66, ProductId = 159, Quantity = 15, CBM = "0.36", TotalWeight = "285",
-                  ExpirationDate = DateOnly.Parse("2025-11-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 545,
-            },
-            new
-            {
-                  Id = 316, ReceivingId = 66, ProductId = 162, Quantity = 10, CBM = "0.24", TotalWeight = "190",
-                  ExpirationDate = DateOnly.Parse("2025-10-12"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 545,
-            },
-            new
-            {
-                  Id = 317, ReceivingId = 66, ProductId = 156, Quantity = 10, CBM = "0.24", TotalWeight = "190",
-                  ExpirationDate = DateOnly.Parse("2025-10-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 545,
-            },
-            new
-            {
-                  Id = 318, ReceivingId = 66, ProductId = 157, Quantity = 10, CBM = "0.2", TotalWeight = "190",
-                  ExpirationDate = DateOnly.Parse("2025-09-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 546,
-            },
-            new
-            {
-                  Id = 319, ReceivingId = 66, ProductId = 164, Quantity = 15, CBM = "0.3", TotalWeight = "180",
-                  ExpirationDate = DateOnly.Parse("2025-11-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 546,
-            },
-            new
-            {
-                  Id = 320, ReceivingId = 66, ProductId = 163, Quantity = 15, CBM = "0.17", TotalWeight = "135",
-                  ExpirationDate = DateOnly.Parse("2025-10-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 546,
-            },
-            new
-            {
-                  Id = 321, ReceivingId = 67, ProductId = 174, Quantity = 50, CBM = "0.27", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 547,
-            },
-            new
-            {
-                  Id = 322, ReceivingId = 67, ProductId = 172, Quantity = 50, CBM = "0.27", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 547,
-            },
-            new
-            {
-                  Id = 323, ReceivingId = 67, ProductId = 175, Quantity = 50, CBM = "0.27", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 547,
-            },
-            new
-            {
-                  Id = 324, ReceivingId = 67, ProductId = 173, Quantity = 50, CBM = "0.27", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2025-12-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 547,
-            },
-            new
-            {
-                  Id = 325, ReceivingId = 68, ProductId = 176, Quantity = 5, CBM = "0.09", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2027-04-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 326, ReceivingId = 68, ProductId = 177, Quantity = 3, CBM = "0.05", TotalWeight = "57",
-                  ExpirationDate = DateOnly.Parse("2027-05-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 327, ReceivingId = 68, ProductId = 178, Quantity = 2, CBM = "0.01", TotalWeight = "8",
-                  ExpirationDate = DateOnly.Parse("2027-03-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 328, ReceivingId = 68, ProductId = 179, Quantity = 2, CBM = "0.03", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2027-06-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 329, ReceivingId = 68, ProductId = 181, Quantity = 4, CBM = "0.04", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2027-03-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 330, ReceivingId = 68, ProductId = 182, Quantity = 3, CBM = "0.04", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2027-05-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 331, ReceivingId = 68, ProductId = 183, Quantity = 1, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-11-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 332, ReceivingId = 68, ProductId = 184, Quantity = 1, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-02-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 333, ReceivingId = 68, ProductId = 185, Quantity = 2, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-01-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 334, ReceivingId = 69, ProductId = 176, Quantity = 5, CBM = "0.09", TotalWeight = "100",
-                  ExpirationDate = DateOnly.Parse("2027-04-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 335, ReceivingId = 69, ProductId = 177, Quantity = 3, CBM = "0.05", TotalWeight = "57",
-                  ExpirationDate = DateOnly.Parse("2027-05-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 336, ReceivingId = 69, ProductId = 178, Quantity = 2, CBM = "0.01", TotalWeight = "8",
-                  ExpirationDate = DateOnly.Parse("2027-03-16"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 337, ReceivingId = 69, ProductId = 179, Quantity = 2, CBM = "0.03", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2027-06-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 338, ReceivingId = 69, ProductId = 181, Quantity = 4, CBM = "0.04", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2027-03-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 339, ReceivingId = 69, ProductId = 182, Quantity = 3, CBM = "0.04", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2027-05-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 340, ReceivingId = 69, ProductId = 183, Quantity = 1, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-11-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 341, ReceivingId = 69, ProductId = 184, Quantity = 1, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-02-27"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 342, ReceivingId = 69, ProductId = 185, Quantity = 2, CBM = "0.01", TotalWeight = "2",
-                  ExpirationDate = DateOnly.Parse("2027-01-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 548,
-            },
-            new
-            {
-                  Id = 343, ReceivingId = 70, ProductId = 186, Quantity = 6, CBM = "0.51", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 344, ReceivingId = 70, ProductId = 187, Quantity = 6, CBM = "0.51", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 345, ReceivingId = 70, ProductId = 188, Quantity = 5, CBM = "0.42", TotalWeight = "15",
-                  ExpirationDate = DateOnly.Parse("2027-11-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 346, ReceivingId = 70, ProductId = 189, Quantity = 8, CBM = "0.18", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2026-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 347, ReceivingId = 70, ProductId = 190, Quantity = 6, CBM = "0.13", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2026-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 348, ReceivingId = 70, ProductId = 191, Quantity = 6, CBM = "0.13", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2026-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 349, ReceivingId = 70, ProductId = 192, Quantity = 5, CBM = "0.13", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2026-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 350, ReceivingId = 70, ProductId = 193, Quantity = 5, CBM = "0.13", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2026-11-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 351, ReceivingId = 70, ProductId = 194, Quantity = 5, CBM = "0.13", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2026-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 352, ReceivingId = 70, ProductId = 204, Quantity = 1, CBM = "0.02", TotalWeight = "3",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 549,
-            },
-            new
-            {
-                  Id = 353, ReceivingId = 70, ProductId = 195, Quantity = 8, CBM = "0.1", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 354, ReceivingId = 70, ProductId = 196, Quantity = 8, CBM = "0.1", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 355, ReceivingId = 70, ProductId = 197, Quantity = 8, CBM = "0.1", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 356, ReceivingId = 70, ProductId = 198, Quantity = 8, CBM = "0.1", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 357, ReceivingId = 70, ProductId = 199, Quantity = 5, CBM = "0.06", TotalWeight = "10",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 358, ReceivingId = 70, ProductId = 201, Quantity = 3, CBM = "0.15", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 359, ReceivingId = 70, ProductId = 202, Quantity = 3, CBM = "0.15", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 360, ReceivingId = 70, ProductId = 203, Quantity = 2, CBM = "0.1", TotalWeight = "6",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 361, ReceivingId = 70, ProductId = 205, Quantity = 6, CBM = "0.59", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2026-06-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 362, ReceivingId = 70, ProductId = 206, Quantity = 6, CBM = "0.36", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2026-06-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 550,
-            },
-            new
-            {
-                  Id = 363, ReceivingId = 71, ProductId = 208, Quantity = 8, CBM = "0.61", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 364, ReceivingId = 71, ProductId = 209, Quantity = 6, CBM = "0.46", TotalWeight = "0",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 365, ReceivingId = 71, ProductId = 210, Quantity = 8, CBM = "0.57", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 366, ReceivingId = 71, ProductId = 211, Quantity = 8, CBM = "0.57", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 367, ReceivingId = 71, ProductId = 212, Quantity = 6, CBM = "0.32", TotalWeight = "18",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 368, ReceivingId = 71, ProductId = 213, Quantity = 8, CBM = "0.42", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 369, ReceivingId = 71, ProductId = 214, Quantity = 8, CBM = "0.42", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-24"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 551,
-            },
-            new
-            {
-                  Id = 370, ReceivingId = 71, ProductId = 215, Quantity = 3, CBM = "0.16", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2025-12-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 371, ReceivingId = 71, ProductId = 216, Quantity = 3, CBM = "0.16", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2025-12-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 372, ReceivingId = 71, ProductId = 217, Quantity = 3, CBM = "0.16", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2025-11-13"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 373, ReceivingId = 71, ProductId = 218, Quantity = 8, CBM = "0.4", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-11-21"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 374, ReceivingId = 71, ProductId = 219, Quantity = 8, CBM = "0.4", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-11-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 375, ReceivingId = 71, ProductId = 221, Quantity = 3, CBM = "0.23", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2025-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 376, ReceivingId = 71, ProductId = 222, Quantity = 3, CBM = "0.23", TotalWeight = "9",
-                  ExpirationDate = DateOnly.Parse("2025-12-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 377, ReceivingId = 71, ProductId = 224, Quantity = 6, CBM = "0.46", TotalWeight = "36",
-                  ExpirationDate = DateOnly.Parse("2025-12-26"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 552,
-            },
-            new
-            {
-                  Id = 378, ReceivingId = 72, ProductId = 226, Quantity = 6, CBM = "0.13", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2025-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 379, ReceivingId = 72, ProductId = 227, Quantity = 8, CBM = "0.18", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 380, ReceivingId = 72, ProductId = 228, Quantity = 6, CBM = "0.13", TotalWeight = "12",
-                  ExpirationDate = DateOnly.Parse("2025-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 381, ReceivingId = 72, ProductId = 230, Quantity = 6, CBM = "0.12", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-12-05"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 382, ReceivingId = 72, ProductId = 231, Quantity = 6, CBM = "0.12", TotalWeight = "24",
-                  ExpirationDate = DateOnly.Parse("2025-11-28"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 383, ReceivingId = 72, ProductId = 229, Quantity = 4, CBM = "0.1", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-12-06"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 553,
-            },
-            new
-            {
-                  Id = 384, ReceivingId = 73, ProductId = 233, Quantity = 5, CBM = "0.1", TotalWeight = "60",
-                  ExpirationDate = DateOnly.Parse("2027-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 385, ReceivingId = 73, ProductId = 234, Quantity = 5, CBM = "0.1", TotalWeight = "60",
-                  ExpirationDate = DateOnly.Parse("2026-02-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 386, ReceivingId = 73, ProductId = 235, Quantity = 3, CBM = "0.06", TotalWeight = "48",
-                  ExpirationDate = DateOnly.Parse("2026-01-31"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 387, ReceivingId = 73, ProductId = 236, Quantity = 5, CBM = "0.1", TotalWeight = "80",
-                  ExpirationDate = DateOnly.Parse("2026-01-31"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 388, ReceivingId = 73, ProductId = 237, Quantity = 6, CBM = "0.12", TotalWeight = "96",
-                  ExpirationDate = DateOnly.Parse("2026-02-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 389, ReceivingId = 73, ProductId = 238, Quantity = 3, CBM = "0.06", TotalWeight = "48",
-                  ExpirationDate = DateOnly.Parse("2026-02-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 390, ReceivingId = 73, ProductId = 240, Quantity = 5, CBM = "0.1", TotalWeight = "80",
-                  ExpirationDate = DateOnly.Parse("2026-01-30"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 391, ReceivingId = 73, ProductId = 242, Quantity = 10, CBM = "0.2", TotalWeight = "160",
-                  ExpirationDate = DateOnly.Parse("2026-01-29"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 392, ReceivingId = 73, ProductId = 243, Quantity = 3, CBM = "0.04", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2026-02-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 393, ReceivingId = 73, ProductId = 244, Quantity = 5, CBM = "0.07", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2026-02-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 394, ReceivingId = 73, ProductId = 245, Quantity = 3, CBM = "0.04", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2026-03-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 395, ReceivingId = 73, ProductId = 246, Quantity = 15, CBM = "0.3", TotalWeight = "240",
-                  ExpirationDate = DateOnly.Parse("2026-02-17"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 396, ReceivingId = 73, ProductId = 247, Quantity = 5, CBM = "0.07", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2026-02-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 397, ReceivingId = 73, ProductId = 248, Quantity = 3, CBM = "0.04", TotalWeight = "30",
-                  ExpirationDate = DateOnly.Parse("2026-02-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 398, ReceivingId = 73, ProductId = 249, Quantity = 5, CBM = "0.07", TotalWeight = "50",
-                  ExpirationDate = DateOnly.Parse("2026-02-02"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 399, ReceivingId = 73, ProductId = 250, Quantity = 10, CBM = "0.14", TotalWeight = "140",
-                  ExpirationDate = DateOnly.Parse("2026-03-03"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 554,
-            },
-            new
-            {
-                  Id = 400, ReceivingId = 74, ProductId = 251, Quantity = 5, CBM = "0.37", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-09-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 401, ReceivingId = 74, ProductId = 252, Quantity = 5, CBM = "0.37", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-09-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 402, ReceivingId = 74, ProductId = 253, Quantity = 5, CBM = "0.37", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-09-11"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 403, ReceivingId = 74, ProductId = 255, Quantity = 1, CBM = "0.04", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-10-31"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 404, ReceivingId = 74, ProductId = 256, Quantity = 1, CBM = "0.04", TotalWeight = "16",
-                  ExpirationDate = DateOnly.Parse("2025-11-01"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 405, ReceivingId = 74, ProductId = 260, Quantity = 5, CBM = "0.16", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-11-18"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 406, ReceivingId = 74, ProductId = 259, Quantity = 5, CBM = "0.16", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-12-19"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 407, ReceivingId = 74, ProductId = 258, Quantity = 5, CBM = "0.16", TotalWeight = "40",
-                  ExpirationDate = DateOnly.Parse("2025-12-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 408, ReceivingId = 74, ProductId = 257, Quantity = 2, CBM = "0.11", TotalWeight = "20",
-                  ExpirationDate = DateOnly.Parse("2025-12-31"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 555,
-            },
-            new
-            {
-                  Id = 409, ReceivingId = 75, ProductId = 261, Quantity = 50, CBM = "0.84", TotalWeight = "525",
-                  ExpirationDate = DateOnly.Parse("2026-01-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 556,
-            },
-            new
-            {
-                  Id = 410, ReceivingId = 75, ProductId = 261, Quantity = 28, CBM = "0.47", TotalWeight = "294",
-                  ExpirationDate = DateOnly.Parse("2026-01-25"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 557,
-            },
-            new
-            {
-                  Id = 411, ReceivingId = 75, ProductId = 262, Quantity = 50, CBM = "0.84", TotalWeight = "525",
-                  ExpirationDate = DateOnly.Parse("2026-01-07"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 558,
-            },
-            new
-            {
-                  Id = 412, ReceivingId = 75, ProductId = 263, Quantity = 51, CBM = "0.85", TotalWeight = "535.5",
-                  ExpirationDate = DateOnly.Parse("2026-01-20"),
-                  Remarks = "GOOD CONDITION",
-                  ContainerName = string.Empty,
-                  PalletId = 559,
-            }
-      );
+      //modelBuilder.Entity<ReceivedProduct>().HasData(
+      //      new
+      //      {
+      //            Id = 1, ReceivingId = 1, ProductId = 30, Quantity = 400, CBM = 15.51, TotalWeight = "1400",
+      //            ExpirationDate = DateOnly.Parse("2026-01-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 2, ReceivingId = 1, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2026-01-10"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 3, ReceivingId = 1, ProductId = 32, Quantity = 600, CBM = "23.26", TotalWeight = "2100",
+      //            ExpirationDate = DateOnly.Parse("2026-01-10"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 4, ReceivingId = 2, ProductId = 17, Quantity = 288, CBM = "15.48", TotalWeight = "1008",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 5, ReceivingId = 3, ProductId = 4, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 6, ReceivingId = 3, ProductId = 6, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 7, ReceivingId = 4, ProductId = 17, Quantity = 216, CBM = "11.61", TotalWeight = "756",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 8, ReceivingId = 5, ProductId = 17, Quantity = 232, CBM = "12.47", TotalWeight = "812",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 10, ReceivingId = 6, ProductId = 11, Quantity = 300, CBM = "16.13", TotalWeight = "1050",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 11, ReceivingId = 6, ProductId = 2, Quantity = 171, CBM = "5.91", TotalWeight = "598.5",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 12, ReceivingId = 7, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 13, ReceivingId = 7, ProductId = 17, Quantity = 144, CBM = "7.74", TotalWeight = "504",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 14, ReceivingId = 8, ProductId = 2, Quantity = 19, CBM = "0.66", TotalWeight = "66.5",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 15, ReceivingId = 8, ProductId = 13, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2025-01-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 16, ReceivingId = 8, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 17, ReceivingId = 9, ProductId = 17, Quantity = 120, CBM = "6.45", TotalWeight = "420",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 18, ReceivingId = 9, ProductId = 12, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 19, ReceivingId = 10, ProductId = 7, Quantity = 318, CBM = "17.1", TotalWeight = "1113",
+      //            ExpirationDate = DateOnly.Parse("2026-01-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 20, ReceivingId = 11, ProductId = 1, Quantity = 200, CBM = "6.91", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2026-01-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 21, ReceivingId = 11, ProductId = 24, Quantity = 200, CBM = "10.75", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2026-01-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 22, ReceivingId = 11, ProductId = 2, Quantity = 10, CBM = "0.35", TotalWeight = "35",
+      //            ExpirationDate = DateOnly.Parse("2026-01-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 23, ReceivingId = 12, ProductId = 7, Quantity = 247, CBM = "13.28", TotalWeight = "864.5",
+      //            ExpirationDate = DateOnly.Parse("2026-01-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 24, ReceivingId = 13, ProductId = 18, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 25, ReceivingId = 13, ProductId = 19, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 26, ReceivingId = 13, ProductId = 20, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 27, ReceivingId = 14, ProductId = 3, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 28, ReceivingId = 14, ProductId = 7, Quantity = 35, CBM = "1.88", TotalWeight = "122.5",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 29, ReceivingId = 14, ProductId = 22, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 30, ReceivingId = 14, ProductId = 23, Quantity = 12, CBM = "0.65", TotalWeight = "42",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 37, ReceivingId = 18, ProductId = 41, Quantity = 50, CBM = "0.56", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2025-10-10"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 1,
+      //      },
+      //      new
+      //      {
+      //            Id = 38, ReceivingId = 18, ProductId = 42, Quantity = 49, CBM = "0.55", TotalWeight = "147",
+      //            ExpirationDate = DateOnly.Parse("2025-09-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 1,
+      //      },
+      //      new
+      //      {
+      //            Id = 39, ReceivingId = 19, ProductId = 45, Quantity = 50, CBM = "0.56", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2025-09-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 2,
+      //      },
+      //      new
+      //      {
+      //            Id = 40, ReceivingId = 19, ProductId = 46, Quantity = 50, CBM = "0.56", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2025-10-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 2,
+      //      },
+      //      new
+      //      {
+      //            Id = 41, ReceivingId = 20, ProductId = 43, Quantity = 46, CBM = "0.52", TotalWeight = "138",
+      //            ExpirationDate = DateOnly.Parse("2025-10-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 3,
+      //      },
+      //      new
+      //      {
+      //            Id = 42, ReceivingId = 20, ProductId = 44, Quantity = 50, CBM = "0.56", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2025-10-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 3,
+      //      },
+      //      new
+      //      {
+      //            Id = 43, ReceivingId = 21, ProductId = 33, Quantity = 1, CBM = "0.13", TotalWeight = "0",
+      //            ExpirationDate = DateOnly.Parse("2025-01-25"),
+      //            Remarks = "CONTROLLER-3PCS",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 44, ReceivingId = 21, ProductId = 34, Quantity = 1, CBM = "0.03", TotalWeight = "0",
+      //            ExpirationDate = DateOnly.Parse("2025-01-25"),
+      //            Remarks = @"CIRCUIT BOARD(TS26F)-10PCS
+      //            CONTROLLER-3PCS
+      //            CONTROLLER(NEW)-3PCS
+      //            SENSORS-18PCS
+      //            CPR(WITH O-RING)-3PCS
+      //            FUSE DETECTION BOARD(TS55F)-5PCS",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 45, ReceivingId = 21, ProductId = 38, Quantity = 8, CBM = "0.27", TotalWeight = "0",
+      //            ExpirationDate = DateOnly.Parse("2025-01-25"),
+      //            Remarks = "16SETS",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 46, ReceivingId = 21, ProductId = 37, Quantity = 1, CBM = "0", TotalWeight = "0",
+      //            ExpirationDate = DateOnly.Parse("2025-01-25"),
+      //            Remarks = "6SET - 3SETS OF BY 3's AND 3SETS OF BY 2's",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 47, ReceivingId = 22, ProductId = 32, Quantity = 600, CBM = "23.26", TotalWeight = "2100",
+      //            ExpirationDate = DateOnly.Parse("2026-02-25"),
+      //            Remarks = "Good Condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 48, ReceivingId = 22, ProductId = 30, Quantity = 400, CBM = "15.51", TotalWeight = "1400",
+      //            ExpirationDate = DateOnly.Parse("2026-02-25"),
+      //            Remarks = "Good Condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 49, ReceivingId = 22, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2026-02-25"),
+      //            Remarks = "Good Condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 50, ReceivingId = 23, ProductId = 17, Quantity = 747, CBM = "40.16", TotalWeight = "2614.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-14"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 51, ReceivingId = 23, ProductId = 11, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-10"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 52, ReceivingId = 24, ProductId = 17, Quantity = 20, CBM = "1.08", TotalWeight = "70",
+      //            ExpirationDate = DateOnly.Parse("2026-02-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 53, ReceivingId = 24, ProductId = 12, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-02-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 54, ReceivingId = 24, ProductId = 7, Quantity = 125, CBM = "6.72", TotalWeight = "437.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 55, ReceivingId = 25, ProductId = 7, Quantity = 270, CBM = "14.52", TotalWeight = "945",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 56, ReceivingId = 26, ProductId = 7, Quantity = 205, CBM = "11.02", TotalWeight = "717.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 57, ReceivingId = 27, ProductId = 18, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2026-02-07"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 4,
+      //      },
+      //      new
+      //      {
+      //            Id = 58, ReceivingId = 27, ProductId = 20, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2026-02-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 5,
+      //      },
+      //      new
+      //      {
+      //            Id = 59, ReceivingId = 27, ProductId = 19, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2025-12-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 7,
+      //      },
+      //      new
+      //      {
+      //            Id = 60, ReceivingId = 28, ProductId = 11, Quantity = 285, CBM = "15.32", TotalWeight = "997.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-10"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 61, ReceivingId = 29, ProductId = 17, Quantity = 233, CBM = "12.53", TotalWeight = "815.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-14"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 62, ReceivingId = 30, ProductId = 24, Quantity = 39, CBM = "2.1", TotalWeight = "136.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 8,
+      //      },
+      //      new
+      //      {
+      //            Id = 63, ReceivingId = 30, ProductId = 23, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 10,
+      //      },
+      //      new
+      //      {
+      //            Id = 64, ReceivingId = 30, ProductId = 23, Quantity = 15, CBM = "0.81", TotalWeight = "52.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 11,
+      //      },
+      //      new
+      //      {
+      //            Id = 65, ReceivingId = 30, ProductId = 23, Quantity = 20, CBM = "1.08", TotalWeight = "70",
+      //            ExpirationDate = DateOnly.Parse("2026-02-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 13,
+      //      },
+      //      new
+      //      {
+      //            Id = 66, ReceivingId = 30, ProductId = 21, Quantity = 2, CBM = "0.11", TotalWeight = "7",
+      //            ExpirationDate = DateOnly.Parse("2026-02-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 14,
+      //      },
+      //      new
+      //      {
+      //            Id = 67, ReceivingId = 30, ProductId = 4, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 15,
+      //      },
+      //      new
+      //      {
+      //            Id = 68, ReceivingId = 30, ProductId = 4, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 16,
+      //      },
+      //      new
+      //      {
+      //            Id = 69, ReceivingId = 30, ProductId = 6, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 17,
+      //      },
+      //      new
+      //      {
+      //            Id = 70, ReceivingId = 30, ProductId = 6, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 18,
+      //      },
+      //      new
+      //      {
+      //            Id = 71, ReceivingId = 30, ProductId = 3, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 19,
+      //      },
+      //      new
+      //      {
+      //            Id = 72, ReceivingId = 30, ProductId = 3, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 20,
+      //      },
+      //      new
+      //      {
+      //            Id = 73, ReceivingId = 31, ProductId = 13, Quantity = 72, CBM = "3.87", TotalWeight = "252",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 74, ReceivingId = 31, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-02-07"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 75, ReceivingId = 31, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-02-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 76, ReceivingId = 32, ProductId = 13, Quantity = 28, CBM = "1.51", TotalWeight = "98",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 77, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-02-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 21,
+      //      },
+      //      new
+      //      {
+      //            Id = 78, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 22,
+      //      },
+      //      new
+      //      {
+      //            Id = 79, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 23,
+      //      },
+      //      new
+      //      {
+      //            Id = 80, ReceivingId = 32, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 24,
+      //      },
+      //      new
+      //      {
+      //            Id = 81, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 25,
+      //      },
+      //      new
+      //      {
+      //            Id = 82, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 26,
+      //      },
+      //      new
+      //      {
+      //            Id = 83, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 27,
+      //      },
+      //      new
+      //      {
+      //            Id = 84, ReceivingId = 32, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-03-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 28,
+      //      },
+      //      new
+      //      {
+      //            Id = 85, ReceivingId = 33, ProductId = 24, Quantity = 61, CBM = "3.28", TotalWeight = "213.5",
+      //            ExpirationDate = DateOnly.Parse("2025-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 29,
+      //      },
+      //      new
+      //      {
+      //            Id = 86, ReceivingId = 33, ProductId = 24, Quantity = 60, CBM = "3.23", TotalWeight = "210",
+      //            ExpirationDate = DateOnly.Parse("2025-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 30,
+      //      },
+      //      new
+      //      {
+      //            Id = 87, ReceivingId = 33, ProductId = 24, Quantity = 40, CBM = "2.15", TotalWeight = "140",
+      //            ExpirationDate = DateOnly.Parse("2025-03-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 31,
+      //      },
+      //      new
+      //      {
+      //            Id = 88, ReceivingId = 33, ProductId = 48, Quantity = 100, CBM = "6.8", TotalWeight = "300",
+      //            ExpirationDate = DateOnly.Parse("2026-02-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 89, ReceivingId = 33, ProductId = 49, Quantity = 100, CBM = "9.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-02-18"),
+      //            Remarks = "WRONG FLAVOR ON INVOICE ORDER MUST BE MIGGOS SWEETCORN 105G",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 90, ReceivingId = 34, ProductId = 50, Quantity = 1, CBM = "0.05", TotalWeight = "7",
+      //            ExpirationDate = DateOnly.Parse("2025-03-11"),
+      //            Remarks = "A20221125002",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 91, ReceivingId = 34, ProductId = 51, Quantity = 1, CBM = "0.13", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221125028",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 92, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117020",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 93, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 94, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 95, ReceivingId = 34, ProductId = 54, Quantity = 1, CBM = "0.13", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221114003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 96, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20211115003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 97, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20211115008",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 98, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20231129001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 99, ReceivingId = 34, ProductId = 54, Quantity = 1, CBM = "0.13", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20231129001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 100, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117016",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 101, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 102, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117016",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 103, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 104, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117018",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 105, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122002",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 106, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20211115005",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 107, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20201112003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 108, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117021",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 109, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122004",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 110, ReceivingId = 34, ProductId = 50, Quantity = 1, CBM = "0.05", TotalWeight = "7",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221125001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 111, ReceivingId = 34, ProductId = 51, Quantity = 1, CBM = "0.13", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221125027",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 112, ReceivingId = 34, ProductId = 52, Quantity = 1, CBM = "0.05", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221117022",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 113, ReceivingId = 34, ProductId = 53, Quantity = 1, CBM = "0.13", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "A20221122005",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 114, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20201112002",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 115, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20201112004",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 116, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20240604001",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 117, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20240604002",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 118, ReceivingId = 34, ProductId = 57, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20240604003",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 119, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20211115006",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 120, ReceivingId = 34, ProductId = 56, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20201112009",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 121, ReceivingId = 34, ProductId = 55, Quantity = 1, CBM = "0.28", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-03-13"),
+      //            Remarks = "20211115007",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 122, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 398,
+      //      },
+      //      new
+      //      {
+      //            Id = 123, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 399,
+      //      },
+      //      new
+      //      {
+      //            Id = 124, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-06-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 400,
+      //      },
+      //      new
+      //      {
+      //            Id = 125, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-06-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 401,
+      //      },
+      //      new
+      //      {
+      //            Id = 126, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-06-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 402,
+      //      },
+      //      new
+      //      {
+      //            Id = 127, ReceivingId = 35, ProductId = 58, Quantity = 30, CBM = "0", TotalWeight = "315",
+      //            ExpirationDate = DateOnly.Parse("2025-06-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 403,
+      //      },
+      //      new
+      //      {
+      //            Id = 128, ReceivingId = 36, ProductId = 18, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2026-05-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 404,
+      //      },
+      //      new
+      //      {
+      //            Id = 129, ReceivingId = 36, ProductId = 20, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2026-05-07"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 405,
+      //      },
+      //      new
+      //      {
+      //            Id = 130, ReceivingId = 36, ProductId = 19, Quantity = 80, CBM = "4.3", TotalWeight = "280",
+      //            ExpirationDate = DateOnly.Parse("2026-05-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 406,
+      //      },
+      //      new
+      //      {
+      //            Id = 131, ReceivingId = 37, ProductId = 17, Quantity = 500, CBM = "26.88", TotalWeight = "1750",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 132, ReceivingId = 37, ProductId = 49, Quantity = 100, CBM = "9.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 133, ReceivingId = 37, ProductId = 11, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 134, ReceivingId = 38, ProductId = 12, Quantity = 28, CBM = "1.51", TotalWeight = "98",
+      //            ExpirationDate = DateOnly.Parse("2026-04-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 135, ReceivingId = 38, ProductId = 11, Quantity = 150, CBM = "8.06", TotalWeight = "525",
+      //            ExpirationDate = DateOnly.Parse("2026-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 136, ReceivingId = 38, ProductId = 13, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-04-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 137, ReceivingId = 38, ProductId = 14, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-04-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 138, ReceivingId = 38, ProductId = 15, Quantity = 100, CBM = "5.38", TotalWeight = "350",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 139, ReceivingId = 39, ProductId = 6, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 407,
+      //      },
+      //      new
+      //      {
+      //            Id = 140, ReceivingId = 39, ProductId = 4, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 408,
+      //      },
+      //      new
+      //      {
+      //            Id = 141, ReceivingId = 39, ProductId = 3, Quantity = 50, CBM = "2.69", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 409,
+      //      },
+      //      new
+      //      {
+      //            Id = 142, ReceivingId = 39, ProductId = 25, Quantity = 300, CBM = "16.13", TotalWeight = "1050",
+      //            ExpirationDate = DateOnly.Parse("2026-04-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 143, ReceivingId = 39, ProductId = 12, Quantity = 72, CBM = "3.87", TotalWeight = "252",
+      //            ExpirationDate = DateOnly.Parse("2026-04-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 144, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 410,
+      //      },
+      //      new
+      //      {
+      //            Id = 145, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 411,
+      //      },
+      //      new
+      //      {
+      //            Id = 146, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 412,
+      //      },
+      //      new
+      //      {
+      //            Id = 147, ReceivingId = 39, ProductId = 1, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 413,
+      //      },
+      //      new
+      //      {
+      //            Id = 148, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 414,
+      //      },
+      //      new
+      //      {
+      //            Id = 149, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 415,
+      //      },
+      //      new
+      //      {
+      //            Id = 150, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 416,
+      //      },
+      //      new
+      //      {
+      //            Id = 151, ReceivingId = 39, ProductId = 2, Quantity = 50, CBM = "1.73", TotalWeight = "175",
+      //            ExpirationDate = DateOnly.Parse("2026-04-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 417,
+      //      },
+      //      new
+      //      {
+      //            Id = 152, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 423,
+      //      },
+      //      new
+      //      {
+      //            Id = 153, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 424,
+      //      },
+      //      new
+      //      {
+      //            Id = 154, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 425,
+      //      },
+      //      new
+      //      {
+      //            Id = 155, ReceivingId = 40, ProductId = 48, Quantity = 25, CBM = "1.7", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 426,
+      //      },
+      //      new
+      //      {
+      //            Id = 156, ReceivingId = 40, ProductId = 21, Quantity = 4, CBM = "0.22", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2026-04-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 427,
+      //      },
+      //      new
+      //      {
+      //            Id = 157, ReceivingId = 40, ProductId = 23, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 428,
+      //      },
+      //      new
+      //      {
+      //            Id = 158, ReceivingId = 40, ProductId = 23, Quantity = 25, CBM = "1.34", TotalWeight = "87.5",
+      //            ExpirationDate = DateOnly.Parse("2026-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 429,
+      //      },
+      //      new
+      //      {
+      //            Id = 159, ReceivingId = 40, ProductId = 22, Quantity = 24, CBM = "1.29", TotalWeight = "84",
+      //            ExpirationDate = DateOnly.Parse("2026-04-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 430,
+      //      },
+      //      new
+      //      {
+      //            Id = 160, ReceivingId = 41, ProductId = 60, Quantity = 20, CBM = "0.48", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2026-08-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 434,
+      //      },
+      //      new
+      //      {
+      //            Id = 161, ReceivingId = 41, ProductId = 61, Quantity = 20, CBM = "0.5", TotalWeight = "180",
+      //            ExpirationDate = DateOnly.Parse("2026-07-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 434,
+      //      },
+      //      new
+      //      {
+      //            Id = 162, ReceivingId = 41, ProductId = 62, Quantity = 30, CBM = "0.87", TotalWeight = "240",
+      //            ExpirationDate = DateOnly.Parse("2026-06-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 435,
+      //      },
+      //      new
+      //      {
+      //            Id = 163, ReceivingId = 41, ProductId = 65, Quantity = 100, CBM = "0.96", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2026-05-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 436,
+      //      },
+      //      new
+      //      {
+      //            Id = 164, ReceivingId = 42, ProductId = 63, Quantity = 20, CBM = "0.6", TotalWeight = "290",
+      //            ExpirationDate = DateOnly.Parse("2026-11-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 439,
+      //      },
+      //      new
+      //      {
+      //            Id = 165, ReceivingId = 42, ProductId = 64, Quantity = 20, CBM = "0.46", TotalWeight = "230",
+      //            ExpirationDate = DateOnly.Parse("2027-03-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 440,
+      //      },
+      //      new
+      //      {
+      //            Id = 166, ReceivingId = 43, ProductId = 32, Quantity = 500, CBM = "19.38", TotalWeight = "1000",
+      //            ExpirationDate = DateOnly.Parse("2026-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 167, ReceivingId = 43, ProductId = 30, Quantity = 300, CBM = "11.63", TotalWeight = "600",
+      //            ExpirationDate = DateOnly.Parse("2026-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 168, ReceivingId = 43, ProductId = 31, Quantity = 200, CBM = "7.75", TotalWeight = "400",
+      //            ExpirationDate = DateOnly.Parse("2026-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = (int?)null,
+      //      },
+      //      new
+      //      {
+      //            Id = 169, ReceivingId = 44, ProductId = 66, Quantity = 15, CBM = "0.14", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2027-03-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 444,
+      //      },
+      //      new
+      //      {
+      //            Id = 170, ReceivingId = 44, ProductId = 67, Quantity = 5, CBM = "0.05", TotalWeight = "5",
+      //            ExpirationDate = DateOnly.Parse("2025-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 444,
+      //      },
+      //      new
+      //      {
+      //            Id = 171, ReceivingId = 44, ProductId = 68, Quantity = 10, CBM = "0.25", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2025-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 444,
+      //      },
+      //      new
+      //      {
+      //            Id = 172, ReceivingId = 44, ProductId = 69, Quantity = 29, CBM = "0.49", TotalWeight = "362.5",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "1 CARTON FOR RETURN MISSING 2CANS. RECEIVED 29CARTONS ONLY",
+      //            ContainerName = string.Empty,
+      //            PalletId = 445,
+      //      },
+      //      new
+      //      {
+      //            Id = 173, ReceivingId = 44, ProductId = 70, Quantity = 10, CBM = "0.13", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2025-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 444,
+      //      },
+      //      new
+      //      {
+      //            Id = 174, ReceivingId = 44, ProductId = 71, Quantity = 10, CBM = "0.36", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2025-05-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 444,
+      //      },
+      //      new
+      //      {
+      //            Id = 175, ReceivingId = 44, ProductId = 44, Quantity = 6, CBM = "0.07", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2026-02-08"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 446,
+      //      },
+      //      new
+      //      {
+      //            Id = 176, ReceivingId = 44, ProductId = 72, Quantity = 12, CBM = "0.14", TotalWeight = "36",
+      //            ExpirationDate = DateOnly.Parse("2026-02-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 446,
+      //      },
+      //      new
+      //      {
+      //            Id = 177, ReceivingId = 45, ProductId = 73, Quantity = 15, CBM = "0.39", TotalWeight = "307.5",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 447,
+      //      },
+      //      new
+      //      {
+      //            Id = 178, ReceivingId = 46, ProductId = 41, Quantity = 76, CBM = "0.86", TotalWeight = "228",
+      //            ExpirationDate = DateOnly.Parse("2026-01-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 448,
+      //      },
+      //      new
+      //      {
+      //            Id = 179, ReceivingId = 47, ProductId = 74, Quantity = 30, CBM = "0.34", TotalWeight = "90",
+      //            ExpirationDate = DateOnly.Parse("2026-01-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 449,
+      //      },
+      //      new
+      //      {
+      //            Id = 180, ReceivingId = 47, ProductId = 42, Quantity = 50, CBM = "0.56", TotalWeight = "150",
+      //            ExpirationDate = DateOnly.Parse("2026-02-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 450,
+      //      },
+      //      new
+      //      {
+      //            Id = 181, ReceivingId = 47, ProductId = 75, Quantity = 5, CBM = "0.06", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2026-02-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 449,
+      //      },
+      //      new
+      //      {
+      //            Id = 182, ReceivingId = 48, ProductId = 76, Quantity = 10, CBM = "0.32", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 451,
+      //      },
+      //      new
+      //      {
+      //            Id = 183, ReceivingId = 48, ProductId = 77, Quantity = 10, CBM = "0.32", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 451,
+      //      },
+      //      new
+      //      {
+      //            Id = 184, ReceivingId = 49, ProductId = 78, Quantity = 100, CBM = "0.73", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2025-12-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 452,
+      //      },
+      //      new
+      //      {
+      //            Id = 185, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
+      //            ExpirationDate = DateOnly.Parse("2026-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 457,
+      //      },
+      //      new
+      //      {
+      //            Id = 186, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 458,
+      //      },
+      //      new
+      //      {
+      //            Id = 187, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 459,
+      //      },
+      //      new
+      //      {
+      //            Id = 188, ReceivingId = 50, ProductId = 73, Quantity = 25, CBM = "0.65", TotalWeight = "512.5",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 460,
+      //      },
+      //      new
+      //      {
+      //            Id = 189, ReceivingId = 51, ProductId = 79, Quantity = 50, CBM = "0.98", TotalWeight = "575",
+      //            ExpirationDate = DateOnly.Parse("2026-03-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 461,
+      //      },
+      //      new
+      //      {
+      //            Id = 190, ReceivingId = 51, ProductId = 79, Quantity = 25, CBM = "0.49", TotalWeight = "287.5",
+      //            ExpirationDate = DateOnly.Parse("2026-03-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 462,
+      //      },
+      //      new
+      //      {
+      //            Id = 191, ReceivingId = 51, ProductId = 79, Quantity = 25, CBM = "0.49", TotalWeight = "287.5",
+      //            ExpirationDate = DateOnly.Parse("2026-03-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 463,
+      //      },
+      //      new
+      //      {
+      //            Id = 192, ReceivingId = 52, ProductId = 80, Quantity = 20, CBM = "2.07", TotalWeight = "110",
+      //            ExpirationDate = DateOnly.Parse("2025-05-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 464,
+      //      },
+      //      new
+      //      {
+      //            Id = 193, ReceivingId = 52, ProductId = 80, Quantity = 20, CBM = "2.07", TotalWeight = "110",
+      //            ExpirationDate = DateOnly.Parse("2025-05-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 465,
+      //      },
+      //      new
+      //      {
+      //            Id = 194, ReceivingId = 53, ProductId = 81, Quantity = 25, CBM = "1.29", TotalWeight = "337.5",
+      //            ExpirationDate = DateOnly.Parse("2027-03-20"),
+      //            Remarks = "GOODS CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 466,
+      //      },
+      //      new
+      //      {
+      //            Id = 195, ReceivingId = 53, ProductId = 81, Quantity = 25, CBM = "1.29", TotalWeight = "337.5",
+      //            ExpirationDate = DateOnly.Parse("2027-03-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 467,
+      //      },
+      //      new
+      //      {
+      //            Id = 196, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2025-05-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 468,
+      //      },
+      //      new
+      //      {
+      //            Id = 197, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-05-05"),
+      //            Remarks = "good condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = 469,
+      //      },
+      //      new
+      //      {
+      //            Id = 198, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-05-05"),
+      //            Remarks = "Good Condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = 470,
+      //      },
+      //      new
+      //      {
+      //            Id = 199, ReceivingId = 54, ProductId = 82, Quantity = 25, CBM = "0.38", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2026-05-05"),
+      //            Remarks = "Good condition",
+      //            ContainerName = string.Empty,
+      //            PalletId = 471,
+      //      },
+      //      new
+      //      {
+      //            Id = 201, ReceivingId = 55, ProductId = 83, Quantity = 30, CBM = "1.47", TotalWeight = "450",
+      //            ExpirationDate = DateOnly.Parse("2026-12-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 472,
+      //      },
+      //      new
+      //      {
+      //            Id = 202, ReceivingId = 56, ProductId = 84, Quantity = 200, CBM = "0.63", TotalWeight = "400",
+      //            ExpirationDate = DateOnly.Parse("2025-11-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 477,
+      //      },
+      //      new
+      //      {
+      //            Id = 203, ReceivingId = 56, ProductId = 85, Quantity = 333, CBM = "1.05", TotalWeight = "666",
+      //            ExpirationDate = DateOnly.Parse("2025-11-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 478,
+      //      },
+      //      new
+      //      {
+      //            Id = 204, ReceivingId = 57, ProductId = 86, Quantity = 15, CBM = "0.59", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2025-11-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 480,
+      //      },
+      //      new
+      //      {
+      //            Id = 205, ReceivingId = 57, ProductId = 88, Quantity = 5, CBM = "0.13", TotalWeight = "62.5",
+      //            ExpirationDate = DateOnly.Parse("2025-11-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 480,
+      //      },
+      //      new
+      //      {
+      //            Id = 206, ReceivingId = 57, ProductId = 87, Quantity = 5, CBM = "0.17", TotalWeight = "10",
+      //            ExpirationDate = DateOnly.Parse("2025-11-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 480,
+      //      },
+      //      new
+      //      {
+      //            Id = 207, ReceivingId = 58, ProductId = 89, Quantity = 40, CBM = "1.11", TotalWeight = "160",
+      //            ExpirationDate = DateOnly.Parse("2026-11-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 481,
+      //      },
+      //      new
+      //      {
+      //            Id = 208, ReceivingId = 59, ProductId = 90, Quantity = 6, CBM = "1.03", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2025-05-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 482,
+      //      },
+      //      new
+      //      {
+      //            Id = 209, ReceivingId = 59, ProductId = 91, Quantity = 6, CBM = "1.98", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2025-05-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 483,
+      //      },
+      //      new
+      //      {
+      //            Id = 210, ReceivingId = 59, ProductId = 91, Quantity = 6, CBM = "1.98", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2025-05-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 484,
+      //      },
+      //      new
+      //      {
+      //            Id = 211, ReceivingId = 60, ProductId = 90, Quantity = 6, CBM = "1.03", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2025-05-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 485,
+      //      },
+      //      new
+      //      {
+      //            Id = 212, ReceivingId = 60, ProductId = 92, Quantity = 20, CBM = "8.15", TotalWeight = "230",
+      //            ExpirationDate = DateOnly.Parse("2025-05-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 486,
+      //      },
+      //      new
+      //      {
+      //            Id = 232, ReceivingId = 62, ProductId = 121, Quantity = 10, CBM = "0.14", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2026-04-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 233, ReceivingId = 62, ProductId = 133, Quantity = 3, CBM = "0.16", TotalWeight = "27",
+      //            ExpirationDate = DateOnly.Parse("2025-10-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 234, ReceivingId = 62, ProductId = 96, Quantity = 3, CBM = "0.1", TotalWeight = "27",
+      //            ExpirationDate = DateOnly.Parse("2025-10-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 235, ReceivingId = 62, ProductId = 134, Quantity = 3, CBM = "0.03", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2025-12-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 236, ReceivingId = 62, ProductId = 106, Quantity = 10, CBM = "0.31", TotalWeight = "10",
+      //            ExpirationDate = DateOnly.Parse("2025-10-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 237, ReceivingId = 62, ProductId = 118, Quantity = 10, CBM = "0.43", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2025-10-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 238, ReceivingId = 62, ProductId = 136, Quantity = 10, CBM = "0.7", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2025-10-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 239, ReceivingId = 62, ProductId = 137, Quantity = 4, CBM = "0.31", TotalWeight = "8",
+      //            ExpirationDate = DateOnly.Parse("2025-11-07"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 240, ReceivingId = 62, ProductId = 138, Quantity = 5, CBM = "0.05", TotalWeight = "5",
+      //            ExpirationDate = DateOnly.Parse("2025-10-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 241, ReceivingId = 62, ProductId = 140, Quantity = 3, CBM = "0.08", TotalWeight = "3",
+      //            ExpirationDate = DateOnly.Parse("2025-11-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 242, ReceivingId = 62, ProductId = 119, Quantity = 8, CBM = "0.42", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-10-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 243, ReceivingId = 62, ProductId = 104, Quantity = 10, CBM = "0.16", TotalWeight = "130",
+      //            ExpirationDate = DateOnly.Parse("2026-04-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 244, ReceivingId = 62, ProductId = 128, Quantity = 25, CBM = "1.18", TotalWeight = "400",
+      //            ExpirationDate = DateOnly.Parse("2025-12-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 497,
+      //      },
+      //      new
+      //      {
+      //            Id = 245, ReceivingId = 62, ProductId = 93, Quantity = 20, CBM = "0.36", TotalWeight = "220",
+      //            ExpirationDate = DateOnly.Parse("2027-03-14"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 498,
+      //      },
+      //      new
+      //      {
+      //            Id = 246, ReceivingId = 62, ProductId = 105, Quantity = 5, CBM = "0.07", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2026-04-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 498,
+      //      },
+      //      new
+      //      {
+      //            Id = 247, ReceivingId = 62, ProductId = 127, Quantity = 10, CBM = "0.55", TotalWeight = "140",
+      //            ExpirationDate = DateOnly.Parse("2027-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 498,
+      //      },
+      //      new
+      //      {
+      //            Id = 248, ReceivingId = 62, ProductId = 123, Quantity = 13, CBM = "0.36", TotalWeight = "156",
+      //            ExpirationDate = DateOnly.Parse("2027-03-08"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 499,
+      //      },
+      //      new
+      //      {
+      //            Id = 249, ReceivingId = 62, ProductId = 107, Quantity = 30, CBM = "0.84", TotalWeight = "480",
+      //            ExpirationDate = DateOnly.Parse("2026-04-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 499,
+      //      },
+      //      new
+      //      {
+      //            Id = 250, ReceivingId = 62, ProductId = 97, Quantity = 50, CBM = "1.26", TotalWeight = "1000",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 500,
+      //      },
+      //      new
+      //      {
+      //            Id = 251, ReceivingId = 62, ProductId = 97, Quantity = 50, CBM = "1.26", TotalWeight = "1000",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 501,
+      //      },
+      //      new
+      //      {
+      //            Id = 252, ReceivingId = 63, ProductId = 100, Quantity = 50, CBM = "0.94", TotalWeight = "950",
+      //            ExpirationDate = DateOnly.Parse("2026-04-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 520,
+      //      },
+      //      new
+      //      {
+      //            Id = 253, ReceivingId = 63, ProductId = 99, Quantity = 50, CBM = "0.78", TotalWeight = "750",
+      //            ExpirationDate = DateOnly.Parse("2026-04-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 521,
+      //      },
+      //      new
+      //      {
+      //            Id = 254, ReceivingId = 63, ProductId = 101, Quantity = 50, CBM = "1.04", TotalWeight = "800",
+      //            ExpirationDate = DateOnly.Parse("2026-04-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 522,
+      //      },
+      //      new
+      //      {
+      //            Id = 255, ReceivingId = 63, ProductId = 139, Quantity = 5, CBM = "0.16", TotalWeight = "5",
+      //            ExpirationDate = DateOnly.Parse("2025-11-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 256, ReceivingId = 63, ProductId = 123, Quantity = 3, CBM = "0.08", TotalWeight = "36",
+      //            ExpirationDate = DateOnly.Parse("2027-03-08"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 257, ReceivingId = 63, ProductId = 126, Quantity = 2, CBM = "0.04", TotalWeight = "26",
+      //            ExpirationDate = DateOnly.Parse("2026-02-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 258, ReceivingId = 63, ProductId = 95, Quantity = 5, CBM = "0.17", TotalWeight = "45",
+      //            ExpirationDate = DateOnly.Parse("2025-11-08"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 259, ReceivingId = 63, ProductId = 98, Quantity = 10, CBM = "0.32", TotalWeight = "70",
+      //            ExpirationDate = DateOnly.Parse("2026-09-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 260, ReceivingId = 63, ProductId = 102, Quantity = 3, CBM = "0.03", TotalWeight = "27",
+      //            ExpirationDate = DateOnly.Parse("2026-04-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 523,
+      //      },
+      //      new
+      //      {
+      //            Id = 261, ReceivingId = 63, ProductId = 129, Quantity = 10, CBM = "0.25", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 262, ReceivingId = 63, ProductId = 129, Quantity = 10, CBM = "0.25", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 263, ReceivingId = 63, ProductId = 77, Quantity = 5, CBM = "0.16", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 264, ReceivingId = 63, ProductId = 111, Quantity = 5, CBM = "0.79", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 265, ReceivingId = 63, ProductId = 117, Quantity = 5, CBM = "0.02", TotalWeight = "10",
+      //            ExpirationDate = DateOnly.Parse("2029-03-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 266, ReceivingId = 63, ProductId = 76, Quantity = 5, CBM = "0.16", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 267, ReceivingId = 63, ProductId = 109, Quantity = 5, CBM = "0.21", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-12-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 268, ReceivingId = 63, ProductId = 115, Quantity = 3, CBM = "0.09", TotalWeight = "27",
+      //            ExpirationDate = DateOnly.Parse("2026-03-31"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 269, ReceivingId = 63, ProductId = 113, Quantity = 2, CBM = "0.03", TotalWeight = "8",
+      //            ExpirationDate = DateOnly.Parse("2026-06-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 270, ReceivingId = 63, ProductId = 114, Quantity = 3, CBM = "0.03", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2026-09-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 271, ReceivingId = 63, ProductId = 108, Quantity = 20, CBM = "0.65", TotalWeight = "320",
+      //            ExpirationDate = DateOnly.Parse("2026-02-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 524,
+      //      },
+      //      new
+      //      {
+      //            Id = 272, ReceivingId = 63, ProductId = 132, Quantity = 2, CBM = "0.04", TotalWeight = "32",
+      //            ExpirationDate = DateOnly.Parse("2027-02-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 273, ReceivingId = 63, ProductId = 122, Quantity = 2, CBM = "0.02", TotalWeight = "13",
+      //            ExpirationDate = DateOnly.Parse("2025-10-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 274, ReceivingId = 63, ProductId = 125, Quantity = 5, CBM = "0.1", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2026-08-23"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 275, ReceivingId = 63, ProductId = 103, Quantity = 2, CBM = "0.05", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2026-04-15"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 276, ReceivingId = 63, ProductId = 120, Quantity = 10, CBM = "0.52", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-10-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 277, ReceivingId = 63, ProductId = 130, Quantity = 10, CBM = "0.25", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2025-12-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 278, ReceivingId = 63, ProductId = 12, Quantity = 10, CBM = "0.54", TotalWeight = "35",
+      //            ExpirationDate = DateOnly.Parse("2025-10-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 279, ReceivingId = 63, ProductId = 112, Quantity = 15, CBM = "0.54", TotalWeight = "120",
+      //            ExpirationDate = DateOnly.Parse("2025-10-22"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 525,
+      //      },
+      //      new
+      //      {
+      //            Id = 280, ReceivingId = 64, ProductId = 141, Quantity = 15, CBM = "0.73", TotalWeight = "405",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 530,
+      //      },
+      //      new
+      //      {
+      //            Id = 281, ReceivingId = 64, ProductId = 150, Quantity = 5, CBM = "0.15", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 530,
+      //      },
+      //      new
+      //      {
+      //            Id = 282, ReceivingId = 64, ProductId = 151, Quantity = 5, CBM = "0.15", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 530,
+      //      },
+      //      new
+      //      {
+      //            Id = 283, ReceivingId = 64, ProductId = 145, Quantity = 2, CBM = "0.05", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2027-02-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 530,
+      //      },
+      //      new
+      //      {
+      //            Id = 284, ReceivingId = 64, ProductId = 142, Quantity = 15, CBM = "0.73", TotalWeight = "405",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 531,
+      //      },
+      //      new
+      //      {
+      //            Id = 285, ReceivingId = 64, ProductId = 147, Quantity = 3, CBM = "0.03", TotalWeight = "42",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 531,
+      //      },
+      //      new
+      //      {
+      //            Id = 286, ReceivingId = 64, ProductId = 148, Quantity = 3, CBM = "0.03", TotalWeight = "39",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 531,
+      //      },
+      //      new
+      //      {
+      //            Id = 287, ReceivingId = 64, ProductId = 146, Quantity = 5, CBM = "0.05", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 531,
+      //      },
+      //      new
+      //      {
+      //            Id = 288, ReceivingId = 64, ProductId = 149, Quantity = 5, CBM = "0.05", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 531,
+      //      },
+      //      new
+      //      {
+      //            Id = 289, ReceivingId = 64, ProductId = 143, Quantity = 15, CBM = "0.73", TotalWeight = "405",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 532,
+      //      },
+      //      new
+      //      {
+      //            Id = 290, ReceivingId = 64, ProductId = 144, Quantity = 25, CBM = "1.22", TotalWeight = "675",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 533,
+      //      },
+      //      new
+      //      {
+      //            Id = 291, ReceivingId = 65, ProductId = 152, Quantity = 53, CBM = "1.65", TotalWeight = "1060",
+      //            ExpirationDate = DateOnly.Parse("2026-11-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 534,
+      //      },
+      //      new
+      //      {
+      //            Id = 292, ReceivingId = 65, ProductId = 152, Quantity = 34, CBM = "1.06", TotalWeight = "680",
+      //            ExpirationDate = DateOnly.Parse("2026-11-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 535,
+      //      },
+      //      new
+      //      {
+      //            Id = 293, ReceivingId = 65, ProductId = 153, Quantity = 18, CBM = "0.56", TotalWeight = "360",
+      //            ExpirationDate = DateOnly.Parse("2026-11-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 535,
+      //      },
+      //      new
+      //      {
+      //            Id = 294, ReceivingId = 65, ProductId = 153, Quantity = 52, CBM = "1.62", TotalWeight = "1040",
+      //            ExpirationDate = DateOnly.Parse("2026-11-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 536,
+      //      },
+      //      new
+      //      {
+      //            Id = 295, ReceivingId = 66, ProductId = 165, Quantity = 15, CBM = "0.73", TotalWeight = "90",
+      //            ExpirationDate = DateOnly.Parse("2027-01-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 296, ReceivingId = 66, ProductId = 128, Quantity = 10, CBM = "0.47", TotalWeight = "160",
+      //            ExpirationDate = DateOnly.Parse("2027-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 297, ReceivingId = 66, ProductId = 103, Quantity = 6, CBM = "0.14", TotalWeight = "48",
+      //            ExpirationDate = DateOnly.Parse("2026-04-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 298, ReceivingId = 66, ProductId = 167, Quantity = 3, CBM = "0.05", TotalWeight = "33",
+      //            ExpirationDate = DateOnly.Parse("2027-05-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 299, ReceivingId = 66, ProductId = 171, Quantity = 3, CBM = "0.03", TotalWeight = "37.5",
+      //            ExpirationDate = DateOnly.Parse("2025-06-04"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 300, ReceivingId = 66, ProductId = 102, Quantity = 5, CBM = "0.06", TotalWeight = "45",
+      //            ExpirationDate = DateOnly.Parse("2026-04-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 301, ReceivingId = 66, ProductId = 158, Quantity = 6, CBM = "0.12", TotalWeight = "36",
+      //            ExpirationDate = DateOnly.Parse("2026-04-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 302, ReceivingId = 66, ProductId = 155, Quantity = 4, CBM = "0.09", TotalWeight = "48",
+      //            ExpirationDate = DateOnly.Parse("2027-03-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 303, ReceivingId = 66, ProductId = 168, Quantity = 2, CBM = "0.04", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2027-04-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 304, ReceivingId = 66, ProductId = 166, Quantity = 5, CBM = "0.13", TotalWeight = "75",
+      //            ExpirationDate = DateOnly.Parse("2027-05-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 542,
+      //      },
+      //      new
+      //      {
+      //            Id = 305, ReceivingId = 66, ProductId = 134, Quantity = 6, CBM = "0.06", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2025-11-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 306, ReceivingId = 66, ProductId = 130, Quantity = 5, CBM = "0.12", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2026-01-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 307, ReceivingId = 66, ProductId = 131, Quantity = 5, CBM = "0.12", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2026-01-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 308, ReceivingId = 66, ProductId = 129, Quantity = 5, CBM = "0.12", TotalWeight = "25",
+      //            ExpirationDate = DateOnly.Parse("2026-01-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 309, ReceivingId = 66, ProductId = 169, Quantity = 1, CBM = "0.04", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2026-11-09"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 310, ReceivingId = 66, ProductId = 161, Quantity = 1, CBM = "0.04", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2026-10-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 311, ReceivingId = 66, ProductId = 154, Quantity = 1, CBM = "0.04", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2026-10-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 312, ReceivingId = 66, ProductId = 170, Quantity = 1, CBM = "0.03", TotalWeight = "7",
+      //            ExpirationDate = DateOnly.Parse("2027-02-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 313, ReceivingId = 66, ProductId = 160, Quantity = 2, CBM = "0.05", TotalWeight = "14",
+      //            ExpirationDate = DateOnly.Parse("2027-02-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 543,
+      //      },
+      //      new
+      //      {
+      //            Id = 314, ReceivingId = 66, ProductId = 97, Quantity = 35, CBM = "0.89", TotalWeight = "700",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 544,
+      //      },
+      //      new
+      //      {
+      //            Id = 315, ReceivingId = 66, ProductId = 159, Quantity = 15, CBM = "0.36", TotalWeight = "285",
+      //            ExpirationDate = DateOnly.Parse("2025-11-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 545,
+      //      },
+      //      new
+      //      {
+      //            Id = 316, ReceivingId = 66, ProductId = 162, Quantity = 10, CBM = "0.24", TotalWeight = "190",
+      //            ExpirationDate = DateOnly.Parse("2025-10-12"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 545,
+      //      },
+      //      new
+      //      {
+      //            Id = 317, ReceivingId = 66, ProductId = 156, Quantity = 10, CBM = "0.24", TotalWeight = "190",
+      //            ExpirationDate = DateOnly.Parse("2025-10-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 545,
+      //      },
+      //      new
+      //      {
+      //            Id = 318, ReceivingId = 66, ProductId = 157, Quantity = 10, CBM = "0.2", TotalWeight = "190",
+      //            ExpirationDate = DateOnly.Parse("2025-09-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 546,
+      //      },
+      //      new
+      //      {
+      //            Id = 319, ReceivingId = 66, ProductId = 164, Quantity = 15, CBM = "0.3", TotalWeight = "180",
+      //            ExpirationDate = DateOnly.Parse("2025-11-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 546,
+      //      },
+      //      new
+      //      {
+      //            Id = 320, ReceivingId = 66, ProductId = 163, Quantity = 15, CBM = "0.17", TotalWeight = "135",
+      //            ExpirationDate = DateOnly.Parse("2025-10-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 546,
+      //      },
+      //      new
+      //      {
+      //            Id = 321, ReceivingId = 67, ProductId = 174, Quantity = 50, CBM = "0.27", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 547,
+      //      },
+      //      new
+      //      {
+      //            Id = 322, ReceivingId = 67, ProductId = 172, Quantity = 50, CBM = "0.27", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 547,
+      //      },
+      //      new
+      //      {
+      //            Id = 323, ReceivingId = 67, ProductId = 175, Quantity = 50, CBM = "0.27", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 547,
+      //      },
+      //      new
+      //      {
+      //            Id = 324, ReceivingId = 67, ProductId = 173, Quantity = 50, CBM = "0.27", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2025-12-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 547,
+      //      },
+      //      new
+      //      {
+      //            Id = 325, ReceivingId = 68, ProductId = 176, Quantity = 5, CBM = "0.09", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2027-04-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 326, ReceivingId = 68, ProductId = 177, Quantity = 3, CBM = "0.05", TotalWeight = "57",
+      //            ExpirationDate = DateOnly.Parse("2027-05-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 327, ReceivingId = 68, ProductId = 178, Quantity = 2, CBM = "0.01", TotalWeight = "8",
+      //            ExpirationDate = DateOnly.Parse("2027-03-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 328, ReceivingId = 68, ProductId = 179, Quantity = 2, CBM = "0.03", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2027-06-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 329, ReceivingId = 68, ProductId = 181, Quantity = 4, CBM = "0.04", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2027-03-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 330, ReceivingId = 68, ProductId = 182, Quantity = 3, CBM = "0.04", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2027-05-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 331, ReceivingId = 68, ProductId = 183, Quantity = 1, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-11-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 332, ReceivingId = 68, ProductId = 184, Quantity = 1, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-02-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 333, ReceivingId = 68, ProductId = 185, Quantity = 2, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-01-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 334, ReceivingId = 69, ProductId = 176, Quantity = 5, CBM = "0.09", TotalWeight = "100",
+      //            ExpirationDate = DateOnly.Parse("2027-04-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 335, ReceivingId = 69, ProductId = 177, Quantity = 3, CBM = "0.05", TotalWeight = "57",
+      //            ExpirationDate = DateOnly.Parse("2027-05-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 336, ReceivingId = 69, ProductId = 178, Quantity = 2, CBM = "0.01", TotalWeight = "8",
+      //            ExpirationDate = DateOnly.Parse("2027-03-16"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 337, ReceivingId = 69, ProductId = 179, Quantity = 2, CBM = "0.03", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2027-06-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 338, ReceivingId = 69, ProductId = 181, Quantity = 4, CBM = "0.04", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2027-03-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 339, ReceivingId = 69, ProductId = 182, Quantity = 3, CBM = "0.04", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2027-05-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 340, ReceivingId = 69, ProductId = 183, Quantity = 1, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-11-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 341, ReceivingId = 69, ProductId = 184, Quantity = 1, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-02-27"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 342, ReceivingId = 69, ProductId = 185, Quantity = 2, CBM = "0.01", TotalWeight = "2",
+      //            ExpirationDate = DateOnly.Parse("2027-01-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 548,
+      //      },
+      //      new
+      //      {
+      //            Id = 343, ReceivingId = 70, ProductId = 186, Quantity = 6, CBM = "0.51", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 344, ReceivingId = 70, ProductId = 187, Quantity = 6, CBM = "0.51", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 345, ReceivingId = 70, ProductId = 188, Quantity = 5, CBM = "0.42", TotalWeight = "15",
+      //            ExpirationDate = DateOnly.Parse("2027-11-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 346, ReceivingId = 70, ProductId = 189, Quantity = 8, CBM = "0.18", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2026-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 347, ReceivingId = 70, ProductId = 190, Quantity = 6, CBM = "0.13", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2026-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 348, ReceivingId = 70, ProductId = 191, Quantity = 6, CBM = "0.13", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2026-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 349, ReceivingId = 70, ProductId = 192, Quantity = 5, CBM = "0.13", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2026-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 350, ReceivingId = 70, ProductId = 193, Quantity = 5, CBM = "0.13", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2026-11-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 351, ReceivingId = 70, ProductId = 194, Quantity = 5, CBM = "0.13", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2026-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 352, ReceivingId = 70, ProductId = 204, Quantity = 1, CBM = "0.02", TotalWeight = "3",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 549,
+      //      },
+      //      new
+      //      {
+      //            Id = 353, ReceivingId = 70, ProductId = 195, Quantity = 8, CBM = "0.1", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 354, ReceivingId = 70, ProductId = 196, Quantity = 8, CBM = "0.1", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 355, ReceivingId = 70, ProductId = 197, Quantity = 8, CBM = "0.1", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 356, ReceivingId = 70, ProductId = 198, Quantity = 8, CBM = "0.1", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 357, ReceivingId = 70, ProductId = 199, Quantity = 5, CBM = "0.06", TotalWeight = "10",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 358, ReceivingId = 70, ProductId = 201, Quantity = 3, CBM = "0.15", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 359, ReceivingId = 70, ProductId = 202, Quantity = 3, CBM = "0.15", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 360, ReceivingId = 70, ProductId = 203, Quantity = 2, CBM = "0.1", TotalWeight = "6",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 361, ReceivingId = 70, ProductId = 205, Quantity = 6, CBM = "0.59", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2026-06-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 362, ReceivingId = 70, ProductId = 206, Quantity = 6, CBM = "0.36", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2026-06-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 550,
+      //      },
+      //      new
+      //      {
+      //            Id = 363, ReceivingId = 71, ProductId = 208, Quantity = 8, CBM = "0.61", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 364, ReceivingId = 71, ProductId = 209, Quantity = 6, CBM = "0.46", TotalWeight = "0",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 365, ReceivingId = 71, ProductId = 210, Quantity = 8, CBM = "0.57", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 366, ReceivingId = 71, ProductId = 211, Quantity = 8, CBM = "0.57", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 367, ReceivingId = 71, ProductId = 212, Quantity = 6, CBM = "0.32", TotalWeight = "18",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 368, ReceivingId = 71, ProductId = 213, Quantity = 8, CBM = "0.42", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 369, ReceivingId = 71, ProductId = 214, Quantity = 8, CBM = "0.42", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-24"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 551,
+      //      },
+      //      new
+      //      {
+      //            Id = 370, ReceivingId = 71, ProductId = 215, Quantity = 3, CBM = "0.16", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2025-12-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 371, ReceivingId = 71, ProductId = 216, Quantity = 3, CBM = "0.16", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2025-12-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 372, ReceivingId = 71, ProductId = 217, Quantity = 3, CBM = "0.16", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2025-11-13"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 373, ReceivingId = 71, ProductId = 218, Quantity = 8, CBM = "0.4", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-11-21"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 374, ReceivingId = 71, ProductId = 219, Quantity = 8, CBM = "0.4", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-11-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 375, ReceivingId = 71, ProductId = 221, Quantity = 3, CBM = "0.23", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2025-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 376, ReceivingId = 71, ProductId = 222, Quantity = 3, CBM = "0.23", TotalWeight = "9",
+      //            ExpirationDate = DateOnly.Parse("2025-12-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 377, ReceivingId = 71, ProductId = 224, Quantity = 6, CBM = "0.46", TotalWeight = "36",
+      //            ExpirationDate = DateOnly.Parse("2025-12-26"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 552,
+      //      },
+      //      new
+      //      {
+      //            Id = 378, ReceivingId = 72, ProductId = 226, Quantity = 6, CBM = "0.13", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2025-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 379, ReceivingId = 72, ProductId = 227, Quantity = 8, CBM = "0.18", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 380, ReceivingId = 72, ProductId = 228, Quantity = 6, CBM = "0.13", TotalWeight = "12",
+      //            ExpirationDate = DateOnly.Parse("2025-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 381, ReceivingId = 72, ProductId = 230, Quantity = 6, CBM = "0.12", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-12-05"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 382, ReceivingId = 72, ProductId = 231, Quantity = 6, CBM = "0.12", TotalWeight = "24",
+      //            ExpirationDate = DateOnly.Parse("2025-11-28"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 383, ReceivingId = 72, ProductId = 229, Quantity = 4, CBM = "0.1", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-12-06"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 553,
+      //      },
+      //      new
+      //      {
+      //            Id = 384, ReceivingId = 73, ProductId = 233, Quantity = 5, CBM = "0.1", TotalWeight = "60",
+      //            ExpirationDate = DateOnly.Parse("2027-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 385, ReceivingId = 73, ProductId = 234, Quantity = 5, CBM = "0.1", TotalWeight = "60",
+      //            ExpirationDate = DateOnly.Parse("2026-02-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 386, ReceivingId = 73, ProductId = 235, Quantity = 3, CBM = "0.06", TotalWeight = "48",
+      //            ExpirationDate = DateOnly.Parse("2026-01-31"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 387, ReceivingId = 73, ProductId = 236, Quantity = 5, CBM = "0.1", TotalWeight = "80",
+      //            ExpirationDate = DateOnly.Parse("2026-01-31"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 388, ReceivingId = 73, ProductId = 237, Quantity = 6, CBM = "0.12", TotalWeight = "96",
+      //            ExpirationDate = DateOnly.Parse("2026-02-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 389, ReceivingId = 73, ProductId = 238, Quantity = 3, CBM = "0.06", TotalWeight = "48",
+      //            ExpirationDate = DateOnly.Parse("2026-02-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 390, ReceivingId = 73, ProductId = 240, Quantity = 5, CBM = "0.1", TotalWeight = "80",
+      //            ExpirationDate = DateOnly.Parse("2026-01-30"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 391, ReceivingId = 73, ProductId = 242, Quantity = 10, CBM = "0.2", TotalWeight = "160",
+      //            ExpirationDate = DateOnly.Parse("2026-01-29"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 392, ReceivingId = 73, ProductId = 243, Quantity = 3, CBM = "0.04", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2026-02-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 393, ReceivingId = 73, ProductId = 244, Quantity = 5, CBM = "0.07", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2026-02-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 394, ReceivingId = 73, ProductId = 245, Quantity = 3, CBM = "0.04", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2026-03-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 395, ReceivingId = 73, ProductId = 246, Quantity = 15, CBM = "0.3", TotalWeight = "240",
+      //            ExpirationDate = DateOnly.Parse("2026-02-17"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 396, ReceivingId = 73, ProductId = 247, Quantity = 5, CBM = "0.07", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2026-02-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 397, ReceivingId = 73, ProductId = 248, Quantity = 3, CBM = "0.04", TotalWeight = "30",
+      //            ExpirationDate = DateOnly.Parse("2026-02-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 398, ReceivingId = 73, ProductId = 249, Quantity = 5, CBM = "0.07", TotalWeight = "50",
+      //            ExpirationDate = DateOnly.Parse("2026-02-02"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 399, ReceivingId = 73, ProductId = 250, Quantity = 10, CBM = "0.14", TotalWeight = "140",
+      //            ExpirationDate = DateOnly.Parse("2026-03-03"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 554,
+      //      },
+      //      new
+      //      {
+      //            Id = 400, ReceivingId = 74, ProductId = 251, Quantity = 5, CBM = "0.37", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-09-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 401, ReceivingId = 74, ProductId = 252, Quantity = 5, CBM = "0.37", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-09-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 402, ReceivingId = 74, ProductId = 253, Quantity = 5, CBM = "0.37", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-09-11"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 403, ReceivingId = 74, ProductId = 255, Quantity = 1, CBM = "0.04", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-10-31"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 404, ReceivingId = 74, ProductId = 256, Quantity = 1, CBM = "0.04", TotalWeight = "16",
+      //            ExpirationDate = DateOnly.Parse("2025-11-01"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 405, ReceivingId = 74, ProductId = 260, Quantity = 5, CBM = "0.16", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-11-18"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 406, ReceivingId = 74, ProductId = 259, Quantity = 5, CBM = "0.16", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-12-19"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 407, ReceivingId = 74, ProductId = 258, Quantity = 5, CBM = "0.16", TotalWeight = "40",
+      //            ExpirationDate = DateOnly.Parse("2025-12-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 408, ReceivingId = 74, ProductId = 257, Quantity = 2, CBM = "0.11", TotalWeight = "20",
+      //            ExpirationDate = DateOnly.Parse("2025-12-31"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 555,
+      //      },
+      //      new
+      //      {
+      //            Id = 409, ReceivingId = 75, ProductId = 261, Quantity = 50, CBM = "0.84", TotalWeight = "525",
+      //            ExpirationDate = DateOnly.Parse("2026-01-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 556,
+      //      },
+      //      new
+      //      {
+      //            Id = 410, ReceivingId = 75, ProductId = 261, Quantity = 28, CBM = "0.47", TotalWeight = "294",
+      //            ExpirationDate = DateOnly.Parse("2026-01-25"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 557,
+      //      },
+      //      new
+      //      {
+      //            Id = 411, ReceivingId = 75, ProductId = 262, Quantity = 50, CBM = "0.84", TotalWeight = "525",
+      //            ExpirationDate = DateOnly.Parse("2026-01-07"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 558,
+      //      },
+      //      new
+      //      {
+      //            Id = 412, ReceivingId = 75, ProductId = 263, Quantity = 51, CBM = "0.85", TotalWeight = "535.5",
+      //            ExpirationDate = DateOnly.Parse("2026-01-20"),
+      //            Remarks = "GOOD CONDITION",
+      //            ContainerName = string.Empty,
+      //            PalletId = 559,
+      //      }
+      //);
 
       
       modelBuilder.Entity<CheckIn>()
