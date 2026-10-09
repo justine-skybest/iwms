@@ -8,7 +8,7 @@ export interface ReceivedProductSummaryDto {
   expectedExpirationDate?: string | null;
   expectedProductName?: string | null;
   expectedQuantity?: number | null;
-  expectedTotalWeight?: string | null;
+  expectedTotalWeight?: number | null;
   expirationDate?: string | null;
   hasDiscrepancy?: boolean;
   id?: number;
@@ -19,7 +19,7 @@ export interface ReceivedProductSummaryDto {
   productId?: number;
   quantity?: number;
   remarks?: string | null;
-  totalWeight?: string | null;
+  totalWeight?: number | null;
   typeOfPackage?: string | null;
   variance?: number;
   weight?: number;

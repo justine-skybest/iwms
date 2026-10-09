@@ -72,7 +72,7 @@ public static class ReceivingMapping
             // Actual Counted Fields
             Quantity = dto.Quantity,
             CBM = dto.CBM,
-            TotalWeight = dto.TotalWeight ?? "0",
+            Weight = dto.Weight,
             ExpirationDate = dto.ExpirationDate,
             LotNumber = dto.LotNumber,
             TypeOfPackage = dto.TypeOfPackage,
@@ -118,7 +118,7 @@ public static class ReceivingMapping
             rp.LotNumber!,
             !string.IsNullOrWhiteSpace(rp.TypeOfPackage) ? rp.TypeOfPackage : (rp.Product?.TypeOfPackage ?? string.Empty),
             rp.Product?.Measurement ?? string.Empty,
-            rp.Product?.Weight ?? 0m,
+            rp.Weight ?? 0m,
 
             // Baseline Expected Fields
             rp.ExpectedProductName,
@@ -180,7 +180,7 @@ public static class ReceivingMapping
             Name = entity.Product?.Name ?? entity.ExpectedProductName,
             Quantity = entity.Quantity,
             CBM = entity.CBM ?? 0m,
-            TotalWeight = entity.TotalWeight,
+            Weight = entity.Weight ?? 0m,
             TotalAmount = entity.TotalAmount ?? 0,
             UnitPrice = entity.UnitPrice ?? 0,
             LotNumber = entity.LotNumber,
@@ -210,7 +210,7 @@ public static class ReceivingMapping
             receivedProduct.Product!.Name,
             receivedProduct.Product!.TypeOfPackage,
             receivedProduct.Product!.Measurement,
-            receivedProduct.Product!.Weight,
+            receivedProduct.Weight ?? 0m,
             receivedProduct.Quantity,
             receivedProduct.CBM ?? 0m,
             receivedProduct.TotalWeight,

@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\incomingimportendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\incomingimportendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\entities\\receivedproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:entities\\receivedproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\dtos\\incoming\\incomingproductresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:dtos\\incoming\\incomingproductresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\mapping\\incomingmapping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:mapping\\incomingmapping.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\entities\\receivedproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:entities\\receivedproduct.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\dtos\\receiving\\productreceived\\receivedproductsummarydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,7 +70,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "IncomingImportEndpoint.cs",
+              "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\IncomingImportEndpoint.cs",
+              "RelativeDocumentMoniker": "Endpoints\\IncomingImportEndpoint.cs",
+              "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\IncomingImportEndpoint.cs",
+              "RelativeToolTip": "Endpoints\\IncomingImportEndpoint.cs",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAmwMMAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-09T05:52:07.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "IncomingMapping.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Mapping\\IncomingMapping.cs",
               "RelativeDocumentMoniker": "Mapping\\IncomingMapping.cs",
@@ -74,38 +91,37 @@
               "RelativeToolTip": "Mapping\\IncomingMapping.cs",
               "ViewState": "AgIAAH0AAAAAAAAAAAAnwIcAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:55:28.654Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:55:28.654Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "IncomingProductResponseDto.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Dtos\\Incoming\\IncomingProductResponseDto.cs",
               "RelativeDocumentMoniker": "Dtos\\Incoming\\IncomingProductResponseDto.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Dtos\\Incoming\\IncomingProductResponseDto.cs",
               "RelativeToolTip": "Dtos\\Incoming\\IncomingProductResponseDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAkAAAAqAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAuwBIAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-09T03:54:53.049Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "ReceivedProduct.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Entities\\ReceivedProduct.cs",
               "RelativeDocumentMoniker": "Entities\\ReceivedProduct.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Entities\\ReceivedProduct.cs",
               "RelativeToolTip": "Entities\\ReceivedProduct.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAUAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAUAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-09T03:54:03.23Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "WMSContext.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Data\\WMSContext.cs",
               "RelativeDocumentMoniker": "Data\\WMSContext.cs",
@@ -113,12 +129,11 @@
               "RelativeToolTip": "Data\\WMSContext.cs",
               "ViewState": "AgIAANgVAAAAAAAAAAAYwNkVAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:43:27.217Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:43:27.217Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "ReceivingReportGeneratorService.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Services\\ReceivingReportGeneratorService.cs",
               "RelativeDocumentMoniker": "Services\\ReceivingReportGeneratorService.cs",
@@ -126,12 +141,11 @@
               "RelativeToolTip": "Services\\ReceivingReportGeneratorService.cs",
               "ViewState": "AgIAAE4BAAAAAAAAAAAAAFcBAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:41:48.577Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:41:48.577Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "CheckInMapping.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Mapping\\CheckInMapping.cs",
               "RelativeDocumentMoniker": "Mapping\\CheckInMapping.cs",
@@ -139,12 +153,11 @@
               "RelativeToolTip": "Mapping\\CheckInMapping.cs",
               "ViewState": "AgIAAFkAAAAAAAAAAAAAwGAAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:40:34.005Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:40:34.005Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "DashboardEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\DashboardEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\DashboardEndpoint.cs",
@@ -152,12 +165,11 @@
               "RelativeToolTip": "Endpoints\\DashboardEndpoint.cs",
               "ViewState": "AgIAACUBAAAAAAAAAAAAADABAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:37:10.458Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:37:10.458Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "PalletEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\PalletEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\PalletEndpoint.cs",
@@ -165,12 +177,11 @@
               "RelativeToolTip": "Endpoints\\PalletEndpoint.cs",
               "ViewState": "AgIAAJ0AAAAAAAAAAAAQwKUAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:31:41.805Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:31:41.805Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "BinEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\BinEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\BinEndpoint.cs",
@@ -178,12 +189,11 @@
               "RelativeToolTip": "Endpoints\\BinEndpoint.cs",
               "ViewState": "AgIAAAUCAAAAAAAAAAAAAA4CAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:31:03.113Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:31:03.113Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "InventoryEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\InventoryEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\InventoryEndpoint.cs",
@@ -191,12 +201,11 @@
               "RelativeToolTip": "Endpoints\\InventoryEndpoint.cs",
               "ViewState": "AgIAACwAAAAAAAAAAAAgwDYAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:28:35.778Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:28:35.778Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ReceivedProductSummaryDto.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Dtos\\Receiving\\ProductReceived\\ReceivedProductSummaryDto.cs",
               "RelativeDocumentMoniker": "Dtos\\Receiving\\ProductReceived\\ReceivedProductSummaryDto.cs",
@@ -204,8 +213,7 @@
               "RelativeToolTip": "Dtos\\Receiving\\ProductReceived\\ReceivedProductSummaryDto.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAQwA8AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-09T03:18:08.154Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-09T03:18:08.154Z"
             }
           ]
         }

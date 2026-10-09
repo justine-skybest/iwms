@@ -86,7 +86,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 Quantity = p.Quantity,
                 UOM = p.TypeOfPackage ?? "CS",
                 CBM = p.CBM ?? 0m,
-                Weight = p.TotalWeight ?? "0",
+                Weight = (p.Weight ?? 0m) * p.Quantity,
                 PlateNumber = r.PlateNumber,
                 ReceivingDate = r.DateReceived.ToString("yyyy-MM-dd"),
                 Status = r.Incoming != null ? r.Incoming.Status.ToString() : "RECEIVED"
@@ -155,7 +155,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 ItemCount = r.Products!.Count,
                 QuantityReceived = r.Products!.Sum(p => p.Quantity),
                 CBM = r.Products!.Sum(p => Convert.ToDecimal(p.CBM ?? 0m)),
-                Weight = r.Products!.Sum(p => Convert.ToDecimal(p.TotalWeight ?? "0")),
+                Weight = r.Products!.Sum(p => (p.Weight ?? 0m) * p.Quantity),
                 Status = r.Incoming != null ? r.Incoming.Status.ToString() : "RECEIVED"
             })
             .OrderBy(x => x.PackingList)
@@ -341,7 +341,7 @@ public class ReceivingReportGeneratorService : IReceivingReportGeneratorService
                 ItemCount = g.SelectMany(x => x.Products!).Count(),
                 QuantityReceived = g.SelectMany(x => x.Products!).Sum(p => p.Quantity),
                 CBM = g.SelectMany(x => x.Products!).Sum(p => Convert.ToDecimal(p.CBM ?? 0m)),
-                Weight = g.SelectMany(x => x.Products!).Sum(p => Convert.ToDecimal(p.TotalWeight ?? "0")),
+                Weight = g.SelectMany(x => x.Products!).Sum(p => (p.Weight ?? 0m) * p.Quantity),
                 Status = g.Select(x => x.Incoming != null ? x.Incoming.Status.ToString() : "RECEIVED").FirstOrDefault() ?? "RECEIVED"
             })
             .OrderByDescending(x => x.ReceivingDate)

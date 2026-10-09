@@ -17,7 +17,8 @@ export interface IncomingProductResponseDto {
   supplier?: string | null;
   totalAmount?: number | null;
   totalCbm?: number;
-  totalWeight: string;
+  totalWeight?: number;
   typeOfPackage?: string | null;
   unitPrice?: number | null;
+  weight?: number | null;
 }

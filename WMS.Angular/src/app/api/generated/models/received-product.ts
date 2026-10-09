@@ -14,7 +14,7 @@ export interface ReceivedProduct {
   expectedExpirationDate?: string | null;
   expectedProductName?: string | null;
   expectedQuantity?: number | null;
-  expectedTotalWeight?: string | null;
+  expectedTotalWeight?: number | null;
   expirationDate?: string | null;
   id?: number;
   incomingProduct?: IncomingProduct;
@@ -31,8 +31,9 @@ export interface ReceivedProduct {
   supplier?: string | null;
   totalAmount?: number | null;
   totalCbm?: number | null;
-  totalWeight: string;
+  totalWeight?: number;
   typeOfPackage?: string | null;
   unitPrice?: number | null;
   variance?: number;
+  weight?: number | null;
 }

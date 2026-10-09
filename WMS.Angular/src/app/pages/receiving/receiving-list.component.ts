@@ -222,8 +222,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
       for (const [palletId, groupItems] of groupedByPallet.entries()) {
         const totalQty = groupItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
         const totalWeightVal = groupItems.reduce((acc, curr) => {
-          const parsed = parseFloat(curr.totalWeight || '0');
-          return acc + (isNaN(parsed) ? 0 : parsed);
+          return acc + (curr.totalWeight ?? ((curr.weight ?? 0) * (curr.quantity ?? 0)));
         }, 0);
 
         const firstItem = groupItems[0];
@@ -258,7 +257,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
 
         const formattedWeight = totalWeightVal > 0 
           ? totalWeightVal.toFixed(2) 
-          : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
+          : (firstItem.totalWeight ?? ((firstItem.weight ?? 0) * (firstItem.quantity ?? 0))).toFixed(2);
 
         const formattedCbm = groupItems.reduce((acc, curr) => {
           const parsed = curr.cbm ?? 0;

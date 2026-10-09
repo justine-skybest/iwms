@@ -24,7 +24,7 @@ namespace WMS.Api.Mapping
                 ProductId = dto.ProductId,
                 Quantity = dto.Quantity,
                 CBM = dto.CBM,
-                TotalWeight = dto.TotalWeight,
+                Weight = dto.Weight,
                 ExpirationDate = dto.ExpirationDate,
                 Remarks = dto.Remarks
             };
@@ -146,6 +146,7 @@ namespace WMS.Api.Mapping
                         RemainingQuantity = remaining,
                         CBM = p.CBM ?? 0m,
                         TotalCbm = p.TotalCbm ?? 0m,
+                        Weight = p.Weight,
                         TotalWeight = p.TotalWeight,
                         TypeOfPackage = p.Product?.TypeOfPackage,
                         ExpirationDate = p.ExpirationDate,

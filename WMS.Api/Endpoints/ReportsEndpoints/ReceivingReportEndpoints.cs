@@ -289,7 +289,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 9).Value = rp.Quantity;
                                     ws.Cell(currentRow, 10).Value = SanitizeXml(rp.TypeOfPackage);
                                     ws.Cell(currentRow, 11).Value = rp.CBM;
-                                    ws.Cell(currentRow, 12).Value = SanitizeXml(rp.TotalWeight);
+                                    ws.Cell(currentRow, 12).Value = rp.TotalWeight;
                                     ws.Cell(currentRow, 13).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {SanitizeXml(r.PlateNumber)}";
                                     ws.Cell(currentRow, 14).Value = SanitizeXml(rp.Remarks ?? "—");
                                     currentRow++;

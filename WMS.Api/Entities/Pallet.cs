@@ -30,5 +30,5 @@ public class Pallet
         .Sum(rp => rp.TotalCbm) ?? 0m;
 
     public decimal TotalWeight => ReceivedProducts?
-        .Sum(rp => decimal.TryParse(rp.TotalWeight, out var w) ? w : 0m) ?? 0m;
+        .Sum(rp => rp.TotalWeight) ?? 0m;
 }

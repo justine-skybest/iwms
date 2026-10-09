@@ -11,7 +11,7 @@ public class ReceivedProduct : IProductBase
     // --- BASELINE EXPECTED VALUES (From Incoming Packing List) ---
     public int? ExpectedQuantity { get; set; }
     public decimal? ExpectedCBM { get; set; }
-    public string? ExpectedTotalWeight { get; set; }
+    public decimal? ExpectedTotalWeight { get; set; }
     public DateOnly? ExpectedExpirationDate { get; set; }
     public string? ExpectedProductName { get; set; }
 

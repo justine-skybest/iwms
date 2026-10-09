@@ -13,7 +13,7 @@ export interface CheckedInProductSumamryDto {
   receivingSeries?: string | null;
   remarks?: string | null;
   shipper?: string | null;
-  totalWeight?: string | null;
+  totalWeight?: number | null;
   typeOfPackage?: string | null;
   weight?: number;
 }

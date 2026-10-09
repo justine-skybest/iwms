@@ -14,14 +14,15 @@ public record class ReceivedProductDetailsDto
     public string? ExpectedProductName { get; init; }
     public int? ExpectedQuantity { get; init; }
     public decimal? ExpectedCBM { get; init; }
-    public string? ExpectedTotalWeight { get; init; }
+    public decimal? ExpectedTotalWeight { get; init; }
     public DateOnly? ExpectedExpirationDate { get; init; }
 
     // --- Actual Counted / Received Fields ---
     public string? Name { get; init; }
     public int Quantity { get; init; }
     public decimal CBM { get; init; } = 0m;
-    public string TotalWeight { get; init; } = "0";
+    public decimal Weight { get; init; }
+    public decimal TotalWeight => Math.Round(Weight * Quantity, 2, MidpointRounding.AwayFromZero);
     public decimal TotalAmount { get; set; }
     public decimal UnitPrice { get; set; }
     public DateOnly? ExpirationDate { get; init; }
@@ -33,4 +34,3 @@ public record class ReceivedProductDetailsDto
     public string? TypeOfPackage { get; set; }
     public int? PalletId { get; init; }
 }
-

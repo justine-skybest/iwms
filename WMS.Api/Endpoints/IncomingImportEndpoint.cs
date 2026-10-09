@@ -195,7 +195,7 @@ namespace WMS.Api.Endpoints
                             dbItem.UnitPrice = excelItem.UnitPrice;
                             dbItem.TotalAmount = excelItem.TotalAmount;
                             dbItem.CBM = excelItem.CBM;
-                            dbItem.TotalWeight = excelItem.TotalWeight;
+                            dbItem.Weight = excelItem.Weight;
                             dbItem.Remarks = excelItem.Remarks;
                             break;
                         }
@@ -228,7 +228,7 @@ namespace WMS.Api.Endpoints
                         dbItem.UnitPrice = excelItem.UnitPrice;
                         dbItem.TotalAmount = excelItem.TotalAmount;
                         dbItem.CBM = excelItem.CBM;
-                        dbItem.TotalWeight = excelItem.TotalWeight;
+                        dbItem.Weight = excelItem.Weight;
                         dbItem.Remarks = excelItem.Remarks;
                     }
                     else
@@ -548,13 +548,13 @@ namespace WMS.Api.Endpoints
                     : 0m;
 
                 string totalWeightRaw = row[11]?.ToString()?.Trim() ?? "0";
-                string totalWeight = decimal.TryParse(totalWeightRaw, out decimal parsedTotalWeight)
-                    ? Math.Round(parsedTotalWeight, 2, MidpointRounding.AwayFromZero).ToString("0.##")
-                    : "0";
+                decimal totalWeight = decimal.TryParse(totalWeightRaw, out decimal parsedTotalWeight)
+                    ? Math.Round(parsedTotalWeight, 2, MidpointRounding.AwayFromZero)
+                    : 0m;
 
                 decimal unitWeight = decimal.TryParse(row[10]?.ToString(), out decimal parsedWeight)
-                    ? Math.Round(parsedWeight, 2, MidpointRounding.AwayFromZero)
-                    : 0m;
+                    ? Math.Round(parsedWeight, 6, MidpointRounding.AwayFromZero)
+                    : quantity > 0 ? Math.Round(totalWeight / quantity, 6, MidpointRounding.AwayFromZero) : 0m;
 
                 string remarks = row[13]?.ToString()?.Trim() ?? "";
 
@@ -564,7 +564,7 @@ namespace WMS.Api.Endpoints
                     UnitPrice = unitPrice,
                     TotalAmount = totalAmount,
                     CBM = cbm,
-                    TotalWeight = totalWeight,
+                    Weight = unitWeight,
                     ExpirationDate = expiryDate,
                     Supplier = string.IsNullOrWhiteSpace(supplier) ? null : supplier,
                     Remarks = string.IsNullOrWhiteSpace(remarks) ? null : remarks,

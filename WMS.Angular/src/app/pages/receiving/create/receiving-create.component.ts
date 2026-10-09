@@ -39,7 +39,8 @@ export interface SelectableIncomingProduct {
   remainingQuantity?: number;
   cbm?: number;
   totalCBm?: number;
-  totalWeight?: string;
+  weight?: number;
+  totalWeight?: number;
   expirationDate?: string;
   supplier?: string;
   unitPrice?: number;
@@ -58,7 +59,7 @@ export type StagedProductItem = {
   expectedProductName?: string;
   expectedQuantity?: number;
   expectedCbm?: number;
-  expectedTotalWeight?: string;
+  expectedTotalWeight?: number;
   expectedExpirationDate?: string;
   
   cbm?: number;
@@ -71,10 +72,11 @@ export type StagedProductItem = {
   palletId?: number;
   productId?: number;
   quantity?: number;
+  weight?: number;
   remarks?: string;
   supplier?: string;
   totalAmount?: number;
-  totalWeight?: string;
+
   unitPrice?: number;
 };
 
@@ -240,7 +242,10 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       
       if (draft) {
         this.newReceiving = draft.newReceiving || this.getInitialForm();
-        this.stagedItems = draft.stagedItems || [];
+        this.stagedItems = (draft.stagedItems || []).map(item => ({
+          ...item,
+          weight: item.weight ?? this.getLegacyUnitWeight(item)
+        }));
         this.selectedIncoming = draft.selectedIncoming || null;
         this.availableIncomingProducts = draft.availableIncomingProducts || [];
         this.incomingSearchQuery = draft.incomingSearchQuery || '';
@@ -352,12 +357,10 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
         const activeQty = remainingQty > 0 ? remainingQty : origQty;
 
         const totalCbm = p.totalCbm ?? 0;
-        const totalWgt = parseFloat(p.totalWeight || '0');
+        const weight = p.weight ?? (p.totalWeight ?? 0) / origQty;
 
         // Pro-rate CBM & Total Weight based on remaining unreceived balance
-        const remainingCbm = (totalCbm / origQty) * activeQty;
-        const remainingWgt = (totalWgt / origQty) * activeQty;
-
+        const remainingCbm = Number(((totalCbm / origQty) * activeQty).toFixed(4));
         return {
           id: p.id,
           productId: p.productId!,
@@ -366,7 +369,9 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
           quantity: activeQty,
           remainingQuantity: activeQty,
           cbm: remainingCbm > 0 ? remainingCbm : 0,
-          totalWeight: remainingWgt > 0 ? remainingWgt.toFixed(2) : '0',
+          totalCBm: totalCbm,
+          weight,
+          totalWeight: weight * activeQty,
           expirationDate: p.expirationDate || new Date().toISOString().split('T')[0],
           supplier: p.supplier || '',
           unitPrice: p.unitPrice ?? undefined,
@@ -426,7 +431,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
         const prodName = p.productName || '';
         const qty = p.quantity || 0;
         const cbmVal = p.cbm || 0;
-        const weightVal = p.totalWeight || '0';
+        const weightVal = p.weight ?? this.getLegacyUnitWeight(p);
         const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
         updatedStagedItems.push({
@@ -435,13 +440,13 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
           expectedProductName: prodName,
           expectedQuantity: qty,
           expectedCbm: cbmVal,
-          expectedTotalWeight: weightVal,
+          expectedTotalWeight: p.totalWeight ?? this.getTotalWeight({ weight: weightVal, quantity: qty }),
           expectedExpirationDate: expiryVal,
 
           productName: prodName,
           quantity: qty,
           cbm: cbmVal,
-          totalWeight: weightVal,
+          weight: weightVal,
           expirationDate: expiryVal,
 
           supplier: p.supplier || undefined,
@@ -478,6 +483,17 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
     this.fieldDebounce$.next();
   }
 
+  getTotalWeight(item: { weight?: number; quantity?: number }): number {
+    return Number(((item.weight ?? 0) * (item.quantity ?? 0)).toFixed(2));
+  }
+
+  private getLegacyUnitWeight(item: { weight?: number | null; totalWeight?: number | string; quantity?: number }): number {
+    if (item.weight !== undefined && item.weight !== null && Number.isFinite(item.weight)) return item.weight;
+    const totalWeight = Number(item.totalWeight ?? 0);
+    const quantity = item.quantity ?? 0;
+    return Number.isFinite(totalWeight) && quantity > 0 ? totalWeight / quantity : 0;
+  }
+
   /**
    * Computed getter that dynamically groups staged items by Pallet ID
    */
@@ -496,15 +512,13 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
         const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
         if (parent && parent.originalQuantity && parent.originalQuantity > 0) {
-          const origCbm = parent.cbm ?? 0;
-          const origWgt = parseFloat(parent.totalWeight || '0');
+          const origCbm = parent.totalCBm ?? 0;
           const actQty = item.quantity ?? 0;
 
           const newCbm = (origCbm / parent.originalQuantity) * actQty;
-          const newWgt = (origWgt / parent.originalQuantity) * actQty;
 
-          item.cbm = newCbm > 0 ? newCbm : 0;
-          item.totalWeight = newWgt > 0 ? newWgt.toFixed(2) : '0';
+          item.cbm = newCbm > 0 ? Number(newCbm.toFixed(4)) : 0;
+          item.weight = this.getLegacyUnitWeight(parent);
         }
       }
     }
@@ -544,8 +558,7 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
       }, 0);
 
       const calcWeight = items.reduce((sum, i) => {
-        const val = parseFloat(i.totalWeight || '0');
-        return sum + (isNaN(val) ? 0 : val);
+        return sum + this.getTotalWeight(i);
       }, 0);
 
       const override = this.palletOverrides.get(palletId);
@@ -673,7 +686,7 @@ private distributePalletScaleOverride(
 
   // 2. Distribute Target Weight based on Baseline Weight Ratios
   if (overrideWeight !== undefined && overrideWeight >= 0) {
-    const totalBaselineWeight = items.reduce((sum, i) => sum + (parseFloat(i.totalWeight || '0') || 0), 0);
+    const totalBaselineWeight = items.reduce((sum, i) => sum + this.getTotalWeight(i), 0);
 
     if (totalBaselineWeight >= 0) {
       let accumulatedWeight = 0;
@@ -685,13 +698,13 @@ private distributePalletScaleOverride(
         if (isLastItem) {
           // Tail item gets exact remaining delta
           const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
-          item.totalWeight = exactWeight.toFixed(2);
+          item.weight = item.quantity ? exactWeight / item.quantity : 0;
         } else {
-          const itemBaselineWeight = parseFloat(item.totalWeight || '0') || 0;
+          const itemBaselineWeight = this.getTotalWeight(item);
           const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
 
           const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
-          item.totalWeight = allocatedWeight.toFixed(2);
+          item.weight = item.quantity ? allocatedWeight / item.quantity : 0;
           accumulatedWeight += allocatedWeight;
         }
       }
@@ -838,7 +851,7 @@ applyPalletToRow(): void {
       name: item.productName,
       quantity: item.quantity ?? 0,
       cbm: item.cbm || 0,
-      totalWeight: item.totalWeight || '0',
+      weight: item.weight ?? 0,
       expirationDate: item.expirationDate as any,
       lotNumber: item.lotNumber || undefined,
       
@@ -931,8 +944,7 @@ applyPalletToRow(): void {
         const totalQty = groupItems.reduce((acc, curr) => acc + (curr.quantity || 0), 0);
         
         const totalWeightVal = groupItems.reduce((acc, curr) => {
-          const parsed = parseFloat(curr.totalWeight || '0');
-          return acc + (isNaN(parsed) ? 0 : parsed);
+          return acc + this.getTotalWeight(curr);
         }, 0);
 
         const firstItem = groupItems[0];
@@ -967,7 +979,7 @@ applyPalletToRow(): void {
 
         const formattedWeight = totalWeightVal > 0 
           ? totalWeightVal.toFixed(2) 
-          : (parseFloat(firstItem.totalWeight || '0') || 0).toFixed(2);
+          : this.getTotalWeight(firstItem).toFixed(2);
 
         const formattedCbm = groupItems.reduce((acc, curr) => {
           const parsed = curr.cbm ?? 0;
