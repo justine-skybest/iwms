@@ -7,18 +7,18 @@ import { LayoutService } from '../../../lib/services/layout.service';
 import { AuthService } from '../../../lib/services/auth.service';
 import { 
   ArrowLeftRight, 
+  ChevronLeft,
+  ChevronRight,
   Download, 
   FileCheck, 
   House, 
   Inbox, 
-  LogsIcon, 
   LucideAngularModule, 
   Warehouse, 
   RotateCcwIcon, 
-  PackageSearch,
-  Sparkles // <-- IMPORTED SPARKLES ICON
+  PackageSearch
 } from 'lucide-angular';
-import { ReleaseNoteDto, SystemVersionResponseDto, UserResponseDto } from '../../../api/generated/models';
+import { SystemVersionResponseDto, UserResponseDto } from '../../../api/generated/models';
 import { Grid3x3, Users } from 'lucide-angular/src/icons';
 import { getSystemVersion } from '../../../api/generated/functions';
 import { Api } from '../../../api/generated/api';
@@ -36,6 +36,10 @@ export class SidebarComponent implements OnInit {
   private api = inject(Api);
 
   readonly changelogIcon = RotateCcwIcon;
+  readonly chevronLeft = ChevronLeft;
+  readonly chevronRight = ChevronRight;
+
+  isCollapsed = false;
 
   mainNavItems = [
     { path: '/home', label: 'Dashboard', icon: House },
@@ -43,6 +47,7 @@ export class SidebarComponent implements OnInit {
     { path: '/receiving', label: 'Receiving', icon: Inbox },
     { path: '/check-in', label: 'Check In', icon: FileCheck },
     { path: '/pick-order', label: 'Pick Order', icon: PackageSearch },
+    { path: '/outbound', label: 'Outbound Workflow', icon: PackageSearch },
     { path: '/audit-logs', label: 'Audit Logs', icon: RotateCcwIcon }
   ];
 
@@ -65,6 +70,7 @@ export class SidebarComponent implements OnInit {
 
   isMasterDataOpen = false;
   isReportDataOpen = false;
+  currentVersion = '1.7.0';
 
   ngOnInit(): void {
     this.checkActiveRoute();
@@ -78,11 +84,21 @@ export class SidebarComponent implements OnInit {
     }
   }
 
+  toggleCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
   toggleMasterData(): void {
+    if (this.isCollapsed) {
+      this.isCollapsed = false;
+    }
     this.isMasterDataOpen = !this.isMasterDataOpen;
   }
 
   toggleReports(): void {
+    if (this.isCollapsed) {
+      this.isCollapsed = false;
+    }
     this.isReportDataOpen = !this.isReportDataOpen;
   }
 
@@ -110,16 +126,14 @@ export class SidebarComponent implements OnInit {
     return user?.email!.split('@')[0];
   }
 
-  currentVersion = '1.7.0';
-
   async fetchVersionAndChangelog(): Promise<void> {
-      try {
-        const response = await this.api.invoke(getSystemVersion) as SystemVersionResponseDto;
-        this.currentVersion = response.currentVersion ?? 'Unknown';
-      } catch (err) {
-        console.error('Failed to load changelog data:', err);
-      }
+    try {
+      const response = await this.api.invoke(getSystemVersion) as SystemVersionResponseDto;
+      this.currentVersion = response.currentVersion ?? 'Unknown';
+    } catch (err) {
+      console.error('Failed to load changelog data:', err);
     }
+  }
 
   getUserInitials(user: UserResponseDto | null): string {
     if (!user) return 'U';

@@ -58,7 +58,7 @@ var connString = builder.Configuration.GetConnectionString("WMS");
 
 // 3. Database Context (MySQL with WMSContext)
 builder.Services.AddDbContext<WMSContext>(dbContextOptions =>
-    dbContextOptions.UseMySql(connString, ServerVersion.AutoDetect(connString)));
+    dbContextOptions.UseMySql(connString, ServerVersion.Parse("8.0.32-mysql")));
 
 // 4. ASP.NET Core Identity Core Configuration
 builder.Services.AddIdentityCore<User>(options =>
@@ -217,6 +217,7 @@ app.MapIncomingImportEndpoints();
 app.MapIncomingTemplateEndpoints();
 app.MapReportEndpoints();
 app.MapAuditLogEndpoints();
+app.MapOutboundWorkflowEndpoints();
 app.MapSystemEndpoints();
 
 app.Run();

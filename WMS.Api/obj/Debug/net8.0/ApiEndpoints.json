@@ -2029,8 +2029,17 @@
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.ManualPicking.ManualPickingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
       }
-    ]
+    ],
+    "Description": "Creates a manual pick order with its picked-product lines and returns the created order, including the picked-product details.",
+    "Summary": "Create a manual pick order"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
@@ -2067,25 +2076,34 @@
   {
     "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapManualPickingEndpoints\u003Eb__1_2",
-    "RelativePath": "manualpicking/{Id}",
+    "RelativePath": "manualpicking/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "Id",
+        "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
+        "Type": "WMS.Api.Dtos.ManualPicking.ManualPickingDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 404
       }
     ],
-    "EndpointName": "GetPick"
+    "EndpointName": "GetPick",
+    "Description": "Returns a manual pick order with its picked-product lines, including product names, picked quantities, and pick dates. Returns 404 when the pick order does not exist.",
+    "Summary": "Get a manual pick order by ID"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PickingEndpoint\u002B\u003C\u003Ec",
@@ -2127,6 +2145,551 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_4",
+    "RelativePath": "outbound/loading-plans",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Outbound.LoadingPlanDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "Summary": "Get loading plans"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_12",
+    "RelativePath": "outbound/loading-plans",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Outbound.CreateLoadingPlanDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingPlanDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "CreateOutboundLoadingPlan",
+    "Summary": "Create a loading plan"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_5",
+    "RelativePath": "outbound/loading-plans/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingPlanDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "Summary": "Get a loading plan"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_11",
+    "RelativePath": "outbound/loading-plans/{id:int}/dispatch",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingPlanDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "DispatchLoadingPlan",
+    "Description": "Marks an InProgress or Partial loading plan as Completed after verifying every planned quantity was loaded.",
+    "Summary": "Confirm final dispatch"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_7",
+    "RelativePath": "outbound/loading-plans/{id:int}/evidence",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": true
+      },
+      {
+        "Name": "evidenceType",
+        "Type": "WMS.Api.Entities.LoadingEvidenceType",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingEvidenceDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 502
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 503
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "UploadLoadingPlanEvidence",
+    "Description": "Uploads an image for loading start, seal check, vehicle inspection, damaged items, or final dispatch.",
+    "Summary": "Upload categorized loading-plan evidence"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_8",
+    "RelativePath": "outbound/loading-plans/{id:int}/exceptions",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Outbound.CreateLoadingExceptionDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingExceptionDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "CreateLoadingPlanException",
+    "Description": "Records an exception type, description, severity, and optional pallet or loading-plan line. Open exceptions do not block final dispatch.",
+    "Summary": "Record a loading-plan exception"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_10",
+    "RelativePath": "outbound/loading-plans/{id:int}/lines",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Outbound.UpdateLoadingPlanQuantitiesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingPlanDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "UpdateLoadingPlanLineQuantities",
+    "Description": "Updates actual loaded quantities for one or more lines on a loading plan that is InProgress or Partial. Quantities are absolute totals and cannot exceed planned quantities.",
+    "Summary": "Record loaded quantities"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_6",
+    "RelativePath": "outbound/loading-plans/{id:int}/photos",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 502
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 503
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "UploadLoadingPlanPhoto",
+    "Description": "Uploads an image to Cloudinary, stores the returned URL as loading-plan evidence, and returns that URL.",
+    "Summary": "Upload a loading-plan photo"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_9",
+    "RelativePath": "outbound/loading-plans/{id:int}/start",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.LoadingPlanDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "StartLoadingPlan",
+    "Description": "Transitions a planned or assigned loading plan to InProgress and records its actual start time.",
+    "Summary": "Start loading a loading plan"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_0",
+    "RelativePath": "outbound/stages",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Outbound.OutboundStageDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "Summary": "Get outbound stages"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_3",
+    "RelativePath": "outbound/stages",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Outbound.CreateOutboundStageDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.OutboundStageDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "Summary": "Create an outbound stage"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_1",
+    "RelativePath": "outbound/stages/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.OutboundStageDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "Summary": "Get an outbound stage"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.OutboundWorkflowEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapOutboundWorkflowEndpoints\u003Eb__0_2",
+    "RelativePath": "outbound/stages/{id:int}/lines",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WMS.Api.Dtos.Outbound.UpdateOutboundStageQuantitiesDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Outbound.OutboundStageDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 409
+      }
+    ],
+    "Tags": [
+      "Outbound"
+    ],
+    "EndpointName": "UpdateOutboundStageLineQuantities",
+    "Description": "Records actual quantities moved to staging. Quantities are absolute totals and cannot exceed the requested quantities.",
+    "Summary": "Record actual staged quantities"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.PalletEndpoint\u002B\u003C\u003Ec",

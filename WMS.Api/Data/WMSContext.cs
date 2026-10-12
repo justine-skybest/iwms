@@ -45,6 +45,24 @@ public class WMSContext(
 
     public DbSet<PickedProduct> PickedProducts => Set<PickedProduct>();
 
+    public DbSet<OutboundStage> OutboundStages => Set<OutboundStage>();
+
+    public DbSet<OutboundStageLine> OutboundStageLines => Set<OutboundStageLine>();
+
+    public DbSet<OutboundStageCancellation> OutboundStageCancellations => Set<OutboundStageCancellation>();
+
+    public DbSet<OutboundStageCancellationLine> OutboundStageCancellationLines => Set<OutboundStageCancellationLine>();
+
+    public DbSet<LoadingPlan> LoadingPlans => Set<LoadingPlan>();
+
+    public DbSet<LoadingPlanLine> LoadingPlanLines => Set<LoadingPlanLine>();
+
+    public DbSet<LoadingPalletVerification> LoadingPalletVerifications => Set<LoadingPalletVerification>();
+
+    public DbSet<LoadingEvidence> LoadingEvidence => Set<LoadingEvidence>();
+
+    public DbSet<LoadingException> LoadingExceptions => Set<LoadingException>();
+
     public DbSet<TransferLog> TransferLogs => Set<TransferLog>();
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
@@ -53,6 +71,157 @@ public class WMSContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<OutboundStage>(entity =>
+        {
+            entity.HasIndex(x => x.StageReference).IsUnique();
+            entity.HasIndex(x => x.ManualPickingId);
+            entity.HasIndex(x => x.WarehouseId);
+            entity.HasIndex(x => x.Status);
+            entity.HasOne(x => x.ManualPicking)
+                .WithMany(x => x.OutboundStages)
+                .HasForeignKey(x => x.ManualPickingId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.Warehouse)
+                .WithMany()
+                .HasForeignKey(x => x.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.StagingBin)
+                .WithMany()
+                .HasForeignKey(x => x.StagingBinId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<OutboundStageLine>(entity =>
+        {
+            entity.HasIndex(x => new { x.OutboundStageId, x.PickedProductId }).IsUnique(false);
+            entity.HasIndex(x => x.ReceivedProductId);
+            entity.HasIndex(x => x.Status);
+            entity.HasOne(x => x.OutboundStage)
+                .WithMany(x => x.Lines)
+                .HasForeignKey(x => x.OutboundStageId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.PickedProduct)
+                .WithMany()
+                .HasForeignKey(x => x.PickedProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.ReceivedProduct)
+                .WithMany()
+                .HasForeignKey(x => x.ReceivedProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.OriginalBin)
+                .WithMany()
+                .HasForeignKey(x => x.OriginalBinId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.StagingBin)
+                .WithMany()
+                .HasForeignKey(x => x.StagingBinId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<OutboundStageCancellation>(entity =>
+        {
+            entity.HasIndex(x => x.CancellationReference).IsUnique();
+            entity.HasOne(x => x.OutboundStage)
+                .WithMany(x => x.Cancellations)
+                .HasForeignKey(x => x.OutboundStageId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<OutboundStageCancellationLine>(entity =>
+        {
+            entity.HasOne(x => x.OutboundStageCancellation)
+                .WithMany(x => x.Lines)
+                .HasForeignKey(x => x.OutboundStageCancellationId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.OutboundStageLine)
+                .WithMany()
+                .HasForeignKey(x => x.OutboundStageLineId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.OriginalBin)
+                .WithMany()
+                .HasForeignKey(x => x.OriginalBinId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.ReturnBin)
+                .WithMany()
+                .HasForeignKey(x => x.ReturnBinId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<LoadingPlan>(entity =>
+        {
+            entity.HasIndex(x => x.LoadingReference).IsUnique();
+            entity.HasIndex(x => x.Status);
+            entity.HasOne(x => x.Warehouse)
+                .WithMany()
+                .HasForeignKey(x => x.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LoadingPlanLine>(entity =>
+        {
+            entity.HasIndex(x => x.LoadingPlanId);
+            entity.HasIndex(x => x.OutboundStageId);
+            entity.HasOne(x => x.LoadingPlan)
+                .WithMany(x => x.Lines)
+                .HasForeignKey(x => x.LoadingPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.OutboundStage)
+                .WithMany()
+                .HasForeignKey(x => x.OutboundStageId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.OutboundStageLine)
+                .WithMany()
+                .HasForeignKey(x => x.OutboundStageLineId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.PickedProduct)
+                .WithMany()
+                .HasForeignKey(x => x.PickedProductId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.OriginalPallet)
+                .WithMany()
+                .HasForeignKey(x => x.OriginalPalletId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<LoadingPalletVerification>(entity =>
+        {
+            entity.HasIndex(x => new { x.LoadingPlanId, x.PalletId, x.ScanTime });
+            entity.HasOne(x => x.LoadingPlan)
+                .WithMany(x => x.PalletVerifications)
+                .HasForeignKey(x => x.LoadingPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.Pallet)
+                .WithMany()
+                .HasForeignKey(x => x.PalletId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LoadingEvidence>(entity =>
+        {
+            entity.HasIndex(x => x.LoadingPlanId);
+            entity.HasOne(x => x.LoadingPlan)
+                .WithMany(x => x.Evidence)
+                .HasForeignKey(x => x.LoadingPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LoadingException>(entity =>
+        {
+            entity.HasIndex(x => x.LoadingPlanId);
+            entity.HasOne(x => x.LoadingPlan)
+                .WithMany(x => x.Exceptions)
+                .HasForeignKey(x => x.LoadingPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(x => x.Pallet)
+                .WithMany()
+                .HasForeignKey(x => x.PalletId)
+                .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(x => x.LoadingPlanLine)
+                .WithMany()
+                .HasForeignKey(x => x.LoadingPlanLineId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
 
         modelBuilder.Entity<User>(entity =>
         {

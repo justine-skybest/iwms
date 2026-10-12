@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections;
 using WMS.Api.Data;
@@ -98,17 +99,37 @@ public static class PickingEndpoint
         // -----------------------------------------------------------------------------
         // Single Item & Mutation Endpoints
         // -----------------------------------------------------------------------------
-        group.MapGet("/{Id}", async (int Id, WMSContext dbContext) => {
-            ManualPicking? pick = await dbContext.ManualPickings.FindAsync(Id);
+        group.MapGet("/{id:int}", async Task<Results<Ok<ManualPickingDetailsDto>, NotFound>> (
+            int id,
+            WMSContext dbContext,
+            CancellationToken cancellationToken) =>
+        {
+            var pick = await dbContext.ManualPickings
+                .Include(picking => picking.PickedProducts)
+                    .ThenInclude(pickedProduct => pickedProduct.ReceivedProduct)
+                        .ThenInclude(receivedProduct => receivedProduct!.Product)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(picking => picking.Id == id, cancellationToken);
 
-            return pick is null ? Results.NotFound() : Results.Ok(pick.ToDetailsDto());
-        }).WithName(GetManualPickingEndpointName);
+            return pick is null
+                ? TypedResults.NotFound()
+                : TypedResults.Ok(pick.ToDetailsDto());
+        })
+        .WithName(GetManualPickingEndpointName)
+        .WithSummary("Get a manual pick order by ID")
+        .WithDescription("Returns a manual pick order with its picked-product lines, including product names, picked quantities, and pick dates. Returns 404 when the pick order does not exist.")
+        .Produces<ManualPickingDetailsDto>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound);
 
-        group.MapPost("/", async (CreateManualPickingDto newManualPicking, WMSContext dbContext, IAuditLogService auditLogService) =>
+        group.MapPost("/", async (
+            CreateManualPickingDto newManualPicking,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
         {
             ManualPicking pick = newManualPicking.ToEntity();
             dbContext.ManualPickings.Add(pick);
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             var targetBin = await dbContext.Bins
                 .AsNoTracking()
@@ -123,13 +144,13 @@ public static class PickingEndpoint
                 .Include(b => b.BinNames)
                 .Include(b => b.Bay)
                 .Include(b => b.Level)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             var receivedProducts = await dbContext.ReceivedProducts
                 .AsNoTracking()
                 .Include(rp => rp.Product)
                 .Where(rp => newManualPicking.PickedProducts!.Select(pp => pp.ReceivedProductId).Contains(rp.Id))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             await auditLogService.LogAsync(
                 category: nameof(ManualPicking),
@@ -152,8 +173,19 @@ public static class PickingEndpoint
                 }
             );
 
-            return Results.CreatedAtRoute(GetManualPickingEndpointName, new { id = pick.Id }, pick.ToDetailsDto());
-        });
+            var createdPick = await dbContext.ManualPickings
+                .Include(picking => picking.PickedProducts)
+                    .ThenInclude(pickedProduct => pickedProduct.ReceivedProduct)
+                        .ThenInclude(receivedProduct => receivedProduct!.Product)
+                .AsNoTracking()
+                .FirstAsync(picking => picking.Id == pick.Id, cancellationToken);
+
+            return Results.CreatedAtRoute(GetManualPickingEndpointName, new { id = pick.Id }, createdPick.ToDetailsDto());
+        })
+        .WithSummary("Create a manual pick order")
+        .WithDescription("Creates a manual pick order with its picked-product lines and returns the created order, including the picked-product details.")
+        .Produces<ManualPickingDetailsDto>(StatusCodes.Status201Created)
+        .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
         group.MapPut("/", () => {
 

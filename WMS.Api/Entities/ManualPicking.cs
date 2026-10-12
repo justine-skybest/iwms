@@ -20,6 +20,7 @@ public class ManualPicking
 
     public DateTime PickingDate { get; set; }
 
-    public string? Notes { get; set; } 
+    public string? Notes { get; set; }
 
+    public ICollection<OutboundStage> OutboundStages { get; set; } = new List<OutboundStage>();
 }

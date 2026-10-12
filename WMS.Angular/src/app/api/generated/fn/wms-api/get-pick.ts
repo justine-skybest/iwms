@@ -7,25 +7,26 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
+import type { ManualPickingDetailsDto } from '../../models/manual-picking-details-dto';
 
 export interface GetPick$Params {
-  Id: number;
+  id: number;
 }
 
-export function getPick(http: HttpClient, rootUrl: string, params: GetPick$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+export function getPick(http: HttpClient, rootUrl: string, params: GetPick$Params, context?: HttpContext): Observable<StrictHttpResponse<ManualPickingDetailsDto>> {
   const rb = new RequestBuilder(rootUrl, getPick.PATH, 'get');
   if (params) {
-    rb.path('Id', params.Id, {});
+    rb.path('id', params.id, {});
   }
 
   return http.request(
-    rb.build({ responseType: 'text', accept: '*/*', context })
+    rb.build({ responseType: 'json', accept: 'application/json', context })
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      return r as StrictHttpResponse<ManualPickingDetailsDto>;
     })
   );
 }
 
-getPick.PATH = '/manualpicking/{Id}';
+getPick.PATH = '/manualpicking/{id}';

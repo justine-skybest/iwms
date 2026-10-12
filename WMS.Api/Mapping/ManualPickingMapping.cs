@@ -27,7 +27,11 @@ public static class ManualPickingMapping
             picking.BinId,
             picking.PickedProducts.Select(product => product.Id).ToList(),
             picking.PickingDate,
-            picking.Notes
+            picking.Notes,
+            picking.PickedProducts
+                .OrderBy(product => product.Id)
+                .Select(product => product.ToSummaryDto())
+                .ToList()
         );
     }
     

@@ -70,6 +70,11 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/pick-order/pick-order.routes').then((m) => m.pickOrderRoutes),
         title: 'Pick-Order'
       },
+      {
+        path: 'outbound',
+        loadChildren: () => import('./pages/outbound/outbound.routes').then((m) => m.outboundRoutes),
+        title: 'Outbound Workflow'
+      },
       // {
       //   path: 'reconcillation-report',
       //   loadChildren: () => import('./pages/reports/receiving-reconciliation-report/receiving-reconciliation.routes').then((m) => m.reconcillationRoutes),
