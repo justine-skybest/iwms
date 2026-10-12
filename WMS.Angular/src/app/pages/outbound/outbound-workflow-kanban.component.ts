@@ -2,12 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  CdkDropListGroup,
-  CdkDropList,
-  CdkDrag,
-  CdkDragDrop,
-} from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
 import { ToastService } from '../../lib/services/toast.service';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
@@ -35,9 +30,7 @@ import {
     FormsModule,
     RouterLink,
     PageHeaderComponent,
-    CdkDropListGroup,
-    CdkDropList,
-    CdkDrag,
+    DragDropModule
   ],
   templateUrl: './outbound-workflow-kanban.component.html',
 })
