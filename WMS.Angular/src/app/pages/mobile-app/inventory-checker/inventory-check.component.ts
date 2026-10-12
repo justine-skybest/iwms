@@ -85,23 +85,25 @@ export class InventoryCheckModalComponent implements OnChanges {
     this.closed.emit();
   }
 
-  async executeInspection(code: string): Promise<void> {
-    const trimmed = code.trim();
-    if (!trimmed) return;
+async executeInspection(code: string): Promise<void> {
+  const trimmed = code.trim();
+  if (!trimmed) return;
 
-    this.searchQuery = trimmed;
+  this.searchQuery = trimmed;
 
-    // Auto-switch mode if a scanned QR string starts with 'PALLET:'
-    if (trimmed.toUpperCase().startsWith('PALLET:')) {
-      this.inspectionMode = 'pallet';
-    }
+  const upper = trimmed.toUpperCase();
 
-    if (this.inspectionMode === 'pallet') {
-      await this.inspectPallet(trimmed);
-    } else {
-      await this.inspectBin(trimmed);
-    }
+  // Auto-switch mode if scanned QR starts with PALLET:, PAL-, or PAL
+  if (upper.startsWith('PALLET:') || upper.startsWith('PAL-') || /^PAL\d+/.test(upper)) {
+    this.inspectionMode = 'pallet';
   }
+
+  if (this.inspectionMode === 'pallet') {
+    await this.inspectPallet(trimmed);
+  } else {
+    await this.inspectBin(trimmed);
+  }
+}
 
   private async inspectBin(code: string): Promise<void> {
     const warehouseId = this.warehouseService.selectedWarehouseId();
@@ -187,16 +189,16 @@ export class InventoryCheckModalComponent implements OnChanges {
     }
   }
 
-  private parsePalletId(code: string): number | null {
-    const trimmed = code.trim();
-    if (/^\d+$/.test(trimmed)) return Number(trimmed);
+private parsePalletId(code: string): number | null {
+  const trimmed = code.trim();
+  if (/^\d+$/.test(trimmed)) return Number(trimmed);
 
-    // Matches formats like "PALLET:#123|SKU:..." or "PALLET:123"
-    const match = trimmed.match(/PALLET:#?(\d+)/i);
-    if (match && match[1]) return Number(match[1]);
+  // Matches "PALLET:123", "PALLET:#123", "PAL-123", "PAL123", etc.
+  const match = trimmed.match(/(?:PALLET|PAL)[:#-]*(\d+)/i);
+  if (match && match[1]) return Number(match[1]);
 
-    return null;
-  }
+  return null;
+}
 
   private startSearchState(): void {
     this.isLoading = true;
