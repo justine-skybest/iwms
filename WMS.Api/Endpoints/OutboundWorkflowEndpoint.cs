@@ -7,6 +7,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos.Outbound;
 using WMS.Api.Entities;
 using WMS.Api.Mapping;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints;
 
@@ -16,6 +17,9 @@ public static class OutboundWorkflowEndpoint
     {
         var group = app.MapGroup("outbound").WithTags("Outbound");
 
+        // -----------------------------------------------------------------------------
+        // GET /stages
+        // -----------------------------------------------------------------------------
         group.MapGet("/stages", async (WMSContext dbContext, CancellationToken cancellationToken) =>
         {
             var stages = await dbContext.OutboundStages
@@ -32,6 +36,9 @@ public static class OutboundWorkflowEndpoint
         .WithSummary("Get outbound stages")
         .Produces<List<OutboundStageDto>>(StatusCodes.Status200OK);
 
+        // -----------------------------------------------------------------------------
+        // GET /stages/{id}
+        // -----------------------------------------------------------------------------
         group.MapGet("/stages/{id:int}", async (int id, WMSContext dbContext, CancellationToken cancellationToken) =>
         {
             var stage = await dbContext.OutboundStages
@@ -48,10 +55,14 @@ public static class OutboundWorkflowEndpoint
         .Produces<OutboundStageDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 
+        // -----------------------------------------------------------------------------
+        // PUT /stages/{id}/lines - Record actual staged quantities
+        // -----------------------------------------------------------------------------
         group.MapPut("/stages/{id:int}/lines", async (
             int id,
             UpdateOutboundStageQuantitiesDto dto,
             WMSContext dbContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             if (dto.Lines is null || dto.Lines.Count == 0)
@@ -140,7 +151,31 @@ public static class OutboundWorkflowEndpoint
             stage.UpdatedAt = now;
 
             await dbContext.SaveChangesAsync(cancellationToken);
-            return Results.Ok(stage.ToDto());
+
+            var resultDto = stage.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Updated",
+                description: $"Updated staged quantities for stage '{stage.StageReference}' (ID: {id}). Stage status is now '{stage.Status}'.",
+                details: new
+                {
+                    StageId = stage.Id,
+                    stage.StageReference,
+                    ResultingStageStatus = stage.Status.ToString(),
+                    Products = resultDto.Lines.Select(l => new
+                    {
+                        StageLineId = l.Id,
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityStaged,
+                        l.QuantityToStage,
+                        l.Status
+                    })
+                }
+            );
+
+            return Results.Ok(resultDto);
         })
         .WithName("UpdateOutboundStageLineQuantities")
         .WithSummary("Record actual staged quantities")
@@ -150,7 +185,14 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
-        group.MapPost("/stages", async (CreateOutboundStageDto dto, WMSContext dbContext, CancellationToken cancellationToken) =>
+        // -----------------------------------------------------------------------------
+        // POST /stages - Create an outbound stage
+        // -----------------------------------------------------------------------------
+        group.MapPost("/stages", async (
+            CreateOutboundStageDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
         {
             if (dto.Lines is null || dto.Lines.Count == 0)
             {
@@ -169,6 +211,7 @@ public static class OutboundWorkflowEndpoint
             var pickedProductIds = dto.Lines.Select(line => line.PickedProductId).Distinct().ToList();
             var pickedProducts = await dbContext.PickedProducts
                 .Include(product => product.ReceivedProduct)
+                    .ThenInclude(product => product!.Product)
                 .Where(product => pickedProductIds.Contains(product.Id))
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
@@ -248,7 +291,28 @@ public static class OutboundWorkflowEndpoint
                             .ThenInclude(product => product!.Product)
                 .FirstAsync(s => s.Id == stage.Id, cancellationToken);
 
-            return Results.Created($"/outbound/stages/{stage.Id}", createdStage.ToDto());
+            var resultDto = createdStage.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Created",
+                description: $"Created outbound stage '{resultDto.StageReference}' (ID: {stage.Id}) for manual picking #{dto.ManualPickingId} with {resultDto.Lines.Count} product(s).",
+                details: new
+                {
+                    StageId = stage.Id,
+                    resultDto.StageReference,
+                    dto.ManualPickingId,
+                    stage.WarehouseId,
+                    Products = resultDto.Lines.Select(l => new
+                    {
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityToStage
+                    })
+                }
+            );
+
+            return Results.Created($"/outbound/stages/{stage.Id}", resultDto);
         })
         .WithSummary("Create an outbound stage")
         .Produces<OutboundStageDto>(StatusCodes.Status201Created)
@@ -256,6 +320,9 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
+        // -----------------------------------------------------------------------------
+        // GET /loading-plans
+        // -----------------------------------------------------------------------------
         group.MapGet("/loading-plans", async (WMSContext dbContext, CancellationToken cancellationToken) =>
         {
             var plans = await dbContext.LoadingPlans
@@ -276,6 +343,9 @@ public static class OutboundWorkflowEndpoint
         .WithSummary("Get loading plans")
         .Produces<List<LoadingPlanDto>>(StatusCodes.Status200OK);
 
+        // -----------------------------------------------------------------------------
+        // GET /loading-plans/{id}
+        // -----------------------------------------------------------------------------
         group.MapGet("/loading-plans/{id:int}", async (int id, WMSContext dbContext, CancellationToken cancellationToken) =>
         {
             var plan = await dbContext.LoadingPlans
@@ -296,12 +366,16 @@ public static class OutboundWorkflowEndpoint
         .Produces<LoadingPlanDto>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/photos - Upload a loading-plan photo
+        // -----------------------------------------------------------------------------
         group.MapPost("/loading-plans/{id:int}/photos", async (
             int id,
             IFormFile file,
             WMSContext dbContext,
             IConfiguration configuration,
             ILoggerFactory loggerFactory,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             if (file.Length == 0)
@@ -379,6 +453,18 @@ public static class OutboundWorkflowEndpoint
             });
             await dbContext.SaveChangesAsync(cancellationToken);
 
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Uploaded",
+                description: $"Uploaded photo '{fileName}' for loading plan #{id}.",
+                details: new
+                {
+                    LoadingPlanId = id,
+                    FileName = fileName,
+                    PhotoUrl = photoUrl
+                }
+            );
+
             return Results.Ok(photoUrl);
         })
         .DisableAntiforgery()
@@ -392,6 +478,9 @@ public static class OutboundWorkflowEndpoint
         .ProducesProblem(StatusCodes.Status502BadGateway)
         .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/evidence - Upload categorized loading-plan evidence
+        // -----------------------------------------------------------------------------
         group.MapPost("/loading-plans/{id:int}/evidence", async (
             int id,
             IFormFile file,
@@ -399,6 +488,7 @@ public static class OutboundWorkflowEndpoint
             WMSContext dbContext,
             IConfiguration configuration,
             ILoggerFactory loggerFactory,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             if (!Enum.IsDefined(evidenceType))
@@ -482,9 +572,24 @@ public static class OutboundWorkflowEndpoint
             dbContext.LoadingEvidence.Add(evidence);
             await dbContext.SaveChangesAsync(cancellationToken);
 
+            var resultDto = evidence.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Uploaded",
+                description: $"Uploaded '{evidenceType}' evidence photo ('{fileName}') for loading plan #{id}.",
+                details: new
+                {
+                    LoadingPlanId = id,
+                    EvidenceType = evidenceType.ToString(),
+                    FileName = fileName,
+                    StoredPath = evidence.StoredPath
+                }
+            );
+
             return Results.Created(
                 $"/outbound/loading-plans/{id}",
-                evidence.ToDto());
+                resultDto);
         })
         .DisableAntiforgery()
         .WithName("UploadLoadingPlanEvidence")
@@ -497,10 +602,14 @@ public static class OutboundWorkflowEndpoint
         .ProducesProblem(StatusCodes.Status502BadGateway)
         .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/exceptions - Record a loading-plan exception
+        // -----------------------------------------------------------------------------
         group.MapPost("/loading-plans/{id:int}/exceptions", async (
             int id,
             CreateLoadingExceptionDto dto,
             WMSContext dbContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             if (!Enum.IsDefined(dto.ExceptionType))
@@ -526,6 +635,9 @@ public static class OutboundWorkflowEndpoint
 
             var plan = await dbContext.LoadingPlans
                 .Include(currentPlan => currentPlan.Lines)
+                    .ThenInclude(line => line.PickedProduct)
+                        .ThenInclude(product => product!.ReceivedProduct)
+                            .ThenInclude(product => product!.Product)
                 .FirstOrDefaultAsync(currentPlan => currentPlan.Id == id, cancellationToken);
             if (plan is null)
             {
@@ -572,7 +684,28 @@ public static class OutboundWorkflowEndpoint
             dbContext.LoadingExceptions.Add(exception);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return Results.Created($"/outbound/loading-plans/{id}", exception.ToDto());
+            var resultDto = exception.ToDto();
+            var affectedProductName = loadingLine?.PickedProduct?.ReceivedProduct?.Product?.Name ?? "N/A";
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Created",
+                description: $"Recorded '{severity}' severity exception ('{dto.ExceptionType}') for loading plan '{plan.LoadingReference}' (ID: {id}).",
+                details: new
+                {
+                    ExceptionId = exception.Id,
+                    LoadingPlanId = id,
+                    plan.LoadingReference,
+                    ExceptionType = dto.ExceptionType.ToString(),
+                    Severity = severity,
+                    exception.Description,
+                    exception.PalletId,
+                    LoadingPlanLineId = loadingLine?.Id,
+                    AffectedProductName = affectedProductName
+                }
+            );
+
+            return Results.Created($"/outbound/loading-plans/{id}", resultDto);
         })
         .WithName("CreateLoadingPlanException")
         .WithSummary("Record a loading-plan exception")
@@ -582,9 +715,13 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/start - Start loading a loading plan
+        // -----------------------------------------------------------------------------
         group.MapPost("/loading-plans/{id:int}/start", async (
             int id,
             WMSContext dbContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             var plan = await dbContext.LoadingPlans
@@ -618,7 +755,29 @@ public static class OutboundWorkflowEndpoint
             plan.UpdatedAt = DateTime.UtcNow;
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return Results.Ok(plan.ToDto());
+            var resultDto = plan.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Updated",
+                description: $"Started loading plan '{plan.LoadingReference}' (ID: {id}) containing {resultDto.Lines.Count} planned product line(s). Status set to InProgress.",
+                details: new
+                {
+                    LoadingPlanId = id,
+                    plan.LoadingReference,
+                    Status = plan.Status.ToString(),
+                    plan.ActualStartAt,
+                    Products = resultDto.Lines.Select(l => new
+                    {
+                        l.Id,
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityPlanned
+                    })
+                }
+            );
+
+            return Results.Ok(resultDto);
         })
         .WithName("StartLoadingPlan")
         .WithSummary("Start loading a loading plan")
@@ -627,10 +786,14 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
+        // -----------------------------------------------------------------------------
+        // PUT /loading-plans/{id}/lines - Record loaded quantities
+        // -----------------------------------------------------------------------------
         group.MapPut("/loading-plans/{id:int}/lines", async (
             int id,
             UpdateLoadingPlanQuantitiesDto dto,
             WMSContext dbContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             if (dto.Lines is null || dto.Lines.Count == 0)
@@ -698,7 +861,30 @@ public static class OutboundWorkflowEndpoint
             plan.UpdatedAt = DateTime.UtcNow;
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return Results.Ok(plan.ToDto());
+            var resultDto = plan.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Updated",
+                description: $"Recorded loaded quantities for loading plan '{plan.LoadingReference}' (ID: {id}). Status is now '{plan.Status}'.",
+                details: new
+                {
+                    LoadingPlanId = id,
+                    plan.LoadingReference,
+                    ResultingStatus = plan.Status.ToString(),
+                    Products = resultDto.Lines.Select(l => new
+                    {
+                        LoadingPlanLineId = l.Id,
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityLoaded,
+                        l.QuantityPlanned,
+                        l.Status
+                    })
+                }
+            );
+
+            return Results.Ok(resultDto);
         })
         .WithName("UpdateLoadingPlanLineQuantities")
         .WithSummary("Record loaded quantities")
@@ -708,9 +894,13 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/dispatch - Confirm final dispatch
+        // -----------------------------------------------------------------------------
         group.MapPost("/loading-plans/{id:int}/dispatch", async (
             int id,
             WMSContext dbContext,
+            IAuditLogService auditLogService,
             CancellationToken cancellationToken) =>
         {
             var plan = await dbContext.LoadingPlans
@@ -744,7 +934,28 @@ public static class OutboundWorkflowEndpoint
             plan.UpdatedAt = DateTime.UtcNow;
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            return Results.Ok(plan.ToDto());
+            var resultDto = plan.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Dispatched",
+                description: $"Confirmed final dispatch for loading plan '{plan.LoadingReference}' (ID: {id}) containing {resultDto.Lines.Count} fully loaded product(s). Status set to Completed.",
+                details: new
+                {
+                    LoadingPlanId = id,
+                    plan.LoadingReference,
+                    Status = plan.Status.ToString(),
+                    plan.CompletedAt,
+                    DispatchedProducts = resultDto.Lines.Select(l => new
+                    {
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityLoaded
+                    })
+                }
+            );
+
+            return Results.Ok(resultDto);
         })
         .WithName("DispatchLoadingPlan")
         .WithSummary("Confirm final dispatch")
@@ -753,7 +964,14 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status409Conflict);
 
-        group.MapPost("/loading-plans", async (CreateLoadingPlanDto dto, WMSContext dbContext, CancellationToken cancellationToken) =>
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans - Create a loading plan
+        // -----------------------------------------------------------------------------
+        group.MapPost("/loading-plans", async (
+            CreateLoadingPlanDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
         {
             if (dto.StageIds is null || dto.StageIds.Count == 0)
             {
@@ -843,7 +1061,29 @@ public static class OutboundWorkflowEndpoint
                 .Include(plan => plan.Exceptions)
                 .FirstAsync(currentPlan => currentPlan.Id == plan.Id, cancellationToken);
 
-            return Results.Created($"/outbound/loading-plans/{plan.Id}", createdPlan.ToDto());
+            var resultDto = createdPlan.ToDto();
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "Created",
+                description: $"Created loading plan '{resultDto.LoadingReference}' (ID: {plan.Id}) assigned to warehouse #{dto.WarehouseId} with {resultDto.Lines.Count} product(s).",
+                details: new
+                {
+                    LoadingPlanId = plan.Id,
+                    resultDto.LoadingReference,
+                    dto.WarehouseId,
+                    AssignedStageIds = dto.StageIds,
+                    Products = resultDto.Lines.Select(l => new
+                    {
+                        l.OutboundStageId,
+                        l.PickedProductId,
+                        ProductName = l.ProductName ?? "Unknown Product",
+                        l.QuantityPlanned
+                    })
+                }
+            );
+
+            return Results.Created($"/outbound/loading-plans/{plan.Id}", resultDto);
         })
         .WithName("CreateOutboundLoadingPlan")
         .WithSummary("Create a loading plan")
