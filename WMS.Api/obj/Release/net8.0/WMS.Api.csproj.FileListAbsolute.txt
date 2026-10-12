@@ -141,3 +141,5 @@ C:\Users\justi\Documents\WMS\WMS.Api\obj\Release\net8.0\refint\WMS.Api.dll
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Release\net8.0\WMS.Api.pdb
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Release\net8.0\WMS.Api.genruntimeconfig.cache
 C:\Users\justi\Documents\WMS\WMS.Api\obj\Release\net8.0\ref\WMS.Api.dll
+C:\Users\justi\Documents\WMS\WMS.Api\bin\Release\net8.0\CloudinaryDotNet.dll
+C:\Users\justi\Documents\WMS\WMS.Api\bin\Release\net8.0\Newtonsoft.Json.dll

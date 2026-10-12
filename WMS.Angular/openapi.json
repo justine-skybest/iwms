@@ -873,6 +873,604 @@
         }
       }
     },
+    "/outbound/stages": {
+      "get": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Get outbound stages",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OutboundStageDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Create an outbound stage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOutboundStageDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutboundStageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/stages/{id}": {
+      "get": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Get an outbound stage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutboundStageDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/outbound/stages/{id}/lines": {
+      "put": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Record actual staged quantities",
+        "description": "Records actual quantities moved to staging. Quantities are absolute totals and cannot exceed the requested quantities.",
+        "operationId": "UpdateOutboundStageLineQuantities",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOutboundStageQuantitiesDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutboundStageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans": {
+      "get": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Get loading plans",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LoadingPlanDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Create a loading plan",
+        "operationId": "CreateOutboundLoadingPlan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoadingPlanDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingPlanDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}": {
+      "get": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Get a loading plan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingPlanDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/photos": {
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Upload a loading-plan photo",
+        "description": "Uploads an image to Cloudinary, stores the returned URL as loading-plan evidence, and returns that URL.",
+        "operationId": "UploadLoadingPlanPhoto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/evidence": {
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Upload categorized loading-plan evidence",
+        "description": "Uploads an image for loading start, seal check, vehicle inspection, damaged items, or final dispatch.",
+        "operationId": "UploadLoadingPlanEvidence",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "evidenceType",
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "evidenceType": {
+                    "enum": [
+                      "LoadingStart",
+                      "SealCheck",
+                      "VehicleInspection",
+                      "Damage",
+                      "FinalDispatch"
+                    ],
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                },
+                "evidenceType": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingEvidenceDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/exceptions": {
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Record a loading-plan exception",
+        "description": "Records an exception type, description, severity, and optional pallet or loading-plan line. Open exceptions do not block final dispatch.",
+        "operationId": "CreateLoadingPlanException",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoadingExceptionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingExceptionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/start": {
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Start loading a loading plan",
+        "description": "Transitions a planned or assigned loading plan to InProgress and records its actual start time.",
+        "operationId": "StartLoadingPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingPlanDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/lines": {
+      "put": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Record loaded quantities",
+        "description": "Updates actual loaded quantities for one or more lines on a loading plan that is InProgress or Partial. Quantities are absolute totals and cannot exceed planned quantities.",
+        "operationId": "UpdateLoadingPlanLineQuantities",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoadingPlanQuantitiesDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingPlanDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/outbound/loading-plans/{id}/dispatch": {
+      "post": {
+        "tags": [
+          "Outbound"
+        ],
+        "summary": "Confirm final dispatch",
+        "description": "Marks an InProgress or Partial loading plan as Completed after verifying every planned quantity was loaded.",
+        "operationId": "DispatchLoadingPlan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadingPlanDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
     "/pallet": {
       "get": {
         "tags": [
@@ -4938,6 +5536,8 @@
         "tags": [
           "WMS.Api"
         ],
+        "summary": "Create a manual pick order",
+        "description": "Creates a manual pick order with its picked-product lines and returns the created order, including the picked-product details.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4949,6 +5549,16 @@
           "required": true
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManualPickingDetailsDto"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -5038,15 +5648,17 @@
         }
       }
     },
-    "/manualpicking/{Id}": {
+    "/manualpicking/{id}": {
       "get": {
         "tags": [
           "WMS.Api"
         ],
+        "summary": "Get a manual pick order by ID",
+        "description": "Returns a manual pick order with its picked-product lines, including product names, picked quantities, and pick dates. Returns 404 when the pick order does not exist.",
         "operationId": "GetPick",
         "parameters": [
           {
-            "name": "Id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -5057,7 +5669,17 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManualPickingDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -5991,6 +6613,118 @@
         },
         "additionalProperties": false
       },
+      "CreateLoadingExceptionDto": {
+        "type": "object",
+        "properties": {
+          "exceptionType": {
+            "enum": [
+              "MissingPallet",
+              "DamagedItem",
+              "UnauthorizedPallet",
+              "WrongVehicle",
+              "SealMismatch",
+              "QuantityOverflow"
+            ],
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "severity": {
+            "type": "string",
+            "nullable": true
+          },
+          "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "loadingPlanLineId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateLoadingPlanDto": {
+        "type": "object",
+        "properties": {
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loadingReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiclePlateNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "trailerPlateNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerType": {
+            "type": "string",
+            "nullable": true
+          },
+          "sealNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipperName": {
+            "type": "string",
+            "nullable": true
+          },
+          "consigneeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "destination": {
+            "type": "string",
+            "nullable": true
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "supervisorUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "loaderUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "stageIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateManualPickingDto": {
         "type": "object",
         "properties": {
@@ -6018,6 +6752,78 @@
             "format": "date-time"
           },
           "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOutboundStageDto": {
+        "type": "object",
+        "properties": {
+          "manualPickingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stagingBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateOutboundStageLineDto"
+            },
+            "nullable": true
+          },
+          "requestedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOutboundStageLineDto": {
+        "type": "object",
+        "properties": {
+          "pickedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "originalBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "originalPalletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "quantityToStage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stagingBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "remarks": {
             "type": "string",
             "nullable": true
           }
@@ -7288,6 +8094,267 @@
         },
         "additionalProperties": false
       },
+      "LoadingEvidenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "evidenceType": {
+            "enum": [
+              "LoadingStart",
+              "SealCheck",
+              "VehicleInspection",
+              "Damage",
+              "FinalDispatch"
+            ],
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "storedPath": {
+            "type": "string",
+            "nullable": true
+          },
+          "mimeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoadingExceptionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loadingPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "exceptionType": {
+            "enum": [
+              "MissingPallet",
+              "DamagedItem",
+              "UnauthorizedPallet",
+              "WrongVehicle",
+              "SealMismatch",
+              "QuantityOverflow"
+            ],
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "severity": {
+            "type": "string",
+            "nullable": true
+          },
+          "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "loadingPlanLineId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoadingPlanDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loadingReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehiclePlateNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "containerNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "sealNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "shipperName": {
+            "type": "string",
+            "nullable": true
+          },
+          "destination": {
+            "type": "string",
+            "nullable": true
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoadingPlanLineDto"
+            },
+            "nullable": true
+          },
+          "photoUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actualStartAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoadingEvidenceDto"
+            },
+            "nullable": true
+          },
+          "exceptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoadingExceptionDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoadingPlanLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loadingPlanId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "outboundStageId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "outboundStageLineId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pickedProductId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "originalPalletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "palletNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "palletHashCode": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "quantityPlanned": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantityLoaded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remainingQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoadingPlanLineQuantityDto": {
+        "type": "object",
+        "properties": {
+          "loadingPlanLineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantityLoaded": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "Location3D": {
         "type": "object",
         "properties": {
@@ -7373,6 +8440,47 @@
           },
           "rememberMe": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ManualPickingDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "binId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickedProductIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "pickingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "pickProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickedProductSummaryDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -7473,6 +8581,145 @@
           "occupancyRate": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OutboundStageDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "manualPickingId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "warehouseId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stagingBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stageReference": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutboundStageLineDto"
+            },
+            "nullable": true
+          },
+          "requestedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OutboundStageLineDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "originalBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "originalPalletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "stagingBinId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "quantityToStage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantityStaged": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OutboundStageLineQuantityDto": {
+        "type": "object",
+        "properties": {
+          "outboundStageLineId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantityStaged": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -9311,6 +10558,32 @@
           "rotationY": {
             "type": "number",
             "format": "float"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateLoadingPlanQuantitiesDto": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoadingPlanLineQuantityDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UpdateOutboundStageQuantitiesDto": {
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutboundStageLineQuantityDto"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

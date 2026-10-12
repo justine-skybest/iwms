@@ -1,22 +1,34 @@
-<aside class="w-full bg-sidebar-bg flex flex-col flex-shrink-0 h-full border-r border-sidebar-border">
+<aside 
+  class="bg-sidebar-bg flex flex-col flex-shrink-0 h-full border-r border-sidebar-border transition-all duration-300 w-full"
+  [class.lg:w-64]="!isCollapsed"
+  [class.lg:w-20]="isCollapsed">
   
-  <!-- Logo -->
-  <div class="px-5 pt-5 pb-4 border-b border-sidebar-border">
-    <div class="flex items-center gap-2">
-      <div class="w-7.5 h-7.5 bg-white rounded-md flex items-center justify-center">
+  <!-- Logo & Desktop Toggle -->
+  <div class="px-4 pt-5 pb-4 border-b border-sidebar-border flex items-center justify-between gap-2">
+    <div class="flex items-center gap-2.5 min-w-0" [class.lg:justify-center]="isCollapsed" [class.lg:w-full]="isCollapsed">
+      <div class="w-7.5 h-7.5 bg-white rounded-md flex items-center justify-center shrink-0">
         <img src="images/skybest.png" alt="Warehouse" class="w-4 h-4" />
       </div>
-      <div>
-        <div class="font-display font-bold text-[15px] text-sidebar-text-active leading-none">Skybest WMS</div>
-        <div class="text-[10px] text-sidebar-text mt-0.5">{{currentVersion}}</div>
+      <div *ngIf="!isCollapsed" class="min-w-0">
+        <div class="font-display font-bold text-[15px] text-sidebar-text-active leading-none truncate">Skybest WMS</div>
+        <div class="text-[10px] text-sidebar-text mt-0.5 truncate">{{currentVersion}}</div>
       </div>
     </div>
+
+    <!-- Toggle Collapse Button (Desktop Only) -->
+    <button 
+      type="button" 
+      (click)="toggleCollapse()" 
+      class="hidden lg:flex items-center justify-center p-1.5 rounded-md text-sidebar-text hover:text-sidebar-text-active hover:bg-sidebar-border/50 transition-colors shrink-0 cursor-pointer"
+      [title]="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'">
+      <lucide-icon [img]="isCollapsed ? chevronRight : chevronLeft" [size]="16"></lucide-icon>
+    </button>
   </div>
 
   <!-- Navigation -->
   <nav class="flex-1 px-2.5 py-3 overflow-y-auto flex flex-col gap-1">
     
-    <div class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-1 pb-2">
+    <div *ngIf="!isCollapsed" class="text-[10px] font-bold text-sidebar-text uppercase tracking-widest px-2 pt-1 pb-2">
       Main Menu
     </div>
     
@@ -24,9 +36,12 @@
     <a (click)="closeMenu()" *ngFor="let item of mainNavItems" 
        [routerLink]="item.path" 
        routerLinkActive="active" 
-       class="sidebar-link">
+       class="sidebar-link"
+       [class.lg:justify-center]="isCollapsed"
+       [class.lg:px-2]="isCollapsed"
+       [title]="isCollapsed ? item.label : ''">
       <lucide-icon [img]="item.icon" [size]="14"></lucide-icon>
-      <span>{{ item.label }}</span>
+      <span *ngIf="!isCollapsed">{{ item.label }}</span>
     </a>
 
     <!-- Reports Sub-Dropdown Toggle Header -->
@@ -34,12 +49,17 @@
       type="button" 
       (click)="toggleReports()" 
       [class.active]="isReportDataActive()"
-      class="sidebar-link w-full text-left justify-between cursor-pointer border-none bg-transparent">
-      <div class="flex items-center gap-2">
+      class="sidebar-link w-full text-left cursor-pointer border-none bg-transparent"
+      [class.justify-between]="!isCollapsed"
+      [class.lg:justify-center]="isCollapsed"
+      [class.lg:px-2]="isCollapsed"
+      [title]="isCollapsed ? 'Reports' : ''">
+      <div class="flex items-center gap-2" [class.lg:justify-center]="isCollapsed">
         <app-icon name="products" [size]="15"></app-icon>
-        <span>Reports</span>
+        <span *ngIf="!isCollapsed">Reports</span>
       </div>
       <svg 
+        *ngIf="!isCollapsed"
         class="w-3.5 h-3.5 transition-transform duration-200 text-sidebar-text"
         [class.rotate-180]="isReportDataOpen"
         fill="none" 
@@ -50,13 +70,18 @@
     </button>
 
     <!-- Report Data Collapsible Child Items -->
-    <div *ngIf="isReportDataOpen" class="flex flex-col gap-1 pl-3 border-l border-sidebar-border/60 ml-4 my-1">
+    <div *ngIf="isReportDataOpen" 
+         class="flex flex-col gap-1 my-1"
+         [ngClass]="isCollapsed ? 'pl-0 ml-0 items-center' : 'pl-3 border-l border-sidebar-border/60 ml-4'">
       <a (click)="closeMenu()" *ngFor="let item of reportItems" 
          [routerLink]="item.path" 
          routerLinkActive="active" 
-         class="sidebar-link text-xs">
+         class="sidebar-link text-xs"
+         [class.lg:justify-center]="isCollapsed"
+         [class.lg:px-2]="isCollapsed"
+         [title]="isCollapsed ? item.label : ''">
         <lucide-icon [img]="item.icon" [size]="14"></lucide-icon>
-        <span>{{ item.label }}</span>
+        <span *ngIf="!isCollapsed">{{ item.label }}</span>
       </a>
     </div>
 
@@ -65,12 +90,17 @@
       type="button" 
       (click)="toggleMasterData()" 
       [class.active]="isMasterDataActive()"
-      class="sidebar-link w-full text-left justify-between cursor-pointer border-none bg-transparent">
-      <div class="flex items-center gap-2">
+      class="sidebar-link w-full text-left cursor-pointer border-none bg-transparent"
+      [class.justify-between]="!isCollapsed"
+      [class.lg:justify-center]="isCollapsed"
+      [class.lg:px-2]="isCollapsed"
+      [title]="isCollapsed ? 'Master Data' : ''">
+      <div class="flex items-center gap-2" [class.lg:justify-center]="isCollapsed">
         <app-icon name="products" [size]="15"></app-icon>
-        <span>Master Data</span>
+        <span *ngIf="!isCollapsed">Master Data</span>
       </div>
       <svg 
+        *ngIf="!isCollapsed"
         class="w-3.5 h-3.5 transition-transform duration-200 text-sidebar-text"
         [class.rotate-180]="isMasterDataOpen"
         fill="none" 
@@ -81,41 +111,53 @@
     </button>
 
     <!-- Master Data Collapsible Child Items -->
-    <div *ngIf="isMasterDataOpen" class="flex flex-col gap-1 pl-3 border-l border-sidebar-border/60 ml-4 my-1">
+    <div *ngIf="isMasterDataOpen" 
+         class="flex flex-col gap-1 my-1"
+         [ngClass]="isCollapsed ? 'pl-0 ml-0 items-center' : 'pl-3 border-l border-sidebar-border/60 ml-4'">
       <a (click)="closeMenu()" *ngFor="let item of masterDataItems" 
          [routerLink]="item.path" 
          routerLinkActive="active" 
-         class="sidebar-link text-xs">
+         class="sidebar-link text-xs"
+         [class.lg:justify-center]="isCollapsed"
+         [class.lg:px-2]="isCollapsed"
+         [title]="isCollapsed ? item.label : ''">
         <lucide-icon [img]="item.icon" [size]="14"></lucide-icon>
-        <span>{{ item.label }}</span>
+        <span *ngIf="!isCollapsed">{{ item.label }}</span>
       </a>
     </div>
 
     <!-- External / App Operations -->
-    <a routerLink="/mobile" target="_blank" routerLinkActive="active" class="sidebar-link mt-2">
+    <a routerLink="/mobile" target="_blank" routerLinkActive="active" 
+       class="sidebar-link mt-2"
+       [class.lg:justify-center]="isCollapsed"
+       [class.lg:px-2]="isCollapsed"
+       [title]="isCollapsed ? 'Mobile Operations' : ''">
       <app-icon name="mobile" [size]="15"></app-icon>
-      <span>Mobile Operations</span>
-      <span class="ml-auto text-[9px] bg-accent text-white px-1.5 py-0.5 rounded-sm font-bold">APP</span>
+      <span *ngIf="!isCollapsed">Mobile Operations</span>
+      <span *ngIf="!isCollapsed" class="ml-auto text-[9px] bg-accent text-white px-1.5 py-0.5 rounded-sm font-bold">APP</span>
     </a>
 
-    <!-- Change Logs (Positioned at bottom of nav, right above user footer) -->
+    <!-- Change Logs -->
     <a (click)="closeMenu()" 
        routerLink="/changelog" 
        routerLinkActive="active" 
-       class="sidebar-link mt-auto">
+       class="sidebar-link mt-auto"
+       [class.lg:justify-center]="isCollapsed"
+       [class.lg:px-2]="isCollapsed"
+       [title]="isCollapsed ? 'Change Logs' : ''">
       <lucide-icon [img]="changelogIcon" [size]="15"></lucide-icon>
-      <span>Change Logs</span>
-      <!-- <span class="ml-auto text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded-sm font-bold">NEW</span> -->
+      <span *ngIf="!isCollapsed">Change Logs</span>
     </a>
 
   </nav>
 
-  <!-- User Info Footer (Bound to Current User Stream) -->
+  <!-- User Info Footer -->
   <div class="px-3.5 py-3 border-t border-sidebar-border" *ngIf="authService.currentUser$ | async as user">
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-2.5" [class.lg:justify-center]="isCollapsed">
       
       <!-- Profile Picture or Initials Avatar -->
-      <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-accent flex items-center justify-center bg-sidebar-active">
+      <div class="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-accent flex items-center justify-center bg-sidebar-active"
+           [title]="isCollapsed ? getUserName(user) : ''">
         <img 
           *ngIf="user.profileImageUrl; else initialsTemplate" 
           [src]="user.profileImageUrl" 
@@ -129,7 +171,7 @@
       </div>
 
       <!-- Name & Email Display -->
-      <div class="flex-1 min-w-0">
+      <div *ngIf="!isCollapsed" class="flex-1 min-w-0">
         <div class="text-[13px] font-semibold text-sidebar-text-active truncate">
           {{ getUserName(user) }}
         </div>
@@ -140,6 +182,7 @@
 
       <!-- Logout Button -->
       <button 
+        *ngIf="!isCollapsed"
         (click)="logout()" 
         class="bg-transparent border-none cursor-pointer text-sidebar-text p-1 rounded hover:text-white transition-colors" 
         title="Sign out">

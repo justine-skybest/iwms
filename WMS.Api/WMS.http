@@ -258,3 +258,83 @@ Content-Type: application/json
 }
 ###
 GET http://127.0.0.1:8805/manualpicking/
+
+// Outbound staging
+@outboundStageId = 1
+###
+PUT http://127.0.0.1:8805/outbound/stages/{{outboundStageId}}/lines
+Content-Type: application/json
+
+{
+    "Lines": [
+        {
+            "OutboundStageLineId": 1,
+            "QuantityStaged": 5
+        }
+    ]
+}
+
+// Loading plan lifecycle
+@loadingPlanId = 1
+###
+POST http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/start
+Content-Type: application/json
+
+{}
+
+### Upload a loading photo (configure Cloudinary__CloudName, Cloudinary__ApiKey, and Cloudinary__ApiSecret)
+POST http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/photos
+Content-Type: multipart/form-data; boundary=----WMSBoundary
+
+------WMSBoundary
+Content-Disposition: form-data; name="file"; filename="loading-photo.jpg"
+Content-Type: image/jpeg
+
+< ./loading-photo.jpg
+------WMSBoundary--
+
+### Upload categorized loading evidence
+POST http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/evidence
+Content-Type: multipart/form-data; boundary=----WMSEvidenceBoundary
+
+------WMSEvidenceBoundary
+Content-Disposition: form-data; name="evidenceType"
+
+SealCheck
+------WMSEvidenceBoundary
+Content-Disposition: form-data; name="file"; filename="seal-check.jpg"
+Content-Type: image/jpeg
+
+< ./seal-check.jpg
+------WMSEvidenceBoundary--
+
+### Record a loading exception
+POST http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/exceptions
+Content-Type: application/json
+
+{
+    "exceptionType": "DamagedItem",
+    "description": "One item was damaged while loading.",
+    "severity": "High",
+    "palletId": null,
+    "loadingPlanLineId": 1
+}
+
+###
+PUT http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/lines
+Content-Type: application/json
+
+{
+    "Lines": [
+        {
+            "LoadingPlanLineId": 1,
+            "QuantityLoaded": 5
+        }
+    ]
+}
+
+###
+POST http://127.0.0.1:8805/outbound/loading-plans/{{loadingPlanId}}/dispatch
+Content-Type: application/json
+
+{}
