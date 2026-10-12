@@ -975,7 +975,7 @@ applyPalletToRow(): void {
         const uomVal = uomList.slice(0, 3).join(', ') || 'CS GLASS';
 
         const hashCode = palletId;
-        const qrDataUrl = await generateQrCodeDataUrl(`Pal-${palletId}`, 180);
+        const qrDataUrl = await generateQrCodeDataUrl(`PALLET:${palletId}`, 180);
 
         const formattedWeight = totalWeightVal > 0 
           ? totalWeightVal.toFixed(2) 

@@ -30,6 +30,7 @@ import {
   locatePalletByQrCode,
   binQrCodeBinHashCodeWarehouseIdGet,
   locatePalletByNumber,
+  locatePalletById,
 } from '../../../../api/generated/functions';
 import { SearchableSelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
 import { ToastService } from '../../../../lib/services/toast.service';
@@ -108,8 +109,6 @@ export class CreateCheckInModalComponent implements OnChanges {
 
 async onPalletQrScanned(decodedText: string): Promise<void> {
   const trimmedText = decodedText.trim();
-
-  console.log('Pallet QR scanned:', trimmedText);
   const warehouseId = this.warehouseService.selectedWarehouseId();
 
   if (!trimmedText) {
@@ -131,52 +130,23 @@ async onPalletQrScanned(decodedText: string): Promise<void> {
   try {
     let pallet: PalletLocationDto | null = null;
 
-    // 1. Check if the QR code string has a "PAL-" or "PALLET-" prefix (e.g. "PAL-12" or "PALLET-12")
-    const prefixMatch = trimmedText.match(/^PAL(?:LET)?-(\d+)$/i);
+    // Matches PALLET:123, PALLET-123, PAL-123, PALLET:#123, PAL123
+    const prefixMatch = trimmedText.match(/^(?:PALLET|PAL)[:#-]*(\d+)$/i);
 
     if (prefixMatch) {
-      const palletNumber = Number(prefixMatch[1]);
-      console.log('Pallet QR scanned with prefix, locating by Pallet Number:', palletNumber);
-      pallet = (await this.api.invoke(locatePalletByNumber, {
-        palletNumber,
-        warehouseId,
-      })) as PalletLocationDto;
-    } else {
-      // 2. If the scanned text is purely numeric, try HashCode first, then fallback to Pallet Number
+      const palletId = Number(prefixMatch[1]);
+      pallet = await this.fetchPalletById(palletId, warehouseId);
+    } else if (/^\d+$/.test(trimmedText)) {
+      // Pure numeric string: Try HashCode first, fallback to Pallet Number
       const numericValue = Number(trimmedText);
-
-      console.log('Pallet QR scanned without prefix, numeric value:', numericValue);
-
-      if (!isNaN(numericValue)) {
-        // Attempt A: Locate by QR HashCode
-        try {
-          pallet = (await this.api.invoke(locatePalletByQrCode, {
-            hashCode: numericValue,
-            warehouseId,
-          })) as PalletLocationDto;
-        } catch {
-          // HashCode lookup failed or threw 404, proceed to Fallback
-        }
-
-        // Attempt B: Fallback to Locate by Pallet Number if HashCode returned no valid pallet
-        if (!pallet || !pallet.palletId) {
-          try {
-            pallet = (await this.api.invoke(locatePalletByNumber, {
-              palletNumber: numericValue,
-              warehouseId,
-            })) as PalletLocationDto;
-          } catch {
-            // Fallback failed
-          }
-        }
-      } else {
-        this.createError = 'Unrecognized Pallet QR format.';
-        return;
-      }
+      pallet = (await this.fetchPalletByHashCode(numericValue, warehouseId)) 
+            || (await this.fetchPalletById(numericValue, warehouseId));
+    } else {
+      this.createError = 'Unrecognized Pallet QR format.';
+      return;
     }
 
-    // 3. Process the retrieved pallet location
-    if (pallet && pallet.palletId) {
+    if (pallet?.palletId) {
       this.selectedPallet = [
         {
           id: pallet.palletId,
@@ -198,6 +168,22 @@ async onPalletQrScanned(decodedText: string): Promise<void> {
   } finally {
     this.isLocatingPallet = false;
     this.cd.markForCheck();
+  }
+}
+
+private async fetchPalletById(palletId: number, warehouseId: number): Promise<PalletLocationDto | null> {
+  try {
+    return (await this.api.invoke(locatePalletById, { palletId, warehouseId })) as PalletLocationDto;
+  } catch {
+    return null;
+  }
+}
+
+private async fetchPalletByHashCode(hashCode: number, warehouseId: number): Promise<PalletLocationDto | null> {
+  try {
+    return (await this.api.invoke(locatePalletByQrCode, { hashCode, warehouseId })) as PalletLocationDto;
+  } catch {
+    return null;
   }
 }
 
