@@ -4799,42 +4799,6 @@
     "Summary": "Get a transfer log report"
   },
   {
-    "ContainingType": "WMS.Api.Endpoints.ImageUploadEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapImageUploadEndpoints\u003Eb__0_0",
-    "RelativePath": "upload/image",
-    "HttpMethod": "POST",
-    "IsController": false,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "file",
-        "Type": "Microsoft.AspNetCore.Http.IFormFile",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "WMS.Api.Endpoints.ImageUploadResponseDto",
-        "MediaTypes": [
-          "application/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "application/problem\u002Bjson"
-        ],
-        "StatusCode": 400
-      }
-    ],
-    "Tags": [
-      "Upload"
-    ],
-    "EndpointName": "UploadImageToCloudinary",
-    "Summary": "Upload an exception photo to Cloudinary and return the secure image URL"
-  },
-  {
     "ContainingType": "WMS.Api.Endpoints.WarehouseEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapWarehouseEndpoints\u003Eb__0_0",
     "RelativePath": "warehouse/",

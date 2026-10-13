@@ -160,16 +160,7 @@ namespace WMS.Api.Mapping
 
             // 🛠️ FIX: Dynamically calculate overall incoming status
             IncomingStatus dynamicOverallStatus;
-
-            // 1. Force explicit DB statuses to override dynamic calculations
-            if (entity.Status == IncomingStatus.PENDING_REVISED_PL ||
-                entity.Status == IncomingStatus.CANCELLED ||
-                entity.Status == IncomingStatus.CLOSED_SHORT)
-            {
-                dynamicOverallStatus = entity.Status;
-            }
-            // 2. Otherwise calculate based on line items
-            else if (productDtos.Count > 0 && productDtos.All(p => p.Status == IncomingProductStatus.RECEIVED))
+            if (productDtos.Count > 0 && productDtos.All(p => p.Status == IncomingProductStatus.RECEIVED))
             {
                 dynamicOverallStatus = IncomingStatus.RECEIVED;
             }
@@ -193,7 +184,7 @@ namespace WMS.Api.Mapping
                 WarehouseName = entity.Warehouse?.Name,
                 Shipper = entity.Shipper,
                 Consignee = entity.Consignee,
-                Status = dynamicOverallStatus, // ✅ Reflects true calculated or explicit DB status
+                Status = dynamicOverallStatus, // ✅ Reflects true calculated status
                 CurrentVersion = currentVersion, // ✅ Latest version number
                 Documents = documentDtos,       // ✅ Full list of document versions
                 Products = productDtos

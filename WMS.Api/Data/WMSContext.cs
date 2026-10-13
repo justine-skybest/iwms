@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
-using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
 using WMS.Api.Entities.Reporting;
 using WMS.Api.Services;
@@ -247,7 +246,6 @@ public class WMSContext(
             builder.Property(p => p.Weight).HasPrecision(18, 6);
             builder.Property(p => p.ExpectedTotalWeight).HasPrecision(18, 2);
             builder.Property(p => p.CBM).HasPrecision(18, 4);
-            builder.Property(r => r.Status).HasDefaultValue(ReceivedItemStatus.Matched);
         });
 
         // Force cascade delete when an IncomingProduct is deleted -> deletes ReceivedProducts

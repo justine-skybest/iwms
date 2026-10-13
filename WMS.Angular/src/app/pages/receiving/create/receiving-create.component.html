@@ -6,7 +6,7 @@
   </div>
 
   <!-- Drawer Panel -->
-  <div class="relative z-10 w-full bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto pb-16">
+  <div class="relative z-10 w-full max-w-6xl bg-white h-full shadow-2xl flex flex-col justify-between overflow-y-auto pb-16">
     <div>
       <!-- Header -->
       <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-900 text-white">
@@ -136,7 +136,7 @@
                   <lucide-icon [img]="PackageCheckIcon" [size]="15" class="text-blue-600 shrink-0"></lucide-icon>
                   <span *ngIf="stagedItems.length === 0" class="text-slate-400">Click to select products from this shipment...</span>
                   <span *ngIf="stagedItems.length > 0" class="truncate font-semibold text-slate-800">
-                    {{ stagedItems.length }} Line Item(s) Selected
+                    {{ stagedItems.length }} of {{ availableIncomingProducts.length }} Line Item(s) Selected
                   </span>
                 </div>
                 <lucide-icon [img]="ChevronDownIcon" [size]="15" class="text-slate-400 shrink-0 transition-transform duration-200" [class.rotate-180]="isProductDropdownOpen"></lucide-icon>
@@ -285,61 +285,31 @@
             <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">
               Received Line Items ({{ stagedItems.length }})
             </h3>
-
-            <!-- NEW: BUTTON TO RECEIVE UNLISTED EXCEPTION ITEM -->
-            <button 
-              *ngIf="selectedIncoming"
-              (click)="openUnlistedModal()"
-              type="button" 
-              class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs rounded-lg shadow-sm flex items-center gap-1.5 transition-colors"
-            >
-              <lucide-icon [img]="ShieldAlertIcon" [size]="14"></lucide-icon>
-              <span>+ Add Unlisted Item (Exception)</span>
-            </button>
           </div>
 
           <div class="border border-slate-200 rounded-lg overflow-x-auto shadow-sm">
             <table class="w-full text-xs text-left whitespace-nowrap">
               <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
-                  <th class="p-2.5">Status</th>
                   <th class="p-2.5">Product Description</th>
                   <th class="p-2.5 text-center">Received Quantity</th>
                   <th class="p-2.5 text-center">CBM</th>
                   <th class="p-2.5 text-center">Unit Weight / Total</th>
                   <th class="p-2.5 text-center">Expiry Date</th>
                   <th class="p-2.5">Assigned Pallet</th>
-                  <th class="p-2.5">Remarks / Approval</th>
+                  <th class="p-2.5">Remarks</th>
                   <th class="p-2.5 text-center">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
                 <tr *ngIf="stagedItems.length === 0">
-                  <td colspan="9" class="p-8 text-center text-slate-400 text-xs">
-                    No products staged. Select an Incoming shipment above or add an unlisted exception item.
+                  <td colspan="8" class="p-8 text-center text-slate-400 text-xs">
+                    No products staged. Select an Incoming shipment above and use the product combobox to pick items.
                   </td>
                 </tr>
 
-                <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors" [ngClass]="{'bg-amber-50/40': item.status === 2}">
+                <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors">
                   <!-- Product Description + Split Badge -->
-                  
-                  <!-- Lifecycle Status Badge -->
-                  <td class="p-2.5">
-                    <span 
-                      *ngIf="item.status === 1 || !item.status" 
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                      <lucide-icon [img]="CheckIcon" [size]="12"></lucide-icon>
-                      MATCHED
-                    </span>
-                    <span 
-                      *ngIf="item.status === 2" 
-                      title="Item was not in original PL. Marked as Pending Revised PL."
-                      class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                      <lucide-icon [img]="AlertIcon" [size]="12" class="text-amber-700"></lucide-icon>
-                      UNLISTED (PENDING PL)
-                    </span>
-                  </td>
-
                   <td class="p-2.5 font-medium text-slate-800 min-w-[220px]">
                     <div class="flex items-center gap-1.5">
                       <input 
@@ -422,15 +392,12 @@
                     </div>
                   </td>
 
-                  <td class="p-2.5 min-w-[200px]">
-                    <div *ngIf="item.status === 2 && item.exceptionRecord" class="text-[10px] text-amber-900 font-mono mb-1">
-                      Approved by: <strong>{{ item.exceptionRecord.approvedBy }}</strong> (DR: {{ item.exceptionRecord.deliveryReceiptReference }})
-                    </div>
+                  <td class="p-2.5 min-w-[180px]">
                     <input 
                       type="text" 
                       [(ngModel)]="item.remarks" 
                       (ngModelChange)="triggerDraftSave()"
-                      placeholder="Remarks / notes..." 
+                      placeholder="Item remarks / notes..." 
                       class="w-full text-xs px-2 py-1 border border-slate-300 rounded text-slate-600 focus:ring-1 focus:ring-blue-400 focus:outline-none" 
                     />
                   </td>
@@ -554,241 +521,6 @@
           <span>{{ isSaving ? 'Saving...' : 'Save Receipt' }}</span>
         </button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- NEW: UNLISTED ITEM / EXCEPTION MODAL WITH IMAGE CAPTURE -->
-<div *ngIf="isUnlistedModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closeUnlistedModal()"></div>
-  <div class="relative z-10 w-full max-w-xl bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-    
-    <!-- Modal Header -->
-    <div class="p-4 bg-amber-500 text-slate-900 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <lucide-icon [img]="ShieldAlertIcon" [size]="20" class="text-slate-900"></lucide-icon>
-        <div>
-          <h3 class="text-sm font-bold">Record Unlisted Item / Exception</h3>
-          <p class="text-[11px] text-slate-800">Receive an unlisted item as "Pending Revised PL" with required approval & photos</p>
-        </div>
-      </div>
-      <button (click)="closeUnlistedModal()" class="text-slate-800 hover:text-slate-950 font-bold">✕</button>
-    </div>
-
-    <!-- Modal Scrollable Content -->
-    <div class="p-5 overflow-y-auto space-y-4">
-      
-      <!-- STEP 1: CATALOG SEARCH OR MASTER PRODUCT CREATION -->
-      <div *ngIf="!isCreatingNewMasterProduct" class="space-y-3 bg-slate-50 p-3.5 border border-slate-200 rounded-xl">
-        <label class="block text-xs font-bold text-slate-800 uppercase">
-          1. Select Product from Master Catalog
-        </label>
-        
-        <div class="relative">
-          <input 
-            type="text" 
-            [(ngModel)]="unlistedSearchQuery" 
-            (input)="onUnlistedSearchInput()"
-            placeholder="Type Product Name or Code to search catalog..." 
-            class="w-full text-xs pl-8 pr-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-amber-500 focus:outline-none"
-          />
-          <lucide-icon [img]="SearchIcon" [size]="14" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"></lucide-icon>
-        </div>
-
-        <!-- Search Results Dropdown -->
-        <div *ngIf="unlistedSearchResults.length > 0" class="bg-white border border-slate-200 rounded-lg shadow-md max-h-40 overflow-y-auto divide-y divide-slate-100 text-xs">
-          <div 
-            *ngFor="let prod of unlistedSearchResults" 
-            (click)="selectUnlistedProduct(prod)"
-            class="p-2 hover:bg-amber-50 cursor-pointer flex justify-between items-center"
-          >
-            <div>
-              <div class="font-bold text-slate-800">{{ prod.name }}</div>
-              <div class="text-[10px] text-slate-500">Type: {{ prod.typeOfPackage || 'UNIT' }} | Weight: {{ prod.weight }}kg</div>
-            </div>
-            <button class="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">Select</button>
-          </div>
-        </div>
-
-        <div *ngIf="isSearchingUnlistedProducts" class="text-center py-2 text-xs text-slate-400 flex items-center justify-center gap-1.5">
-          <lucide-icon [img]="LoaderIcon" [size]="14" class="animate-spin text-amber-600"></lucide-icon>
-          Searching master catalog...
-        </div>
-
-        <!-- Selected Product Badge -->
-        <div *ngIf="selectedUnlistedProduct" class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg flex items-center justify-between text-xs">
-          <div>
-            <div class="font-bold text-emerald-900">Selected: {{ selectedUnlistedProduct.name }}</div>
-            <div class="text-[10px] text-emerald-700">ID: #{{ selectedUnlistedProduct.id }} | UOM: {{ selectedUnlistedProduct.typeOfPackage }}</div>
-          </div>
-          <button (click)="selectedUnlistedProduct = null; unlistedSearchQuery = ''" class="text-red-600 text-[10px] font-bold">Clear</button>
-        </div>
-
-        <!-- Option to Create Master Product directly -->
-        <div *ngIf="!selectedUnlistedProduct && unlistedSearchQuery.trim()" class="pt-1 flex items-center justify-between text-xs">
-          <span class="text-slate-500">Not found in catalog?</span>
-          <button (click)="switchToCreateMasterProduct()" type="button" class="text-amber-800 font-bold hover:underline flex items-center gap-1">
-            <lucide-icon [img]="PlusIcon" [size]="12"></lucide-icon>
-            <span>Create New Master Product</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- INLINE NEW MASTER PRODUCT CREATION FORM -->
-      <div *ngIf="isCreatingNewMasterProduct" class="bg-amber-50/70 p-4 border border-amber-200 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h4 class="text-xs font-bold text-amber-900 uppercase">Create New Master Catalog Product</h4>
-          <button (click)="isCreatingNewMasterProduct = false" class="text-xs text-slate-500 hover:text-slate-800">Back to Search</button>
-        </div>
-
-        <div class="space-y-2">
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700">Product Code:</label>
-            <input type="text" [(ngModel)]="newMasterProduct.code" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" placeholder="Product Code" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700">Product Name:</label>
-            <input type="text" [(ngModel)]="newMasterProduct.name" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" placeholder="Product Name" />
-          </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700">Package Type (UOM):</label>
-              <input type="text" [(ngModel)]="newMasterProduct.typeOfPackage" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" placeholder="CS GLASS, BTL, UNIT" />
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700">Unit Weight (kg):</label>
-              <input type="number" [(ngModel)]="newMasterProduct.weight" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-            </div>
-          </div>
-        </div>
-
-        <button 
-          (click)="saveMasterProductAndSelect()" 
-          [disabled]="isSavingNewMasterProduct"
-          class="w-full py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded shadow-sm flex items-center justify-center gap-1.5"
-        >
-          <lucide-icon *ngIf="isSavingNewMasterProduct" [img]="LoaderIcon" [size]="14" class="animate-spin"></lucide-icon>
-          <span>Save to Catalog & Select</span>
-        </button>
-      </div>
-
-      <!-- STEP 2: EXCEPTION DETAILS FORM -->
-      <div class="space-y-3">
-        <h4 class="text-xs font-bold text-slate-800 uppercase border-b pb-1">2. Exception Metadata & Quantities</h4>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1"><span class="text-red-500">*</span>Approved By (Person):</label>
-            <input type="text" [(ngModel)]="unlistedApprovedBy" placeholder="Supervisor / Manager Name" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" required />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1"><span class="text-red-500">*</span>DR / Reference:</label>
-            <input type="text" [(ngModel)]="unlistedDrRef" placeholder="Delivery Receipt Reference" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" required />
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-slate-700 mb-1">Reason for Exception:</label>
-          <input type="text" [(ngModel)]="unlistedReason" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-        </div>
-
-        <div class="grid grid-cols-3 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Quantity Received:</label>
-            <input type="number" min="1" [(ngModel)]="unlistedQuantity" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded font-bold" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Total CBM:</label>
-            <input type="text" [(ngModel)]="unlistedCbm" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Total Weight (kg):</label>
-            <input type="text" [(ngModel)]="unlistedWeight" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Expiration Date:</label>
-            <input type="date" [(ngModel)]="unlistedExpirationDate" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">Remarks / Notes:</label>
-            <input type="text" [(ngModel)]="unlistedRemarks" placeholder="Optional notes" class="w-full text-xs px-2.5 py-1.5 border border-slate-300 rounded" />
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 3: EXCEPTION PHOTOS / EVIDENCE -->
-      <div class="space-y-3 pt-2">
-        <div class="flex items-center justify-between border-b pb-1">
-          <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
-            <lucide-icon [img]="ImageIcon" [size]="14" class="text-amber-600"></lucide-icon>
-            <span>3. Exception Photos / Physical Evidence ({{ unlistedPhotos.length }})</span>
-          </h4>
-          <span class="text-[10px] text-slate-400">Capture DR / Truck / Item Photos</span>
-        </div>
-
-        <!-- Hidden Native File & Camera Input -->
-        <input 
-          #photoFileInput
-          type="file" 
-          accept="image/*" 
-          capture="environment"
-          (change)="onExceptionPhotoSelected($event)" 
-          class="hidden" 
-        />
-
-        <!-- Action Upload Buttons -->
-        <div class="flex items-center gap-2">
-          <button 
-            type="button" 
-            (click)="photoFileInput.click()"
-            [disabled]="isUploadingImage"
-            class="px-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50"
-          >
-            <lucide-icon *ngIf="!isUploadingImage" [img]="CameraIcon" [size]="15" class="text-amber-400"></lucide-icon>
-            <lucide-icon *ngIf="isUploadingImage" [img]="LoaderIcon" [size]="15" class="animate-spin text-amber-400"></lucide-icon>
-            <span>{{ isUploadingImage ? 'Uploading Image...' : 'Capture / Upload Photo' }}</span>
-          </button>
-        </div>
-
-        <div *ngIf="uploadImageError" class="text-xs text-red-600 font-medium">
-          {{ uploadImageError }}
-        </div>
-
-        <!-- Photo Thumbnail Preview Gallery -->
-        <div *ngIf="unlistedPhotos.length > 0" class="grid grid-cols-4 gap-2.5 pt-1">
-          <div *ngFor="let photoUrl of unlistedPhotos; let pIdx = index" class="relative group rounded-lg overflow-hidden border border-slate-300 bg-slate-100 aspect-square">
-            <img [src]="photoUrl" alt="Exception Photo" class="w-full h-full object-cover" />
-            <button 
-              type="button"
-              (click)="removeUnlistedPhoto(pIdx)"
-              class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md transition-transform transform scale-90 hover:scale-100"
-              title="Remove Photo"
-            >
-              <lucide-icon [img]="TrashIcon" [size]="12"></lucide-icon>
-            </button>
-          </div>
-        </div>
-
-        <div *ngIf="unlistedPhotos.length === 0" class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-center text-xs text-slate-400">
-          No photos attached. Click "Capture / Upload Photo" to attach physical delivery receipt or product photos.
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Modal Footer -->
-    <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
-      <button (click)="closeUnlistedModal()" class="px-3.5 py-1.5 text-xs border border-slate-300 rounded text-slate-700">Cancel</button>
-      <button 
-        (click)="addUnlistedItemToStaged()" 
-        [disabled]="!selectedUnlistedProduct" 
-        class="px-4 py-1.5 text-xs bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded shadow-sm disabled:opacity-50"
-      >
-        Stage Unlisted Item
-      </button>
     </div>
   </div>
 </div>

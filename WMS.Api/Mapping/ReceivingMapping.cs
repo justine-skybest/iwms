@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
 
@@ -19,7 +18,6 @@ public static class ReceivingMapping
             Consignee = dto.Consignee,
             DateReceived = dto.DateReceived,
             Reference = dto.Reference,
-            Products = dto.Products?.Select(product => product.ToReceiveProductEntity()).ToList() ?? new(),
             PlateNumber = dto.PlateNumber,
             DriverName = dto.DriverName,
             DateTime = dto.DateTime,
@@ -27,53 +25,8 @@ public static class ReceivingMapping
             CheckerName = dto.CheckerName,
             TimeStart = dto.TimeStart,
             TimeEnd = dto.TimeEnd,
-            DateAdded = dto.DateAdded
-        };
-    }
-
-    public static ReceivedProduct ToReceiveProductEntity(this ReceivedProductDetailsDto dto)
-    {
-        return new ReceivedProduct
-        {
-            Id = dto.Id,
-            ProductId = dto.ProductId,
-            IncomingProductId = dto.Status == ReceivedItemStatus.Unlisted_PendingPL ? null : dto.IncomingProductId,
-            Status = dto.Status,
-
-            // ✅ MAP EXCEPTION & PHOTOS DTO -> ENTITY
-            ExceptionRecord = dto.ExceptionRecord == null ? null : new ReceivingException
-            {
-                Reason = dto.ExceptionRecord.Reason,
-                DeliveryReceiptReference = dto.ExceptionRecord.DeliveryReceiptReference,
-                ApprovedBy = dto.ExceptionRecord.ApprovedBy,
-                Notes = dto.ExceptionRecord.Notes,
-                CreatedAt = dto.ExceptionRecord.CreatedAt != default ? dto.ExceptionRecord.CreatedAt : DateTime.UtcNow,
-                Photos = dto.ExceptionRecord.Photos?.Select(url => new ExceptionPhoto
-                {
-                    PhotoUrl = url,
-                    UploadedAt = DateTime.UtcNow
-                }).ToList() ?? new()
-            },
-
-            // Baseline Expected Fields
-            ExpectedProductName = dto.ExpectedProductName,
-            ExpectedQuantity = dto.ExpectedQuantity,
-            ExpectedCBM = dto.ExpectedCBM,
-            ExpectedTotalWeight = dto.ExpectedTotalWeight,
-            ExpectedExpirationDate = dto.ExpectedExpirationDate,
-
-            // Actual Counted / Received Fields
-            Quantity = dto.Quantity,
-            CBM = dto.CBM,
-            TotalAmount = dto.TotalAmount,
-            UnitPrice = dto.UnitPrice,
-            ExpirationDate = dto.ExpirationDate,
-            LotNumber = dto.LotNumber,
-            TypeOfPackage = dto.TypeOfPackage,
-            Supplier = dto.Supplier,
-            Remarks = dto.Remarks,
-            ContainerName = dto.ContainerName ?? string.Empty,
-            PalletId = dto.PalletId
+            DateAdded = dto.DateAdded,
+            Products = dto.Products?.Select(p => p.ToEntity()).ToList() ?? new()
         };
     }
 
@@ -83,14 +36,13 @@ public static class ReceivingMapping
         {
             Id = id,
             WarehouseId = createdReceive.WarehouseId,
-            IncomingId = createdReceive.IncomingId,
             Series = createdReceive.Series,
             TransportCompany = createdReceive.TransportCompany,
             Shipper = createdReceive.Shipper,
             Consignee = createdReceive.Consignee,
             DateReceived = createdReceive.DateReceived,
             Reference = createdReceive.Reference,
-            Products = createdReceive.Products?.Select(product => product.ToEntity()).ToList() ?? new(),
+            Products = createdReceive.Products.Select(product => product.ToEntity()).ToList(),
             PlateNumber = createdReceive.PlateNumber,
             DriverName = createdReceive.DriverName,
             DateTime = createdReceive.DateTime,
@@ -209,50 +161,38 @@ public static class ReceivingMapping
         );
     }
 
-    public static ReceivedProductDetailsDto ToReceivedProductDetailsDto(this ReceivedProduct product)
+    public static ReceivedProductDetailsDto ToReceivedProductDetailsDto(this ReceivedProduct entity)
     {
         return new ReceivedProductDetailsDto
         {
-            Id = product.Id,
-            ProductId = product.ProductId,
-            IncomingProductId = product.IncomingProductId,
-            Status = product.Status,
+            Id = entity.Id,
+            ProductId = entity.ProductId,
+            IncomingProductId = entity.IncomingProductId, // ✅ Map IncomingProductId
 
-            // ✅ MAP EXCEPTION & PHOTOS ENTITY -> DTO
-            ExceptionRecord = product.ExceptionRecord == null ? null : new ReceivingExceptionDetailsDto
-            {
-                Id = product.ExceptionRecord.Id,
-                Reason = product.ExceptionRecord.Reason,
-                DeliveryReceiptReference = product.ExceptionRecord.DeliveryReceiptReference,
-                ApprovedBy = product.ExceptionRecord.ApprovedBy,
-                Notes = product.ExceptionRecord.Notes,
-                CreatedAt = product.ExceptionRecord.CreatedAt,
-                Photos = product.ExceptionRecord.Photos?.Select(p => p.PhotoUrl).ToList() ?? new()
-            },
-
-            ExpectedProductName = product.ExpectedProductName,
-            ExpectedQuantity = product.ExpectedQuantity,
-            ExpectedCBM = product.ExpectedCBM,
-            ExpectedTotalWeight = product.ExpectedTotalWeight,
-            ExpectedExpirationDate = product.ExpectedExpirationDate,
+            // Baseline Expected Fields
+            ExpectedProductName = entity.ExpectedProductName ?? entity.Product?.Name,
+            ExpectedQuantity = entity.ExpectedQuantity ?? 0,
+            ExpectedCBM = entity.ExpectedCBM ?? entity.CBM,
+            ExpectedTotalWeight = entity.ExpectedTotalWeight ?? entity.TotalWeight,
+            ExpectedExpirationDate = entity.ExpectedExpirationDate ?? entity.ExpirationDate,
 
             // Actual Counted Fields
-            Name = product.Product?.Name ?? product.ExpectedProductName,
-            Quantity = product.Quantity,
-            CBM = product.CBM ?? 0m,
-            Weight = product.Weight ?? 0m,
-            TotalAmount = product.TotalAmount ?? 0,
-            UnitPrice = product.UnitPrice ?? 0,
-            LotNumber = product.LotNumber,
-            TypeOfPackage = !string.IsNullOrWhiteSpace(product.TypeOfPackage)
-                ? product.TypeOfPackage
-                : product.Product?.TypeOfPackage,
+            Name = entity.Product?.Name ?? entity.ExpectedProductName,
+            Quantity = entity.Quantity,
+            CBM = entity.CBM ?? 0m,
+            Weight = entity.Weight ?? 0m,
+            TotalAmount = entity.TotalAmount ?? 0,
+            UnitPrice = entity.UnitPrice ?? 0,
+            LotNumber = entity.LotNumber,
+            TypeOfPackage = !string.IsNullOrWhiteSpace(entity.TypeOfPackage)
+                ? entity.TypeOfPackage
+                : entity.Product?.TypeOfPackage,
 
-            ExpirationDate = product.ExpirationDate,
-            Supplier = product.Supplier,
-            Remarks = product.Remarks,
-            ContainerName = product.ContainerName,
-            PalletId = product.PalletId
+            ExpirationDate = entity.ExpirationDate,
+            Supplier = entity.Supplier,
+            Remarks = entity.Remarks,
+            ContainerName = entity.ContainerName,
+            PalletId = entity.PalletId
         };
     }
 
