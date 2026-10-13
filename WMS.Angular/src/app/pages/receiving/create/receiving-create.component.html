@@ -309,27 +309,41 @@
                 </tr>
 
                 <tr *ngFor="let item of stagedItems; let idx = index" class="hover:bg-slate-50 transition-colors">
+                  <!-- Product Description + Split Badge -->
                   <td class="p-2.5 font-medium text-slate-800 min-w-[220px]">
-                    <input 
-                      type="text" 
-                      [(ngModel)]="item.productName"
-                      (ngModelChange)="triggerDraftSave()"
-                      class="w-full text-xs px-2 py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-semibold text-slate-800" 
-                    />
+                    <div class="flex items-center gap-1.5">
+                      <input 
+                        type="text" 
+                        [(ngModel)]="item.productName"
+                        (ngModelChange)="triggerDraftSave()"
+                        class="w-full text-xs px-2 py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-semibold text-slate-800" 
+                      />
+                      <span *ngIf="isItemSplit(item)" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 whitespace-nowrap">
+                        Split
+                      </span>
+                    </div>
                   </td>
 
+                  <!-- Received Quantity & Allocation Total -->
                   <td class="p-2.5 text-center">
                     <div class="flex items-center justify-center gap-1">
                       <input 
                         type="number" 
-                        min="0" 
+                        min="1" 
                         [(ngModel)]="item.quantity"
                         (ngModelChange)="onItemQuantityChange(item)"
                         class="w-20 text-center text-xs font-mono py-1 rounded border border-slate-300 focus:ring-1 focus:ring-blue-500 focus:outline-none font-bold text-slate-800" 
                       />
                     </div>
-                    <div *ngIf="item.expectedQuantity !== undefined" class="text-[10px] text-slate-400 font-mono mt-0.5">
+                    <div *ngIf="item.expectedQuantity !== undefined" class="text-[10px] font-mono mt-0.5" 
+                        [ngClass]="{
+                          'text-amber-600 font-bold': getTotalStagedForProduct(item) > item.expectedQuantity,
+                          'text-slate-400': getTotalStagedForProduct(item) <= item.expectedQuantity
+                        }">
                       Remaining Exp: {{ item.expectedQuantity }}
+                      <div *ngIf="isItemSplit(item)" class="text-[9px] text-blue-600 font-medium">
+                        Total Staged: {{ getTotalStagedForProduct(item) }}
+                      </div>
                     </div>
                   </td>
 
@@ -363,13 +377,19 @@
                     />
                   </td>
 
+                  <!-- Assigned Pallet -->
                   <td class="p-2.5">
                     <button *ngIf="!item.palletId" (click)="openPalletModal(idx)" type="button" class="text-xs text-blue-600 hover:underline">
                       + Assign Pallet
                     </button>
-                    <span *ngIf="item.palletId" class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                      #{{ item.palletId }}
-                    </span>
+                    <div *ngIf="item.palletId" class="flex items-center gap-1.5">
+                      <span class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                        #{{ item.palletId }}
+                      </span>
+                      <button (click)="openPalletModal(idx)" type="button" class="text-[10px] text-slate-400 hover:text-slate-600 underline">
+                        Change
+                      </button>
+                    </div>
                   </td>
 
                   <td class="p-2.5 min-w-[180px]">
@@ -382,8 +402,21 @@
                     />
                   </td>
 
+                  <!-- Actions: Split & Delete -->
                   <td class="p-2.5 text-center">
-                    <button (click)="removeProductItem(idx)" class="text-slate-400 hover:text-red-600 p-1">✕</button>
+                    <div class="flex items-center justify-center gap-1.5">
+                      <button 
+                        (click)="splitProductItem(idx)" 
+                        type="button" 
+                        title="Split this product into another pallet" 
+                        class="flex items-center gap-1 text-[11px] px-2 py-0.5 border border-blue-200 text-blue-700 hover:bg-blue-50 rounded font-semibold transition-colors">
+                        <lucide-icon [img]="PlusIcon" [size]="12"></lucide-icon>
+                        <span>Split</span>
+                      </button>
+                      <button (click)="removeProductItem(idx)" type="button" class="text-slate-400 hover:text-red-600 p-1" title="Remove line item">
+                        ✕
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>

@@ -416,55 +416,91 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
     );
   }
 
-  syncStagedItemsFromSelection(): void {
-    const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
-    const updatedStagedItems: StagedProductItem[] = [];
+syncStagedItemsFromSelection(): void {
+  const selectedProducts = this.availableIncomingProducts.filter(p => p.selected);
+  const selectedKeys = new Set(selectedProducts.map(p => p.id ?? p.productId));
 
-    for (const p of selectedProducts) {
-      const existing = this.stagedItems.find(s => 
-        (p.id && s.incomingProductId === p.id) || s.productId === p.productId
-      );
+  // Preserve all existing staged items (including split duplicates) whose product is still selected
+  const updatedStagedItems = this.stagedItems.filter(item => {
+    const key = item.incomingProductId ?? item.productId;
+    return key !== undefined && selectedKeys.has(key);
+  });
 
-      if (existing) {
-        updatedStagedItems.push(existing);
-      } else {
-        const prodName = p.productName || '';
-        const qty = p.quantity || 0;
-        const cbmVal = p.cbm || 0;
-        const weightVal = p.weight ?? this.getLegacyUnitWeight(p);
-        const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
+  // For newly selected products that have NO lines yet, create an initial staged item
+  for (const p of selectedProducts) {
+    const key = p.id ?? p.productId;
+    const alreadyStaged = updatedStagedItems.some(
+      s => (s.incomingProductId ?? s.productId) === key
+    );
 
-        updatedStagedItems.push({
-          incomingProductId: p.id,
-          productId: p.productId,
-          expectedProductName: prodName,
-          expectedQuantity: qty,
-          expectedCbm: cbmVal,
-          expectedTotalWeight: p.totalWeight ?? this.getTotalWeight({ weight: weightVal, quantity: qty }),
-          expectedExpirationDate: expiryVal,
+    if (!alreadyStaged) {
+      const prodName = p.productName || '';
+      const qty = p.quantity || 0;
+      const cbmVal = p.cbm || 0;
+      const weightVal = p.weight ?? this.getLegacyUnitWeight(p);
+      const expiryVal = p.expirationDate || new Date().toISOString().split('T')[0];
 
-          productName: prodName,
-          quantity: qty,
-          cbm: cbmVal,
-          weight: weightVal,
-          expirationDate: expiryVal,
+      updatedStagedItems.push({
+        incomingProductId: p.id,
+        productId: p.productId,
+        expectedProductName: prodName,
+        expectedQuantity: qty,
+        expectedCbm: cbmVal,
+        expectedTotalWeight: p.totalWeight ?? this.getTotalWeight({ weight: weightVal, quantity: qty }),
+        expectedExpirationDate: expiryVal,
 
-          supplier: p.supplier || undefined,
-          unitPrice: p.unitPrice ?? undefined,
-          totalAmount: p.totalAmount ?? undefined,
+        productName: prodName,
+        quantity: qty,
+        cbm: cbmVal,
+        weight: weightVal,
+        expirationDate: expiryVal,
 
-          typeOfPackage: p.typeOfPackage || 'CS GLASS',
-          remarks: p.remarks || '',
-          palletId: undefined,
-          containerName: ''
-        });
-      }
+        supplier: p.supplier || undefined,
+        unitPrice: p.unitPrice ?? undefined,
+        totalAmount: p.totalAmount ?? undefined,
+
+        typeOfPackage: p.typeOfPackage || 'CS GLASS',
+        remarks: p.remarks || '',
+        palletId: undefined,
+        containerName: ''
+      });
     }
-
-    this.stagedItems = updatedStagedItems;
-    this.cd.markForCheck();
-    this.triggerDraftSave();
   }
+
+  this.stagedItems = updatedStagedItems;
+  this.recalculateItemProRataAndGroups();
+  this.cd.markForCheck();
+  this.triggerDraftSave();
+}
+
+splitProductItem(index: number): void {
+  const original = this.stagedItems[index];
+  if (!original) return;
+
+  const key = original.incomingProductId ?? original.productId;
+  const currentTotalForProduct = this.stagedItems
+    .filter(i => (i.incomingProductId ?? i.productId) === key)
+    .reduce((sum, i) => sum + (i.quantity || 0), 0);
+
+  const expected = original.expectedQuantity ?? 0;
+  const remainingToAllocate = Math.max(0, expected - currentTotalForProduct);
+
+  // Clone item without DB id and without pallet assignment
+  const splitItem: StagedProductItem = {
+    ...original,
+    id: undefined,
+    palletId: undefined,
+    containerName: '',
+    quantity: remainingToAllocate > 0 ? remainingToAllocate : 0,
+    cbm: 0
+  };
+
+  // Insert directly under current row
+  this.stagedItems.splice(index + 1, 0, splitItem);
+  this.recalculateItemProRataAndGroups();
+  this.triggerDraftSave();
+  this.cd.markForCheck();
+}
 
   clearIncomingSelection(): void {
     this.selectedIncoming = null;
@@ -783,18 +819,41 @@ applyPalletToRow(): void {
   this.triggerDraftSave();
 }
 
-  removeProductItem(index: number): void {
-    const removedItem = this.stagedItems[index];
-    this.stagedItems.splice(index, 1);
+removeProductItem(index: number): void {
+  const removedItem = this.stagedItems[index];
+  this.stagedItems.splice(index, 1);
 
-    if (removedItem) {
-      const target = this.availableIncomingProducts.find(p => p.productId === removedItem.productId);
+  if (removedItem) {
+    const key = removedItem.incomingProductId ?? removedItem.productId;
+    // Only uncheck in the product combobox if NO split lines remain for this item
+    const stillHasRemaining = this.stagedItems.some(
+      s => (s.incomingProductId ?? s.productId) === key
+    );
+
+    if (!stillHasRemaining) {
+      const target = this.availableIncomingProducts.find(
+        p => (p.id ?? p.productId) === key
+      );
       if (target) target.selected = false;
     }
-
-    this.triggerDraftSave();
-    this.cd.markForCheck();
   }
+
+  this.recalculateItemProRataAndGroups();
+  this.triggerDraftSave();
+  this.cd.markForCheck();
+}
+
+getTotalStagedForProduct(item: StagedProductItem): number {
+  const key = item.incomingProductId ?? item.productId;
+  return this.stagedItems
+    .filter(i => (i.incomingProductId ?? i.productId) === key)
+    .reduce((sum, i) => sum + (i.quantity || 0), 0);
+}
+
+isItemSplit(item: StagedProductItem): boolean {
+  const key = item.incomingProductId ?? item.productId;
+  return this.stagedItems.filter(i => (i.incomingProductId ?? i.productId) === key).length > 1;
+}
 
   private validateForm(): string | null {
     const warehouseId = this.warehouseService.selectedWarehouseId();
@@ -812,6 +871,9 @@ applyPalletToRow(): void {
       const item = this.stagedItems[i];
       if (!item.palletId) {
         return `Line Item #${i + 1} (${item.productName}) must be assigned to a specific pallet.`;
+      }
+      if (!item.quantity || item.quantity <= 0) {
+        return `Line Item #${i + 1} (${item.productName}) must have a quantity greater than 0.`;
       }
     }
 

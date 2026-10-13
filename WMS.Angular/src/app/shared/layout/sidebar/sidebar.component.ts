@@ -16,7 +16,8 @@ import {
   LucideAngularModule, 
   Warehouse, 
   RotateCcwIcon, 
-  PackageSearch
+  PackageSearch,
+  BoxIcon
 } from 'lucide-angular';
 import { SystemVersionResponseDto, UserResponseDto } from '../../../api/generated/models';
 import { Grid3x3, Users } from 'lucide-angular/src/icons';
@@ -54,6 +55,7 @@ export class SidebarComponent implements OnInit {
   masterDataItems = [
     { path: '/products', label: 'Products', icon: PackageSearch },
     { path: '/warehouses', label: 'Warehouses', icon: Warehouse },
+    { path: '/bins', label: 'Bins QR', icon: BoxIcon },
     { path: '/pallets', label: 'Pallets', icon: Grid3x3 },
     { path: '/suppliers', label: 'Suppliers', icon: Users },
     { path: '/customers', label: 'Customers', icon: Users },
