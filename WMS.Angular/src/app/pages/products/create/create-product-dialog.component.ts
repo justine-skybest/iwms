@@ -55,6 +55,7 @@ export class CreateProductDialogComponent implements OnChanges {
       if (this.isEditMode && this.productToEdit) {
         this.populateFormForEdit();
       }
+      
     }
   }
 
