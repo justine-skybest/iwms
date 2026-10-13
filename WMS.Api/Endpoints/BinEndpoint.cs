@@ -192,7 +192,7 @@ public static class BinEndpoint
         group.MapGet("CheckedIn/{BinHashCode:int}/{WarehouseId:int}", async (int BinHashCode, int WarehouseId, WMSContext dbContext) =>
         {
             var bin = await dbContext.Bins
-            .Where(b => b.BinHashCode == BinHashCode && b.Rack!.WarehouseId == WarehouseId)
+            .Where(b => b.BinHashCode == BinHashCode && (b.Rack!.WarehouseId == WarehouseId || b.WarehouseId == WarehouseId))
             .Include(b => b.Rack)
                 .ThenInclude(r => r!.Warehouse)
             .Include(b => b.Bay)
@@ -458,7 +458,7 @@ public static class BinEndpoint
         group.MapGet("/hashcode/{hashCode:int}/{warehouseId:int}", async (int hashCode, int warehouseId, WMSContext dbContext) =>
         {
             var bin = await dbContext.Bins
-                .Where(b => b.BinHashCode == hashCode && b.Rack!.WarehouseId == warehouseId)
+                .Where(b => b.BinHashCode == hashCode && (b.Rack!.WarehouseId == warehouseId || b.WarehouseId == warehouseId))
                 .Include(b => b.Rack)
                     .ThenInclude(r => r!.Warehouse)
                 .Include(b => b.Bay)
