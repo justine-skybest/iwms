@@ -3,6 +3,7 @@ using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.Bin;
 using WMS.Api.Dtos.CheckIn;
+using WMS.Api.Dtos.Rack;
 using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
 using WMS.Api.Mapping;
@@ -16,27 +17,50 @@ public static class BinEndpoint
 
     public static RouteGroupBuilder MapBinEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("bin").WithParameterValidation();
+        var group = app.MapGroup("bin").WithTags("Bin").WithParameterValidation();
 
         // -----------------------------------------------------------------------------
         // GET / (v1 & v2)
         // -----------------------------------------------------------------------------
-        group.MapGet("/", async (WMSContext dbContext) =>
-            await dbContext.Bins
+        group.MapGet("/", async (WMSContext dbContext, CancellationToken ct) =>
+        {
+            var bins = await dbContext.Bins
+                .AsNoTracking()
                 .Include(bin => bin.Rack)
                     .ThenInclude(rack => rack!.Warehouse)
+                .Include(bin => bin.Warehouse) // Required for standalone bins
                 .Include(bin => bin.Bay)
                 .Include(bin => bin.Level)
                 .Include(bin => bin.BinNames)
-                .OrderBy(bin => bin.Rack!.Warehouse)
-                    .ThenBy(bin => bin.Rack)
-                    .ThenBy(bin => bin.Bay)
-                    .ThenBy(bin => bin.Level)
-                    .ThenBy(bin => bin.BinNames)
-                .Select(bin => bin.ToSummaryDto())
-                .AsNoTracking()
-                .ToListAsync()
-        );
+                .OrderBy(bin => bin.Rack!.Warehouse!.Name ?? bin.Warehouse!.Name ?? string.Empty)
+                    .ThenBy(bin => bin.Rack!.Name ?? "Standalone")
+                    .ThenBy(bin => bin.Bay!.BayNumber)
+                    .ThenBy(bin => bin.Level!.LevelNumber)
+                    .ThenBy(bin => bin.BinNames!.BinName ?? string.Empty)
+                .ToListAsync(ct);
+
+            var response = bins
+                .GroupBy(bin => new
+                {
+                    RackId = bin.Rack?.Id,
+                    RackName = bin.Rack?.Name ?? "Standalone",
+                    WarehouseName = bin.Rack?.Warehouse?.Name ?? bin.Warehouse?.Name ?? "N/A"
+                })
+                .Select(group => new RackGroupDto(
+                    group.Key.RackId,
+                    group.Key.RackName,
+                    group.Key.WarehouseName,
+                    group.Select(bin => bin.ToSummaryDto()).ToList()
+                ))
+                .ToList();
+
+            return TypedResults.Ok(response);
+        })
+        .WithName("GetBinsGroupedByRack")
+        .WithSummary("Get all warehouse bins grouped by rack")
+        .WithDescription("Retrieves all bins grouped by rack. Standalone bins lacking a rack, bay, or level are aggregated under the 'Standalone' rack group.")
+        .Produces<List<RackGroupDto>>(StatusCodes.Status200OK)
+        .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapGet("/v2", async (
             WMSContext dbContext,

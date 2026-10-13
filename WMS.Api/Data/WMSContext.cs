@@ -248,6 +248,21 @@ public class WMSContext(
             builder.Property(p => p.CBM).HasPrecision(18, 4);
         });
 
+        // Force cascade delete when an IncomingProduct is deleted -> deletes ReceivedProducts
+        modelBuilder.Entity<ReceivedProduct>()
+            .HasOne(rp => rp.IncomingProduct)
+            .WithMany()
+            .HasForeignKey(rp => rp.IncomingProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Force cascade delete when an Incoming is deleted -> deletes Receivings
+        // (Since int? IncomingId in Receiving is also nullable)
+        modelBuilder.Entity<Receiving>()
+            .HasOne(r => r.Incoming)
+            .WithMany()
+            .HasForeignKey(r => r.IncomingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Product>(builder =>
         {
             builder.Property(p => p.Weight).HasPrecision(18, 2);

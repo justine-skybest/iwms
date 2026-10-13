@@ -7,13 +7,13 @@ import { filter, map } from 'rxjs/operators';
 import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
-import type { BinSummaryDto } from '../../models/bin-summary-dto';
+import type { RackGroupDto } from '../../models/rack-group-dto';
 
-export interface BinGet$Params {
+export interface GetBinsGroupedByRack$Params {
 }
 
-export function binGet(http: HttpClient, rootUrl: string, params?: BinGet$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<BinSummaryDto>>> {
-  const rb = new RequestBuilder(rootUrl, binGet.PATH, 'get');
+export function getBinsGroupedByRack(http: HttpClient, rootUrl: string, params?: GetBinsGroupedByRack$Params, context?: HttpContext): Observable<StrictHttpResponse<Array<RackGroupDto>>> {
+  const rb = new RequestBuilder(rootUrl, getBinsGroupedByRack.PATH, 'get');
   if (params) {
   }
 
@@ -22,9 +22,9 @@ export function binGet(http: HttpClient, rootUrl: string, params?: BinGet$Params
   ).pipe(
     filter((r: any): r is HttpResponse<any> => r instanceof HttpResponse),
     map((r: HttpResponse<any>) => {
-      return r as StrictHttpResponse<Array<BinSummaryDto>>;
+      return r as StrictHttpResponse<Array<RackGroupDto>>;
     })
   );
 }
 
-binGet.PATH = '/bin';
+getBinsGroupedByRack.PATH = '/bin';

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChil
 import { CommonModule } from '@angular/common';
 import { Api } from '../../api/generated/api';
 import { BinSummaryDto } from '../../api/generated/models';
-import { updateBin3DLocation } from '../../api/generated/fn/wms-api/update-bin-3-d-location';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { CreateCheckInModalComponent } from '../check-in/components/create/create-check-in-modal.component';
 import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-modal.component';
@@ -15,6 +14,7 @@ import {
   Warehouse3DViewerComponent,
 } from './warehouse-3d-viewer.component';
 import { CreateBinPosition } from '../../shared/components/dialog/create-bin-dialog.component';
+import { updateBin3DLocation } from '../../api/generated/functions';
 
 @Component({
   selector: 'app-warehouse-2-3d',

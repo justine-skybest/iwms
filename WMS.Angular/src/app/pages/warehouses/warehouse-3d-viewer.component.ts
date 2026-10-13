@@ -18,7 +18,6 @@ import { Warehouse3DViewerService, Rack3D, Bin3D, BinInventoryItem, sumBinInvent
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { BinSummaryDto, WarehouseDetailsDto } from '../../api/generated/models';
 import { Api } from '../../api/generated/api';
-import { updateBin3DLocation } from '../../api/generated/fn/wms-api/update-bin-3-d-location';
 import { CreateCheckInModalComponent } from '../check-in/components/create/create-check-in-modal.component';
 import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-modal.component';
 import { ReceivingCreateComponent } from '../receiving/create/receiving-create.component';
@@ -41,6 +40,7 @@ import {
 } from 'lucide-angular';
 import * as THREE from 'three';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
+import { updateBin3DLocation } from '../../api/generated/functions';
 
 interface CollisionBox {
   minX: number;

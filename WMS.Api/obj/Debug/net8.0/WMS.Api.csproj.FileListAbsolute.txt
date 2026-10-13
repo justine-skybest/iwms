@@ -269,4 +269,3 @@ C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\zh-Hans\Microsoft.Code
 C:\Users\justi\Documents\WMS\WMS.Api\obj\WeightValidation\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\CloudinaryDotNet.dll
 C:\Users\justi\Documents\WMS\WMS.Api\bin\Debug\net8.0\Newtonsoft.Json.dll
-C:\Users\justi\Documents\WMS\WMS.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

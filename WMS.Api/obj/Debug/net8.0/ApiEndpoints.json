@@ -399,13 +399,26 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Rack.RackGroupDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],
         "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 500
       }
-    ]
+    ],
+    "Tags": [
+      "Bin"
+    ],
+    "EndpointName": "GetBinsGroupedByRack",
+    "Description": "Retrieves all bins grouped by rack. Standalone bins lacking a rack, bay, or level are aggregated under the \u0027Standalone\u0027 rack group.",
+    "Summary": "Get all warehouse bins grouped by rack"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
@@ -437,6 +450,9 @@
         "StatusCode": 201
       }
     ],
+    "Tags": [
+      "Bin"
+    ],
     "EndpointName": "CreateBin"
   },
   {
@@ -466,6 +482,9 @@
         "MediaTypes": [],
         "StatusCode": 404
       }
+    ],
+    "Tags": [
+      "Bin"
     ],
     "EndpointName": "GetBin",
     "Description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
@@ -498,6 +517,9 @@
         ],
         "StatusCode": 400
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -520,6 +542,9 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -550,6 +575,9 @@
         "StatusCode": 200
       }
     ],
+    "Tags": [
+      "Bin"
+    ],
     "EndpointName": "UpdateBin3DLocation",
     "Description": "Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.",
     "Summary": "Update 3D Spatial Position"
@@ -576,6 +604,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -605,6 +636,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ],
     "EndpointName": "GetCheckedInBinByQrCode",
     "Description": "Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.",
@@ -645,6 +679,9 @@
         "StatusCode": 404
       }
     ],
+    "Tags": [
+      "Bin"
+    ],
     "EndpointName": "GetBinByHashCode",
     "Description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
     "Summary": "Get bin details by QR code hash"
@@ -669,6 +706,9 @@
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -698,6 +738,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -722,6 +765,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -751,6 +797,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -782,6 +831,9 @@
         ],
         "StatusCode": 404
       }
+    ],
+    "Tags": [
+      "Bin"
     ],
     "EndpointName": "GetBinStockById",
     "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
@@ -819,6 +871,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -853,6 +908,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -887,6 +945,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {
@@ -926,6 +987,9 @@
         ],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Bin"
     ]
   },
   {

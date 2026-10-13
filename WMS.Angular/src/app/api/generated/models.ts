@@ -93,6 +93,7 @@ export type { Rack } from './models/rack';
 export type { RackDetailsDto } from './models/rack-details-dto';
 export type { RackFloorMapObject } from './models/rack-floor-map-object';
 export type { RackFloorMapObjectDetails } from './models/rack-floor-map-object-details';
+export type { RackGroupDto } from './models/rack-group-dto';
 export type { RackSummaryDto } from './models/rack-summary-dto';
 export type { RackSummaryDtoPaginatedResponse } from './models/rack-summary-dto-paginated-response';
 export type { ReceivedProduct } from './models/received-product';
