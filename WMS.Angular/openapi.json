@@ -4190,6 +4190,60 @@
         }
       }
     },
+    "/upload/image": {
+      "post": {
+        "tags": [
+          "Upload"
+        ],
+        "summary": "Upload an exception photo to Cloudinary and return the secure image URL",
+        "operationId": "UploadImageToCloudinary",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUploadResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/warehouse": {
       "get": {
         "tags": [
@@ -7259,6 +7313,34 @@
         },
         "additionalProperties": false
       },
+      "ExceptionPhoto": {
+        "required": [
+          "photoUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivingExceptionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivingException": {
+            "$ref": "#/components/schemas/ReceivingException"
+          },
+          "photoUrl": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "uploadedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "ExpiringProductDto": {
         "type": "object",
         "properties": {
@@ -7461,6 +7543,24 @@
         },
         "additionalProperties": {}
       },
+      "ImageUploadResponseDto": {
+        "required": [
+          "imageUrl",
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "publicId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "Incoming": {
         "required": [
           "products",
@@ -7499,7 +7599,8 @@
               "RECEIVED",
               "PARTIAL",
               "CANCELLED",
-              "CLOSED_SHORT"
+              "CLOSED_SHORT",
+              "PENDING_REVISED_PL"
             ],
             "type": "string"
           },
@@ -7846,7 +7947,8 @@
               "RECEIVED",
               "PARTIAL",
               "CANCELLED",
-              "CLOSED_SHORT"
+              "CLOSED_SHORT",
+              "PENDING_REVISED_PL"
             ],
             "type": "string"
           },
@@ -7892,7 +7994,8 @@
               "RECEIVED",
               "PARTIAL",
               "CANCELLED",
-              "CLOSED_SHORT"
+              "CLOSED_SHORT",
+              "PENDING_REVISED_PL"
             ],
             "type": "string"
           },
@@ -9169,6 +9272,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
           "name": {
             "type": "string",
             "nullable": true
@@ -9613,6 +9720,17 @@
           "receiving": {
             "$ref": "#/components/schemas/Receiving"
           },
+          "status": {
+            "enum": [
+              "Matched",
+              "Unlisted_PendingPL",
+              "RevisedPL_Received",
+              "Validated",
+              "ForClarification",
+              "Rejected"
+            ],
+            "type": "string"
+          },
           "expectedQuantity": {
             "type": "integer",
             "format": "int32",
@@ -9676,6 +9794,9 @@
               "$ref": "#/components/schemas/CheckIn"
             },
             "nullable": true
+          },
+          "exceptionRecord": {
+            "$ref": "#/components/schemas/ReceivingException"
           }
         },
         "additionalProperties": false
@@ -9695,6 +9816,20 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "status": {
+            "enum": [
+              "Matched",
+              "Unlisted_PendingPL",
+              "RevisedPL_Received",
+              "Validated",
+              "ForClarification",
+              "Rejected"
+            ],
+            "type": "string"
+          },
+          "exceptionRecord": {
+            "$ref": "#/components/schemas/ReceivingExceptionDetailsDto"
           },
           "expectedProductName": {
             "type": "string",
@@ -10079,6 +10214,97 @@
           "totalPages": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivingException": {
+        "required": [
+          "approvedBy",
+          "deliveryReceiptReference",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivedProductId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "receivedProduct": {
+            "$ref": "#/components/schemas/ReceivedProduct"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "deliveryReceiptReference": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "approvedBy": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExceptionPhoto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivingExceptionDetailsDto": {
+        "required": [
+          "approvedBy",
+          "deliveryReceiptReference",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reason": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "deliveryReceiptReference": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "approvedBy": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

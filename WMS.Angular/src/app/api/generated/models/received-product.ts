@@ -6,10 +6,12 @@ import type { IncomingProduct } from '../models/incoming-product';
 import type { Pallet } from '../models/pallet';
 import type { Product } from '../models/product';
 import type { Receiving } from '../models/receiving';
+import type { ReceivingException } from '../models/receiving-exception';
 export interface ReceivedProduct {
   cbm?: number | null;
   checkIns?: Array<CheckIn> | null;
   containerName: string;
+  exceptionRecord?: ReceivingException;
   expectedCBM?: number | null;
   expectedExpirationDate?: string | null;
   expectedProductName?: string | null;
@@ -28,6 +30,7 @@ export interface ReceivedProduct {
   receiving?: Receiving;
   receivingId?: number;
   remarks?: string | null;
+  status?: 'Matched' | 'Unlisted_PendingPL' | 'RevisedPL_Received' | 'Validated' | 'ForClarification' | 'Rejected';
   supplier?: string | null;
   totalAmount?: number | null;
   totalCbm?: number | null;
