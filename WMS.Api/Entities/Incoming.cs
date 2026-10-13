@@ -8,8 +8,7 @@ namespace WMS.Api.Entities
         RECEIVED,
         PARTIAL,
         CANCELLED,
-        CLOSED_SHORT,
-        PENDING_REVISED_PL = 6
+        CLOSED_SHORT
     }
     public class Incoming : IIncomingShipment<IncomingProduct>
     {
