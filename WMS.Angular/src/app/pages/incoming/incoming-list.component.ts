@@ -502,34 +502,50 @@ downloadDocument(doc: IncomingDocumentResponseDto): void {
     void this.loadIncomings();
   }
 
-  getStatusColorClass(status: 'PENDING' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | 'CLOSED_SHORT' | string | undefined): string {
-    switch (status) {
-      case 'PENDING':
-        return 'bg-amber-50 text-amber-700 border-amber-200';
-      case 'PARTIAL':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
-      case 'RECEIVED':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      case 'CLOSED_SHORT':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
-      case 'CANCELLED':
-        return 'bg-rose-50 text-rose-700 border-rose-200';
-      default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
-    }
+getStatusColorClass(status: 'PENDING' | 'PENDING_REVISED_PL' | 'PARTIAL' | 'RECEIVED' | 'CANCELLED' | 'CLOSED_SHORT' | string | undefined): string {
+  switch (status) {
+    case 'PENDING':
+      return 'bg-amber-50 text-amber-700 border-amber-200';
+    case 'PENDING_REVISED_PL':
+      return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+    case 'PARTIAL':
+      return 'bg-blue-50 text-blue-700 border-blue-200';
+    case 'RECEIVED':
+      return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+    case 'CLOSED_SHORT':
+      return 'bg-purple-50 text-purple-700 border-purple-200';
+    case 'CANCELLED':
+      return 'bg-rose-50 text-rose-700 border-rose-200';
+    default:
+      return 'bg-slate-100 text-slate-700 border-slate-200';
   }
+}
 
-  getItemStatusBadgeClass(status?: 'UNRECEIVED' | 'PARTIAL' | 'RECEIVED' | 'CLOSED_SHORT' | string): string {
-    switch (status) {
-      case 'RECEIVED':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-      case 'PARTIAL':
-        return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'CLOSED_SHORT':
-        return 'bg-purple-100 text-purple-800 border-purple-300';
-      case 'UNRECEIVED':
-      default:
-        return 'bg-slate-100 text-slate-600 border-slate-200';
-    }
+getItemStatusBadgeClass(status?: 'UNRECEIVED' | 'PENDING_REVISED_PL' | 'PARTIAL' | 'RECEIVED' | 'CLOSED_SHORT' | string): string {
+  switch (status) {
+    case 'RECEIVED':
+      return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    case 'PARTIAL':
+      return 'bg-blue-100 text-blue-800 border-blue-300';
+    case 'PENDING_REVISED_PL':
+      return 'bg-indigo-100 text-indigo-800 border-indigo-300';
+    case 'CLOSED_SHORT':
+      return 'bg-purple-100 text-purple-800 border-purple-300';
+    case 'UNRECEIVED':
+    default:
+      return 'bg-slate-100 text-slate-600 border-slate-200';
   }
+}
+
+// Optional helper method to cleanly format status labels across templates
+getStatusLabel(status?: string): string {
+  switch (status) {
+    case 'CLOSED_SHORT':
+      return 'SHORT CLOSED';
+    case 'PENDING_REVISED_PL':
+      return 'REVISED PL PENDING';
+    default:
+      return status || 'UNRECEIVED';
+  }
+}
 }

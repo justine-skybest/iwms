@@ -10,7 +10,7 @@ export interface Incoming {
   id?: number;
   products: Array<IncomingProduct>;
   shipper: string;
-  status?: 'PENDING' | 'RECEIVED' | 'PARTIAL' | 'CANCELLED' | 'CLOSED_SHORT';
+  status?: 'PENDING' | 'RECEIVED' | 'PARTIAL' | 'CANCELLED' | 'CLOSED_SHORT' | 'PENDING_REVISED_PL';
   warehouse?: Warehouse;
   warehouseId?: number;
 }
