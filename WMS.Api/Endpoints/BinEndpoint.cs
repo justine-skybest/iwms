@@ -512,7 +512,7 @@ public static class BinEndpoint
                     .Select(rp =>
                     {
                         // Fix: Ensure baseQty is a non-nullable int
-                        var baseQty = rp.ExpectedQuantity is > 0 ? rp.ExpectedQuantity.Value : rp.Quantity;
+                        var baseQty = rp.Quantity;
                         var pickedQty = pickedMap.TryGetValue(rp.Id, out var qty) ? qty : 0;
                         var availableQty = baseQty - pickedQty;
 
