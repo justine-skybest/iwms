@@ -360,9 +360,9 @@
                 <!-- Line Item Status Badge -->
                 <td class="p-2.5 text-center">
                   <span 
-                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border whitespace-nowrap"
                     [ngClass]="getItemStatusBadgeClass(p.status)">
-                    {{ p.status === 'CLOSED_SHORT' ? 'SHORT CLOSED' : (p.status || 'UNRECEIVED') }}
+                    {{ getStatusLabel(p.status) }}
                   </span>
                 </td>
 

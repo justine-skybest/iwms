@@ -213,6 +213,8 @@ export type { TransferItemV2$Params as TransferItemV2$Params } from './fn/transf
 export { transferItemV2 as transferItemV2 } from './fn/transfers-v-2/transfer-item-v-2';
 export type { GetTransferReportV2$Params as GetTransferReportV2$Params } from './fn/transfers-v-2/get-transfer-report-v-2';
 export { getTransferReportV2 as getTransferReportV2 } from './fn/transfers-v-2/get-transfer-report-v-2';
+export type { UploadImageToCloudinary$Params as UploadImageToCloudinary$Params } from './fn/upload/upload-image-to-cloudinary';
+export { uploadImageToCloudinary as uploadImageToCloudinary } from './fn/upload/upload-image-to-cloudinary';
 export type { WarehouseGet$Params as WarehouseGet$Params } from './fn/wms-api/warehouse-get';
 export { warehouseGet as warehouseGet } from './fn/wms-api/warehouse-get';
 export type { WarehousePost$Params as WarehousePost$Params } from './fn/wms-api/warehouse-post';

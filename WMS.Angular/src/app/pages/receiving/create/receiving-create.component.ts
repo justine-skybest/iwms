@@ -5,15 +5,36 @@ import { Api } from '../../../api/generated/api';
 import { WarehouseService } from '../../../lib/services/warehouse.service';
 import { 
   CreateReceivingDto, 
+  CreateProductDto,
   IncomingResponseDto, 
   IncomingResponseDtoPaginatedResponse, 
   PalletLocationDto, 
+  ProductSummaryDto,
+  ProductSummaryDtoPaginatedResponse,
   ReceivedProductDetailsDto, 
-  ReceivingDetailsDto
+  ReceivingDetailsDto,
+  ImageUploadResponseDto,
+  ReceivingExceptionDetailsDto
 } from '../../../api/generated/models';
-import { createReceiving, getReceiving, getUnreceivedIncomings, locatePalletByQrCode } from '../../../api/generated/functions';
+import { 
+  createReceiving, 
+  createProduct,
+  getReceiving, 
+  getUnreceivedIncomings, 
+  locatePalletByQrCode,
+  productV2Get, 
+  uploadImageToCloudinary
+} from '../../../api/generated/functions';
 import { QrScannerComponent } from '../../../shared/components/qr-scanner/qr-scanner.component';
-import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer, Layers } from 'lucide-angular';
+import { 
+  LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, QrCode, 
+  Box, Plus, AlertTriangle, ShieldCheck, FileSpreadsheet, PackageCheck, Printer, 
+  Layers, ShieldAlert, FilePlus, Sparkles, 
+  Camera,
+  Upload,
+  ImageIcon,
+  PlusIcon
+} from 'lucide-angular';
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
@@ -78,6 +99,10 @@ export type StagedProductItem = {
   totalAmount?: number;
 
   unitPrice?: number;
+
+  // Lifecycle Status: 1 = Matched, 2 = Unlisted_PendingPL
+  status?: number;
+  exceptionRecord?: ReceivingExceptionDetailsDto;
 };
 
 export interface PalletGroupSummary {
@@ -126,6 +151,13 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
   readonly PackageCheckIcon = PackageCheck;
   readonly PrinterIcon = Printer;
   readonly LayersIcon = Layers;
+  readonly ShieldAlertIcon = ShieldAlert;
+  readonly FilePlusIcon = FilePlus;
+  readonly SparklesIcon = Sparkles;
+
+  readonly CameraIcon = Camera;
+  readonly UploadIcon = Upload;
+  readonly ImageIcon = ImageIcon;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);
@@ -163,6 +195,14 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
   productFilterQuery = '';
   availableIncomingProducts: SelectableIncomingProduct[] = [];
 
+  @ViewChild('photoFileInput') photoFileInput!: ElementRef<HTMLInputElement>;
+
+  // Exception Photo Capture State
+  unlistedPhotos: string[] = [];
+  isUploadingImage = false;
+  uploadImageError = '';
+
+  // Pallet Scanning Modal
   isPalletModalOpen = false;
   activeRowIndexForPallet: number | null = null;
   palletQrCodeInput = '';
@@ -171,12 +211,41 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
   palletError = '';
   series = '';
 
+  // Print Labels Modal
   isPrintModalOpen = false;
   generatedPalletLabels: PalletLabelPrintData[] = [];
 
-  private incomingSearchDebounce: any;
+  // --- NEW: UNLISTED PRODUCT / EXCEPTION WORKFLOW STATE ---
+  isUnlistedModalOpen = false;
+  unlistedSearchQuery = '';
+  unlistedSearchResults: ProductSummaryDto[] = [];
+  isSearchingUnlistedProducts = false;
+  selectedUnlistedProduct: ProductSummaryDto | null = null;
 
-  // State to hold pallet-level overrides independently without modifying line item values
+  isCreatingNewMasterProduct = false;
+  newMasterProduct: CreateProductDto = {
+    code: '',
+    name: '',
+    typeOfPackage: 'CS GLASS',
+    measurement: 'UNIT',
+    weight: 0
+  };
+  isSavingNewMasterProduct = false;
+
+  // Unlisted Exception Form
+  unlistedQuantity = 1;
+  unlistedApprovedBy = '';
+  unlistedReason = 'Not included in original packing list';
+  unlistedDrRef = '';
+  unlistedRemarks = '';
+  unlistedCbm = 0;
+  unlistedWeight = 0;
+  unlistedExpirationDate = '';
+
+  private incomingSearchDebounce: any;
+  private unlistedProductSearchDebounce: any;
+
+  // State to hold pallet-level overrides independently
   palletOverrides = new Map<number, { manualCbm?: number; manualWeight?: number }>();
   palletCbmDrafts: Record<number, string> = {};
   palletWeightDrafts: Record<number, string> = {};
@@ -359,8 +428,8 @@ export class ReceivingCreateComponent implements OnInit, OnDestroy {
         const totalCbm = p.totalCbm ?? 0;
         const weight = p.weight ?? (p.totalWeight ?? 0) / origQty;
 
-        // Pro-rate CBM & Total Weight based on remaining unreceived balance
         const remainingCbm = Number(((totalCbm / origQty) * activeQty).toFixed(4));
+        const remainingWgt = p.totalWeight ?? (p.totalWeight! / origQty) * activeQty;
         return {
           id: p.id,
           productId: p.productId!,
@@ -427,10 +496,15 @@ syncStagedItemsFromSelection(): void {
   });
 
   // For newly selected products that have NO lines yet, create an initial staged item
+    // Keep existing unlisted exception items
+    const existingUnlistedItems = this.stagedItems.filter(s => s.status === 2);
+    updatedStagedItems.push(...existingUnlistedItems);
+
   for (const p of selectedProducts) {
     const key = p.id ?? p.productId;
+
     const alreadyStaged = updatedStagedItems.some(
-      s => (s.incomingProductId ?? s.productId) === key
+      s => (s.incomingProductId ?? s.productId) === key && s.status !== 2
     );
 
     if (!alreadyStaged) {
@@ -462,7 +536,8 @@ syncStagedItemsFromSelection(): void {
         typeOfPackage: p.typeOfPackage || 'CS GLASS',
         remarks: p.remarks || '',
         palletId: undefined,
-        containerName: ''
+        containerName: '',
+          status: 1 // Matched
       });
     }
   }
@@ -515,6 +590,209 @@ splitProductItem(index: number): void {
     this.triggerDraftSave();
   }
 
+  // --- NEW: UNLISTED ITEM / EXCEPTION METHODS ---
+  openUnlistedModal(): void {
+    this.isUnlistedModalOpen = true;
+    this.unlistedSearchQuery = '';
+    this.unlistedSearchResults = [];
+    this.selectedUnlistedProduct = null;
+    this.isCreatingNewMasterProduct = false;
+    this.unlistedPhotos = []; 
+    this.isUploadingImage = false;
+    this.uploadImageError = '';
+
+    // Reset Form Defaults
+    this.unlistedQuantity = 1;
+    this.unlistedApprovedBy = '';
+    this.unlistedReason = 'Not included in original packing list';
+    this.unlistedDrRef = this.newReceiving.reference || '';
+    this.unlistedRemarks = '';
+    this.unlistedCbm = 0;
+    this.unlistedWeight = 0;
+    this.unlistedExpirationDate = new Date().toISOString().split('T')[0];
+
+    this.cd.markForCheck();
+  }
+
+async onExceptionPhotoSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    this.isUploadingImage = true;
+    this.uploadImageError = '';
+    this.cd.markForCheck();
+
+    try {
+      // ✅ Using the generated OpenAPI wrapper function via Api Service
+      const response = await this.api.invoke(uploadImageToCloudinary, {
+        body: { file }
+      }) as ImageUploadResponseDto;
+
+      if (response?.imageUrl) {
+        this.unlistedPhotos.push(response.imageUrl);
+        this.toastService.success('Exception photo uploaded.');
+      }
+    } catch (err: any) {
+      console.error('Failed to upload exception photo:', err);
+      this.uploadImageError = err?.error?.message || err?.message || 'Failed to upload photo to server.';
+      this.toastService.error('Failed to upload image.');
+    } finally {
+      this.isUploadingImage = false;
+      input.value = ''; // Reset file input element
+      this.cd.markForCheck();
+    }
+  }
+
+removeUnlistedPhoto(index: number): void {
+  this.unlistedPhotos.splice(index, 1);
+  this.cd.markForCheck();
+}
+  
+  closeUnlistedModal(): void {
+    this.isUnlistedModalOpen = false;
+    this.isCreatingNewMasterProduct = false;
+    this.selectedUnlistedProduct = null;
+    this.cd.markForCheck();
+  }
+
+  onUnlistedSearchInput(): void {
+    clearTimeout(this.unlistedProductSearchDebounce);
+    this.unlistedProductSearchDebounce = setTimeout(() => { void this.searchUnlistedProducts(); }, 300);
+  }
+
+  async searchUnlistedProducts(): Promise<void> {
+    if (!this.unlistedSearchQuery.trim()) {
+      this.unlistedSearchResults = [];
+      return;
+    }
+
+    this.isSearchingUnlistedProducts = true;
+    this.cd.markForCheck();
+
+    try {
+      const response = await this.api.invoke(productV2Get, {
+        search: this.unlistedSearchQuery.trim(),
+        page: 1,
+        pageSize: 15
+      }) as ProductSummaryDtoPaginatedResponse;
+
+      this.unlistedSearchResults = response.items ?? [];
+    } catch (err) {
+      console.error('Failed to search master products:', err);
+      this.unlistedSearchResults = [];
+    } finally {
+      this.isSearchingUnlistedProducts = false;
+      this.cd.markForCheck();
+    }
+  }
+
+  selectUnlistedProduct(prod: ProductSummaryDto): void {
+    this.selectedUnlistedProduct = prod;
+    this.unlistedSearchQuery = prod.name || '';
+    this.unlistedSearchResults = [];
+
+    // Pre-populate estimated weight if unit weight is set
+    if (prod.weight) {
+      this.unlistedWeight = Number((prod.weight * this.unlistedQuantity).toFixed(2));
+    }
+
+    this.cd.markForCheck();
+  }
+
+  switchToCreateMasterProduct(): void {
+    this.isCreatingNewMasterProduct = true;
+    this.newMasterProduct = {
+      code: '',
+      name: this.unlistedSearchQuery.trim(),
+      typeOfPackage: 'CS GLASS',
+      measurement: 'UNIT',
+      weight: 0
+    };
+    this.cd.markForCheck();
+  }
+
+  async saveMasterProductAndSelect(): Promise<void> {
+    if (!this.newMasterProduct.name?.trim()) {
+      this.toastService.error('Product Name is required.');
+      return;
+    }
+
+    this.isSavingNewMasterProduct = true;
+    this.cd.markForCheck();
+
+    try {
+      const createdProd = await this.api.invoke(createProduct, { body: this.newMasterProduct }) as any;
+      this.toastService.success(`Created master product "${createdProd.name}"`);
+
+      this.selectedUnlistedProduct = {
+        id: createdProd.id,
+        name: createdProd.name,
+        typeOfPackage: createdProd.typeOfPackage,
+        measurement: createdProd.measurement,
+        weight: createdProd.weight
+      };
+
+      this.isCreatingNewMasterProduct = false;
+    } catch (err) {
+      console.error('Failed to create master product:', err);
+      this.toastService.error('Failed to create new product in catalog.');
+    } finally {
+      this.isSavingNewMasterProduct = false;
+      this.cd.markForCheck();
+    }
+  }
+
+  addUnlistedItemToStaged(): void {
+    if (!this.selectedUnlistedProduct?.id) {
+      this.toastService.error('Please select or create a catalog product first.');
+      return;
+    }
+
+    if (!this.unlistedApprovedBy.trim()) {
+      this.toastService.error('Person who approved this exception is required.');
+      return;
+    }
+
+    if (!this.unlistedDrRef.trim()) {
+      this.toastService.error('Delivery Receipt / Reference is required for unlisted items.');
+      return;
+    }
+
+    if (this.unlistedQuantity <= 0) {
+      this.toastService.error('Quantity must be greater than 0.');
+      return;
+    }
+
+    const unlistedItem: StagedProductItem = {
+      incomingProductId: undefined, // Explicitly NULL for unlisted products
+      productId: this.selectedUnlistedProduct.id,
+      productName: this.selectedUnlistedProduct.name || 'Unlisted Item',
+      typeOfPackage: this.selectedUnlistedProduct.typeOfPackage || 'CS GLASS',
+      quantity: this.unlistedQuantity,
+      cbm: this.unlistedCbm,
+      expirationDate: this.unlistedExpirationDate || new Date().toISOString().split('T')[0],
+      remarks: this.unlistedRemarks,
+      status: 2, // ReceivedItemStatus.Unlisted_PendingPL
+      exceptionRecord: {
+        reason: this.unlistedReason,
+        deliveryReceiptReference: this.unlistedDrRef,
+        approvedBy: this.unlistedApprovedBy,
+        notes: this.unlistedRemarks,
+        photos: this.unlistedPhotos
+      },
+      containerName: '',
+      palletId: undefined
+    };
+
+    this.stagedItems.push(unlistedItem);
+    this.toastService.info(`Added unlisted item "${unlistedItem.productName}" as Pending Revised PL.`);
+    
+    this.closeUnlistedModal();
+    this.recalculateItemProRataAndGroups();
+  }
+
   onItemQuantityChange(item: StagedProductItem): void {
     this.fieldDebounce$.next();
   }
@@ -529,21 +807,14 @@ splitProductItem(index: number): void {
     const quantity = item.quantity ?? 0;
     return Number.isFinite(totalWeight) && quantity > 0 ? totalWeight / quantity : 0;
   }
-
-  /**
-   * Computed getter that dynamically groups staged items by Pallet ID
-   */
+  
   palletGroups: PalletGroupSummary[] = [];
 
   trackByPalletId(index: number, group: PalletGroupSummary): number {
     return group.palletId;
   }
 
-  /**
-   * Executes pro-rating math and updates pallet summaries after the 300ms typing debounce
-   */
   private recalculateItemProRataAndGroups(): void {
-    // 1. Recalculate line-item CBM & Weight pro-rata for changed quantities
     for (const item of this.stagedItems) {
       if (item.incomingProductId && this.availableIncomingProducts.length > 0) {
         const parent = this.availableIncomingProducts.find(p => p.id === item.incomingProductId);
@@ -559,19 +830,11 @@ splitProductItem(index: number): void {
       }
     }
 
-    // 2. Recompute Pallet Group Summaries
     this.updatePalletGroups();
-
-    // 3. Trigger debounced draft auto-save
     this.triggerDraftSave();
-
-    // 4. Mark change detection
     this.cd.markForCheck();
   }
 
-/**
-   * Recomputes pallet group objects explicitly
-   */
   updatePalletGroups(): void {
     const groupsMap = new Map<number, StagedProductItem[]>();
 
@@ -643,110 +906,89 @@ splitProductItem(index: number): void {
     if (Number.isFinite(value) && value >= 0) this.applyPalletWeightOverride(group, value);
   }
 
-/**
- * Called when the warehouse worker enters a Pallet CBM override
- */
-applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
-  if (!group || !Number.isFinite(newTotalCbm) || newTotalCbm < 0) return;
+  applyPalletCbmOverride(group: PalletGroupSummary, newTotalCbm: number): void {
+    if (!group || !Number.isFinite(newTotalCbm) || newTotalCbm < 0) return;
   const roundedCbm = Number(newTotalCbm.toFixed(4));
   this.palletOverrides.set(group.palletId, {
     ...this.palletOverrides.get(group.palletId),
     manualCbm: roundedCbm,
   });
+    this.distributePalletScaleOverride(group.items, roundedCbm, undefined);
+    this.updatePalletGroups();
+    this.triggerDraftSave();
+    this.cd.markForCheck();
+  }
 
-  // Apply tail-end pro-rating directly to the staged items in this pallet group
-  this.distributePalletScaleOverride(group.items, roundedCbm, undefined);
-
-  this.updatePalletGroups();
-  this.triggerDraftSave();
-  this.cd.markForCheck();
-}
-
-/**
- * Called when the warehouse worker enters a Pallet Total Weight scale override
- */
-applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
-  if (!group || !Number.isFinite(newTotalWeight) || newTotalWeight < 0) return;
+  applyPalletWeightOverride(group: PalletGroupSummary, newTotalWeight: number): void {
+    if (!group || !Number.isFinite(newTotalWeight) || newTotalWeight < 0) return;
   const roundedWeight = Number(newTotalWeight.toFixed(2));
   this.palletOverrides.set(group.palletId, {
     ...this.palletOverrides.get(group.palletId),
     manualWeight: roundedWeight,
   });
+    this.distributePalletScaleOverride(group.items, undefined, roundedWeight);
+    this.updatePalletGroups();
+    this.triggerDraftSave();
+    this.cd.markForCheck();
+  }
 
-  // Apply tail-end pro-rating directly to the staged items in this pallet group
-  this.distributePalletScaleOverride(group.items, undefined, roundedWeight);
+  private distributePalletScaleOverride(
+    items: StagedProductItem[],
+    overrideCbm?: number,
+    overrideWeight?: number
+  ): void {
+    if (items.length === 0) return;
 
-  this.updatePalletGroups();
-  this.triggerDraftSave();
-  this.cd.markForCheck();
-}
+    if (overrideCbm !== undefined && overrideCbm >= 0) {
+      const totalBaselineCbm = items.reduce((sum, i) => sum + i.cbm!, 0);
 
-/**
- * Baseline-Weighted Tail Allocation:
- * Pro-rates override target CBM & Weight based on each item's existing CBM/Weight ratio,
- * then assigns the remaining rounding delta to the last item.
- */
-private distributePalletScaleOverride(
-  items: StagedProductItem[],
-  overrideCbm?: number,
-  overrideWeight?: number
-): void {
-  if (items.length === 0) return;
+      if (totalBaselineCbm >= 0) {
+        let accumulatedCbm = 0;
 
-  // 1. Distribute Target CBM based on Baseline CBM Ratios
-  if (overrideCbm !== undefined && overrideCbm >= 0) {
-    const totalBaselineCbm = items.reduce((sum, i) => sum + i.cbm!, 0);
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const isLastItem = i === items.length - 1;
 
-    if (totalBaselineCbm >= 0) {
-      let accumulatedCbm = 0;
+          if (isLastItem) {
+            const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
+            item.cbm = Number(exactCbm.toFixed(4));
+          } else {
+            const itemBaselineCbm = item.cbm ?? 0;
+            const ratio = totalBaselineCbm > 0 ? itemBaselineCbm / totalBaselineCbm : 1 / items.length;
 
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        const isLastItem = i === items.length - 1;
+            const allocatedCbm = Number((overrideCbm * ratio).toFixed(4));
+            item.cbm = allocatedCbm;
+            accumulatedCbm += allocatedCbm;
+          }
+        }
+      }
+    }
 
-        if (isLastItem) {
-          // Tail item gets exact remaining delta
-          const exactCbm = Math.max(0, overrideCbm - accumulatedCbm);
-          item.cbm = Number(exactCbm.toFixed(4));
-        } else {
-          const itemBaselineCbm = item.cbm ?? 0;
-          const ratio = totalBaselineCbm > 0 ? itemBaselineCbm / totalBaselineCbm : 1 / items.length;
+    if (overrideWeight !== undefined && overrideWeight >= 0) {
+      const totalBaselineWeight = items.reduce((sum, i) => sum + this.getTotalWeight(i), 0);
 
-          const allocatedCbm = Number((overrideCbm * ratio).toFixed(4));
-          item.cbm = allocatedCbm;
-          accumulatedCbm += allocatedCbm;
+      if (totalBaselineWeight >= 0) {
+        let accumulatedWeight = 0;
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const isLastItem = i === items.length - 1;
+
+          if (isLastItem) {
+            const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
+            item.weight = item.quantity ? exactWeight / item.quantity : 0;
+          } else {
+            const itemBaselineWeight = this.getTotalWeight(item);
+            const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
+
+            const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
+            item.weight = item.quantity ? allocatedWeight / item.quantity : 0;
+            accumulatedWeight += allocatedWeight;
+          }
         }
       }
     }
   }
-
-  // 2. Distribute Target Weight based on Baseline Weight Ratios
-  if (overrideWeight !== undefined && overrideWeight >= 0) {
-    const totalBaselineWeight = items.reduce((sum, i) => sum + this.getTotalWeight(i), 0);
-
-    if (totalBaselineWeight >= 0) {
-      let accumulatedWeight = 0;
-
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        const isLastItem = i === items.length - 1;
-
-        if (isLastItem) {
-          // Tail item gets exact remaining delta
-          const exactWeight = Math.max(0, overrideWeight - accumulatedWeight);
-          item.weight = item.quantity ? exactWeight / item.quantity : 0;
-        } else {
-          const itemBaselineWeight = this.getTotalWeight(item);
-          const ratio = totalBaselineWeight > 0 ? itemBaselineWeight / totalBaselineWeight : 1 / items.length;
-
-          const allocatedWeight = parseFloat((overrideWeight * ratio).toFixed(2));
-          item.weight = item.quantity ? allocatedWeight / item.quantity : 0;
-          accumulatedWeight += allocatedWeight;
-        }
-      }
-    }
-  }
-}
 
   openPalletModal(rowIndex: number): void {
     this.activeRowIndexForPallet = rowIndex;
@@ -806,24 +1048,22 @@ private distributePalletScaleOverride(
     }
   }
 
-applyPalletToRow(): void {
-  if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
+  applyPalletToRow(): void {
+    if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
 
-  this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
-  this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
-  
-  // Update pallet group calculation explicitly
-  this.updatePalletGroups();
-  
-  this.closePalletModal();
-  this.triggerDraftSave();
-}
+    this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
+    this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
+    
+    this.updatePalletGroups();
+    this.closePalletModal();
+    this.triggerDraftSave();
+  }
 
 removeProductItem(index: number): void {
   const removedItem = this.stagedItems[index];
   this.stagedItems.splice(index, 1);
 
-  if (removedItem) {
+  if (removedItem && removedItem.status !== 2) {
     const key = removedItem.incomingProductId ?? removedItem.productId;
     // Only uncheck in the product combobox if NO split lines remain for this item
     const stillHasRemaining = this.stagedItems.some(
@@ -839,6 +1079,7 @@ removeProductItem(index: number): void {
   }
 
   this.recalculateItemProRataAndGroups();
+    this.recalculateItemProRataAndGroups();
   this.triggerDraftSave();
   this.cd.markForCheck();
 }
@@ -875,6 +1116,10 @@ isItemSplit(item: StagedProductItem): boolean {
       if (!item.quantity || item.quantity <= 0) {
         return `Line Item #${i + 1} (${item.productName}) must have a quantity greater than 0.`;
       }
+
+      if (item.status === 2 && (!item.exceptionRecord?.approvedBy || !item.exceptionRecord?.deliveryReceiptReference)) {
+        return `Unlisted Line Item #${i + 1} (${item.productName}) is missing required Approval or DR Reference details.`;
+      }
     }
 
     return null;
@@ -901,7 +1146,8 @@ isItemSplit(item: StagedProductItem): boolean {
     const processedProducts: ReceivedProductDetailsDto[] = this.stagedItems.map(item => ({
       id: item.id || 0,
       productId: item.productId!,
-      incomingProductId: item.incomingProductId ?? undefined,
+      incomingProductId: item.status === 2 ? undefined : (item.incomingProductId ?? undefined),
+      status: item.status === 2 ? 'Unlisted_PendingPL' : 'Matched',
 
       expectedProductName: item.expectedProductName,
       expectedQuantity: item.expectedQuantity,
@@ -923,8 +1169,21 @@ isItemSplit(item: StagedProductItem): boolean {
 
       remarks: item.remarks || '',
       containerName: item.containerName || '',
-      palletId: item.palletId ?? undefined
+      palletId: item.palletId ?? undefined,
+
+      // Include Exception Record if item is unlisted
+      ...(item.status === 2 && item.exceptionRecord ? {
+        exceptionRecord: {
+          reason: item.exceptionRecord.reason,
+          deliveryReceiptReference: item.exceptionRecord.deliveryReceiptReference,
+          approvedBy: item.exceptionRecord.approvedBy,
+          notes: item.exceptionRecord.notes,
+          photos: item.exceptionRecord.photos || []
+        }
+      } : {})
     }));
+
+    console.log('Processed Products for API:', processedProducts);
 
     const payload: CreateReceivingDto = {
       ...this.newReceiving,
@@ -1202,6 +1461,7 @@ isItemSplit(item: StagedProductItem): boolean {
     this.stagedItems = [];
     this.clearIncomingSelection();
     this.closePalletModal();
+    this.closeUnlistedModal();
     this.isPrintModalOpen = false;
     this.generatedPalletLabels = [];
     this.validationError = '';
