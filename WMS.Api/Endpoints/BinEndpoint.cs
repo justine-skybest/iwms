@@ -247,7 +247,7 @@ public static class BinEndpoint
                 .Include(b => b.Bay)
                 .Include(b => b.Level)
                 .Include(b => b.BinNames)
-                .FirstOrDefaultAsync(b => b.BinHashCode == binHashCode && b.Rack!.WarehouseId == warehouseId, cancellationToken);
+                .FirstOrDefaultAsync(b => b.BinHashCode == binHashCode && (b.Rack!.WarehouseId == warehouseId || b.WarehouseId == warehouseId), cancellationToken);
 
             if (bin is null)
             {

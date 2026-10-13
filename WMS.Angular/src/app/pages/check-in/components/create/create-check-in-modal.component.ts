@@ -218,7 +218,7 @@ private async fetchPalletByHashCode(hashCode: number, warehouseId: number): Prom
       if (bin && bin.id) {
         const binOption: SelectOption<BinSummaryDto> = {
           id: bin.id,
-          label: bin.binName ?? `Bin #${bin.id}`,
+          label: `${[bin.rack, bin.level, bin.bay].filter(Boolean).join(' / ')}/${bin.binName}`,
           sublabel: [bin.rack, bin.level, bin.bay].filter(Boolean).join(' / '),
           raw: bin,
         };
