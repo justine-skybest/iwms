@@ -19,6 +19,14 @@ public static class TransferEndpoint
         // -----------------------------------------------------------------------------
         // Pallet Location Endpoints
         // -----------------------------------------------------------------------------
+        group.MapGet("/pallet/locate/id/{palletId:int}/{warehouseId:int}", async (int palletId, int warehouseId, WMSContext dbContext) =>
+            await LocatePallet(dbContext, pallet => pallet.Id == palletId && pallet.WarehouseId == warehouseId)
+        )
+        .WithName("LocatePalletById")
+        .WithSummary("Locate a pallet by its primary key ID")
+        .WithDescription("Finds a pallet by its database ID within a warehouse and returns its current bin location, if checked in.")
+        .Produces<PalletLocationDto>(StatusCodes.Status200OK);
+
         group.MapGet("/pallet/locate/number/{palletNumber:int}/{warehouseId:int}", async (int palletNumber, int warehouseId, WMSContext dbContext) =>
             await LocatePallet(dbContext, pallet => pallet.PalletNumber == palletNumber && pallet.WarehouseId == warehouseId)
         )

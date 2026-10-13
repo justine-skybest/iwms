@@ -4501,7 +4501,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapTransferEndpoints\u003Eb__0_3",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_4",
     "RelativePath": "transfers/item",
     "HttpMethod": "POST",
     "IsController": false,
@@ -4531,7 +4531,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapTransferEndpoints\u003Eb__0_5",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_6",
     "RelativePath": "transfers/item/bin/{binId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -4561,7 +4561,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapTransferEndpoints\u003Eb__0_2",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_3",
     "RelativePath": "transfers/pallet",
     "HttpMethod": "POST",
     "IsController": false,
@@ -4592,6 +4592,41 @@
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapTransferEndpoints\u003Eb__0_0",
+    "RelativePath": "transfers/pallet/locate/id/{palletId:int}/{warehouseId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "palletId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "warehouseId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.Transfer.PalletLocationDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Transfers"
+    ],
+    "EndpointName": "LocatePalletById",
+    "Description": "Finds a pallet by its database ID within a warehouse and returns its current bin location, if checked in.",
+    "Summary": "Locate a pallet by its primary key ID"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_1",
     "RelativePath": "transfers/pallet/locate/number/{palletNumber:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -4626,7 +4661,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapTransferEndpoints\u003Eb__0_1",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_2",
     "RelativePath": "transfers/pallet/locate/qrcode/{hashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -4661,7 +4696,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.TransferEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapTransferEndpoints\u003Eb__0_4",
+    "Method": "\u003CMapTransferEndpoints\u003Eb__0_5",
     "RelativePath": "transfers/report",
     "HttpMethod": "GET",
     "IsController": false,

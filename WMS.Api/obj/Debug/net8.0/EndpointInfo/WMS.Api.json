@@ -3001,6 +3001,48 @@
         }
       }
     },
+    "/transfers/pallet/locate/id/{palletId}/{warehouseId}": {
+      "get": {
+        "tags": [
+          "Transfers"
+        ],
+        "summary": "Locate a pallet by its primary key ID",
+        "description": "Finds a pallet by its database ID within a warehouse and returns its current bin location, if checked in.",
+        "operationId": "LocatePalletById",
+        "parameters": [
+          {
+            "name": "palletId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PalletLocationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/transfers/pallet/locate/number/{palletNumber}/{warehouseId}": {
       "get": {
         "tags": [
