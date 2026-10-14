@@ -55,9 +55,6 @@ public static class ReceivingEndpoint
                     .ThenInclude(receivedProduct => receivedProduct.Product)
                 .Include(receiving => receiving.Products!)
                     .ThenInclude(receivedProduct => receivedProduct.Pallet)
-                .Include(r => r.Products!)
-                    .ThenInclude(p => p.ExceptionRecord!)
-                        .ThenInclude(e => e.Photos)
                 .Include(receiving => receiving.Warehouse)
                 .AsNoTracking();
 
@@ -197,66 +194,162 @@ public static class ReceivingEndpoint
         // POST / - UPSERT RECEIVING (CREATE RECEIPT & LINK PALLETS)
         // -----------------------------------------------------------------------------
         group.MapPost("/", async (
-                    CreateReceivingDto newReceivingDto,
-                    WMSContext dbContext,
-                    IHubContext<NotificationHub, INotificationClient> hubContext,
-                    IAuditLogService auditLogService,
-                    CancellationToken cancellationToken) =>
+            CreateReceivingDto newReceivingDto,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
         {
+            // 1. Mandatory Incoming Record Lookup
             if (!newReceivingDto.IncomingId.HasValue || newReceivingDto.IncomingId.Value <= 0)
+            {
                 return Results.BadRequest(new { Message = "A valid IncomingId is required." });
+            }
 
             var incoming = await dbContext.Incomings
                 .Include(inc => inc.Products!)
                     .ThenInclude(p => p.Product)
                 .FirstOrDefaultAsync(inc => inc.Id == newReceivingDto.IncomingId.Value, cancellationToken);
 
-            if (incoming is null) return Results.NotFound(new { Message = $"Incoming shipment record not found." });
+            if (incoming is null)
+            {
+                return Results.NotFound(new { Message = $"Incoming shipment record #{newReceivingDto.IncomingId} was not found." });
+            }
 
             if (incoming.Status == IncomingStatus.RECEIVED || incoming.Status == IncomingStatus.CLOSED_SHORT)
-                return Results.BadRequest(new { Message = $"Incoming shipment is already completed or short-closed." });
+            {
+                return Results.BadRequest(new { Message = $"Incoming shipment #{incoming.Id} is already completed or short-closed." });
+            }
 
+            // 2. ALWAYS CREATE A DISTINCT NEW RECEIVING RECORD
             var receiving = newReceivingDto.ToEntity();
             receiving.Series = await GenerateReceivingSeriesAsync(newReceivingDto.IncomingId.Value, dbContext, cancellationToken);
             dbContext.Receivings.Add(receiving);
             await dbContext.SaveChangesAsync(cancellationToken);
 
+            // 3. Generate Lot Numbers for any unassigned products
             int sequenceIndex = 1;
             if (receiving.Products != null && receiving.Products.Count > 0)
             {
                 foreach (var product in receiving.Products)
                 {
-                    product.LotNumber = LotNumberGenerator.Generate(product.LotNumber, receiving.Id, product.ProductId, sequenceIndex++);
-
-                    // NEW: Process Unlisted Exception if provided in DTO
-                    if (product.Status == ReceivedItemStatus.Unlisted_PendingPL)
-                    {
-                        product.IncomingProductId = null; // Explicitly enforce null for unlisted items
-                    }
+                    product.LotNumber = LotNumberGenerator.Generate(
+                        product.LotNumber,
+                        receiving.Id,
+                        product.ProductId,
+                        sequenceIndex++
+                    );
                 }
             }
 
-            RecalculateExpectedQuantities(receiving, incoming, dbContext);
+            // 4. Recalculate baseline ExpectedQuantities sequentially across pallet line items
+            RecalculateExpectedQuantities(receiving, incoming);
             await dbContext.SaveChangesAsync(cancellationToken);
 
-            // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS
-            await SyncIncomingStatusAsync(incoming, dbContext, cancellationToken);
+            // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS (Aggregated across ALL receivings for this shipment)
+            var allReceivedProducts = await dbContext.Receivings
+                .Where(r => r.IncomingId == incoming.Id)
+                .SelectMany(r => r.Products!)
+                .ToListAsync(cancellationToken);
 
+            var receivedPool = allReceivedProducts
+                .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Sum(p => p.Quantity),
+                    StringComparer.OrdinalIgnoreCase
+                );
+
+            foreach (var incProduct in incoming.Products!)
+            {
+                if (incProduct.Status == IncomingProductStatus.CLOSED_SHORT)
+                {
+                    continue; // Preserve CLOSED_SHORT state
+                }
+
+                string key = $"{incProduct.ProductId}_{FormatDateKey(incProduct.ExpirationDate)}";
+
+                int allocatedToThisRow = 0;
+                if (receivedPool.TryGetValue(key, out int poolQty) && poolQty > 0)
+                {
+                    allocatedToThisRow = Math.Min(incProduct.Quantity, poolQty);
+                    receivedPool[key] = poolQty - allocatedToThisRow;
+                }
+
+                if (allocatedToThisRow <= 0)
+                {
+                    incProduct.Status = IncomingProductStatus.UNRECEIVED;
+                }
+                else if (allocatedToThisRow >= incProduct.Quantity)
+                {
+                    incProduct.Status = IncomingProductStatus.RECEIVED;
+                }
+                else
+                {
+                    incProduct.Status = IncomingProductStatus.PARTIAL;
+                }
+            }
+
+            // Update overall Incoming Shipment Status
+            if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED))
+            {
+                incoming.Status = IncomingStatus.RECEIVED;
+            }
+            else if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.CLOSED_SHORT))
+            {
+                incoming.Status = IncomingStatus.CLOSED_SHORT;
+            }
+            else if (incoming.Products.Any(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.PARTIAL))
+            {
+                incoming.Status = IncomingStatus.PARTIAL;
+            }
+            else
+            {
+                incoming.Status = IncomingStatus.PENDING;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            // 6. SignalR Notification
             await hubContext.Clients.All.ReceivingCreated();
 
+            // 7. Return Hydrated Response (INCLUDES PALLET) & Audit Log
             var createdReceiving = await dbContext.Receivings
                 .Include(r => r.Warehouse)
-                .Include(r => r.Products!).ThenInclude(p => p.Product)
-                .Include(r => r.Products!).ThenInclude(p => p.Pallet)
+                .Include(r => r.Products!)
+                    .ThenInclude(p => p.Product)
+                .Include(r => r.Products!)
+                    .ThenInclude(p => p.Pallet) // ✅ Added: Hydrates Pallet navigation for frontend label printing
                 .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == receiving.Id, cancellationToken);
+
+            if (createdReceiving != null)
+            {
+                RecalculateExpectedQuantities(createdReceiving, incoming);
+            }
 
             var resultDto = (createdReceiving ?? receiving).ToReceivingDetailsDto();
 
             await auditLogService.LogAsync(
-                category: "Receiving", action: "Created",
-                description: $"Created receiving receipt '{resultDto.Series}'. Overall Incoming status is now '{incoming.Status}'.",
-                details: new { ReceivingId = resultDto.Id, Series = resultDto.Series, ResultingIncomingStatus = incoming.Status.ToString() }
+                category: "Receiving",
+                action: "Created",
+                description: $"Created receiving receipt '{resultDto.Series}' (linked to Incoming ID {incoming.Id}) with {resultDto.Products.Count} line item(s). Overall Incoming status is now '{incoming.Status}'.",
+                details: new
+                {
+                    ReceivingId = resultDto.Id,
+                    resultDto.Series,
+                    resultDto.Shipper,
+                    LinkedIncomingId = incoming.Id,
+                    ResultingIncomingStatus = incoming.Status.ToString(),
+                    Products = resultDto.Products.Select(p => new
+                    {
+                        p.Name,
+                        p.Quantity,
+                        p.LotNumber,
+                        p.PalletId,
+                        Expiration = FormatDateKey(p.ExpirationDate),
+                    })
+                }
             );
 
             return Results.CreatedAtRoute(GetReceivingEndpoint, new { id = receiving.Id }, resultDto);
@@ -271,22 +364,31 @@ public static class ReceivingEndpoint
         // PUT /{id:int} - Direct Receiving Edit (Header, Line Items Update/Add/Remove)
         // -----------------------------------------------------------------------------
         group.MapPut("/{id:int}", async (
-                    int id, CreateReceivingDto updatedReceiving, WMSContext dbContext,
-                    IHubContext<NotificationHub, INotificationClient> hubContext,
-                    IAuditLogService auditLogService, CancellationToken cancellationToken = default) =>
+            int id,
+            CreateReceivingDto updatedReceiving,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken = default) =>
         {
-            // ... [Keep Initial Fetch and Header update logic the same] ...
+            // 1. Fetch Existing Receiving Record
             var existingReceiving = await dbContext.Receivings
-                .Include(r => r.Products!)
+                .Include(receiving => receiving.Products!)
+                    .ThenInclude(product => product!.Product)
                 .FirstOrDefaultAsync(result => result.Id == id, cancellationToken);
 
-            if (existingReceiving is null) return Results.NotFound();
+            if (existingReceiving is null)
+            {
+                return Results.NotFound(new { Message = $"Receiving receipt #{id} was not found." });
+            }
 
+            // 2. Fetch Linked Incoming Shipment Directly via Existing Record
             Incoming? incoming = null;
             if (existingReceiving.IncomingId.HasValue)
             {
                 incoming = await dbContext.Incomings
                     .Include(inc => inc.Products!)
+                        .ThenInclude(p => p.Product)
                     .FirstOrDefaultAsync(inc => inc.Id == existingReceiving.IncomingId.Value, cancellationToken);
 
                 if (incoming != null && incoming.Status == IncomingStatus.CLOSED_SHORT)
@@ -388,13 +490,102 @@ public static class ReceivingEndpoint
 
             await dbContext.SaveChangesAsync(cancellationToken);
 
+            // 5. Recalculate Expected Quantities & Sync Parent Incoming Shipment Statuses
             if (incoming != null)
             {
-                RecalculateExpectedQuantities(existingReceiving, incoming, dbContext);
-                await SyncIncomingStatusAsync(incoming, dbContext, cancellationToken);
+                RecalculateExpectedQuantities(existingReceiving, incoming);
+                await dbContext.SaveChangesAsync(cancellationToken);
+
+                // Re-aggregate received pool across ALL receivings for this shipment
+                var allReceivedProducts = await dbContext.Receivings
+                    .Where(r => r.IncomingId == incoming.Id)
+                    .SelectMany(r => r.Products!)
+                    .ToListAsync(cancellationToken);
+
+                var receivedPool = allReceivedProducts
+                    .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Sum(p => p.Quantity),
+                        StringComparer.OrdinalIgnoreCase
+                    );
+
+                foreach (var incProduct in incoming.Products!)
+                {
+                    if (incProduct.Status == IncomingProductStatus.CLOSED_SHORT)
+                    {
+                        continue; // Preserve CLOSED_SHORT state
+                    }
+
+                    string key = $"{incProduct.ProductId}_{FormatDateKey(incProduct.ExpirationDate)}";
+
+                    int allocatedToThisRow = 0;
+                    if (receivedPool.TryGetValue(key, out int poolQty) && poolQty > 0)
+                    {
+                        allocatedToThisRow = Math.Min(incProduct.Quantity, poolQty);
+                        receivedPool[key] = poolQty - allocatedToThisRow;
+                    }
+
+                    if (allocatedToThisRow <= 0)
+                    {
+                        incProduct.Status = IncomingProductStatus.UNRECEIVED;
+                    }
+                    else if (allocatedToThisRow >= incProduct.Quantity)
+                    {
+                        incProduct.Status = IncomingProductStatus.RECEIVED;
+                    }
+                    else
+                    {
+                        incProduct.Status = IncomingProductStatus.PARTIAL;
+                    }
+                }
+
+                // Update overall Incoming Shipment Status
+                if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED))
+                {
+                    incoming.Status = IncomingStatus.RECEIVED;
+                }
+                else if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.CLOSED_SHORT))
+                {
+                    incoming.Status = IncomingStatus.CLOSED_SHORT;
+                }
+                else if (incoming.Products.Any(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.PARTIAL))
+                {
+                    incoming.Status = IncomingStatus.PARTIAL;
+                }
+                else
+                {
+                    incoming.Status = IncomingStatus.PENDING;
+                }
+
+                await dbContext.SaveChangesAsync(cancellationToken);
             }
 
+            // 6. SignalR Notification
             await hubContext.Clients.All.ReceivingUpdated();
+
+            // 7. Audit Logging
+            await auditLogService.LogAsync(
+                category: "Receiving",
+                action: "Updated",
+                description: $"Updated receiving receipt '{existingReceiving.Series}' (ID: {id}) containing {existingReceiving.Products.Count} product(s). Overall Incoming status is now '{incoming?.Status}'.",
+                details: new
+                {
+                    ReceivingId = id,
+                    Series = existingReceiving.Series,
+                    existingReceiving.Shipper,
+                    LinkedIncomingId = incoming?.Id,
+                    ResultingIncomingStatus = incoming?.Status.ToString(),
+                    Products = existingReceiving.Products.Select(p => new
+                    {
+                        p.ProductId,
+                        p.Quantity,
+                        p.LotNumber,
+                        Expiration = FormatDateKey(p.ExpirationDate)
+                    })
+                }
+            );
+
             return Results.NoContent();
         })
         .WithName("UpdateReceiving")
@@ -703,66 +894,5 @@ public static class ReceivingEndpoint
         return existingCount == 0
             ? baseSeries
             : $"{baseSeries}-R{existingCount + 1}";
-    }
-
-    // ==============================================================================
-    // SYNC INCOMING STATUS HELPER (Extracted for Reusability)
-    // ==============================================================================
-    public static async Task SyncIncomingStatusAsync(Incoming incoming, WMSContext dbContext, CancellationToken cancellationToken)
-    {
-        var allReceivedProducts = await dbContext.Receivings
-            .Where(r => r.IncomingId == incoming.Id)
-            .SelectMany(r => r.Products!)
-            .ToListAsync(cancellationToken);
-
-        // CHECK RULE: Are there any Unlisted items waiting for a revised PL?
-        bool hasPendingUnlistedItems = allReceivedProducts.Any(rp => rp.Status == ReceivedItemStatus.Unlisted_PendingPL);
-
-        var receivedPool = allReceivedProducts
-            .Where(rp => rp.Status == ReceivedItemStatus.Matched || rp.Status == ReceivedItemStatus.Validated) // ONLY allocate valid items
-            .GroupBy(rp => $"{rp.ProductId}_{FormatDateKey(rp.ExpirationDate)}")
-            .ToDictionary(g => g.Key, g => g.Sum(p => p.Quantity), StringComparer.OrdinalIgnoreCase);
-
-        foreach (var incProduct in incoming.Products!)
-        {
-            if (incProduct.Status == IncomingProductStatus.CLOSED_SHORT) continue;
-
-            string key = $"{incProduct.ProductId}_{FormatDateKey(incProduct.ExpirationDate)}";
-            int allocatedToThisRow = 0;
-
-            if (receivedPool.TryGetValue(key, out int poolQty) && poolQty > 0)
-            {
-                allocatedToThisRow = Math.Min(incProduct.Quantity, poolQty);
-                receivedPool[key] = poolQty - allocatedToThisRow;
-            }
-
-            if (allocatedToThisRow <= 0) incProduct.Status = IncomingProductStatus.UNRECEIVED;
-            else if (allocatedToThisRow >= incProduct.Quantity) incProduct.Status = IncomingProductStatus.RECEIVED;
-            else incProduct.Status = IncomingProductStatus.PARTIAL;
-        }
-
-        // Apply Overall Status with new PENDING_REVISED_PL priority
-        if (hasPendingUnlistedItems)
-        {
-            incoming.Status = IncomingStatus.PENDING_REVISED_PL;
-        }
-        else if (incoming.Products!.All(p => p.Status == IncomingProductStatus.RECEIVED))
-        {
-            incoming.Status = IncomingStatus.RECEIVED;
-        }
-        else if (incoming.Products!.All(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.CLOSED_SHORT))
-        {
-            incoming.Status = IncomingStatus.CLOSED_SHORT;
-        }
-        else if (incoming.Products!.Any(p => p.Status == IncomingProductStatus.RECEIVED || p.Status == IncomingProductStatus.PARTIAL))
-        {
-            incoming.Status = IncomingStatus.PARTIAL;
-        }
-        else
-        {
-            incoming.Status = IncomingStatus.PENDING;
-        }
-
-        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using WMS.Api.Data;
-using WMS.Api.Dtos.Receiving;
 using WMS.Api.Dtos.Reporting;
 using WMS.Api.Entities;
 using WMS.Api.Entities.Reporting;
@@ -177,13 +176,8 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         var allExpectedProducts = incomings.SelectMany(i => i.Products ?? new List<IncomingProduct>()).ToList();
 
                         int totalExpectedQuantity = allExpectedProducts.Sum(p => p.Quantity);
-
-                        // Exclude unlisted/pending items from the summary received total so the balance matches the shortage section
-                        int totalValidReceivedQuantity = allReceivedProducts
-                            .Where(p => p.Status != ReceivedItemStatus.Unlisted_PendingPL && p.Status != ReceivedItemStatus.Rejected)
-                            .Sum(p => p.Quantity);
-
-                        int totalRemainingQuantity = Math.Max(0, totalExpectedQuantity - totalValidReceivedQuantity);
+                        int totalReceivedQuantity = allReceivedProducts.Sum(p => p.Quantity);
+                        int totalRemainingQuantity = Math.Max(0, totalExpectedQuantity - totalReceivedQuantity);
 
                         string headerShippers = string.Join(", ", incomings.Select(i => i.Shipper).Where(s => !string.IsNullOrWhiteSpace(s)).Distinct());
                         string headerConsignees = string.Join(", ", incomings.Select(i => i.Consignee).Where(c => !string.IsNullOrWhiteSpace(c)).Distinct());
@@ -194,7 +188,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
 
                         // Header Banner
                         ws.Cell("A1").Value = "RECEIVING RECONCILIATION REPORT";
-                        ws.Range("A1:O1").Merge() // Adjusted merge to O1 to cover 15 columns
+                        ws.Range("A1:N1").Merge()
                             .Style.Font.SetBold().Font.SetFontSize(15)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#1E293B"))
                             .Font.SetFontColor(XLColor.White)
@@ -235,8 +229,8 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         ws.Cell("I3").Value = "Total Expected Qty:";
                         ws.Cell("J3").Value = totalExpectedQuantity;
 
-                        ws.Cell("I4").Value = "Total Valid Received Qty:";
-                        ws.Cell("J4").Value = totalValidReceivedQuantity;
+                        ws.Cell("I4").Value = "Total Received Qty:";
+                        ws.Cell("J4").Value = totalReceivedQuantity;
 
                         ws.Cell("I5").Value = "Remaining Balance Qty:";
                         ws.Cell("J5").Value = totalRemainingQuantity;
@@ -248,10 +242,10 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         int currentRow = 14;
 
                         // ====================================================================
-                        // SECTION 1: RECEIVED ITEMS (15 Columns to include System Status)
+                        // SECTION 1: RECEIVED ITEMS (14 Columns)
                         // ====================================================================
                         ws.Cell(currentRow, 1).Value = "1. LIST OF RECEIVED ITEMS";
-                        ws.Range(currentRow, 1, currentRow, 15).Merge()
+                        ws.Range(currentRow, 1, currentRow, 14).Merge()
                             .Style.Font.SetBold().Font.SetFontSize(12)
                             .Fill.SetBackgroundColor(XLColor.FromHtml("#059669"))
                             .Font.SetFontColor(XLColor.White);
@@ -260,7 +254,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         string[] receivedHeaders = {
                             "Receipt Series", "Date Received", "Reference", "Shipper", "Consignee",
                             "Product Code", "Product Name", "Supplier", "Received Qty", "UOM", "CBM", "Weight (KG)",
-                            "Pallet / Plate", "System Status", "Remarks"
+                            "Pallet / Plate", "Remarks"
                         };
 
                         for (int i = 0; i < receivedHeaders.Length; i++)
@@ -275,7 +269,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         if (!allReceivedProducts.Any())
                         {
                             ws.Cell(currentRow, 1).Value = "No items received for the selected parameters.";
-                            ws.Range(currentRow, 1, currentRow, 15).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            ws.Range(currentRow, 1, currentRow, 14).Merge().Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                             currentRow++;
                         }
                         else
@@ -297,20 +291,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                     ws.Cell(currentRow, 11).Value = rp.CBM;
                                     ws.Cell(currentRow, 12).Value = rp.TotalWeight;
                                     ws.Cell(currentRow, 13).Value = $"PAL-{(rp.Pallet != null ? rp.Pallet.PalletNumber : rp.PalletId?.ToString() ?? "UNASSIGNED")} / {SanitizeXml(r.PlateNumber)}";
-
-                                    // System Status Cell with conditional formatting
-                                    var statusCell = ws.Cell(currentRow, 14);
-                                    statusCell.Value = SanitizeXml(rp.Status.ToString());
-                                    if (rp.Status == ReceivedItemStatus.Unlisted_PendingPL)
-                                    {
-                                        statusCell.Style.Font.SetFontColor(XLColor.Red).Font.SetBold();
-                                    }
-                                    else if (rp.Status == ReceivedItemStatus.Validated)
-                                    {
-                                        statusCell.Style.Font.SetFontColor(XLColor.Blue).Font.SetBold();
-                                    }
-
-                                    ws.Cell(currentRow, 15).Value = SanitizeXml(rp.Remarks ?? "—");
+                                    ws.Cell(currentRow, 14).Value = SanitizeXml(rp.Remarks ?? "—");
                                     currentRow++;
                                 }
                             }
@@ -342,16 +323,14 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                         }
                         currentRow++;
 
-                        // --- NEW EXCEPTION CONTROL: Ignore Unlisted_PendingPL & Rejected items so they don't lower the expected shortage ---
+                        // --- BUG FIX: Create allocation pools to prevent double-counting duplicate products ---
                         var exactReceivedMap = allReceivedProducts
-                            .Where(rp => rp.IncomingProductId.HasValue && rp.Status != ReceivedItemStatus.Rejected)
+                            .Where(rp => rp.IncomingProductId.HasValue)
                             .GroupBy(rp => rp.IncomingProductId.Value)
                             .ToDictionary(g => g.Key, g => g.Sum(rp => rp.Quantity));
 
                         var fallbackPool = allReceivedProducts
-                            .Where(rp => !rp.IncomingProductId.HasValue
-                                         && rp.Status != ReceivedItemStatus.Unlisted_PendingPL
-                                         && rp.Status != ReceivedItemStatus.Rejected)
+                            .Where(rp => !rp.IncomingProductId.HasValue)
                             .GroupBy(rp => rp.ProductId)
                             .ToDictionary(g => g.Key, g => g.Sum(rp => rp.Quantity));
 
@@ -434,7 +413,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                             await auditLogService.LogAsync(
                                 category: "Reporting",
                                 action: "Generated",
-                                description: $"Generated Receiving Report '{completedJob.JobNumber}'. Expected: {totalExpectedQuantity}, Valid Received: {totalValidReceivedQuantity}, Remaining: {totalRemainingQuantity}.",
+                                description: $"Generated Receiving Report '{completedJob.JobNumber}'. Expected: {totalExpectedQuantity}, Received: {totalReceivedQuantity}, Remaining: {totalRemainingQuantity}.",
                                 details: new Dictionary<string, object?>
                                 {
                                     ["JobId"] = completedJob.Id,

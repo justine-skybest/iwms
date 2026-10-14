@@ -1,12 +1,11 @@
 ﻿using ExcelDataReader;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using WMS.Api.Data;
-using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
 using WMS.Api.Services;
+using Microsoft.AspNetCore.Hosting;
 
 namespace WMS.Api.Endpoints
 {
@@ -255,37 +254,6 @@ namespace WMS.Api.Endpoints
                 if (!string.IsNullOrWhiteSpace(parseResult.Consignee)) existingIncoming.Consignee = parseResult.Consignee;
 
                 await dbContext.SaveChangesAsync(cancellationToken);
-
-                var unlistedProducts = await dbContext.Receivings
-                    .Where(r => r.IncomingId == existingIncoming.Id)
-                    .SelectMany(r => r.Products!)
-                    .Where(rp => rp.Status == ReceivedItemStatus.Unlisted_PendingPL)
-                    .ToListAsync(cancellationToken);
-
-                int autoValidatedCount = 0;
-
-                foreach (var unlisted in unlistedProducts)
-                {
-                    // Look for a matching line in the newly revised Incoming Products list
-
-                    var match = existingIncoming.Products!.FirstOrDefault(ep =>
-                        ep.ProductId == unlisted.ProductId);
-
-                    if (match != null)
-                    {
-                        // Match found! Link it and update status to Validated.
-                        unlisted.IncomingProductId = match.Id;
-                        unlisted.Status = ReceivedItemStatus.Validated;
-                        autoValidatedCount++;
-                    }
-                }
-
-                if (autoValidatedCount > 0)
-                {
-                    await dbContext.SaveChangesAsync(cancellationToken);
-                }
-
-                await ReceivingEndpoint.SyncIncomingStatusAsync(existingIncoming, dbContext, cancellationToken);
 
                 int currentVersion = existingIncoming.Documents?.Any() == true
                     ? existingIncoming.Documents.Max(d => d.Version)

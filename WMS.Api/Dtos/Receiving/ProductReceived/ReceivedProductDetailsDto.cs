@@ -7,12 +7,8 @@ public record class ReceivedProductDetailsDto
     public int Id { get; set; }
     public int ProductId { get; init; }
 
-    // ✅ Explicit link to the source IncomingProduct line item (null for unlisted items)
+    // ✅ Add explicit link to the source IncomingProduct line item
     public int? IncomingProductId { get; set; }
-
-    // --- NEW: Status & Exception Details ---
-    public ReceivedItemStatus Status { get; set; } = ReceivedItemStatus.Matched;
-    public ReceivingExceptionDetailsDto? ExceptionRecord { get; set; }
 
     // --- Expected Baseline Fields ---
     public string? ExpectedProductName { get; init; }
