@@ -19,6 +19,7 @@ import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
 import { ConfirmDialogComponent } from '../../../shared/components/dialog/confirm-dialog.component';
+import { toDateOnly } from '../../../lib/utils/to-date-only';
 
 export type EditStagedProductItem = {
   id?: number;
@@ -119,6 +120,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   private cd = inject(ChangeDetectorRef);
   public warehouseService = inject(WarehouseService);
   private toastService = inject(ToastService);
+  private formatToDateOnly = toDateOnly;
 
   public formatDate = formatDate;
 
@@ -765,14 +767,14 @@ removeProductItem(index: number): void {
       expectedQuantity: item.expectedQuantity,
       expectedCBM: item.expectedCbm,
       expectedTotalWeight: item.expectedTotalWeight,
-      expectedExpirationDate: item.expectedExpirationDate as any,
+      expectedExpirationDate: this.formatToDateOnly(item.expectedExpirationDate),
       typeOfPackage: item.typeOfPackage,
 
       name: item.productName,
       quantity: item.quantity ?? 0,
       cbm: item.cbm || 0,
       weight: item.weight ?? 0,
-      expirationDate: item.expirationDate as any,
+      expirationDate: this.formatToDateOnly(item.expirationDate),
       lotNumber: item.lotNumber || undefined,
       
       supplier: item.supplier || undefined,
