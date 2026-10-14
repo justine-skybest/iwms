@@ -67,8 +67,7 @@
               "RelativeToolTip": "Endpoints\\IncomingImportEndpoint.cs",
               "ViewState": "AgIAAAMBAAAAAAAAAAAAAA4BAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-13T06:57:58.715Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T06:57:58.715Z"
             },
             {
               "$type": "Document",
@@ -80,8 +79,7 @@
               "RelativeToolTip": "Endpoints\\ReceivingEndpoint.cs",
               "ViewState": "AgIAAAkBAAAAAAAAAAAjwBIBAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-13T06:10:08.586Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T06:10:08.586Z"
             },
             {
               "$type": "Document",
@@ -93,8 +91,7 @@
               "RelativeToolTip": ".env",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-10-13T06:09:28.448Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T06:09:28.448Z"
             },
             {
               "$type": "Document",
@@ -106,8 +103,7 @@
               "RelativeToolTip": "Mapping\\ReceivingMapping.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAAAwBcAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-13T05:57:32.537Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T05:57:32.537Z"
             },
             {
               "$type": "Document",
@@ -119,8 +115,7 @@
               "RelativeToolTip": "Entities\\Receiving.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAA3wAwAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-13T05:33:22.295Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-13T05:33:22.295Z"
             }
           ]
         }

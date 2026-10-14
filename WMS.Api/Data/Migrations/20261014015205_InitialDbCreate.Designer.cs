@@ -12,8 +12,8 @@ using WMS.Api.Data;
 namespace WMS.Api.Data.Migrations
 {
     [DbContext(typeof(WMSContext))]
-    [Migration("20261008134922_AddedBinLocation3D")]
-    partial class AddedBinLocation3D
+    [Migration("20261014015205_InitialDbCreate")]
+    partial class InitialDbCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1530,6 +1530,31 @@ namespace WMS.Api.Data.Migrations
                     b.ToTable("CheckIns");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.ExceptionPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ReceivingExceptionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivingExceptionId");
+
+                    b.ToTable("ExceptionPhoto");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Incoming", b =>
                 {
                     b.Property<int>("Id")
@@ -1604,10 +1629,9 @@ namespace WMS.Api.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CBM")
-                        .IsRequired()
+                    b.Property<decimal?>("CBM")
                         .HasPrecision(18, 4)
-                        .HasColumnType("longtext");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime?>("DateAdded")
                         .HasColumnType("datetime(6)");
@@ -1637,14 +1661,13 @@ namespace WMS.Api.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("TotalWeight")
-                        .IsRequired()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("longtext");
-
                     b.Property<decimal?>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Weight")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.HasKey("Id");
 
@@ -1723,6 +1746,261 @@ namespace WMS.Api.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.LoadingEvidence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EvidenceType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("LoadingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("StoredPath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UploadedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoadingPlanId");
+
+                    b.ToTable("LoadingEvidence");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingException", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid?>("ApprovedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ExceptionType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LoadingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LoadingPlanLineId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PalletId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Severity")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoadingPlanId");
+
+                    b.HasIndex("LoadingPlanLineId");
+
+                    b.HasIndex("PalletId");
+
+                    b.ToTable("LoadingExceptions");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPalletVerification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LoadingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PalletId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ScanResult")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScanTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("ScannedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PalletId");
+
+                    b.HasIndex("LoadingPlanId", "PalletId", "ScanTime");
+
+                    b.ToTable("LoadingPalletVerifications");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPlan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ActualStartAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ConsigneeName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ContainerNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ContainerType")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Destination")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid?>("LoaderUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("LoadingReference")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("PlannedStartAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("ScheduledDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("SealNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ShipperName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("SupervisorUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("TrailerPlateNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("VehiclePlateNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoadingReference")
+                        .IsUnique();
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("LoadingPlans");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPlanLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("LoadingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OriginalPalletId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OutboundStageId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OutboundStageLineId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PickedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityLoaded")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityPlanned")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LoadingPlanId");
+
+                    b.HasIndex("OriginalPalletId");
+
+                    b.HasIndex("OutboundStageId");
+
+                    b.HasIndex("OutboundStageLineId");
+
+                    b.HasIndex("PickedProductId");
+
+                    b.ToTable("LoadingPlanLines");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Location3D", b =>
                 {
                     b.Property<int>("Id")
@@ -1789,6 +2067,231 @@ namespace WMS.Api.Data.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("ManualPickings");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("ManualPickingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("RequestedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("StageReference")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int?>("StagingBinId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("VerifiedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManualPickingId");
+
+                    b.HasIndex("StageReference")
+                        .IsUnique();
+
+                    b.HasIndex("StagingBinId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("OutboundStages");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageCancellation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ApprovedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("ApprovedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CancellationReference")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("OutboundStageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("RequestedByUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CancellationReference")
+                        .IsUnique();
+
+                    b.HasIndex("OutboundStageId");
+
+                    b.ToTable("OutboundStageCancellations");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageCancellationLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ExceptionReason")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("OriginalBinId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OutboundStageCancellationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OutboundStageLineId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityCancelled")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReturnBinId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OriginalBinId");
+
+                    b.HasIndex("OutboundStageCancellationId");
+
+                    b.HasIndex("OutboundStageLineId");
+
+                    b.HasIndex("ReturnBinId");
+
+                    b.ToTable("OutboundStageCancellationLines");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ConfirmedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("OperatorUserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("OriginalBinId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OriginalPalletId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OutboundStageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PickedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityStaged")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityToStage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceivedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("StagingBinId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OriginalBinId");
+
+                    b.HasIndex("OriginalPalletId");
+
+                    b.HasIndex("PickedProductId");
+
+                    b.HasIndex("ReceivedProductId");
+
+                    b.HasIndex("StagingBinId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("OutboundStageId", "PickedProductId");
+
+                    b.ToTable("OutboundStageLines");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Pallet", b =>
@@ -4031,7 +4534,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2259),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2397),
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Ube-Filled Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -4040,7 +4543,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2263),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2398),
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Chocolate Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -4049,7 +4552,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2264),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2399),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Toasted Garlic 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4058,7 +4561,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 4,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2265),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2400),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4067,7 +4570,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 5,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2266),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4076,7 +4579,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 6,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2267),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Buttered Toast 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4085,7 +4588,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 7,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2268),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2402),
                             Measurement = "56 X 24 X 40",
                             Name = "Miggos Sweet Corn Tortilla Chips L28g",
                             TypeOfPackage = "Carton",
@@ -4094,7 +4597,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 8,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2269),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2403),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Chocolate Cream Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4103,7 +4606,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 9,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2270),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Mango Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4112,7 +4615,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 10,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2270),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Ube Marshmallow OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4121,7 +4624,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 11,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2271),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2406),
                             Measurement = "56 X 24 X 40",
                             Name = "Onion Rings L-16gx100",
                             TypeOfPackage = "Carton",
@@ -4130,7 +4633,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 12,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2272),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Prawn Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4139,7 +4642,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 13,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2273),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries BBQ LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4148,7 +4651,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 14,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2274),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2439),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries Cheese LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4157,7 +4660,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 15,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2275),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
                             Measurement = "56 X 24 X 40",
                             Name = "Potato Fries Tomato Ketchup LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4166,7 +4669,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 16,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2278),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Fishda Fish Kropeck LF-22gx100",
                             TypeOfPackage = "Carton",
@@ -4175,7 +4678,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 17,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2278),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2441),
                             Measurement = "56 X 24 X 40",
                             Name = "Fish Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4184,7 +4687,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 18,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2279),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Mango Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4193,7 +4696,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 19,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2280),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4202,7 +4705,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 20,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2281),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2443),
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange-Mango Blends 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4211,7 +4714,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 21,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2282),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2444),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES BBQ 50gX50",
                             TypeOfPackage = "Carton",
@@ -4220,7 +4723,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 22,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2283),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2445),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES CHEESE 50gX50",
                             TypeOfPackage = "Carton",
@@ -4229,7 +4732,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 23,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2284),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2447),
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES KETCHUP FLAVOR 50gX50",
                             TypeOfPackage = "Carton",
@@ -4238,7 +4741,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 24,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2284),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2448),
                             Measurement = "56 X 24 X 40",
                             Name = "OISHI PILLOWS CHOCOLATE CRACKERS 150gX20",
                             TypeOfPackage = "Carton",
@@ -4247,7 +4750,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 25,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2285),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2449),
                             Measurement = "56 X 24 X 40",
                             Name = "MIGGOS NACHO CHEESE TORTILLA CHIPS L28gX100",
                             TypeOfPackage = "Carton",
@@ -4256,7 +4759,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 26,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2286),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
                             Measurement = "56 X 24 X 40",
                             Name = "SELECTA MOO MILK",
                             TypeOfPackage = "Carton",
@@ -4265,7 +4768,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 27,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2287),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
                             Measurement = "56 X 24 X 40",
                             Name = "SKYFLAKES",
                             TypeOfPackage = "Carton",
@@ -4274,7 +4777,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 28,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2288),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2454),
                             Measurement = "56 X 24 X 40",
                             Name = "ISDALICIOUS FISH CRACKER",
                             TypeOfPackage = "Carton",
@@ -4283,7 +4786,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 29,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2290),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2455),
                             Measurement = "56 X 24 X 40",
                             Name = "RICE & CORN CHEESE",
                             TypeOfPackage = "Carton",
@@ -4292,7 +4795,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 30,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2294),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2458),
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE RING 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4301,7 +4804,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 31,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2295),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE BALL 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4310,7 +4813,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 32,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2295),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
                             Measurement = "71 X 42 X 13",
                             Name = "GOLDEN SWEET CORN 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4319,7 +4822,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 33,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2296),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2460),
                             Measurement = "60 X 46 X 46",
                             Name = "FAN MOTOR 24V 10' FAN BASE 10' FAN BLADE",
                             TypeOfPackage = "PCS",
@@ -4328,7 +4831,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 34,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2297),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
                             Measurement = "62 X 28 X 16",
                             Name = "CIRCUIT BOARD TS26F CONTROLLER NEW SENSORS CPR WITH O RING FUSE DETECTION BOARD",
                             TypeOfPackage = "PCS",
@@ -4337,7 +4840,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 35,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2298),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
                             Measurement = "39 X 32 X 21",
                             Name = "COPPER HOSE BENDABLE",
                             TypeOfPackage = "PCS",
@@ -4346,7 +4849,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 36,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2298),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2463),
                             Measurement = "40 X 29 X 20",
                             Name = "RECEIVER DRIER 15NF RECEIVER DRIER 20NF",
                             TypeOfPackage = "PCS",
@@ -4355,7 +4858,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 37,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2299),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
                             Measurement = "100 X 6 X 4",
                             Name = "CURTAIN ROD",
                             TypeOfPackage = "PCS",
@@ -4364,7 +4867,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 38,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2300),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
                             Measurement = "38 X 38 X 23",
                             Name = "PLASTIC CURTAIN",
                             TypeOfPackage = "PCS",
@@ -4373,7 +4876,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 39,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2301),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2466),
                             Measurement = "38 X 38 X 23",
                             Name = "ELIMINATOR FILTER DRIER",
                             TypeOfPackage = "PCS",
@@ -4382,7 +4885,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 40,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2301),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
                             Measurement = "40 X 29 X 20",
                             Name = "THERMOSTATIC EXPANSION VALVE 15NF THERMOSTATIC EXPANSION VALVE 20NF",
                             TypeOfPackage = "PCS",
@@ -4391,7 +4894,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 41,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2302),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE STRAWBERRY 144/19G",
                             TypeOfPackage = "Carton",
@@ -4400,7 +4903,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 42,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2303),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2471),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4409,7 +4912,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 43,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2305),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE I.TEA LEMON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4418,7 +4921,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 44,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2306),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE GRAPE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4427,7 +4930,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 45,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2307),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE 12/12/19G",
                             TypeOfPackage = "Carton",
@@ -4436,7 +4939,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 46,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2307),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4445,7 +4948,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 47,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2308),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2474),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4454,7 +4957,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 48,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2309),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2475),
                             Measurement = "27 X 40 X 63",
                             Name = "OISHI FISH CRACKERS UA 90gX30",
                             TypeOfPackage = "Sack",
@@ -4463,7 +4966,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 49,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2310),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
                             Measurement = "29 X 49 X 66",
                             Name = "Miggos Sweet Corn Tortilla Chips UA 105gX30",
                             TypeOfPackage = "Sack",
@@ -4472,7 +4975,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 50,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2311),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
                             Measurement = "60.5 X 43 X 17.5",
                             Name = "DL-2000A DC12V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4481,7 +4984,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 51,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2311),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2000F1 DC12V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4490,7 +4993,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 52,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2312),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
                             Measurement = "61 X 42 X 27",
                             Name = "DL-2600A1 DC24V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4499,7 +5002,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 53,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2313),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2600F DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4508,7 +5011,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 54,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2314),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
                             Measurement = "78 X 50 X 32",
                             Name = "DL-2600FT-BY DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4517,7 +5020,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 55,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2314),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2481),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800 DC12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4526,7 +5029,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 56,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2318),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800BY DC24V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4535,7 +5038,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 57,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2318),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800-12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4544,7 +5047,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 58,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2319),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
                             Measurement = "41 X 23 X 17",
                             Name = "Zesto Big 250 Grapes",
                             TypeOfPackage = "Carton",
@@ -4553,7 +5056,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 59,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2320),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4562,7 +5065,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 60,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2321),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2484),
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -4571,7 +5074,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 61,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2322),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
                             Measurement = "25 X 36 X 28",
                             Name = "KOPIKO BLANCA POUCH 24X10X30G",
                             TypeOfPackage = "Carton",
@@ -4580,7 +5083,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 62,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2322),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
                             Measurement = "24 X 43 X 28",
                             Name = "KOPIKO BLACK 3IN1 POUCH 24X1024X 10 X 30G",
                             TypeOfPackage = "Carton",
@@ -4589,7 +5092,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 63,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2323),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
                             Measurement = "30 X 50 X 20",
                             Name = "JUMBO PUSH POP 24 X 12 X 30G",
                             TypeOfPackage = "Carton",
@@ -4598,7 +5101,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 64,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2324),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
                             Measurement = "17 X 52 X 26",
                             Name = "PUSH POP LOLLIPOP 20 X 20 X 14G",
                             TypeOfPackage = "Carton",
@@ -4607,7 +5110,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 65,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2325),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
                             Measurement = "21 X 24 X 19",
                             Name = "KOJIE SL CLASSIC SOAP 135G X 24 X 20",
                             TypeOfPackage = "Carton",
@@ -4616,7 +5119,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 66,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2326),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
                             Measurement = "18 X 16 X 32",
                             Name = "AJI CRISPY FRY ORIG 24/238G",
                             TypeOfPackage = "Carton",
@@ -4625,7 +5128,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 67,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2327),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2492),
                             Measurement = "18 X 16 X 32",
                             Name = "MODESS BODY ADAPT LONGS UT 24/4S",
                             TypeOfPackage = "Carton",
@@ -4634,7 +5137,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 68,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2327),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
                             Measurement = "38 X 18 X 37",
                             Name = "MODESS C.SFT LONG W 24/8'S",
                             TypeOfPackage = "Carton",
@@ -4643,7 +5146,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 69,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2330),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
                             Measurement = "35 X 18 X 27",
                             Name = "DM PINEAPPLE SLICES 24/432G",
                             TypeOfPackage = "Carton",
@@ -4652,7 +5155,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 70,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2331),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2494),
                             Measurement = "24 X 18 X 29",
                             Name = "MODESS ALL NIGHT W 24/4'S",
                             TypeOfPackage = "Carton",
@@ -4661,7 +5164,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 71,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2332),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
                             Measurement = "48 X 31 X 24",
                             Name = "MODESS C.SFT REG MAXI W 12/32/1S",
                             TypeOfPackage = "Carton",
@@ -4670,7 +5173,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 72,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2372),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE LYCHEE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4679,7 +5182,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 73,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2372),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
                             Measurement = "17 X 48 X 32",
                             Name = "FIESTA FRT COCKTL 6/3033G",
                             TypeOfPackage = "Carton",
@@ -4688,7 +5191,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 74,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2373),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE APPLE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4697,7 +5200,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 75,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2374),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2497),
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE-MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4706,7 +5209,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 76,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2375),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2499),
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH TSOKOLATE 30/10",
                             TypeOfPackage = "Carton",
@@ -4715,7 +5218,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 77,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2375),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH CONDENSADA 30/10",
                             TypeOfPackage = "Carton",
@@ -4724,7 +5227,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 78,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2376),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
                             Measurement = "33 X 13 X 17",
                             Name = "SELECTA MOO MILK CHOCO 24/245ML",
                             TypeOfPackage = "Carton",
@@ -4733,7 +5236,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 79,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2377),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2501),
                             Measurement = "33 X 22 X 27",
                             Name = "SNOWTIME ICE POPS 15/8/90ML",
                             TypeOfPackage = "Carton",
@@ -4742,7 +5245,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 80,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2378),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
                             Measurement = "37 X 70 X 40",
                             Name = "PARTY PACK SUPER CRUNCH CHEESE RINGS 370G X 12S",
                             TypeOfPackage = "Carton",
@@ -4751,7 +5254,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 81,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2379),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
                             Measurement = "44 X 30 X 39",
                             Name = "MUNCHER KID'S CHOICE GREEN PEAS CHICKEN",
                             TypeOfPackage = "Carton",
@@ -4760,7 +5263,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 82,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2381),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
                             Measurement = "40 X 19 X 20",
                             Name = "Muncher G. Peas Orig 70gX10packsX10pcs",
                             TypeOfPackage = "Carton",
@@ -4769,7 +5272,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 83,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2386),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
                             Measurement = "72 X 40 X 17",
                             Name = "Super Q Golden Bihon 15x1KG",
                             TypeOfPackage = "Carton",
@@ -4778,7 +5281,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 84,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2387),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2504),
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O ORANGE 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4787,7 +5290,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 85,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2388),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O MANGO 10X200ML",
                             TypeOfPackage = "Carton",
@@ -4796,7 +5299,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 86,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2388),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
                             Measurement = "84 X 36 X 13",
                             Name = "Cheese Ring Snack Cheese 25x60g",
                             TypeOfPackage = "Carton",
@@ -4805,7 +5308,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 87,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2390),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
                             Measurement = "78 X 33 X 13",
                             Name = "Snacku Vegetable Snack 30/50G",
                             TypeOfPackage = "Carton",
@@ -4814,7 +5317,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 88,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2392),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
                             Measurement = "37 X 34 X 21",
                             Name = "Maya Cornstarch 12x1kg",
                             TypeOfPackage = "Carton",
@@ -4823,7 +5326,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 89,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2393),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2507),
                             Measurement = "44 X 30 X 21",
                             Name = "American Gumball 24x40",
                             TypeOfPackage = "Carton",
@@ -4832,7 +5335,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 90,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2394),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2509),
                             Measurement = "86 X 51 X 39",
                             Name = "Ordinary Mattress 4x36x75",
                             TypeOfPackage = "Carton",
@@ -4841,7 +5344,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 91,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2395),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2510),
                             Measurement = "164 X 61 X 33",
                             Name = "Ordinary Mattress 4x54x75",
                             TypeOfPackage = "Carton",
@@ -4850,7 +5353,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 92,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2397),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
                             Measurement = "54 X 98 X 77",
                             Name = "Jumbo Rack 4 layer",
                             TypeOfPackage = "Carton",
@@ -4859,7 +5362,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 93,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2400),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4868,7 +5371,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 94,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2402),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2512),
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -4877,7 +5380,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 95,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2403),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY DALANDAN 40/50S",
                             TypeOfPackage = "Carton",
@@ -4886,7 +5389,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 96,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2407),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY CHERRY 40/50S",
                             TypeOfPackage = "Carton",
@@ -4895,7 +5398,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 97,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2408),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
                             Measurement = "48 X 31 X 17",
                             Name = "TODAY'S MIXED FRUIT 6/2.9L",
                             TypeOfPackage = "Carton",
@@ -4904,7 +5407,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 98,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2410),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
                             Measurement = "43 X 29 X 26",
                             Name = "965 COL.MONAMI STRAW CRM 40/50'S",
                             TypeOfPackage = "Carton",
@@ -4913,7 +5416,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 99,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2412),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2515),
                             Measurement = "37 X 15 X 28",
                             Name = "ABSOLUTE DISTILLED WATER 3/5000ML",
                             TypeOfPackage = "Carton",
@@ -4922,7 +5425,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 100,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2414),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
                             Measurement = "44 X 13 X 33",
                             Name = "ABSOLUTE DISTILLED WATER 3/6000ML",
                             TypeOfPackage = "Carton",
@@ -4931,7 +5434,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 101,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2417),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
                             Measurement = "29 X 24 X 30",
                             Name = "ABSOLUTE DISTILLED WATER 4/4000ML",
                             TypeOfPackage = "Carton",
@@ -4940,7 +5443,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 102,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2418),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2517),
                             Measurement = "30 X 22 X 17",
                             Name = "AJINAMOTO GINISA MIX 48/100G",
                             TypeOfPackage = "Carton",
@@ -4949,7 +5452,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 103,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2418),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
                             Measurement = "40 X 25 X 24",
                             Name = "AJINAMOTO GINISA MIX 54/16/8G",
                             TypeOfPackage = "Carton",
@@ -4958,7 +5461,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 104,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2419),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
                             Measurement = "39 X 28 X 15",
                             Name = "AJINAMOTO VETSIN BLUE 48/250G",
                             TypeOfPackage = "Carton",
@@ -4967,7 +5470,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 105,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2420),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2520),
                             Measurement = "35 X 22 X 18",
                             Name = "AJINAMOTO VETSIN RED 8X12X100G",
                             TypeOfPackage = "Carton",
@@ -4976,7 +5479,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 106,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2422),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
                             Measurement = "77 X 31 X 13",
                             Name = "CHEESE RING SNACK CHEESE 30/25G",
                             TypeOfPackage = "Carton",
@@ -4985,7 +5488,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 107,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2424),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
                             Measurement = "29 X 30 X 32",
                             Name = "DATU PUTI VINEGAR PCON 4/1GAL",
                             TypeOfPackage = "Carton",
@@ -4994,7 +5497,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 108,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2425),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
                             Measurement = "44 X 24 X 31",
                             Name = "DATU PUTI VINEGAR 8/1.893",
                             TypeOfPackage = "Carton",
@@ -5003,7 +5506,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 109,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2425),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -5012,7 +5515,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 110,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2426),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -5021,7 +5524,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 111,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2427),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
                             Measurement = "51 X 38 X 82",
                             Name = "FITA CRACKER SINGLES 20/15/30G",
                             TypeOfPackage = "Carton",
@@ -5030,7 +5533,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 112,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2428),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2524),
                             Measurement = "48 X 24 X 31",
                             Name = "HAPPY TIME BISCUIT ASSORTMENT 4/1.5K",
                             TypeOfPackage = "Carton",
@@ -5039,7 +5542,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 113,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2429),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
                             Measurement = "25 X 25 X 20",
                             Name = "KNR MIX SNGNG ORIG 12/12/22G",
                             TypeOfPackage = "Carton",
@@ -5048,7 +5551,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 114,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2434),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
                             Measurement = "34 X 14 X 20",
                             Name = "KNR SOUP CRAB & CORN 72/37G",
                             TypeOfPackage = "Carton",
@@ -5057,7 +5560,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 115,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2435),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2526),
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5066,7 +5569,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 116,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2436),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5075,7 +5578,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 117,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2437),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
                             Measurement = "18 X 14 X 12",
                             Name = "MCCORMICK BLACK PEPPER GRND 12/35G",
                             TypeOfPackage = "Carton",
@@ -5084,7 +5587,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 118,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2437),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2529),
                             Measurement = "55 X 41 X 19",
                             Name = "OISHI CHEESE CLUBS 100X23G",
                             TypeOfPackage = "Carton",
@@ -5093,7 +5596,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 119,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2438),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS CHOCO 100/38G",
                             TypeOfPackage = "Carton",
@@ -5102,7 +5605,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 120,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2439),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS UBE 100/38G",
                             TypeOfPackage = "Carton",
@@ -5111,7 +5614,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 121,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2440),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
                             Measurement = "30 X 18 X 26",
                             Name = "OREO SND.CKIE CHOCO 12/9/27G",
                             TypeOfPackage = "Carton",
@@ -5120,7 +5623,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 122,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2441),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
                             Measurement = "41 X 14 X 17",
                             Name = "QUEEN BAKING SODA 48/125G",
                             TypeOfPackage = "Carton",
@@ -5129,7 +5632,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 123,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2443),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2532),
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5138,7 +5641,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 124,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2444),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5147,7 +5650,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 125,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2444),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
                             Measurement = "40 X 26 X 19",
                             Name = "VIVA CARAMEL CANDY 20/100'S",
                             TypeOfPackage = "Carton",
@@ -5156,7 +5659,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 126,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2445),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2565),
                             Measurement = "37 X 25 X 21",
                             Name = "UFC BANANA CATSUP 24/320G",
                             TypeOfPackage = "Carton",
@@ -5165,7 +5668,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 127,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2446),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2566),
                             Measurement = "44 X 18 X 69",
                             Name = "SUPER Q GOLDEN BIHON 60/227G",
                             TypeOfPackage = "Carton",
@@ -5174,7 +5677,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 128,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2446),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
                             Measurement = "69 X 38 X 18",
                             Name = "SUPER Q GOLDEN BIHON 30/500 G",
                             TypeOfPackage = "Carton",
@@ -5183,7 +5686,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 129,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2448),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O STRAW WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5192,7 +5695,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 130,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2449),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O UBE WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5201,7 +5704,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 131,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2449),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O CHOCO WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5210,7 +5713,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 132,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2450),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
                             Measurement = "27 X 26 X 29",
                             Name = "ROYAL SPAGHETTI 18/900G",
                             TypeOfPackage = "Carton",
@@ -5219,7 +5722,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 133,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2451),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
                             Measurement = "50 X 37 X 28",
                             Name = "SKYFLAKES REG 30/10/25G",
                             TypeOfPackage = "Carton",
@@ -5228,7 +5731,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 134,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2452),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
                             Measurement = "31 X 20 X 17",
                             Name = "STIK-O CHOCO WAFER MINI 30/60G",
                             TypeOfPackage = "Carton",
@@ -5237,7 +5740,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 135,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2452),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
                             Measurement = "43 X 18 X 54",
                             Name = "OISHI PRAWN CRACKER 100/24G",
                             TypeOfPackage = "Carton",
@@ -5246,7 +5749,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 136,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2455),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2573),
                             Measurement = "68 X 37 X 28",
                             Name = "OISHI PRAWN CRACKER 30/95G",
                             TypeOfPackage = "Carton",
@@ -5255,7 +5758,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 137,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2455),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
                             Measurement = "56 X 35 X 40",
                             Name = "OISHI PRAWN CRACKER 50/60G",
                             TypeOfPackage = "Carton",
@@ -5264,7 +5767,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 138,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2456),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
                             Measurement = "31 X 20 X 17",
                             Name = "SNACKU VEGETABLE SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5273,7 +5776,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 139,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2457),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
                             Measurement = "73 X 33 X 13",
                             Name = "SWEET CORN SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5282,7 +5785,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 140,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2457),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
                             Measurement = "31 X 13 X 70",
                             Name = "SWEET CORN SNACK 30/25",
                             TypeOfPackage = "Carton",
@@ -5291,7 +5794,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 141,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2458),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FRSH SCNT 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5300,7 +5803,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 142,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2460),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH ORIGINAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5309,7 +5812,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 143,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2461),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FLORAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5318,7 +5821,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 144,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2461),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH COLORSAFE 24/900ML",
                             TypeOfPackage = "Carton",
@@ -5327,7 +5830,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 145,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2462),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
                             Measurement = "32 X 26 X 32",
                             Name = "MENTOS CANDY TROPICAL MIX 40/50",
                             TypeOfPackage = "Carton",
@@ -5336,7 +5839,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 146,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2463),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
                             Measurement = "29 X 15 X 23",
                             Name = "KJSN SOAP SKIN LGHTNNG 24/2/135G",
                             TypeOfPackage = "Carton",
@@ -5345,7 +5848,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 147,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2464),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2581),
                             Measurement = "34 X 30 X 11",
                             Name = "TIDE BAR NAT FRSH 36/380G",
                             TypeOfPackage = "Carton",
@@ -5354,7 +5857,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 148,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2464),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
                             Measurement = "31 X 22 X 15",
                             Name = "SURF BAR W/FBCN BLOSFRSH",
                             TypeOfPackage = "Carton",
@@ -5363,7 +5866,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 149,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2465),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
                             Measurement = "22 X 19 X 24",
                             Name = "KJSN SOAP SKIN LGHTNNG 48/2/65G",
                             TypeOfPackage = "Carton",
@@ -5372,7 +5875,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 150,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2468),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2583),
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET NW 36X8",
                             TypeOfPackage = "Carton",
@@ -5381,7 +5884,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 151,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2468),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET W 36X8",
                             TypeOfPackage = "Carton",
@@ -5390,7 +5893,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 152,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2469),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L PURE",
                             TypeOfPackage = "Carton",
@@ -5399,7 +5902,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 153,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2470),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2585),
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L DISTILLED",
                             TypeOfPackage = "Carton",
@@ -5408,7 +5911,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 154,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2471),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
                             Measurement = "50 X 41 X 19",
                             Name = "KENDI MINT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5417,7 +5920,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 155,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2471),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY ORIGINAL 13/14/62",
                             TypeOfPackage = "Carton",
@@ -5426,7 +5929,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 156,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2472),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2587),
                             Measurement = "32 X 22 X 34",
                             Name = "MIRINDA ORANGE PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5435,7 +5938,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 157,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2473),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2589),
                             Measurement = "35 X 26 X 22",
                             Name = "108080 SPRITE REG PET BOT 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5444,7 +5947,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 158,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2473),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
                             Measurement = "46 X 30 X 15",
                             Name = "AJINAMOTO GINISA MIX 120/40G",
                             TypeOfPackage = "Carton",
@@ -5453,7 +5956,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 159,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2474),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
                             Measurement = "32 X 22 X 34",
                             Name = "PEPSI REG PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5462,7 +5965,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 160,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2475),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
                             Measurement = "38 X 30 X 24",
                             Name = "MENTOS CANDY MINT BAG 40/50",
                             TypeOfPackage = "Carton",
@@ -5471,7 +5974,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 161,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2476),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
                             Measurement = "50 X 41 X 19",
                             Name = "VIVA CARAMEL CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5480,7 +5983,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 162,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2476),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2592),
                             Measurement = "32 X 22 X 34",
                             Name = "MOUNTAIN DEW PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5489,7 +5992,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 163,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2479),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
                             Measurement = "33 X 16 X 21",
                             Name = "STING ENERGY DRINK STRAWBERRY 24/320",
                             TypeOfPackage = "Carton",
@@ -5498,7 +6001,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 164,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2480),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
                             Measurement = "40 X 23 X 22",
                             Name = "PEPSI REG PET BOT 24/500ML",
                             TypeOfPackage = "Carton",
@@ -5507,7 +6010,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 165,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2481),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2594),
                             Measurement = "72 X 40 X 17",
                             Name = "SUPER Q PALABOK 12/500G",
                             TypeOfPackage = "Carton",
@@ -5516,7 +6019,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 166,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2482),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
                             Measurement = "33 X 27 X 29",
                             Name = "LORINS PATIS PLASTIC 12/1000ML",
                             TypeOfPackage = "Carton",
@@ -5525,7 +6028,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 167,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2483),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
                             Measurement = "37 X 26 X 19",
                             Name = "LORINS PATIS PLASTIC 24/350ML",
                             TypeOfPackage = "Carton",
@@ -5534,7 +6037,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 168,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2483),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY GARLIC 13/14/62G",
                             TypeOfPackage = "Carton",
@@ -5543,7 +6046,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 169,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2484),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
                             Measurement = "50 X 41 X 19",
                             Name = "WHITE RABBIT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5552,7 +6055,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 170,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2485),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2598),
                             Measurement = "39 X 31 X 21",
                             Name = "RICOA FLAT TOPS 12/100",
                             TypeOfPackage = "Carton",
@@ -5561,7 +6064,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 171,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2486),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2599),
                             Measurement = "30 X 22 X 17",
                             Name = "SURF BAR KALAMANSI 36/360G",
                             TypeOfPackage = "Carton",
@@ -5570,7 +6073,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 172,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2486),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2600),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 APPLE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5579,7 +6082,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 173,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2487),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 GRAPE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5588,7 +6091,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 174,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2488),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 ORANGE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5597,7 +6100,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 175,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2489),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG MANGO 10/250ML",
                             TypeOfPackage = "Carton",
@@ -5606,7 +6109,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 176,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2489),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 1KG",
                             TypeOfPackage = "Carton",
@@ -5615,7 +6118,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 177,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2492),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2603),
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 500G",
                             TypeOfPackage = "Carton",
@@ -5624,7 +6127,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 178,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2492),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP SINIGANG MIX 20G",
                             TypeOfPackage = "Carton",
@@ -5633,7 +6136,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 179,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2493),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5642,7 +6145,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 180,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2494),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -5651,7 +6154,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 181,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2495),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
                             Measurement = "33 X 19 X 15",
                             Name = "LASAP SINIGANG MIX W/GABI 22G",
                             TypeOfPackage = "Carton",
@@ -5660,7 +6163,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 182,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2495),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2606),
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP OYSTER SAUCE 170 G",
                             TypeOfPackage = "Carton",
@@ -5669,7 +6172,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 183,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2496),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2607),
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP KARE KARE MIX 75G",
                             TypeOfPackage = "Carton",
@@ -5678,7 +6181,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 184,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2497),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2608),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP TOCINO MIX",
                             TypeOfPackage = "Carton",
@@ -5687,7 +6190,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 185,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2498),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP BBQ MIX 50G",
                             TypeOfPackage = "Carton",
@@ -5696,7 +6199,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 186,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2536),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT TEMPURA SHRIMP 25/100G",
                             TypeOfPackage = "Carton",
@@ -5705,7 +6208,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 187,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2537),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT LABSTER 25/100G",
                             TypeOfPackage = "Carton",
@@ -5714,7 +6217,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 188,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2538),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT ISDALICIOUS 25/85G",
                             TypeOfPackage = "Carton",
@@ -5723,7 +6226,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 189,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2538),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2611),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT UBE CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5732,7 +6235,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 190,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2541),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT SAND CAKE MELON 8/10S",
                             TypeOfPackage = "Carton",
@@ -5741,7 +6244,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 191,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2542),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT MOCHA CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -5750,7 +6253,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 192,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2542),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE UBE CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5759,7 +6262,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 193,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2543),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHOKORETO CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5768,7 +6271,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 194,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2544),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHEESECAKE 34G",
                             TypeOfPackage = "Carton",
@@ -5777,7 +6280,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 195,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2545),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI MANGO 240G",
                             TypeOfPackage = "Carton",
@@ -5786,7 +6289,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 196,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2546),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2615),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI UBE 240 G",
                             TypeOfPackage = "Carton",
@@ -5795,7 +6298,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 197,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2546),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2617),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT BUKO PANDAN 240G",
                             TypeOfPackage = "Carton",
@@ -5804,7 +6307,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 198,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2547),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI ASSORTED",
                             TypeOfPackage = "Carton",
@@ -5813,7 +6316,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 199,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2548),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5822,7 +6325,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 200,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2549),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -5831,7 +6334,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 201,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2549),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SEAWEED 60G",
                             TypeOfPackage = "Carton",
@@ -5840,7 +6343,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 202,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2550),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2620),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SAL VINEGAR 60G",
                             TypeOfPackage = "Carton",
@@ -5849,7 +6352,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 203,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2551),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S CHEESE",
                             TypeOfPackage = "Carton",
@@ -5858,7 +6361,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 204,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2553),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
                             Measurement = "40 X 21 X 18",
                             Name = "POTATO CRACKERS",
                             TypeOfPackage = "Carton",
@@ -5867,7 +6370,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 205,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2554),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2622),
                             Measurement = "61 X 39 X 41",
                             Name = "KING CRAB",
                             TypeOfPackage = "Carton",
@@ -5876,7 +6379,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 206,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2555),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
                             Measurement = "60 X 30 X 33",
                             Name = "GOLDEN SWEET CORN",
                             TypeOfPackage = "Carton",
@@ -5885,7 +6388,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 207,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2556),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING JALAPENO",
                             TypeOfPackage = "Carton",
@@ -5894,7 +6397,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 208,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2557),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING CHEESE",
                             TypeOfPackage = "Carton",
@@ -5903,7 +6406,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 209,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2557),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
                             Measurement = "61 X 39 X 41",
                             Name = "FRENCH FRIES",
                             TypeOfPackage = "Carton",
@@ -5912,7 +6415,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 210,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2558),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
                             Measurement = "61 X 39 X 41",
                             Name = "SHRIMP FRITTERS",
                             TypeOfPackage = "Carton",
@@ -5921,7 +6424,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 211,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2559),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
                             Measurement = "54 X 35 X 38",
                             Name = "MOBY CARAMEL 90G",
                             TypeOfPackage = "Carton",
@@ -5930,7 +6433,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 212,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2560),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2629),
                             Measurement = "64 X 46 X 18",
                             Name = "CHEESE IT CHEESE 60G",
                             TypeOfPackage = "Carton",
@@ -5939,7 +6442,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 213,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2560),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE CHIPS 60G",
                             TypeOfPackage = "Carton",
@@ -5948,7 +6451,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 214,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2561),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL PUFFS 60G",
                             TypeOfPackage = "Carton",
@@ -5957,7 +6460,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 215,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2562),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2631),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE 25G",
                             TypeOfPackage = "Carton",
@@ -5966,7 +6469,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 216,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2563),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL 25G",
                             TypeOfPackage = "Carton",
@@ -5975,7 +6478,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 217,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2565),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCO CUM CHOC BU",
                             TypeOfPackage = "Carton",
@@ -5984,7 +6487,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 218,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2566),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED CHOCO FILLED 65G",
                             TypeOfPackage = "Carton",
@@ -5993,7 +6496,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 219,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2567),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED WHITE CHOCO 65G",
                             TypeOfPackage = "Carton",
@@ -6002,7 +6505,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 220,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2567),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2634),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6011,7 +6514,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 221,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2568),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6020,7 +6523,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 222,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2569),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6029,7 +6532,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 223,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2570),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2636),
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6038,7 +6541,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 224,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2570),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -6047,7 +6550,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 225,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2571),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -6056,7 +6559,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 226,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2572),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT STRAWBERRY CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6065,7 +6568,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 227,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2573),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT PANDAN CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6074,7 +6577,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 228,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2573),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2640),
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT ASSORTED CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6083,7 +6586,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 229,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2574),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT BANANA CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6092,7 +6595,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 230,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2576),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN WAFFLE 30G",
                             TypeOfPackage = "Carton",
@@ -6101,7 +6604,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 231,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2577),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6110,7 +6613,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 232,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2578),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6119,7 +6622,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 233,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2579),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2643),
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE MACAPUNO 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6128,7 +6631,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 234,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2580),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE JACKFRUIT 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6137,7 +6640,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 235,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2581),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE KAONG RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6146,7 +6649,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 236,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2582),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2645),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO WHITE 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6155,7 +6658,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 237,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2582),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO GREEN 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6164,7 +6667,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 238,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2583),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6173,7 +6676,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 240,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2584),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2647),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE JACKFRUIT 24X12OZ",
                             TypeOfPackage = "Carton",
@@ -6182,7 +6685,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 241,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2584),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6191,7 +6694,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 242,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2586),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6200,7 +6703,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 243,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2587),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO WHITE 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6209,7 +6712,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 244,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2588),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO GREEN 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6218,7 +6721,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 245,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2588),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2683),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO RED 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6227,7 +6730,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 246,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2589),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE SALTED SHRIMP 24/340G",
                             TypeOfPackage = "Carton",
@@ -6236,7 +6739,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 247,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2590),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SWEET",
                             TypeOfPackage = "Carton",
@@ -6245,7 +6748,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 248,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2591),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2685),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP REGULAR",
                             TypeOfPackage = "Carton",
@@ -6254,7 +6757,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 249,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2591),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SPICY",
                             TypeOfPackage = "Carton",
@@ -6263,7 +6766,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 250,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2592),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
                             Measurement = "39 X 28 X 13",
                             Name = "FLORENCE BAGOONG BALAYAN",
                             TypeOfPackage = "Carton",
@@ -6272,7 +6775,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 251,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2593),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2687),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR CHOCO",
                             TypeOfPackage = "Carton",
@@ -6281,7 +6784,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 252,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2594),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2689),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR MATHCA",
                             TypeOfPackage = "Carton",
@@ -6290,7 +6793,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 253,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2594),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR STRAWBERRY",
                             TypeOfPackage = "Carton",
@@ -6299,7 +6802,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 254,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2595),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6308,7 +6811,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 255,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2596),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6317,7 +6820,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 256,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2597),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 80G",
                             TypeOfPackage = "Carton",
@@ -6326,7 +6829,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 257,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2599),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2692),
                             Measurement = "53 X 34 X 30",
                             Name = "COCONUT ENERGY BAR NUTS 24/400",
                             TypeOfPackage = "Carton",
@@ -6335,7 +6838,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 258,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2600),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6344,7 +6847,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 259,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2600),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM STRAWBERRY 24/300",
                             TypeOfPackage = "Carton",
@@ -6353,7 +6856,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 260,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2601),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2694),
                             Measurement = "54 X 36 X 16",
                             Name = "COCO CREAM BAR CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6362,7 +6865,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 261,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2602),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2695),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 APPLE",
                             TypeOfPackage = "Carton",
@@ -6371,7 +6874,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 262,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2603),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 GRAPE",
                             TypeOfPackage = "Carton",
@@ -6380,7 +6883,7 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 263,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(2604),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 ORANGE",
                             TypeOfPackage = "Carton",
@@ -6430,7 +6933,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 1,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1642),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1936),
                             IsFloorDocking = false,
                             LevelId = 3,
                             Name = "Metal Shelving 1",
@@ -6440,7 +6943,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 2,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1660),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1954),
                             IsFloorDocking = false,
                             LevelId = 5,
                             Name = "Metal Shelving 2",
@@ -6450,7 +6953,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 3,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1660),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 1",
@@ -6460,7 +6963,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 4,
                             BayId = 6,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1661),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 2",
@@ -6470,7 +6973,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 5,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1662),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 3",
@@ -6480,7 +6983,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 6,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1663),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 1",
@@ -6490,7 +6993,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 7,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1663),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 2",
@@ -6500,7 +7003,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 8,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1664),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 3",
@@ -6510,7 +7013,7 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 9,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 8, 21, 49, 20, 411, DateTimeKind.Local).AddTicks(1704),
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1959),
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 4",
@@ -6583,17 +7086,16 @@ namespace WMS.Api.Data.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CBM")
-                        .IsRequired()
+                    b.Property<decimal?>("CBM")
                         .HasPrecision(18, 4)
-                        .HasColumnType("longtext");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("ContainerName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ExpectedCBM")
-                        .HasColumnType("longtext");
+                    b.Property<decimal?>("ExpectedCBM")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateOnly?>("ExpectedExpirationDate")
                         .HasColumnType("date");
@@ -6604,8 +7106,9 @@ namespace WMS.Api.Data.Migrations
                     b.Property<int?>("ExpectedQuantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExpectedTotalWeight")
-                        .HasColumnType("longtext");
+                    b.Property<decimal?>("ExpectedTotalWeight")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateOnly?>("ExpirationDate")
                         .HasColumnType("date");
@@ -6631,6 +7134,11 @@ namespace WMS.Api.Data.Migrations
                     b.Property<string>("Remarks")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<string>("Supplier")
                         .HasColumnType("longtext");
 
@@ -6638,17 +7146,16 @@ namespace WMS.Api.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("TotalWeight")
-                        .IsRequired()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("longtext");
-
                     b.Property<string>("TypeOfPackage")
                         .HasColumnType("longtext");
 
                     b.Property<decimal?>("UnitPrice")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Weight")
+                        .HasPrecision(18, 6)
+                        .HasColumnType("decimal(18,6)");
 
                     b.HasKey("Id");
 
@@ -6661,4917 +7168,6 @@ namespace WMS.Api.Data.Migrations
                     b.HasIndex("ReceivingId");
 
                     b.ToTable("ReceivedProducts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CBM = "15.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 20),
-                            ProductId = 30,
-                            Quantity = 400,
-                            ReceivingId = 1,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1400"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CBM = "7.75",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 10),
-                            ProductId = 31,
-                            Quantity = 200,
-                            ReceivingId = 1,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CBM = "23.26",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 10),
-                            ProductId = 32,
-                            Quantity = 600,
-                            ReceivingId = 1,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2100"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CBM = "15.48",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 17,
-                            Quantity = 288,
-                            ReceivingId = 2,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1008"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 4,
-                            Quantity = 50,
-                            ReceivingId = 3,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 6,
-                            Quantity = 50,
-                            ReceivingId = 3,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CBM = "11.61",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 17,
-                            Quantity = 216,
-                            ReceivingId = 4,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "756"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CBM = "12.47",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 17,
-                            Quantity = 232,
-                            ReceivingId = 5,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "812"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CBM = "16.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 11,
-                            Quantity = 300,
-                            ReceivingId = 6,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1050"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CBM = "5.91",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 2,
-                            Quantity = 171,
-                            ReceivingId = 6,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "598.5"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 15,
-                            Quantity = 100,
-                            ReceivingId = 7,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CBM = "7.74",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 17,
-                            Quantity = 144,
-                            ReceivingId = 7,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "504"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CBM = "0.66",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 2,
-                            Quantity = 19,
-                            ReceivingId = 8,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "66.5"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 1, 22),
-                            ProductId = 13,
-                            Quantity = 100,
-                            ReceivingId = 8,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 14,
-                            Quantity = 100,
-                            ReceivingId = 8,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CBM = "6.45",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 17,
-                            Quantity = 120,
-                            ReceivingId = 9,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "420"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            ProductId = 12,
-                            Quantity = 100,
-                            ReceivingId = 9,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CBM = "17.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 16),
-                            ProductId = 7,
-                            Quantity = 318,
-                            ReceivingId = 10,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1113"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            CBM = "6.91",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 16),
-                            ProductId = 1,
-                            Quantity = 200,
-                            ReceivingId = 11,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CBM = "10.75",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 16),
-                            ProductId = 24,
-                            Quantity = 200,
-                            ReceivingId = 11,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            CBM = "0.35",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 16),
-                            ProductId = 2,
-                            Quantity = 10,
-                            ReceivingId = 11,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "35"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            CBM = "13.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 16),
-                            ProductId = 7,
-                            Quantity = 247,
-                            ReceivingId = 12,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "864.5"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 18,
-                            Quantity = 50,
-                            ReceivingId = 13,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 19,
-                            Quantity = 50,
-                            ReceivingId = 13,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 20,
-                            Quantity = 50,
-                            ReceivingId = 13,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 3,
-                            Quantity = 50,
-                            ReceivingId = 14,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CBM = "1.88",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 7,
-                            Quantity = 35,
-                            ReceivingId = 14,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "122.5"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 22,
-                            Quantity = 50,
-                            ReceivingId = 14,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            ProductId = 23,
-                            Quantity = 12,
-                            ReceivingId = 14,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "42"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 10),
-                            PalletId = 1,
-                            ProductId = 41,
-                            Quantity = 50,
-                            ReceivingId = 18,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            CBM = "0.55",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 20),
-                            PalletId = 1,
-                            ProductId = 42,
-                            Quantity = 49,
-                            ReceivingId = 18,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "147"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 19),
-                            PalletId = 2,
-                            ProductId = 45,
-                            Quantity = 50,
-                            ReceivingId = 19,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 4),
-                            PalletId = 2,
-                            ProductId = 46,
-                            Quantity = 50,
-                            ReceivingId = 19,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            CBM = "0.52",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 24),
-                            PalletId = 3,
-                            ProductId = 43,
-                            Quantity = 46,
-                            ReceivingId = 20,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "138"
-                        },
-                        new
-                        {
-                            Id = 42,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 29),
-                            PalletId = 3,
-                            ProductId = 44,
-                            Quantity = 50,
-                            ReceivingId = 20,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 43,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 1, 25),
-                            ProductId = 33,
-                            Quantity = 1,
-                            ReceivingId = 21,
-                            Remarks = "CONTROLLER-3PCS",
-                            TotalWeight = "0"
-                        },
-                        new
-                        {
-                            Id = 44,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 1, 25),
-                            ProductId = 34,
-                            Quantity = 1,
-                            ReceivingId = 21,
-                            Remarks = "CIRCUIT BOARD(TS26F)-10PCS\r\n                  CONTROLLER-3PCS\r\n                  CONTROLLER(NEW)-3PCS\r\n                  SENSORS-18PCS\r\n                  CPR(WITH O-RING)-3PCS\r\n                  FUSE DETECTION BOARD(TS55F)-5PCS",
-                            TotalWeight = "0"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            CBM = "0.27",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 1, 25),
-                            ProductId = 38,
-                            Quantity = 8,
-                            ReceivingId = 21,
-                            Remarks = "16SETS",
-                            TotalWeight = "0"
-                        },
-                        new
-                        {
-                            Id = 46,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 1, 25),
-                            ProductId = 37,
-                            Quantity = 1,
-                            ReceivingId = 21,
-                            Remarks = "6SET - 3SETS OF BY 3's AND 3SETS OF BY 2's",
-                            TotalWeight = "0"
-                        },
-                        new
-                        {
-                            Id = 47,
-                            CBM = "23.26",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 25),
-                            ProductId = 32,
-                            Quantity = 600,
-                            ReceivingId = 22,
-                            Remarks = "Good Condition",
-                            TotalWeight = "2100"
-                        },
-                        new
-                        {
-                            Id = 48,
-                            CBM = "15.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 25),
-                            ProductId = 30,
-                            Quantity = 400,
-                            ReceivingId = 22,
-                            Remarks = "Good Condition",
-                            TotalWeight = "1400"
-                        },
-                        new
-                        {
-                            Id = 49,
-                            CBM = "7.75",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 25),
-                            ProductId = 31,
-                            Quantity = 200,
-                            ReceivingId = 22,
-                            Remarks = "Good Condition",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 50,
-                            CBM = "40.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 14),
-                            ProductId = 17,
-                            Quantity = 747,
-                            ReceivingId = 23,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2614.5"
-                        },
-                        new
-                        {
-                            Id = 51,
-                            CBM = "0.81",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 10),
-                            ProductId = 11,
-                            Quantity = 15,
-                            ReceivingId = 23,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "52.5"
-                        },
-                        new
-                        {
-                            Id = 52,
-                            CBM = "1.08",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 13),
-                            ProductId = 17,
-                            Quantity = 20,
-                            ReceivingId = 24,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "70"
-                        },
-                        new
-                        {
-                            Id = 53,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 9),
-                            ProductId = 12,
-                            Quantity = 100,
-                            ReceivingId = 24,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            CBM = "6.72",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 7,
-                            Quantity = 125,
-                            ReceivingId = 24,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "437.5"
-                        },
-                        new
-                        {
-                            Id = 55,
-                            CBM = "14.52",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 7,
-                            Quantity = 270,
-                            ReceivingId = 25,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "945"
-                        },
-                        new
-                        {
-                            Id = 56,
-                            CBM = "11.02",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 7,
-                            Quantity = 205,
-                            ReceivingId = 26,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "717.5"
-                        },
-                        new
-                        {
-                            Id = 57,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 7),
-                            PalletId = 4,
-                            ProductId = 18,
-                            Quantity = 80,
-                            ReceivingId = 27,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 58,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 19),
-                            PalletId = 5,
-                            ProductId = 20,
-                            Quantity = 80,
-                            ReceivingId = 27,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 59,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 16),
-                            PalletId = 7,
-                            ProductId = 19,
-                            Quantity = 80,
-                            ReceivingId = 27,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 60,
-                            CBM = "15.32",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 10),
-                            ProductId = 11,
-                            Quantity = 285,
-                            ReceivingId = 28,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "997.5"
-                        },
-                        new
-                        {
-                            Id = 61,
-                            CBM = "12.53",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 14),
-                            ProductId = 17,
-                            Quantity = 233,
-                            ReceivingId = 29,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "815.5"
-                        },
-                        new
-                        {
-                            Id = 62,
-                            CBM = "2.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 21),
-                            PalletId = 8,
-                            ProductId = 24,
-                            Quantity = 39,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "136.5"
-                        },
-                        new
-                        {
-                            Id = 63,
-                            CBM = "0.81",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 21),
-                            PalletId = 10,
-                            ProductId = 23,
-                            Quantity = 15,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "52.5"
-                        },
-                        new
-                        {
-                            Id = 64,
-                            CBM = "0.81",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 21),
-                            PalletId = 11,
-                            ProductId = 23,
-                            Quantity = 15,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "52.5"
-                        },
-                        new
-                        {
-                            Id = 65,
-                            CBM = "1.08",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 21),
-                            PalletId = 13,
-                            ProductId = 23,
-                            Quantity = 20,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "70"
-                        },
-                        new
-                        {
-                            Id = 66,
-                            CBM = "0.11",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 27),
-                            PalletId = 14,
-                            ProductId = 21,
-                            Quantity = 2,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "7"
-                        },
-                        new
-                        {
-                            Id = 67,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 5),
-                            PalletId = 15,
-                            ProductId = 4,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 68,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 5),
-                            PalletId = 16,
-                            ProductId = 4,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 69,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 6),
-                            PalletId = 17,
-                            ProductId = 6,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 70,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 6),
-                            PalletId = 18,
-                            ProductId = 6,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 71,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 13),
-                            PalletId = 19,
-                            ProductId = 3,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 72,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 13),
-                            PalletId = 20,
-                            ProductId = 3,
-                            Quantity = 25,
-                            ReceivingId = 30,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 73,
-                            CBM = "3.87",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 13,
-                            Quantity = 72,
-                            ReceivingId = 31,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "252"
-                        },
-                        new
-                        {
-                            Id = 74,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 7),
-                            ProductId = 14,
-                            Quantity = 100,
-                            ReceivingId = 31,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 75,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 6),
-                            ProductId = 15,
-                            Quantity = 100,
-                            ReceivingId = 31,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 76,
-                            CBM = "1.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 13,
-                            Quantity = 28,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "98"
-                        },
-                        new
-                        {
-                            Id = 77,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 5),
-                            PalletId = 21,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 78,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 5),
-                            PalletId = 22,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 79,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 5),
-                            PalletId = 23,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 80,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 5),
-                            PalletId = 24,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 81,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 6),
-                            PalletId = 25,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 82,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 6),
-                            PalletId = 26,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 83,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 6),
-                            PalletId = 27,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 84,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 6),
-                            PalletId = 28,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 32,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 85,
-                            CBM = "3.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 5),
-                            PalletId = 29,
-                            ProductId = 24,
-                            Quantity = 61,
-                            ReceivingId = 33,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "213.5"
-                        },
-                        new
-                        {
-                            Id = 86,
-                            CBM = "3.23",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 5),
-                            PalletId = 30,
-                            ProductId = 24,
-                            Quantity = 60,
-                            ReceivingId = 33,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "210"
-                        },
-                        new
-                        {
-                            Id = 87,
-                            CBM = "2.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 5),
-                            PalletId = 31,
-                            ProductId = 24,
-                            Quantity = 40,
-                            ReceivingId = 33,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "140"
-                        },
-                        new
-                        {
-                            Id = 88,
-                            CBM = "6.8",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 12),
-                            ProductId = 48,
-                            Quantity = 100,
-                            ReceivingId = 33,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "300"
-                        },
-                        new
-                        {
-                            Id = 89,
-                            CBM = "9.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 18),
-                            ProductId = 49,
-                            Quantity = 100,
-                            ReceivingId = 33,
-                            Remarks = "WRONG FLAVOR ON INVOICE ORDER MUST BE MIGGOS SWEETCORN 105G",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 90,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 11),
-                            ProductId = 50,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221125002",
-                            TotalWeight = "7"
-                        },
-                        new
-                        {
-                            Id = 91,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 51,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221125028",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 92,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117020",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 93,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122003",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 94,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117003",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 95,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 54,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221114003",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 96,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 55,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20211115003",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 97,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 55,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20211115008",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 98,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20231129001",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 99,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 54,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20231129001",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 100,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117016",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 101,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122001",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 102,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117016",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 103,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122001",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 104,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117018",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 105,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122002",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 106,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 55,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20211115005",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 107,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 56,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20201112003",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 108,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117021",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 109,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122004",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 110,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 50,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221125001",
-                            TotalWeight = "7"
-                        },
-                        new
-                        {
-                            Id = 111,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 51,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221125027",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 112,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 52,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221117022",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 113,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 53,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "A20221122005",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 114,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 56,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20201112002",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 115,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 56,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20201112004",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 116,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 57,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20240604001",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 117,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 57,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20240604002",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 118,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 57,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20240604003",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 119,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 55,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20211115006",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 120,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 56,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20201112009",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 121,
-                            CBM = "0.28",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 3, 13),
-                            ProductId = 55,
-                            Quantity = 1,
-                            ReceivingId = 34,
-                            Remarks = "20211115007",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 122,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 398,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 123,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 399,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 124,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 12),
-                            PalletId = 400,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 125,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 12),
-                            PalletId = 401,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 126,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 12),
-                            PalletId = 402,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 127,
-                            CBM = "0",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 12),
-                            PalletId = 403,
-                            ProductId = 58,
-                            Quantity = 30,
-                            ReceivingId = 35,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "315"
-                        },
-                        new
-                        {
-                            Id = 128,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 5),
-                            PalletId = 404,
-                            ProductId = 18,
-                            Quantity = 80,
-                            ReceivingId = 36,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 129,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 7),
-                            PalletId = 405,
-                            ProductId = 20,
-                            Quantity = 80,
-                            ReceivingId = 36,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 130,
-                            CBM = "4.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 6),
-                            PalletId = 406,
-                            ProductId = 19,
-                            Quantity = 80,
-                            ReceivingId = 36,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "280"
-                        },
-                        new
-                        {
-                            Id = 131,
-                            CBM = "26.88",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            ProductId = 17,
-                            Quantity = 500,
-                            ReceivingId = 37,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1750"
-                        },
-                        new
-                        {
-                            Id = 132,
-                            CBM = "9.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            ProductId = 49,
-                            Quantity = 100,
-                            ReceivingId = 37,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 133,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 26),
-                            ProductId = 11,
-                            Quantity = 50,
-                            ReceivingId = 37,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 134,
-                            CBM = "1.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 27),
-                            ProductId = 12,
-                            Quantity = 28,
-                            ReceivingId = 38,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "98"
-                        },
-                        new
-                        {
-                            Id = 135,
-                            CBM = "8.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 26),
-                            ProductId = 11,
-                            Quantity = 150,
-                            ReceivingId = 38,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "525"
-                        },
-                        new
-                        {
-                            Id = 136,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 27),
-                            ProductId = 13,
-                            Quantity = 100,
-                            ReceivingId = 38,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 137,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 22),
-                            ProductId = 14,
-                            Quantity = 100,
-                            ReceivingId = 38,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 138,
-                            CBM = "5.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            ProductId = 15,
-                            Quantity = 100,
-                            ReceivingId = 38,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "350"
-                        },
-                        new
-                        {
-                            Id = 139,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 407,
-                            ProductId = 6,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 140,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 408,
-                            ProductId = 4,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 141,
-                            CBM = "2.69",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 28),
-                            PalletId = 409,
-                            ProductId = 3,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 142,
-                            CBM = "16.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 28),
-                            ProductId = 25,
-                            Quantity = 300,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1050"
-                        },
-                        new
-                        {
-                            Id = 143,
-                            CBM = "3.87",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 27),
-                            ProductId = 12,
-                            Quantity = 72,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "252"
-                        },
-                        new
-                        {
-                            Id = 144,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 410,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 145,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 411,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 146,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 412,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 147,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 23),
-                            PalletId = 413,
-                            ProductId = 1,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 148,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 24),
-                            PalletId = 414,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 149,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 24),
-                            PalletId = 415,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 150,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 24),
-                            PalletId = 416,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 151,
-                            CBM = "1.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 24),
-                            PalletId = 417,
-                            ProductId = 2,
-                            Quantity = 50,
-                            ReceivingId = 39,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "175"
-                        },
-                        new
-                        {
-                            Id = 152,
-                            CBM = "1.7",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            PalletId = 423,
-                            ProductId = 48,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 153,
-                            CBM = "1.7",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            PalletId = 424,
-                            ProductId = 48,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 154,
-                            CBM = "1.7",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            PalletId = 425,
-                            ProductId = 48,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 155,
-                            CBM = "1.7",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            PalletId = 426,
-                            ProductId = 48,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 156,
-                            CBM = "0.22",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 27),
-                            PalletId = 427,
-                            ProductId = 21,
-                            Quantity = 4,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 157,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 26),
-                            PalletId = 428,
-                            ProductId = 23,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 158,
-                            CBM = "1.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 26),
-                            PalletId = 429,
-                            ProductId = 23,
-                            Quantity = 25,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "87.5"
-                        },
-                        new
-                        {
-                            Id = 159,
-                            CBM = "1.29",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 27),
-                            PalletId = 430,
-                            ProductId = 22,
-                            Quantity = 24,
-                            ReceivingId = 40,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "84"
-                        },
-                        new
-                        {
-                            Id = 160,
-                            CBM = "0.48",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 8, 3),
-                            PalletId = 434,
-                            ProductId = 60,
-                            Quantity = 20,
-                            ReceivingId = 41,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 161,
-                            CBM = "0.5",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 7, 13),
-                            PalletId = 434,
-                            ProductId = 61,
-                            Quantity = 20,
-                            ReceivingId = 41,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "180"
-                        },
-                        new
-                        {
-                            Id = 162,
-                            CBM = "0.87",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 23),
-                            PalletId = 435,
-                            ProductId = 62,
-                            Quantity = 30,
-                            ReceivingId = 41,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "240"
-                        },
-                        new
-                        {
-                            Id = 163,
-                            CBM = "0.96",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 12),
-                            PalletId = 436,
-                            ProductId = 65,
-                            Quantity = 100,
-                            ReceivingId = 41,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 164,
-                            CBM = "0.6",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 1),
-                            PalletId = 439,
-                            ProductId = 63,
-                            Quantity = 20,
-                            ReceivingId = 42,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "290"
-                        },
-                        new
-                        {
-                            Id = 165,
-                            CBM = "0.46",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 17),
-                            PalletId = 440,
-                            ProductId = 64,
-                            Quantity = 20,
-                            ReceivingId = 42,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "230"
-                        },
-                        new
-                        {
-                            Id = 166,
-                            CBM = "19.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 13),
-                            ProductId = 32,
-                            Quantity = 500,
-                            ReceivingId = 43,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1000"
-                        },
-                        new
-                        {
-                            Id = 167,
-                            CBM = "11.63",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 13),
-                            ProductId = 30,
-                            Quantity = 300,
-                            ReceivingId = 43,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "600"
-                        },
-                        new
-                        {
-                            Id = 168,
-                            CBM = "7.75",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 13),
-                            ProductId = 31,
-                            Quantity = 200,
-                            ReceivingId = 43,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "400"
-                        },
-                        new
-                        {
-                            Id = 169,
-                            CBM = "0.14",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 13),
-                            PalletId = 444,
-                            ProductId = 66,
-                            Quantity = 15,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 170,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 13),
-                            PalletId = 444,
-                            ProductId = 67,
-                            Quantity = 5,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "5"
-                        },
-                        new
-                        {
-                            Id = 171,
-                            CBM = "0.25",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 13),
-                            PalletId = 444,
-                            ProductId = 68,
-                            Quantity = 10,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 172,
-                            CBM = "0.49",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 445,
-                            ProductId = 69,
-                            Quantity = 29,
-                            ReceivingId = 44,
-                            Remarks = "1 CARTON FOR RETURN MISSING 2CANS. RECEIVED 29CARTONS ONLY",
-                            TotalWeight = "362.5"
-                        },
-                        new
-                        {
-                            Id = 173,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 13),
-                            PalletId = 444,
-                            ProductId = 70,
-                            Quantity = 10,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 174,
-                            CBM = "0.36",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 13),
-                            PalletId = 444,
-                            ProductId = 71,
-                            Quantity = 10,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 175,
-                            CBM = "0.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 8),
-                            PalletId = 446,
-                            ProductId = 44,
-                            Quantity = 6,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 176,
-                            CBM = "0.14",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 17),
-                            PalletId = 446,
-                            ProductId = 72,
-                            Quantity = 12,
-                            ReceivingId = 44,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "36"
-                        },
-                        new
-                        {
-                            Id = 177,
-                            CBM = "0.39",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 447,
-                            ProductId = 73,
-                            Quantity = 15,
-                            ReceivingId = 45,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "307.5"
-                        },
-                        new
-                        {
-                            Id = 178,
-                            CBM = "0.86",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 15),
-                            PalletId = 448,
-                            ProductId = 41,
-                            Quantity = 76,
-                            ReceivingId = 46,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "228"
-                        },
-                        new
-                        {
-                            Id = 179,
-                            CBM = "0.34",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 26),
-                            PalletId = 449,
-                            ProductId = 74,
-                            Quantity = 30,
-                            ReceivingId = 47,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "90"
-                        },
-                        new
-                        {
-                            Id = 180,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 28),
-                            PalletId = 450,
-                            ProductId = 42,
-                            Quantity = 50,
-                            ReceivingId = 47,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "150"
-                        },
-                        new
-                        {
-                            Id = 181,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 5),
-                            PalletId = 449,
-                            ProductId = 75,
-                            Quantity = 5,
-                            ReceivingId = 47,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 182,
-                            CBM = "0.32",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 22),
-                            PalletId = 451,
-                            ProductId = 76,
-                            Quantity = 10,
-                            ReceivingId = 48,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 183,
-                            CBM = "0.32",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 22),
-                            PalletId = 451,
-                            ProductId = 77,
-                            Quantity = 10,
-                            ReceivingId = 48,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 184,
-                            CBM = "0.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 17),
-                            PalletId = 452,
-                            ProductId = 78,
-                            Quantity = 100,
-                            ReceivingId = 49,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 185,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 1),
-                            PalletId = 457,
-                            ProductId = 73,
-                            Quantity = 25,
-                            ReceivingId = 50,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "512.5"
-                        },
-                        new
-                        {
-                            Id = 186,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 458,
-                            ProductId = 73,
-                            Quantity = 25,
-                            ReceivingId = 50,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "512.5"
-                        },
-                        new
-                        {
-                            Id = 187,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 459,
-                            ProductId = 73,
-                            Quantity = 25,
-                            ReceivingId = 50,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "512.5"
-                        },
-                        new
-                        {
-                            Id = 188,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 460,
-                            ProductId = 73,
-                            Quantity = 25,
-                            ReceivingId = 50,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "512.5"
-                        },
-                        new
-                        {
-                            Id = 189,
-                            CBM = "0.98",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 1),
-                            PalletId = 461,
-                            ProductId = 79,
-                            Quantity = 50,
-                            ReceivingId = 51,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "575"
-                        },
-                        new
-                        {
-                            Id = 190,
-                            CBM = "0.49",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 1),
-                            PalletId = 462,
-                            ProductId = 79,
-                            Quantity = 25,
-                            ReceivingId = 51,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "287.5"
-                        },
-                        new
-                        {
-                            Id = 191,
-                            CBM = "0.49",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 1),
-                            PalletId = 463,
-                            ProductId = 79,
-                            Quantity = 25,
-                            ReceivingId = 51,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "287.5"
-                        },
-                        new
-                        {
-                            Id = 192,
-                            CBM = "2.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 15),
-                            PalletId = 464,
-                            ProductId = 80,
-                            Quantity = 20,
-                            ReceivingId = 52,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "110"
-                        },
-                        new
-                        {
-                            Id = 193,
-                            CBM = "2.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 15),
-                            PalletId = 465,
-                            ProductId = 80,
-                            Quantity = 20,
-                            ReceivingId = 52,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "110"
-                        },
-                        new
-                        {
-                            Id = 194,
-                            CBM = "1.29",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 20),
-                            PalletId = 466,
-                            ProductId = 81,
-                            Quantity = 25,
-                            ReceivingId = 53,
-                            Remarks = "GOODS CONDITION",
-                            TotalWeight = "337.5"
-                        },
-                        new
-                        {
-                            Id = 195,
-                            CBM = "1.29",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 20),
-                            PalletId = 467,
-                            ProductId = 81,
-                            Quantity = 25,
-                            ReceivingId = 53,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "337.5"
-                        },
-                        new
-                        {
-                            Id = 196,
-                            CBM = "0.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 16),
-                            PalletId = 468,
-                            ProductId = 82,
-                            Quantity = 25,
-                            ReceivingId = 54,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 197,
-                            CBM = "0.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 5),
-                            PalletId = 469,
-                            ProductId = 82,
-                            Quantity = 25,
-                            ReceivingId = 54,
-                            Remarks = "good condition",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 198,
-                            CBM = "0.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 5),
-                            PalletId = 470,
-                            ProductId = 82,
-                            Quantity = 25,
-                            ReceivingId = 54,
-                            Remarks = "Good Condition",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 199,
-                            CBM = "0.38",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 5, 5),
-                            PalletId = 471,
-                            ProductId = 82,
-                            Quantity = 25,
-                            ReceivingId = 54,
-                            Remarks = "Good condition",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 201,
-                            CBM = "1.47",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 12, 22),
-                            PalletId = 472,
-                            ProductId = 83,
-                            Quantity = 30,
-                            ReceivingId = 55,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "450"
-                        },
-                        new
-                        {
-                            Id = 202,
-                            CBM = "0.63",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 25),
-                            PalletId = 477,
-                            ProductId = 84,
-                            Quantity = 200,
-                            ReceivingId = 56,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "400"
-                        },
-                        new
-                        {
-                            Id = 203,
-                            CBM = "1.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 25),
-                            PalletId = 478,
-                            ProductId = 85,
-                            Quantity = 333,
-                            ReceivingId = 56,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "666"
-                        },
-                        new
-                        {
-                            Id = 204,
-                            CBM = "0.59",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 2),
-                            PalletId = 480,
-                            ProductId = 86,
-                            Quantity = 15,
-                            ReceivingId = 57,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 205,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 25),
-                            PalletId = 480,
-                            ProductId = 88,
-                            Quantity = 5,
-                            ReceivingId = 57,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "62.5"
-                        },
-                        new
-                        {
-                            Id = 206,
-                            CBM = "0.17",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 6),
-                            PalletId = 480,
-                            ProductId = 87,
-                            Quantity = 5,
-                            ReceivingId = 57,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "10"
-                        },
-                        new
-                        {
-                            Id = 207,
-                            CBM = "1.11",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 29),
-                            PalletId = 481,
-                            ProductId = 89,
-                            Quantity = 40,
-                            ReceivingId = 58,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "160"
-                        },
-                        new
-                        {
-                            Id = 208,
-                            CBM = "1.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 29),
-                            PalletId = 482,
-                            ProductId = 90,
-                            Quantity = 6,
-                            ReceivingId = 59,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 209,
-                            CBM = "1.98",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 29),
-                            PalletId = 483,
-                            ProductId = 91,
-                            Quantity = 6,
-                            ReceivingId = 59,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 210,
-                            CBM = "1.98",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 29),
-                            PalletId = 484,
-                            ProductId = 91,
-                            Quantity = 6,
-                            ReceivingId = 59,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 211,
-                            CBM = "1.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 29),
-                            PalletId = 485,
-                            ProductId = 90,
-                            Quantity = 6,
-                            ReceivingId = 60,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 212,
-                            CBM = "8.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 5, 29),
-                            PalletId = 486,
-                            ProductId = 92,
-                            Quantity = 20,
-                            ReceivingId = 60,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "230"
-                        },
-                        new
-                        {
-                            Id = 232,
-                            CBM = "0.14",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 25),
-                            PalletId = 497,
-                            ProductId = 121,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 233,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 3),
-                            PalletId = 497,
-                            ProductId = 133,
-                            Quantity = 3,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "27"
-                        },
-                        new
-                        {
-                            Id = 234,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 5),
-                            PalletId = 497,
-                            ProductId = 96,
-                            Quantity = 3,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "27"
-                        },
-                        new
-                        {
-                            Id = 235,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 9),
-                            PalletId = 497,
-                            ProductId = 134,
-                            Quantity = 3,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 236,
-                            CBM = "0.31",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 29),
-                            PalletId = 497,
-                            ProductId = 106,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "10"
-                        },
-                        new
-                        {
-                            Id = 237,
-                            CBM = "0.43",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 27),
-                            PalletId = 497,
-                            ProductId = 118,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 238,
-                            CBM = "0.7",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 30),
-                            PalletId = 497,
-                            ProductId = 136,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 239,
-                            CBM = "0.31",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 7),
-                            PalletId = 497,
-                            ProductId = 137,
-                            Quantity = 4,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "8"
-                        },
-                        new
-                        {
-                            Id = 240,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 28),
-                            PalletId = 497,
-                            ProductId = 138,
-                            Quantity = 5,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "5"
-                        },
-                        new
-                        {
-                            Id = 241,
-                            CBM = "0.08",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 2),
-                            PalletId = 497,
-                            ProductId = 140,
-                            Quantity = 3,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "3"
-                        },
-                        new
-                        {
-                            Id = 242,
-                            CBM = "0.42",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 27),
-                            PalletId = 497,
-                            ProductId = 119,
-                            Quantity = 8,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 243,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 30),
-                            PalletId = 497,
-                            ProductId = 104,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "130"
-                        },
-                        new
-                        {
-                            Id = 244,
-                            CBM = "1.18",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 27),
-                            PalletId = 497,
-                            ProductId = 128,
-                            Quantity = 25,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "400"
-                        },
-                        new
-                        {
-                            Id = 245,
-                            CBM = "0.36",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 14),
-                            PalletId = 498,
-                            ProductId = 93,
-                            Quantity = 20,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "220"
-                        },
-                        new
-                        {
-                            Id = 246,
-                            CBM = "0.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 30),
-                            PalletId = 498,
-                            ProductId = 105,
-                            Quantity = 5,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 247,
-                            CBM = "0.55",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 1, 17),
-                            PalletId = 498,
-                            ProductId = 127,
-                            Quantity = 10,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "140"
-                        },
-                        new
-                        {
-                            Id = 248,
-                            CBM = "0.36",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 8),
-                            PalletId = 499,
-                            ProductId = 123,
-                            Quantity = 13,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "156"
-                        },
-                        new
-                        {
-                            Id = 249,
-                            CBM = "0.84",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 3),
-                            PalletId = 499,
-                            ProductId = 107,
-                            Quantity = 30,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "480"
-                        },
-                        new
-                        {
-                            Id = 250,
-                            CBM = "1.26",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 500,
-                            ProductId = 97,
-                            Quantity = 50,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1000"
-                        },
-                        new
-                        {
-                            Id = 251,
-                            CBM = "1.26",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 501,
-                            ProductId = 97,
-                            Quantity = 50,
-                            ReceivingId = 62,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1000"
-                        },
-                        new
-                        {
-                            Id = 252,
-                            CBM = "0.94",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 4),
-                            PalletId = 520,
-                            ProductId = 100,
-                            Quantity = 50,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "950"
-                        },
-                        new
-                        {
-                            Id = 253,
-                            CBM = "0.78",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 5),
-                            PalletId = 521,
-                            ProductId = 99,
-                            Quantity = 50,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "750"
-                        },
-                        new
-                        {
-                            Id = 254,
-                            CBM = "1.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 2),
-                            PalletId = 522,
-                            ProductId = 101,
-                            Quantity = 50,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "800"
-                        },
-                        new
-                        {
-                            Id = 255,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 5),
-                            PalletId = 523,
-                            ProductId = 139,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "5"
-                        },
-                        new
-                        {
-                            Id = 256,
-                            CBM = "0.08",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 8),
-                            PalletId = 523,
-                            ProductId = 123,
-                            Quantity = 3,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "36"
-                        },
-                        new
-                        {
-                            Id = 257,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 16),
-                            PalletId = 523,
-                            ProductId = 126,
-                            Quantity = 2,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "26"
-                        },
-                        new
-                        {
-                            Id = 258,
-                            CBM = "0.17",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 8),
-                            PalletId = 523,
-                            ProductId = 95,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "45"
-                        },
-                        new
-                        {
-                            Id = 259,
-                            CBM = "0.32",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 9, 20),
-                            PalletId = 523,
-                            ProductId = 98,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "70"
-                        },
-                        new
-                        {
-                            Id = 260,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 9),
-                            PalletId = 523,
-                            ProductId = 102,
-                            Quantity = 3,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "27"
-                        },
-                        new
-                        {
-                            Id = 261,
-                            CBM = "0.25",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 9),
-                            PalletId = 524,
-                            ProductId = 129,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 262,
-                            CBM = "0.25",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 11),
-                            PalletId = 524,
-                            ProductId = 129,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 263,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 23),
-                            PalletId = 524,
-                            ProductId = 77,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 264,
-                            CBM = "0.79",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 524,
-                            ProductId = 111,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 265,
-                            CBM = "0.02",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2029, 3, 19),
-                            PalletId = 524,
-                            ProductId = 117,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "10"
-                        },
-                        new
-                        {
-                            Id = 266,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 15),
-                            PalletId = 524,
-                            ProductId = 76,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 267,
-                            CBM = "0.21",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 30),
-                            PalletId = 524,
-                            ProductId = 109,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 268,
-                            CBM = "0.09",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 31),
-                            PalletId = 524,
-                            ProductId = 115,
-                            Quantity = 3,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "27"
-                        },
-                        new
-                        {
-                            Id = 269,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 19),
-                            PalletId = 524,
-                            ProductId = 113,
-                            Quantity = 2,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "8"
-                        },
-                        new
-                        {
-                            Id = 270,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 9, 26),
-                            PalletId = 524,
-                            ProductId = 114,
-                            Quantity = 3,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 271,
-                            CBM = "0.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 27),
-                            PalletId = 524,
-                            ProductId = 108,
-                            Quantity = 20,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "320"
-                        },
-                        new
-                        {
-                            Id = 272,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 18),
-                            PalletId = 525,
-                            ProductId = 132,
-                            Quantity = 2,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "32"
-                        },
-                        new
-                        {
-                            Id = 273,
-                            CBM = "0.02",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 3),
-                            PalletId = 525,
-                            ProductId = 122,
-                            Quantity = 2,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "13"
-                        },
-                        new
-                        {
-                            Id = 274,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 8, 23),
-                            PalletId = 525,
-                            ProductId = 125,
-                            Quantity = 5,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 275,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 15),
-                            PalletId = 525,
-                            ProductId = 103,
-                            Quantity = 2,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 276,
-                            CBM = "0.52",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 26),
-                            PalletId = 525,
-                            ProductId = 120,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 277,
-                            CBM = "0.25",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 28),
-                            PalletId = 525,
-                            ProductId = 130,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 278,
-                            CBM = "0.54",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 25),
-                            PalletId = 525,
-                            ProductId = 12,
-                            Quantity = 10,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "35"
-                        },
-                        new
-                        {
-                            Id = 279,
-                            CBM = "0.54",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 22),
-                            PalletId = 525,
-                            ProductId = 112,
-                            Quantity = 15,
-                            ReceivingId = 63,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "120"
-                        },
-                        new
-                        {
-                            Id = 280,
-                            CBM = "0.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 530,
-                            ProductId = 141,
-                            Quantity = 15,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "405"
-                        },
-                        new
-                        {
-                            Id = 281,
-                            CBM = "0.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 530,
-                            ProductId = 150,
-                            Quantity = 5,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 282,
-                            CBM = "0.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 530,
-                            ProductId = 151,
-                            Quantity = 5,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 283,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 6),
-                            PalletId = 530,
-                            ProductId = 145,
-                            Quantity = 2,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 284,
-                            CBM = "0.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 531,
-                            ProductId = 142,
-                            Quantity = 15,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "405"
-                        },
-                        new
-                        {
-                            Id = 285,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 531,
-                            ProductId = 147,
-                            Quantity = 3,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "42"
-                        },
-                        new
-                        {
-                            Id = 286,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 531,
-                            ProductId = 148,
-                            Quantity = 3,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "39"
-                        },
-                        new
-                        {
-                            Id = 287,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 531,
-                            ProductId = 146,
-                            Quantity = 5,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 288,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 531,
-                            ProductId = 149,
-                            Quantity = 5,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 289,
-                            CBM = "0.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 532,
-                            ProductId = 143,
-                            Quantity = 15,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "405"
-                        },
-                        new
-                        {
-                            Id = 290,
-                            CBM = "1.22",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 533,
-                            ProductId = 144,
-                            Quantity = 25,
-                            ReceivingId = 64,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "675"
-                        },
-                        new
-                        {
-                            Id = 291,
-                            CBM = "1.65",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 12),
-                            PalletId = 534,
-                            ProductId = 152,
-                            Quantity = 53,
-                            ReceivingId = 65,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1060"
-                        },
-                        new
-                        {
-                            Id = 292,
-                            CBM = "1.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 12),
-                            PalletId = 535,
-                            ProductId = 152,
-                            Quantity = 34,
-                            ReceivingId = 65,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "680"
-                        },
-                        new
-                        {
-                            Id = 293,
-                            CBM = "0.56",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 11),
-                            PalletId = 535,
-                            ProductId = 153,
-                            Quantity = 18,
-                            ReceivingId = 65,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "360"
-                        },
-                        new
-                        {
-                            Id = 294,
-                            CBM = "1.62",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 11),
-                            PalletId = 536,
-                            ProductId = 153,
-                            Quantity = 52,
-                            ReceivingId = 65,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "1040"
-                        },
-                        new
-                        {
-                            Id = 295,
-                            CBM = "0.73",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 1, 29),
-                            PalletId = 542,
-                            ProductId = 165,
-                            Quantity = 15,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "90"
-                        },
-                        new
-                        {
-                            Id = 296,
-                            CBM = "0.47",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 4, 26),
-                            PalletId = 542,
-                            ProductId = 128,
-                            Quantity = 10,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "160"
-                        },
-                        new
-                        {
-                            Id = 297,
-                            CBM = "0.14",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 26),
-                            PalletId = 542,
-                            ProductId = 103,
-                            Quantity = 6,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "48"
-                        },
-                        new
-                        {
-                            Id = 298,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 5),
-                            PalletId = 542,
-                            ProductId = 167,
-                            Quantity = 3,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "33"
-                        },
-                        new
-                        {
-                            Id = 299,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 6, 4),
-                            PalletId = 542,
-                            ProductId = 171,
-                            Quantity = 3,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "37.5"
-                        },
-                        new
-                        {
-                            Id = 300,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 9),
-                            PalletId = 542,
-                            ProductId = 102,
-                            Quantity = 5,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "45"
-                        },
-                        new
-                        {
-                            Id = 301,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 4, 13),
-                            PalletId = 542,
-                            ProductId = 158,
-                            Quantity = 6,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "36"
-                        },
-                        new
-                        {
-                            Id = 302,
-                            CBM = "0.09",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 13),
-                            PalletId = 542,
-                            ProductId = 155,
-                            Quantity = 4,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "48"
-                        },
-                        new
-                        {
-                            Id = 303,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 4, 3),
-                            PalletId = 542,
-                            ProductId = 168,
-                            Quantity = 2,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 304,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 1),
-                            PalletId = 542,
-                            ProductId = 166,
-                            Quantity = 5,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "75"
-                        },
-                        new
-                        {
-                            Id = 305,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 25),
-                            PalletId = 543,
-                            ProductId = 134,
-                            Quantity = 6,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 306,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 17),
-                            PalletId = 543,
-                            ProductId = 130,
-                            Quantity = 5,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 307,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 18),
-                            PalletId = 543,
-                            ProductId = 131,
-                            Quantity = 5,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 308,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 19),
-                            PalletId = 543,
-                            ProductId = 129,
-                            Quantity = 5,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "25"
-                        },
-                        new
-                        {
-                            Id = 309,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 9),
-                            PalletId = 543,
-                            ProductId = 169,
-                            Quantity = 1,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 310,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 10, 11),
-                            PalletId = 543,
-                            ProductId = 161,
-                            Quantity = 1,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 311,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 10, 24),
-                            PalletId = 543,
-                            ProductId = 154,
-                            Quantity = 1,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 312,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 28),
-                            PalletId = 543,
-                            ProductId = 170,
-                            Quantity = 1,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "7"
-                        },
-                        new
-                        {
-                            Id = 313,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 6),
-                            PalletId = 543,
-                            ProductId = 160,
-                            Quantity = 2,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "14"
-                        },
-                        new
-                        {
-                            Id = 314,
-                            CBM = "0.89",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 544,
-                            ProductId = 97,
-                            Quantity = 35,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "700"
-                        },
-                        new
-                        {
-                            Id = 315,
-                            CBM = "0.36",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 21),
-                            PalletId = 545,
-                            ProductId = 159,
-                            Quantity = 15,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "285"
-                        },
-                        new
-                        {
-                            Id = 316,
-                            CBM = "0.24",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 12),
-                            PalletId = 545,
-                            ProductId = 162,
-                            Quantity = 10,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "190"
-                        },
-                        new
-                        {
-                            Id = 317,
-                            CBM = "0.24",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 19),
-                            PalletId = 545,
-                            ProductId = 156,
-                            Quantity = 10,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "190"
-                        },
-                        new
-                        {
-                            Id = 318,
-                            CBM = "0.2",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 11),
-                            PalletId = 546,
-                            ProductId = 157,
-                            Quantity = 10,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "190"
-                        },
-                        new
-                        {
-                            Id = 319,
-                            CBM = "0.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 11),
-                            PalletId = 546,
-                            ProductId = 164,
-                            Quantity = 15,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "180"
-                        },
-                        new
-                        {
-                            Id = 320,
-                            CBM = "0.17",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 18),
-                            PalletId = 546,
-                            ProductId = 163,
-                            Quantity = 15,
-                            ReceivingId = 66,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "135"
-                        },
-                        new
-                        {
-                            Id = 321,
-                            CBM = "0.27",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 17),
-                            PalletId = 547,
-                            ProductId = 174,
-                            Quantity = 50,
-                            ReceivingId = 67,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 322,
-                            CBM = "0.27",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 16),
-                            PalletId = 547,
-                            ProductId = 172,
-                            Quantity = 50,
-                            ReceivingId = 67,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 323,
-                            CBM = "0.27",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 18),
-                            PalletId = 547,
-                            ProductId = 175,
-                            Quantity = 50,
-                            ReceivingId = 67,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 324,
-                            CBM = "0.27",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 19),
-                            PalletId = 547,
-                            ProductId = 173,
-                            Quantity = 50,
-                            ReceivingId = 67,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 325,
-                            CBM = "0.09",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 4, 28),
-                            PalletId = 548,
-                            ProductId = 176,
-                            Quantity = 5,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 326,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 28),
-                            PalletId = 548,
-                            ProductId = 177,
-                            Quantity = 3,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "57"
-                        },
-                        new
-                        {
-                            Id = 327,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 16),
-                            PalletId = 548,
-                            ProductId = 178,
-                            Quantity = 2,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "8"
-                        },
-                        new
-                        {
-                            Id = 328,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 6, 28),
-                            PalletId = 548,
-                            ProductId = 179,
-                            Quantity = 2,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 329,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 2),
-                            PalletId = 548,
-                            ProductId = 181,
-                            Quantity = 4,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 330,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 28),
-                            PalletId = 548,
-                            ProductId = 182,
-                            Quantity = 3,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 331,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 11, 26),
-                            PalletId = 548,
-                            ProductId = 183,
-                            Quantity = 1,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 332,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 27),
-                            PalletId = 548,
-                            ProductId = 184,
-                            Quantity = 1,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 333,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 1, 21),
-                            PalletId = 548,
-                            ProductId = 185,
-                            Quantity = 2,
-                            ReceivingId = 68,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 334,
-                            CBM = "0.09",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 4, 28),
-                            PalletId = 548,
-                            ProductId = 176,
-                            Quantity = 5,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "100"
-                        },
-                        new
-                        {
-                            Id = 335,
-                            CBM = "0.05",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 28),
-                            PalletId = 548,
-                            ProductId = 177,
-                            Quantity = 3,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "57"
-                        },
-                        new
-                        {
-                            Id = 336,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 16),
-                            PalletId = 548,
-                            ProductId = 178,
-                            Quantity = 2,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "8"
-                        },
-                        new
-                        {
-                            Id = 337,
-                            CBM = "0.03",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 6, 28),
-                            PalletId = 548,
-                            ProductId = 179,
-                            Quantity = 2,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 338,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 3, 2),
-                            PalletId = 548,
-                            ProductId = 181,
-                            Quantity = 4,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 339,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 5, 28),
-                            PalletId = 548,
-                            ProductId = 182,
-                            Quantity = 3,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 340,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 11, 26),
-                            PalletId = 548,
-                            ProductId = 183,
-                            Quantity = 1,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 341,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 27),
-                            PalletId = 548,
-                            ProductId = 184,
-                            Quantity = 1,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 342,
-                            CBM = "0.01",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 1, 21),
-                            PalletId = 548,
-                            ProductId = 185,
-                            Quantity = 2,
-                            ReceivingId = 69,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "2"
-                        },
-                        new
-                        {
-                            Id = 343,
-                            CBM = "0.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 549,
-                            ProductId = 186,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 344,
-                            CBM = "0.51",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 549,
-                            ProductId = 187,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 345,
-                            CBM = "0.42",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 11, 24),
-                            PalletId = 549,
-                            ProductId = 188,
-                            Quantity = 5,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "15"
-                        },
-                        new
-                        {
-                            Id = 346,
-                            CBM = "0.18",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 28),
-                            PalletId = 549,
-                            ProductId = 189,
-                            Quantity = 8,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 347,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 28),
-                            PalletId = 549,
-                            ProductId = 190,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 348,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 28),
-                            PalletId = 549,
-                            ProductId = 191,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 349,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 28),
-                            PalletId = 549,
-                            ProductId = 192,
-                            Quantity = 5,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 350,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 11),
-                            PalletId = 549,
-                            ProductId = 193,
-                            Quantity = 5,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 351,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 11, 28),
-                            PalletId = 549,
-                            ProductId = 194,
-                            Quantity = 5,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 352,
-                            CBM = "0.02",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 549,
-                            ProductId = 204,
-                            Quantity = 1,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "3"
-                        },
-                        new
-                        {
-                            Id = 353,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 550,
-                            ProductId = 195,
-                            Quantity = 8,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 354,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 550,
-                            ProductId = 196,
-                            Quantity = 8,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 355,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 550,
-                            ProductId = 197,
-                            Quantity = 8,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 356,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 550,
-                            ProductId = 198,
-                            Quantity = 8,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 357,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 550,
-                            ProductId = 199,
-                            Quantity = 5,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "10"
-                        },
-                        new
-                        {
-                            Id = 358,
-                            CBM = "0.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 550,
-                            ProductId = 201,
-                            Quantity = 3,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 359,
-                            CBM = "0.15",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 550,
-                            ProductId = 202,
-                            Quantity = 3,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 360,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 550,
-                            ProductId = 203,
-                            Quantity = 2,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "6"
-                        },
-                        new
-                        {
-                            Id = 361,
-                            CBM = "0.59",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 5),
-                            PalletId = 550,
-                            ProductId = 205,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 362,
-                            CBM = "0.36",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 6, 11),
-                            PalletId = 550,
-                            ProductId = 206,
-                            Quantity = 6,
-                            ReceivingId = 70,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 363,
-                            CBM = "0.61",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 551,
-                            ProductId = 208,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 364,
-                            CBM = "0.46",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 551,
-                            ProductId = 209,
-                            Quantity = 6,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "0"
-                        },
-                        new
-                        {
-                            Id = 365,
-                            CBM = "0.57",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 551,
-                            ProductId = 210,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 366,
-                            CBM = "0.57",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 551,
-                            ProductId = 211,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 367,
-                            CBM = "0.32",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 551,
-                            ProductId = 212,
-                            Quantity = 6,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "18"
-                        },
-                        new
-                        {
-                            Id = 368,
-                            CBM = "0.42",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 18),
-                            PalletId = 551,
-                            ProductId = 213,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 369,
-                            CBM = "0.42",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 24),
-                            PalletId = 551,
-                            ProductId = 214,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 370,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 30),
-                            PalletId = 552,
-                            ProductId = 215,
-                            Quantity = 3,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 371,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 25),
-                            PalletId = 552,
-                            ProductId = 216,
-                            Quantity = 3,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 372,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 13),
-                            PalletId = 552,
-                            ProductId = 217,
-                            Quantity = 3,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 373,
-                            CBM = "0.4",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 21),
-                            PalletId = 552,
-                            ProductId = 218,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 374,
-                            CBM = "0.4",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 25),
-                            PalletId = 552,
-                            ProductId = 219,
-                            Quantity = 8,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 375,
-                            CBM = "0.23",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 28),
-                            PalletId = 552,
-                            ProductId = 221,
-                            Quantity = 3,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 376,
-                            CBM = "0.23",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 19),
-                            PalletId = 552,
-                            ProductId = 222,
-                            Quantity = 3,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "9"
-                        },
-                        new
-                        {
-                            Id = 377,
-                            CBM = "0.46",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 26),
-                            PalletId = 552,
-                            ProductId = 224,
-                            Quantity = 6,
-                            ReceivingId = 71,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "36"
-                        },
-                        new
-                        {
-                            Id = 378,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 28),
-                            PalletId = 553,
-                            ProductId = 226,
-                            Quantity = 6,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 379,
-                            CBM = "0.18",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 28),
-                            PalletId = 553,
-                            ProductId = 227,
-                            Quantity = 8,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 380,
-                            CBM = "0.13",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 28),
-                            PalletId = 553,
-                            ProductId = 228,
-                            Quantity = 6,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "12"
-                        },
-                        new
-                        {
-                            Id = 381,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 5),
-                            PalletId = 553,
-                            ProductId = 230,
-                            Quantity = 6,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 382,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 28),
-                            PalletId = 553,
-                            ProductId = 231,
-                            Quantity = 6,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "24"
-                        },
-                        new
-                        {
-                            Id = 383,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 6),
-                            PalletId = 553,
-                            ProductId = 229,
-                            Quantity = 4,
-                            ReceivingId = 72,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 384,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2027, 2, 1),
-                            PalletId = 554,
-                            ProductId = 233,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "60"
-                        },
-                        new
-                        {
-                            Id = 385,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 1),
-                            PalletId = 554,
-                            ProductId = 234,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "60"
-                        },
-                        new
-                        {
-                            Id = 386,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 31),
-                            PalletId = 554,
-                            ProductId = 235,
-                            Quantity = 3,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "48"
-                        },
-                        new
-                        {
-                            Id = 387,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 31),
-                            PalletId = 554,
-                            ProductId = 236,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "80"
-                        },
-                        new
-                        {
-                            Id = 388,
-                            CBM = "0.12",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 2),
-                            PalletId = 554,
-                            ProductId = 237,
-                            Quantity = 6,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "96"
-                        },
-                        new
-                        {
-                            Id = 389,
-                            CBM = "0.06",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 2),
-                            PalletId = 554,
-                            ProductId = 238,
-                            Quantity = 3,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "48"
-                        },
-                        new
-                        {
-                            Id = 390,
-                            CBM = "0.1",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 30),
-                            PalletId = 554,
-                            ProductId = 240,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "80"
-                        },
-                        new
-                        {
-                            Id = 391,
-                            CBM = "0.2",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 29),
-                            PalletId = 554,
-                            ProductId = 242,
-                            Quantity = 10,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "160"
-                        },
-                        new
-                        {
-                            Id = 392,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 17),
-                            PalletId = 554,
-                            ProductId = 243,
-                            Quantity = 3,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 393,
-                            CBM = "0.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 25),
-                            PalletId = 554,
-                            ProductId = 244,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 394,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 3),
-                            PalletId = 554,
-                            ProductId = 245,
-                            Quantity = 3,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 395,
-                            CBM = "0.3",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 17),
-                            PalletId = 554,
-                            ProductId = 246,
-                            Quantity = 15,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "240"
-                        },
-                        new
-                        {
-                            Id = 396,
-                            CBM = "0.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 3),
-                            PalletId = 554,
-                            ProductId = 247,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 397,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 3),
-                            PalletId = 554,
-                            ProductId = 248,
-                            Quantity = 3,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "30"
-                        },
-                        new
-                        {
-                            Id = 398,
-                            CBM = "0.07",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 2, 2),
-                            PalletId = 554,
-                            ProductId = 249,
-                            Quantity = 5,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "50"
-                        },
-                        new
-                        {
-                            Id = 399,
-                            CBM = "0.14",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 3, 3),
-                            PalletId = 554,
-                            ProductId = 250,
-                            Quantity = 10,
-                            ReceivingId = 73,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "140"
-                        },
-                        new
-                        {
-                            Id = 400,
-                            CBM = "0.37",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 11),
-                            PalletId = 555,
-                            ProductId = 251,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 401,
-                            CBM = "0.37",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 11),
-                            PalletId = 555,
-                            ProductId = 252,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 402,
-                            CBM = "0.37",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 9, 11),
-                            PalletId = 555,
-                            ProductId = 253,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 403,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 10, 31),
-                            PalletId = 555,
-                            ProductId = 255,
-                            Quantity = 1,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 404,
-                            CBM = "0.04",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 1),
-                            PalletId = 555,
-                            ProductId = 256,
-                            Quantity = 1,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "16"
-                        },
-                        new
-                        {
-                            Id = 405,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 11, 18),
-                            PalletId = 555,
-                            ProductId = 260,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 406,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 19),
-                            PalletId = 555,
-                            ProductId = 259,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 407,
-                            CBM = "0.16",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 20),
-                            PalletId = 555,
-                            ProductId = 258,
-                            Quantity = 5,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "40"
-                        },
-                        new
-                        {
-                            Id = 408,
-                            CBM = "0.11",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2025, 12, 31),
-                            PalletId = 555,
-                            ProductId = 257,
-                            Quantity = 2,
-                            ReceivingId = 74,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "20"
-                        },
-                        new
-                        {
-                            Id = 409,
-                            CBM = "0.84",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 25),
-                            PalletId = 556,
-                            ProductId = 261,
-                            Quantity = 50,
-                            ReceivingId = 75,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "525"
-                        },
-                        new
-                        {
-                            Id = 410,
-                            CBM = "0.47",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 25),
-                            PalletId = 557,
-                            ProductId = 261,
-                            Quantity = 28,
-                            ReceivingId = 75,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "294"
-                        },
-                        new
-                        {
-                            Id = 411,
-                            CBM = "0.84",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 7),
-                            PalletId = 558,
-                            ProductId = 262,
-                            Quantity = 50,
-                            ReceivingId = 75,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "525"
-                        },
-                        new
-                        {
-                            Id = 412,
-                            CBM = "0.85",
-                            ContainerName = "",
-                            ExpirationDate = new DateOnly(2026, 1, 20),
-                            PalletId = 559,
-                            ProductId = 263,
-                            Quantity = 51,
-                            ReceivingId = 75,
-                            Remarks = "GOOD CONDITION",
-                            TotalWeight = "535.5"
-                        });
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Receiving", b =>
@@ -12996,6 +8592,43 @@ namespace WMS.Api.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.ReceivingException", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovedBy")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeliveryReceiptReference")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ReceivedProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivedProductId")
+                        .IsUnique();
+
+                    b.ToTable("ReceivingException");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Reporting.ReportJob", b =>
                 {
                     b.Property<int>("Id")
@@ -13373,6 +9006,17 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("Pallet");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.ExceptionPhoto", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.ReceivingException", "ReceivingException")
+                        .WithMany("Photos")
+                        .HasForeignKey("ReceivingExceptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReceivingException");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Incoming", b =>
                 {
                     b.HasOne("WMS.Api.Entities.Warehouse", "Warehouse")
@@ -13414,6 +9058,111 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.LoadingEvidence", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.LoadingPlan", "LoadingPlan")
+                        .WithMany("Evidence")
+                        .HasForeignKey("LoadingPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LoadingPlan");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingException", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.LoadingPlan", "LoadingPlan")
+                        .WithMany("Exceptions")
+                        .HasForeignKey("LoadingPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.LoadingPlanLine", "LoadingPlanLine")
+                        .WithMany()
+                        .HasForeignKey("LoadingPlanLineId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.Pallet", "Pallet")
+                        .WithMany()
+                        .HasForeignKey("PalletId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("LoadingPlan");
+
+                    b.Navigation("LoadingPlanLine");
+
+                    b.Navigation("Pallet");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPalletVerification", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.LoadingPlan", "LoadingPlan")
+                        .WithMany("PalletVerifications")
+                        .HasForeignKey("LoadingPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.Pallet", "Pallet")
+                        .WithMany()
+                        .HasForeignKey("PalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LoadingPlan");
+
+                    b.Navigation("Pallet");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPlan", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPlanLine", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.LoadingPlan", "LoadingPlan")
+                        .WithMany("Lines")
+                        .HasForeignKey("LoadingPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.Pallet", "OriginalPallet")
+                        .WithMany()
+                        .HasForeignKey("OriginalPalletId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.OutboundStage", "OutboundStage")
+                        .WithMany()
+                        .HasForeignKey("OutboundStageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.OutboundStageLine", "OutboundStageLine")
+                        .WithMany()
+                        .HasForeignKey("OutboundStageLineId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.PickedProduct", "PickedProduct")
+                        .WithMany()
+                        .HasForeignKey("PickedProductId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("LoadingPlan");
+
+                    b.Navigation("OriginalPallet");
+
+                    b.Navigation("OutboundStage");
+
+                    b.Navigation("OutboundStageLine");
+
+                    b.Navigation("PickedProduct");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.ManualPicking", b =>
                 {
                     b.HasOne("WMS.Api.Entities.Bin", "Bin")
@@ -13437,6 +9186,123 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("CheckIn");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStage", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.ManualPicking", "ManualPicking")
+                        .WithMany("OutboundStages")
+                        .HasForeignKey("ManualPickingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.Bin", "StagingBin")
+                        .WithMany()
+                        .HasForeignKey("StagingBinId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ManualPicking");
+
+                    b.Navigation("StagingBin");
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageCancellation", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.OutboundStage", "OutboundStage")
+                        .WithMany("Cancellations")
+                        .HasForeignKey("OutboundStageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OutboundStage");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageCancellationLine", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.Bin", "OriginalBin")
+                        .WithMany()
+                        .HasForeignKey("OriginalBinId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.OutboundStageCancellation", "OutboundStageCancellation")
+                        .WithMany("Lines")
+                        .HasForeignKey("OutboundStageCancellationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.OutboundStageLine", "OutboundStageLine")
+                        .WithMany()
+                        .HasForeignKey("OutboundStageLineId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.Bin", "ReturnBin")
+                        .WithMany()
+                        .HasForeignKey("ReturnBinId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("OriginalBin");
+
+                    b.Navigation("OutboundStageCancellation");
+
+                    b.Navigation("OutboundStageLine");
+
+                    b.Navigation("ReturnBin");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageLine", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.Bin", "OriginalBin")
+                        .WithMany()
+                        .HasForeignKey("OriginalBinId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("WMS.Api.Entities.Pallet", "OriginalPallet")
+                        .WithMany()
+                        .HasForeignKey("OriginalPalletId");
+
+                    b.HasOne("WMS.Api.Entities.OutboundStage", "OutboundStage")
+                        .WithMany("Lines")
+                        .HasForeignKey("OutboundStageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.PickedProduct", "PickedProduct")
+                        .WithMany()
+                        .HasForeignKey("PickedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.ReceivedProduct", "ReceivedProduct")
+                        .WithMany()
+                        .HasForeignKey("ReceivedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WMS.Api.Entities.Bin", "StagingBin")
+                        .WithMany()
+                        .HasForeignKey("StagingBinId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("OriginalBin");
+
+                    b.Navigation("OriginalPallet");
+
+                    b.Navigation("OutboundStage");
+
+                    b.Navigation("PickedProduct");
+
+                    b.Navigation("ReceivedProduct");
+
+                    b.Navigation("StagingBin");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Pallet", b =>
@@ -13511,7 +9377,8 @@ namespace WMS.Api.Data.Migrations
                 {
                     b.HasOne("WMS.Api.Entities.IncomingProduct", "IncomingProduct")
                         .WithMany()
-                        .HasForeignKey("IncomingProductId");
+                        .HasForeignKey("IncomingProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WMS.Api.Entities.Pallet", "Pallet")
                         .WithMany("ReceivedProducts")
@@ -13542,7 +9409,8 @@ namespace WMS.Api.Data.Migrations
                 {
                     b.HasOne("WMS.Api.Entities.Incoming", "Incoming")
                         .WithMany()
-                        .HasForeignKey("IncomingId");
+                        .HasForeignKey("IncomingId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WMS.Api.Entities.Warehouse", "Warehouse")
                         .WithMany("Receivings")
@@ -13553,6 +9421,17 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("Incoming");
 
                     b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.ReceivingException", b =>
+                {
+                    b.HasOne("WMS.Api.Entities.ReceivedProduct", "ReceivedProduct")
+                        .WithOne("ExceptionRecord")
+                        .HasForeignKey("WMS.Api.Entities.ReceivingException", "ReceivedProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReceivedProduct");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Reporting.ReportJob", b =>
@@ -13610,9 +9489,34 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.LoadingPlan", b =>
+                {
+                    b.Navigation("Evidence");
+
+                    b.Navigation("Exceptions");
+
+                    b.Navigation("Lines");
+
+                    b.Navigation("PalletVerifications");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.ManualPicking", b =>
                 {
+                    b.Navigation("OutboundStages");
+
                     b.Navigation("PickedProducts");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStage", b =>
+                {
+                    b.Navigation("Cancellations");
+
+                    b.Navigation("Lines");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.OutboundStageCancellation", b =>
+                {
+                    b.Navigation("Lines");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Pallet", b =>
@@ -13627,9 +9531,19 @@ namespace WMS.Api.Data.Migrations
                     b.Navigation("RackFloorMapObject");
                 });
 
+            modelBuilder.Entity("WMS.Api.Entities.ReceivedProduct", b =>
+                {
+                    b.Navigation("ExceptionRecord");
+                });
+
             modelBuilder.Entity("WMS.Api.Entities.Receiving", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("WMS.Api.Entities.ReceivingException", b =>
+                {
+                    b.Navigation("Photos");
                 });
 
             modelBuilder.Entity("WMS.Api.Entities.Warehouse", b =>
