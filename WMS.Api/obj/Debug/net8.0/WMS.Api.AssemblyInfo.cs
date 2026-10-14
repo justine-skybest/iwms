@@ -13,11 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WMS.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a7b280159c0047314afffb8cb5fbd30887ad096")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+007de345ffade00b97a52855df3ea1d1cc23d154")]
->>>>>>> effb4dc6774283e947af331eaf5ca240ef8ebae5
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82b0addd5433bb5676fce3d64a4468099b211959")]
 [assembly: System.Reflection.AssemblyProductAttribute("WMS.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WMS.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
