@@ -4508,7 +4508,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 1,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6181),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2397),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2397),
 >>>>>>> Stashed changes
@@ -4525,7 +4529,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 2,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6182),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2398),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2398),
 >>>>>>> Stashed changes
@@ -4542,7 +4550,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 3,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6183),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2399),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2399),
 >>>>>>> Stashed changes
@@ -4559,7 +4571,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 4,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6184),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2400),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2400),
 >>>>>>> Stashed changes
@@ -4576,7 +4592,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 5,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6185),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
 >>>>>>> Stashed changes
@@ -4593,7 +4613,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 6,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6186),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
 >>>>>>> Stashed changes
@@ -4610,7 +4634,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 7,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6186),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2402),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2402),
 >>>>>>> Stashed changes
@@ -4627,7 +4655,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 8,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6187),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2403),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2403),
 >>>>>>> Stashed changes
@@ -4644,7 +4676,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 9,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6190),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
 >>>>>>> Stashed changes
@@ -4661,7 +4697,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 10,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6190),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
 >>>>>>> Stashed changes
@@ -4678,7 +4718,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 11,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6191),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2406),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2406),
 >>>>>>> Stashed changes
@@ -4695,7 +4739,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 12,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6192),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
 >>>>>>> Stashed changes
@@ -4712,7 +4760,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 13,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6192),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
 >>>>>>> Stashed changes
@@ -4729,7 +4781,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 14,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6193),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2439),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2439),
 >>>>>>> Stashed changes
@@ -4746,7 +4802,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 15,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6194),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
 >>>>>>> Stashed changes
@@ -4763,7 +4823,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 16,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6195),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
 >>>>>>> Stashed changes
@@ -4780,7 +4844,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 17,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6195),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2441),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2441),
 >>>>>>> Stashed changes
@@ -4797,7 +4865,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 18,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6196),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
 >>>>>>> Stashed changes
@@ -4814,7 +4886,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 19,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6197),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
 >>>>>>> Stashed changes
@@ -4831,7 +4907,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 20,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6198),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2443),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2443),
 >>>>>>> Stashed changes
@@ -4848,7 +4928,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 21,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6198),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2444),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2444),
 >>>>>>> Stashed changes
@@ -4865,7 +4949,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 22,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6199),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2445),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2445),
 >>>>>>> Stashed changes
@@ -4882,7 +4970,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 23,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6201),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2447),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2447),
 >>>>>>> Stashed changes
@@ -4899,7 +4991,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 24,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6202),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2448),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2448),
 >>>>>>> Stashed changes
@@ -4916,7 +5012,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 25,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6203),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2449),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2449),
 >>>>>>> Stashed changes
@@ -4933,7 +5033,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 26,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6204),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
 >>>>>>> Stashed changes
@@ -4950,7 +5054,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 27,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6204),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
 >>>>>>> Stashed changes
@@ -4967,7 +5075,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 28,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6205),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2454),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2454),
 >>>>>>> Stashed changes
@@ -4984,7 +5096,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 29,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6206),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2455),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2455),
 >>>>>>> Stashed changes
@@ -5001,7 +5117,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 30,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6210),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2458),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2458),
 >>>>>>> Stashed changes
@@ -5018,7 +5138,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 31,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6210),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
 >>>>>>> Stashed changes
@@ -5035,7 +5159,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 32,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6211),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
 >>>>>>> Stashed changes
@@ -5052,7 +5180,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 33,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6212),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2460),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2460),
 >>>>>>> Stashed changes
@@ -5069,7 +5201,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 34,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6212),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
 >>>>>>> Stashed changes
@@ -5086,7 +5222,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 35,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6213),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
 >>>>>>> Stashed changes
@@ -5103,7 +5243,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 36,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6215),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2463),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2463),
 >>>>>>> Stashed changes
@@ -5120,7 +5264,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 37,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6216),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
 >>>>>>> Stashed changes
@@ -5137,7 +5285,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 38,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6216),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
 >>>>>>> Stashed changes
@@ -5154,7 +5306,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 39,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6217),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2466),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2466),
 >>>>>>> Stashed changes
@@ -5171,7 +5327,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 40,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6218),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
 >>>>>>> Stashed changes
@@ -5188,7 +5348,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 41,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6219),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
 >>>>>>> Stashed changes
@@ -5205,7 +5369,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 42,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6219),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2471),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2471),
 >>>>>>> Stashed changes
@@ -5222,7 +5390,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 43,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6220),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
 >>>>>>> Stashed changes
@@ -5239,7 +5411,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 44,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6221),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
 >>>>>>> Stashed changes
@@ -5256,7 +5432,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 45,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6221),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
 >>>>>>> Stashed changes
@@ -5273,7 +5453,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 46,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6222),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
 >>>>>>> Stashed changes
@@ -5290,7 +5474,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 47,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6254),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2474),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2474),
 >>>>>>> Stashed changes
@@ -5307,7 +5495,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 48,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6255),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2475),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2475),
 >>>>>>> Stashed changes
@@ -5324,7 +5516,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 49,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6258),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
 >>>>>>> Stashed changes
@@ -5341,7 +5537,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 50,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6258),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
 >>>>>>> Stashed changes
@@ -5358,7 +5558,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 51,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6259),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
 >>>>>>> Stashed changes
@@ -5375,7 +5579,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 52,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6260),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
 >>>>>>> Stashed changes
@@ -5392,7 +5600,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 53,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6260),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
 >>>>>>> Stashed changes
@@ -5409,7 +5621,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 54,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6261),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
 >>>>>>> Stashed changes
@@ -5426,7 +5642,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 55,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6261),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2481),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2481),
 >>>>>>> Stashed changes
@@ -5443,7 +5663,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 56,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6262),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
 >>>>>>> Stashed changes
@@ -5460,7 +5684,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 57,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6263),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
 >>>>>>> Stashed changes
@@ -5477,7 +5705,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 58,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6264),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
 >>>>>>> Stashed changes
@@ -5494,7 +5726,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 59,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6264),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
 >>>>>>> Stashed changes
@@ -5511,7 +5747,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 60,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6265),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2484),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2484),
 >>>>>>> Stashed changes
@@ -5528,7 +5768,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 61,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6266),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
 >>>>>>> Stashed changes
@@ -5545,7 +5789,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 62,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6266),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
 >>>>>>> Stashed changes
@@ -5562,7 +5810,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 63,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6269),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
 >>>>>>> Stashed changes
@@ -5579,7 +5831,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 64,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6269),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
 >>>>>>> Stashed changes
@@ -5596,7 +5852,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 65,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6270),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
 >>>>>>> Stashed changes
@@ -5613,7 +5873,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 66,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6270),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
 >>>>>>> Stashed changes
@@ -5630,7 +5894,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 67,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6271),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2492),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2492),
 >>>>>>> Stashed changes
@@ -5647,7 +5915,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 68,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6272),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
 >>>>>>> Stashed changes
@@ -5664,7 +5936,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 69,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6272),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
 >>>>>>> Stashed changes
@@ -5681,7 +5957,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 70,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6273),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2494),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2494),
 >>>>>>> Stashed changes
@@ -5698,7 +5978,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 71,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6274),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
 >>>>>>> Stashed changes
@@ -5715,7 +5999,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 72,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6274),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
 >>>>>>> Stashed changes
@@ -5732,7 +6020,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 73,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6275),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
 >>>>>>> Stashed changes
@@ -5749,7 +6041,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 74,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6276),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
 >>>>>>> Stashed changes
@@ -5766,7 +6062,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 75,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6276),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2497),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2497),
 >>>>>>> Stashed changes
@@ -5783,7 +6083,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 76,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6279),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2499),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2499),
 >>>>>>> Stashed changes
@@ -5800,7 +6104,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 77,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6279),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
 >>>>>>> Stashed changes
@@ -5817,7 +6125,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 78,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6280),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
 >>>>>>> Stashed changes
@@ -5834,7 +6146,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 79,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6280),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2501),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2501),
 >>>>>>> Stashed changes
@@ -5851,7 +6167,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 80,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6281),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
 >>>>>>> Stashed changes
@@ -5868,7 +6188,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 81,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6282),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
 >>>>>>> Stashed changes
@@ -5885,7 +6209,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 82,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6283),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
 >>>>>>> Stashed changes
@@ -5902,7 +6230,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 83,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6283),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
 >>>>>>> Stashed changes
@@ -5919,7 +6251,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 84,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6284),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2504),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2504),
 >>>>>>> Stashed changes
@@ -5936,7 +6272,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 85,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6285),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
 >>>>>>> Stashed changes
@@ -5953,7 +6293,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 86,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6285),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
 >>>>>>> Stashed changes
@@ -5970,7 +6314,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 87,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6286),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
 >>>>>>> Stashed changes
@@ -5987,7 +6335,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 88,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6287),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
 >>>>>>> Stashed changes
@@ -6004,7 +6356,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 89,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6287),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2507),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2507),
 >>>>>>> Stashed changes
@@ -6021,7 +6377,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 90,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6290),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2509),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2509),
 >>>>>>> Stashed changes
@@ -6038,7 +6398,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 91,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6290),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2510),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2510),
 >>>>>>> Stashed changes
@@ -6055,7 +6419,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 92,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6291),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
 >>>>>>> Stashed changes
@@ -6072,7 +6440,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 93,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6292),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
 >>>>>>> Stashed changes
@@ -6089,7 +6461,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 94,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6292),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2512),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2512),
 >>>>>>> Stashed changes
@@ -6106,7 +6482,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 95,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6293),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
 >>>>>>> Stashed changes
@@ -6123,7 +6503,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 96,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6294),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
 >>>>>>> Stashed changes
@@ -6140,7 +6524,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 97,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6294),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
 >>>>>>> Stashed changes
@@ -6157,7 +6545,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 98,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6296),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
 >>>>>>> Stashed changes
@@ -6174,7 +6566,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 99,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6296),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2515),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2515),
 >>>>>>> Stashed changes
@@ -6191,7 +6587,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 100,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6297),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
 >>>>>>> Stashed changes
@@ -6208,7 +6608,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 101,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6297),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
 >>>>>>> Stashed changes
@@ -6225,7 +6629,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 102,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6298),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2517),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2517),
 >>>>>>> Stashed changes
@@ -6242,7 +6650,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 103,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6300),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
 >>>>>>> Stashed changes
@@ -6259,7 +6671,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 104,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6301),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
 >>>>>>> Stashed changes
@@ -6276,7 +6692,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 105,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6301),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2520),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2520),
 >>>>>>> Stashed changes
@@ -6293,7 +6713,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 106,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6302),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
 >>>>>>> Stashed changes
@@ -6310,7 +6734,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 107,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6303),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
 >>>>>>> Stashed changes
@@ -6327,7 +6755,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 108,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6303),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
 >>>>>>> Stashed changes
@@ -6344,7 +6776,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 109,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6304),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
 >>>>>>> Stashed changes
@@ -6361,7 +6797,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 110,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6304),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
 >>>>>>> Stashed changes
@@ -6378,7 +6818,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 111,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6305),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
 >>>>>>> Stashed changes
@@ -6395,7 +6839,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 112,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6305),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2524),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2524),
 >>>>>>> Stashed changes
@@ -6412,7 +6860,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 113,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6306),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
 >>>>>>> Stashed changes
@@ -6429,7 +6881,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 114,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6307),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
 >>>>>>> Stashed changes
@@ -6446,7 +6902,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 115,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6308),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2526),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2526),
 >>>>>>> Stashed changes
@@ -6463,7 +6923,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 116,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6308),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
 >>>>>>> Stashed changes
@@ -6480,7 +6944,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 117,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6309),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
 >>>>>>> Stashed changes
@@ -6497,7 +6965,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 118,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6310),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2529),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2529),
 >>>>>>> Stashed changes
@@ -6514,7 +6986,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 119,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6310),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
 >>>>>>> Stashed changes
@@ -6531,7 +7007,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 120,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6311),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
 >>>>>>> Stashed changes
@@ -6548,7 +7028,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 121,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6311),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
 >>>>>>> Stashed changes
@@ -6565,7 +7049,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 122,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6312),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
 >>>>>>> Stashed changes
@@ -6582,7 +7070,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 123,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6313),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2532),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2532),
 >>>>>>> Stashed changes
@@ -6599,7 +7091,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 124,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6313),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
 >>>>>>> Stashed changes
@@ -6616,7 +7112,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 125,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6314),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
 >>>>>>> Stashed changes
@@ -6633,7 +7133,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 126,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6314),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2565),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2565),
 >>>>>>> Stashed changes
@@ -6650,7 +7154,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 127,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6315),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2566),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2566),
 >>>>>>> Stashed changes
@@ -6667,7 +7175,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 128,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6316),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
 >>>>>>> Stashed changes
@@ -6684,7 +7196,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 129,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6316),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
 >>>>>>> Stashed changes
@@ -6701,7 +7217,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 130,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6319),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
 >>>>>>> Stashed changes
@@ -6718,7 +7238,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 131,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6319),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
 >>>>>>> Stashed changes
@@ -6735,7 +7259,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 132,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6320),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
 >>>>>>> Stashed changes
@@ -6752,7 +7280,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 133,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6320),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
 >>>>>>> Stashed changes
@@ -6769,7 +7301,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 134,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6321),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
 >>>>>>> Stashed changes
@@ -6786,7 +7322,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 135,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6321),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
 >>>>>>> Stashed changes
@@ -6803,7 +7343,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 136,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6322),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2573),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2573),
 >>>>>>> Stashed changes
@@ -6820,7 +7364,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 137,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6323),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
 >>>>>>> Stashed changes
@@ -6837,7 +7385,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 138,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6323),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
 >>>>>>> Stashed changes
@@ -6854,7 +7406,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 139,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6324),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
 >>>>>>> Stashed changes
@@ -6871,7 +7427,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 140,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6324),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
 >>>>>>> Stashed changes
@@ -6888,7 +7448,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 141,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6325),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
 >>>>>>> Stashed changes
@@ -6905,7 +7469,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 142,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6326),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
 >>>>>>> Stashed changes
@@ -6922,7 +7490,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 143,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6328),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
 >>>>>>> Stashed changes
@@ -6939,7 +7511,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 144,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6328),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
 >>>>>>> Stashed changes
@@ -6956,7 +7532,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 145,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6329),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
 >>>>>>> Stashed changes
@@ -6973,7 +7553,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 146,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6330),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
 >>>>>>> Stashed changes
@@ -6990,7 +7574,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 147,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6330),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2581),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2581),
 >>>>>>> Stashed changes
@@ -7007,7 +7595,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 148,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6331),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
 >>>>>>> Stashed changes
@@ -7024,7 +7616,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 149,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6331),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
 >>>>>>> Stashed changes
@@ -7041,7 +7637,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 150,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6332),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2583),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2583),
 >>>>>>> Stashed changes
@@ -7058,7 +7658,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 151,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6333),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
 >>>>>>> Stashed changes
@@ -7075,7 +7679,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 152,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6333),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
 >>>>>>> Stashed changes
@@ -7092,7 +7700,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 153,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6334),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2585),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2585),
 >>>>>>> Stashed changes
@@ -7109,7 +7721,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 154,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6334),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
 >>>>>>> Stashed changes
@@ -7126,7 +7742,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 155,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6335),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
 >>>>>>> Stashed changes
@@ -7143,7 +7763,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 156,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6335),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2587),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2587),
 >>>>>>> Stashed changes
@@ -7160,7 +7784,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 157,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6338),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2589),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2589),
 >>>>>>> Stashed changes
@@ -7177,7 +7805,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 158,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6339),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
 >>>>>>> Stashed changes
@@ -7194,7 +7826,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 159,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6339),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
 >>>>>>> Stashed changes
@@ -7211,7 +7847,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 160,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6340),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
 >>>>>>> Stashed changes
@@ -7228,7 +7868,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 161,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6362),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
 >>>>>>> Stashed changes
@@ -7245,7 +7889,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 162,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6364),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2592),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2592),
 >>>>>>> Stashed changes
@@ -7262,7 +7910,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 163,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6364),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
 >>>>>>> Stashed changes
@@ -7279,7 +7931,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 164,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6365),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
 >>>>>>> Stashed changes
@@ -7296,7 +7952,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 165,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6365),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2594),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2594),
 >>>>>>> Stashed changes
@@ -7313,7 +7973,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 166,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6366),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
 >>>>>>> Stashed changes
@@ -7330,7 +7994,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 167,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6367),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
 >>>>>>> Stashed changes
@@ -7347,7 +8015,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 168,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6367),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
 >>>>>>> Stashed changes
@@ -7364,7 +8036,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 169,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6368),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
 >>>>>>> Stashed changes
@@ -7381,7 +8057,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 170,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6370),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2598),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2598),
 >>>>>>> Stashed changes
@@ -7398,7 +8078,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 171,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6371),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2599),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2599),
 >>>>>>> Stashed changes
@@ -7415,7 +8099,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 172,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6372),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2600),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2600),
 >>>>>>> Stashed changes
@@ -7432,7 +8120,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 173,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6372),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
 >>>>>>> Stashed changes
@@ -7449,7 +8141,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 174,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6373),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
 >>>>>>> Stashed changes
@@ -7466,7 +8162,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 175,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6374),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
 >>>>>>> Stashed changes
@@ -7483,7 +8183,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 176,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6374),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
 >>>>>>> Stashed changes
@@ -7500,7 +8204,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 177,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6375),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2603),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2603),
 >>>>>>> Stashed changes
@@ -7517,7 +8225,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 178,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6376),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
 >>>>>>> Stashed changes
@@ -7534,7 +8246,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 179,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6376),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
 >>>>>>> Stashed changes
@@ -7551,7 +8267,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 180,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6377),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
 >>>>>>> Stashed changes
@@ -7568,7 +8288,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 181,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6378),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
 >>>>>>> Stashed changes
@@ -7585,7 +8309,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 182,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6378),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2606),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2606),
 >>>>>>> Stashed changes
@@ -7602,7 +8330,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 183,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6379),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2607),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2607),
 >>>>>>> Stashed changes
@@ -7619,7 +8351,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 184,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6381),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2608),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2608),
 >>>>>>> Stashed changes
@@ -7636,7 +8372,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 185,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6382),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
 >>>>>>> Stashed changes
@@ -7653,7 +8393,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 186,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6382),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
 >>>>>>> Stashed changes
@@ -7670,7 +8414,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 187,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6383),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
 >>>>>>> Stashed changes
@@ -7687,7 +8435,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 188,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6384),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
 >>>>>>> Stashed changes
@@ -7704,7 +8456,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 189,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6384),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2611),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2611),
 >>>>>>> Stashed changes
@@ -7721,7 +8477,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 190,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6385),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
 >>>>>>> Stashed changes
@@ -7738,7 +8498,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 191,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6385),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
 >>>>>>> Stashed changes
@@ -7755,7 +8519,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 192,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6386),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
 >>>>>>> Stashed changes
@@ -7772,7 +8540,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 193,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6388),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
 >>>>>>> Stashed changes
@@ -7789,7 +8561,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 194,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6389),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
 >>>>>>> Stashed changes
@@ -7806,7 +8582,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 195,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6390),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
 >>>>>>> Stashed changes
@@ -7823,7 +8603,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 196,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6390),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2615),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2615),
 >>>>>>> Stashed changes
@@ -7840,7 +8624,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 197,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6391),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2617),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2617),
 >>>>>>> Stashed changes
@@ -7857,7 +8645,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 198,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6391),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
 >>>>>>> Stashed changes
@@ -7874,7 +8666,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 199,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6392),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
 >>>>>>> Stashed changes
@@ -7891,7 +8687,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 200,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6393),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
 >>>>>>> Stashed changes
@@ -7908,7 +8708,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 201,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6393),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
 >>>>>>> Stashed changes
@@ -7925,7 +8729,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 202,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6394),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2620),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2620),
 >>>>>>> Stashed changes
@@ -7942,7 +8750,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 203,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6394),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
 >>>>>>> Stashed changes
@@ -7959,7 +8771,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 204,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6397),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
 >>>>>>> Stashed changes
@@ -7976,7 +8792,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 205,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6397),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2622),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2622),
 >>>>>>> Stashed changes
@@ -7993,7 +8813,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 206,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6398),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
 >>>>>>> Stashed changes
@@ -8010,7 +8834,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 207,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6399),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
 >>>>>>> Stashed changes
@@ -8027,7 +8855,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 208,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6399),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
 >>>>>>> Stashed changes
@@ -8044,7 +8876,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 209,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6400),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
 >>>>>>> Stashed changes
@@ -8061,7 +8897,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 210,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6401),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
 >>>>>>> Stashed changes
@@ -8078,7 +8918,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 211,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6401),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
 >>>>>>> Stashed changes
@@ -8095,7 +8939,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 212,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6402),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2629),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2629),
 >>>>>>> Stashed changes
@@ -8112,7 +8960,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 213,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6403),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
 >>>>>>> Stashed changes
@@ -8129,7 +8981,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 214,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6403),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
 >>>>>>> Stashed changes
@@ -8146,7 +9002,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 215,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6404),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2631),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2631),
 >>>>>>> Stashed changes
@@ -8163,7 +9023,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 216,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6405),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
 >>>>>>> Stashed changes
@@ -8180,7 +9044,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 217,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6405),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
 >>>>>>> Stashed changes
@@ -8197,7 +9065,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 218,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6406),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
 >>>>>>> Stashed changes
@@ -8214,7 +9086,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 219,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6406),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
 >>>>>>> Stashed changes
@@ -8231,7 +9107,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 220,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6407),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2634),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2634),
 >>>>>>> Stashed changes
@@ -8248,7 +9128,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 221,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6409),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
 >>>>>>> Stashed changes
@@ -8265,7 +9149,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 222,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6409),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
 >>>>>>> Stashed changes
@@ -8282,7 +9170,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 223,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6410),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2636),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2636),
 >>>>>>> Stashed changes
@@ -8299,7 +9191,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 224,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6411),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
 >>>>>>> Stashed changes
@@ -8316,7 +9212,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 225,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6411),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
 >>>>>>> Stashed changes
@@ -8333,7 +9233,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 226,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6412),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
 >>>>>>> Stashed changes
@@ -8350,7 +9254,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 227,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6412),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
 >>>>>>> Stashed changes
@@ -8367,7 +9275,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 228,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6413),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2640),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2640),
 >>>>>>> Stashed changes
@@ -8384,7 +9296,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 229,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6414),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
 >>>>>>> Stashed changes
@@ -8401,7 +9317,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 230,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6414),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
 >>>>>>> Stashed changes
@@ -8418,7 +9338,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 231,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6415),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
 >>>>>>> Stashed changes
@@ -8435,7 +9359,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 232,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6415),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
 >>>>>>> Stashed changes
@@ -8452,7 +9380,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 233,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6416),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2643),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2643),
 >>>>>>> Stashed changes
@@ -8469,7 +9401,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 234,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6417),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
 >>>>>>> Stashed changes
@@ -8486,7 +9422,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 235,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6417),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
 >>>>>>> Stashed changes
@@ -8503,7 +9443,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 236,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6418),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2645),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2645),
 >>>>>>> Stashed changes
@@ -8520,7 +9464,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 237,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6420),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
 >>>>>>> Stashed changes
@@ -8537,7 +9485,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 238,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6421),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
 >>>>>>> Stashed changes
@@ -8554,7 +9506,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 240,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6421),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2647),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2647),
 >>>>>>> Stashed changes
@@ -8571,7 +9527,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 241,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6422),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
 >>>>>>> Stashed changes
@@ -8588,7 +9548,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 242,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6422),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
 >>>>>>> Stashed changes
@@ -8605,7 +9569,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 243,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6423),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
 >>>>>>> Stashed changes
@@ -8622,7 +9590,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 244,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6423),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
 >>>>>>> Stashed changes
@@ -8639,7 +9611,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 245,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6424),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2683),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2683),
 >>>>>>> Stashed changes
@@ -8656,7 +9632,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 246,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6425),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
 >>>>>>> Stashed changes
@@ -8673,7 +9653,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 247,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6425),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
 >>>>>>> Stashed changes
@@ -8690,7 +9674,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 248,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6426),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2685),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2685),
 >>>>>>> Stashed changes
@@ -8707,7 +9695,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 249,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6427),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
 >>>>>>> Stashed changes
@@ -8724,7 +9716,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 250,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6427),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
 >>>>>>> Stashed changes
@@ -8741,7 +9737,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 251,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6428),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2687),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2687),
 >>>>>>> Stashed changes
@@ -8758,7 +9758,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 252,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6431),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2689),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2689),
 >>>>>>> Stashed changes
@@ -8775,7 +9779,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 253,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6431),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
 >>>>>>> Stashed changes
@@ -8792,7 +9800,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 254,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6432),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
 >>>>>>> Stashed changes
@@ -8809,7 +9821,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 255,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6433),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
 >>>>>>> Stashed changes
@@ -8826,7 +9842,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 256,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6433),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
 >>>>>>> Stashed changes
@@ -8843,7 +9863,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 257,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6434),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2692),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2692),
 >>>>>>> Stashed changes
@@ -8860,7 +9884,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 258,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6434),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
 >>>>>>> Stashed changes
@@ -8877,7 +9905,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 259,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6435),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
 >>>>>>> Stashed changes
@@ -8894,7 +9926,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 260,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6435),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2694),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2694),
 >>>>>>> Stashed changes
@@ -8911,7 +9947,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 261,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6436),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2695),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2695),
 >>>>>>> Stashed changes
@@ -8928,7 +9968,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 262,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6437),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
 >>>>>>> Stashed changes
@@ -8945,7 +9989,11 @@ namespace WMS.Api.Data.Migrations
                             Id = 263,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6438),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
 >>>>>>> Stashed changes
@@ -9003,7 +10051,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 3,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5697),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1936),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1936),
 >>>>>>> Stashed changes
@@ -9021,7 +10073,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 1,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5714),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1954),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1954),
 >>>>>>> Stashed changes
@@ -9039,7 +10095,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 3,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5715),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
 >>>>>>> Stashed changes
@@ -9057,7 +10117,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 6,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5716),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
 >>>>>>> Stashed changes
@@ -9075,7 +10139,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 3,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5717),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
 >>>>>>> Stashed changes
@@ -9093,7 +10161,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 2,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5717),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
 >>>>>>> Stashed changes
@@ -9111,7 +10183,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 2,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5718),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
 >>>>>>> Stashed changes
@@ -9129,7 +10205,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 2,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5719),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
 >>>>>>> Stashed changes
@@ -9147,7 +10227,11 @@ namespace WMS.Api.Data.Migrations
                             BayId = 1,
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5719),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1959),
+>>>>>>> Stashed changes
 =======
                             DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1959),
 >>>>>>> Stashed changes

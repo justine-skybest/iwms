@@ -15,7 +15,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5b8cb6796f7ff820575bddd47924965de4803909")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+007de345ffade00b97a52855df3ea1d1cc23d154")]
+>>>>>>> Stashed changes
 =======
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+007de345ffade00b97a52855df3ea1d1cc23d154")]
 >>>>>>> Stashed changes
