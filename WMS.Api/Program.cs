@@ -219,5 +219,6 @@ app.MapReportEndpoints();
 app.MapAuditLogEndpoints();
 app.MapOutboundWorkflowEndpoints();
 app.MapSystemEndpoints();
+app.MapImageUploadEndpoints();
 
 app.Run();
