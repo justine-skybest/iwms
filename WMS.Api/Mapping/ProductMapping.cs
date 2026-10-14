@@ -49,7 +49,6 @@ public static class ProductMapping
     {
         return new (
             product.Id,
-            product.Code!,
             product.Name,
             product.TypeOfPackage,
             product.Measurement,

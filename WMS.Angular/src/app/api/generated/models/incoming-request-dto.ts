@@ -6,6 +6,6 @@ export interface IncomingRequestDto {
   consignee?: string | null;
   products: Array<IncomingProductRequestDto>;
   shipper: string;
-  status?: 'PENDING' | 'RECEIVED' | 'PARTIAL' | 'CANCELLED' | 'CLOSED_SHORT' | 'PENDING_REVISED_PL';
+  status?: 'PENDING' | 'RECEIVED' | 'PARTIAL' | 'CANCELLED' | 'CLOSED_SHORT';
   warehouseId: number;
 }

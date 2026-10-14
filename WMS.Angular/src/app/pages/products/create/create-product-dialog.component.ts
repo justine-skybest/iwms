@@ -61,7 +61,7 @@ export class CreateProductDialogComponent implements OnChanges {
   private populateFormForEdit(): void {
     if (!this.productToEdit) return;
 
-    this.code = this.productToEdit.code ?? '';
+    this.code = (this.productToEdit as any).code ?? '';
     this.name = this.productToEdit.name ?? '';
     this.typeOfPackage = this.productToEdit.typeOfPackage ?? '';
     this.measurement = this.productToEdit.measurement ?? '';
