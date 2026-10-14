@@ -101,6 +101,11 @@ export const routes: Routes = [
         title: 'Inventory Aging Reports'
       },
       {
+        path: 'outbound-reports',
+        loadChildren: () => import('./pages/reports/outbound-reports/outbound-reports.routes').then((m) => m.outboundReportRoutes),
+        title: 'Outbound Reports'
+      },
+      {
         path: 'warehouse-occupancy',
         loadChildren: () => import('./pages/reports/warehouse-occupancy/warehouse-occupancy.routes').then((m) => m.warehouseOccupancyRoutes),
         title: 'Warehouse Occupancy'
