@@ -8,12 +8,12 @@ import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface PalletAutocreateWarehouseIdPost$Params {
+export interface AutoCreatePallet$Params {
   WarehouseId: number;
 }
 
-export function palletAutocreateWarehouseIdPost(http: HttpClient, rootUrl: string, params: PalletAutocreateWarehouseIdPost$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, palletAutocreateWarehouseIdPost.PATH, 'post');
+export function autoCreatePallet(http: HttpClient, rootUrl: string, params: AutoCreatePallet$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, autoCreatePallet.PATH, 'post');
   if (params) {
     rb.path('WarehouseId', params.WarehouseId, {});
   }
@@ -28,4 +28,4 @@ export function palletAutocreateWarehouseIdPost(http: HttpClient, rootUrl: strin
   );
 }
 
-palletAutocreateWarehouseIdPost.PATH = '/pallet/autocreate/{WarehouseId}';
+autoCreatePallet.PATH = '/pallet/autocreate/{WarehouseId}';

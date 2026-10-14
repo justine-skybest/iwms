@@ -2505,6 +2505,8 @@
         "tags": [
           "Pallet"
         ],
+        "summary": "Delete a pallet",
+        "operationId": "DeletePallet",
         "parameters": [
           {
             "name": "id",
@@ -2517,8 +2519,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -2591,6 +2596,8 @@
         "tags": [
           "Pallet"
         ],
+        "summary": "Auto-generate next pallet for warehouse",
+        "operationId": "AutoCreatePallet",
         "parameters": [
           {
             "name": "WarehouseId",
@@ -2605,6 +2612,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
           }
         }
       }
