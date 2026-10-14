@@ -1,0 +1,653 @@
+<!-- Header Component -->
+  <app-page-header 
+    title="Outbound Reports & Analytics" 
+    [subtitle]="totalCount + ' transactions in selected window'"
+    [showDate]="false">
+    
+    <div class="flex items-center gap-2">
+      <!-- Export CSV -->
+      <button 
+        (click)="exportCsv()"
+        [disabled]="isLoading || totalCount === 0"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-colors disabled:opacity-50">
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export CSV
+      </button>
+
+      <!-- Primary Action: Run Report -->
+      <button 
+        (click)="loadCurrentReport()" 
+        [disabled]="isLoading"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition-colors disabled:opacity-50">
+        <svg [class.animate-spin]="isLoading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Run Report
+      </button>
+    </div>
+  </app-page-header>
+
+  <!-- Navigation Tabs -->
+  <div class="border-b border-slate-200 bg-white px-4 rounded-t-xl shadow-sm">
+    <nav class="-mb-px flex space-x-6 overflow-x-auto text-xs font-medium">
+      <button (click)="setTab('manifest')" [class.border-blue-600]="activeTab === 'manifest'" [class.text-blue-600]="activeTab === 'manifest'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Dispatch Manifest
+      </button>
+      <button (click)="setTab('turnaround')" [class.border-blue-600]="activeTab === 'turnaround'" [class.text-blue-600]="activeTab === 'turnaround'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Dock Turnaround
+      </button>
+      <button (click)="setTab('staging')" [class.border-blue-600]="activeTab === 'staging'" [class.text-blue-600]="activeTab === 'staging'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Staging Velocity
+      </button>
+      <button (click)="setTab('verifications')" [class.border-blue-600]="activeTab === 'verifications'" [class.text-blue-600]="activeTab === 'verifications'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Scan Discrepancies
+      </button>
+      <button (click)="setTab('exceptions')" [class.border-blue-600]="activeTab === 'exceptions'" [class.text-blue-600]="activeTab === 'exceptions'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Exceptions Log
+      </button>
+      <button (click)="setTab('compliance')" [class.border-blue-600]="activeTab === 'compliance'" [class.text-blue-600]="activeTab === 'compliance'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Chain of Custody
+      </button>
+      <button (click)="setTab('cancellations')" [class.border-blue-600]="activeTab === 'cancellations'" [class.text-blue-600]="activeTab === 'cancellations'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Cancellations & Returns
+      </button>
+      <button (click)="setTab('workforce')" [class.border-blue-600]="activeTab === 'workforce'" [class.text-blue-600]="activeTab === 'workforce'" class="py-3 px-1 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+        Workforce Scorecard
+      </button>
+    </nav>
+  </div>
+
+  <!-- Filter Ribbon -->
+  <div class="bg-white p-4 rounded-b-xl shadow-sm border border-slate-200 -mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+    <div>
+      <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">From Date</label>
+      <input type="date" [(ngModel)]="fromDate" class="w-full text-xs rounded-lg border-slate-200 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+    <div>
+      <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">To Date</label>
+      <input type="date" [(ngModel)]="toDate" class="w-full text-xs rounded-lg border-slate-200 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+    <div>
+      <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Status / Severity Filter</label>
+      <input type="text" [(ngModel)]="statusFilter" placeholder="e.g. Completed, Critical" class="w-full text-xs rounded-lg border-slate-200 border p-2 focus:ring-2 focus:ring-blue-500 outline-none">
+    </div>
+  </div>
+
+  <!-- KPI STRIP 1: Dispatch Manifest Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4" *ngIf="activeTab === 'manifest' && manifestData.length">
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Total Planned Units</span>
+      <div class="text-2xl font-bold text-slate-800 mt-1">{{ manifestAggregate.totalPlanned | number }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Across all matched loads</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Total Dispatched Units</span>
+      <div class="text-2xl font-bold text-emerald-600 mt-1">{{ manifestAggregate.totalLoaded | number }}</div>
+      <div class="text-[11px] text-emerald-600 font-medium mt-0.5">Physical units verified loaded</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-slate-500 font-medium">Overall Fill Rate</span>
+        <span class="text-xs font-bold text-blue-600">{{ manifestAggregate.overallFillRate | number:'1.1-1' }}%</span>
+      </div>
+      <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" [style.width.%]="manifestAggregate.overallFillRate"></div>
+      </div>
+      <div class="text-[11px] text-slate-400 mt-2">Target benchmark: 98.0%</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Dispatches Handled</span>
+      <div class="text-2xl font-bold text-slate-800 mt-1">{{ manifestData.length }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Outbound vehicle journeys</div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP 2: Pallet Verification Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4" *ngIf="activeTab === 'verifications' && verificationReport">
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Total Barcodes Scanned</span>
+      <div class="text-2xl font-bold text-slate-800 mt-1">{{ verificationReport.totalScans | number }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Live dock verification scans</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Authorized Pallets</span>
+      <div class="text-2xl font-bold text-emerald-600 mt-1">{{ verificationReport.authorizedCount | number }}</div>
+      <div class="text-[11px] text-emerald-600 font-medium mt-0.5">Validated against loading plan</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Scan Discrepancies</span>
+      <div class="text-2xl font-bold text-rose-600 mt-1">{{ verificationReport.discrepancyCount | number }}</div>
+      <div class="text-[11px] text-rose-500 font-medium mt-0.5">Duplicates, damaged, or unassigned</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-slate-500 font-medium">Scan Error Rate</span>
+        <span class="text-xs font-bold text-rose-600">{{ verificationReport.errorRatePercentage | number:'1.1-2' }}%</span>
+      </div>
+      <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+        <div class="bg-rose-500 h-2 rounded-full transition-all duration-500" [style.width.%]="verificationReport.errorRatePercentage"></div>
+      </div>
+      <div class="text-[11px] text-slate-400 mt-2">Zero-tolerance quality standard</div>
+    </div>
+  </div>
+
+  <!-- KPI STRIP 3: Evidence Compliance Metrics -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4" *ngIf="activeTab === 'compliance' && complianceReport">
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Completed Plans</span>
+      <div class="text-2xl font-bold text-slate-800 mt-1">{{ complianceReport.totalCompletedPlans }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Awaiting gate-out photo audit</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Compliant Shipments</span>
+      <div class="text-2xl font-bold text-emerald-600 mt-1">{{ complianceReport.compliantCount }}</div>
+      <div class="text-[11px] text-emerald-600 font-medium mt-0.5">All 4 mandatory photos attached</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <span class="text-xs text-slate-500 font-medium">Missing Documentation</span>
+      <div class="text-2xl font-bold text-amber-600 mt-1">{{ complianceReport.nonCompliantCount }}</div>
+      <div class="text-[11px] text-amber-600 font-medium mt-0.5">Audit checklist incomplete</div>
+    </div>
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-slate-500 font-medium">Audit Compliance Rate</span>
+        <span class="text-xs font-bold text-blue-600">{{ complianceReport.complianceRate | number:'1.1-1' }}%</span>
+      </div>
+      <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+        <div class="bg-blue-600 h-2 rounded-full transition-all duration-500" [style.width.%]="complianceReport.complianceRate"></div>
+      </div>
+      <div class="text-[11px] text-slate-400 mt-2">Regulatory benchmark: 100%</div>
+    </div>
+  </div>
+
+  <!-- Loading & Error States -->
+  <div *ngIf="isLoading" class="p-12 text-center bg-white rounded-xl border border-slate-200 shadow-sm">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-r-transparent"></div>
+    <p class="text-xs text-slate-500 mt-2 font-medium">Generating outbound analytical dataset...</p>
+  </div>
+
+  <div *ngIf="error" class="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
+    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 1: Dispatch Manifest (DispatchManifestReportDto)                      -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'manifest' && manifestData.length" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Plan Ref</th>
+            <th class="py-3 px-4">Status</th>
+            <th class="py-3 px-4">Warehouse</th>
+            <th class="py-3 px-4">Destination & Consignee</th>
+            <th class="py-3 px-4">Carrier Transport</th>
+            <th class="py-3 px-4 text-right">Planned / Loaded</th>
+            <th class="py-3 px-4">Fulfillment</th>
+            <th class="py-3 px-4">Net Turnaround</th>
+            <th class="py-3 px-4 text-center">Lines</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <ng-container *ngFor="let plan of manifestData">
+            <tr class="hover:bg-slate-50/75 transition-colors">
+              <td class="py-3 px-4 font-semibold text-slate-800">{{ plan.loadingReference }}</td>
+              <td class="py-3 px-4">
+                <span [ngClass]="{
+                  'bg-emerald-50 text-emerald-700 border-emerald-200': plan.status === 'Completed',
+                  'bg-blue-50 text-blue-700 border-blue-200': plan.status === 'InProgress',
+                  'bg-amber-50 text-amber-700 border-amber-200': plan.status === 'Partial',
+                  'bg-slate-50 text-slate-700 border-slate-200': plan.status === 'Planned',
+                  'bg-rose-50 text-rose-700 border-rose-200': plan.status === 'Cancelled' || plan.status === 'Rejected'
+                }" class="px-2 py-0.5 rounded-full text-[10px] font-semibold border">
+                  {{ plan.status }}
+                </span>
+              </td>
+              <td class="py-3 px-4">{{ plan.warehouseName }}</td>
+              <td class="py-3 px-4">
+                <div class="font-medium text-slate-800">{{ plan.destination || 'Unassigned Destination' }}</div>
+                <div class="text-[11px] text-slate-400">{{ plan.customerName || plan.consigneeName || 'Direct Store Delivery' }}</div>
+              </td>
+              <td class="py-3 px-4">
+                <div>Plate: {{ plan.transport?.vehiclePlateNumber || 'N/A' }}</div>
+                <div class="text-[11px] text-slate-400">Seal: {{ plan.transport?.sealNumber || 'N/A' }}</div>
+              </td>
+              <td class="py-3 px-4 text-right font-medium text-slate-800">
+                {{ plan.totalQuantityLoaded }} / {{ plan.totalQuantityPlanned }}
+              </td>
+              <td class="py-3 px-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-10 text-right font-bold">{{ plan.fulfillmentRatePercentage | number:'1.0-1' }}%</span>
+                  <div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-blue-600 h-1.5 rounded-full" [style.width.%]="plan.fulfillmentRatePercentage"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3 px-4">{{ plan.timestamps?.durationMinutes ? plan.timestamps?.durationMinutes + ' min' : '—' }}</td>
+              <td class="py-3 px-4 text-center">
+                <button (click)="toggleRow(plan.loadingPlanId)" class="p-1 rounded hover:bg-slate-200 text-slate-500">
+                  <svg [class.rotate-180]="isExpanded(plan.loadingPlanId)" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Line Items Accordion Breakdown (DispatchManifestLineDto) -->
+            <tr *ngIf="isExpanded(plan.loadingPlanId)" class="bg-slate-50/50">
+              <td colspan="9" class="p-4">
+                <div class="bg-white rounded-lg border border-slate-200 p-3 space-y-2">
+                  <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Manifest Line Inventory Breakdown</span>
+                    <span class="text-[11px] text-slate-400">Supervisor: {{ plan.personnel?.supervisorUserId || 'Unassigned' }}</span>
+                  </div>
+                  <table class="w-full text-[11px] text-left">
+                    <thead class="text-slate-400 border-b border-slate-100">
+                      <tr>
+                        <th class="py-1">Line ID</th>
+                        <th class="py-1">Product Description</th>
+                        <th class="py-1">Code</th>
+                        <th class="py-1">Pallet Ref</th>
+                        <th class="py-1 text-right">Planned</th>
+                        <th class="py-1 text-right">Loaded</th>
+                        <th class="py-1 text-right">Remaining</th>
+                        <th class="py-1">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      <tr *ngFor="let line of plan.lines ?? []">
+                        <td class="py-1 font-mono text-slate-400">#{{ line.lineId }}</td>
+                        <td class="py-1 font-medium text-slate-700">{{ line.productName }}</td>
+                        <td class="py-1 text-slate-500 font-mono">{{ line.productCode }}</td>
+                        <td class="py-1 font-mono text-slate-400">{{ line.originalPalletId ? ('P-' + line.originalPalletId) : 'Bulk/Loose' }}</td>
+                        <td class="py-1 text-right">{{ line.quantityPlanned }}</td>
+                        <td class="py-1 text-right font-bold text-slate-800">{{ line.quantityLoaded }}</td>
+                        <td class="py-1 text-right font-mono" [class.text-amber-600]="(line.remainingQuantity ?? 0) > 0">{{ line.remainingQuantity }}</td>
+                        <td class="py-1">
+                          <span class="text-[10px] font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                            {{ line.status }}
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 2: Dock Turnaround (DockTurnaroundReportDto)                          -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'turnaround' && turnaroundData.length" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Plan Ref</th>
+            <th class="py-3 px-4">Carrier Vehicle</th>
+            <th class="py-3 px-4">Container #</th>
+            <th class="py-3 px-4">Actual Start</th>
+            <th class="py-3 px-4">Dispatched At</th>
+            <th class="py-3 px-4 text-right">Start Delay</th>
+            <th class="py-3 px-4 text-right">Net Turnaround</th>
+            <th class="py-3 px-4 text-right">Units / Pallets</th>
+            <th class="py-3 px-4 text-right">Throughput</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let item of turnaroundData" class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ item.loadingReference }}</td>
+            <td class="py-3 px-4">{{ item.vehiclePlateNumber || 'N/A' }}</td>
+            <td class="py-3 px-4 font-mono">{{ item.containerNumber || 'N/A' }}</td>
+            <td class="py-3 px-4">{{ item.actualStartAt | date:'short' }}</td>
+            <td class="py-3 px-4">{{ item.completedAt | date:'short' }}</td>
+            <td class="py-3 px-4 text-right">
+              <span [class.text-rose-600]="(item.startDelayMinutes ?? 0) > 15" class="font-medium">
+                {{ item.startDelayMinutes ? item.startDelayMinutes + ' min' : 'On Schedule' }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-bold text-slate-800">{{ item.netTurnaroundMinutes }} min</td>
+            <td class="py-3 px-4 text-right font-medium">
+              {{ item.totalUnitsLoaded }} units / {{ item.totalPalletsCount }} plt
+            </td>
+            <td class="py-3 px-4 text-right">
+              <span class="bg-teal-50 text-teal-700 px-2 py-0.5 rounded font-bold border border-teal-200 text-[11px]">
+                {{ item.unitsPerHour | number:'1.0-0' }} units/h
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 3: Staging Velocity (StagingVelocityReportDto)                        -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'staging' && stagingData.length" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Stage Reference</th>
+            <th class="py-3 px-4">Status</th>
+            <th class="py-3 px-4">Pick Order</th>
+            <th class="py-3 px-4">Staging Bin</th>
+            <th class="py-3 px-4">Started / Completed</th>
+            <th class="py-3 px-4 text-right">Duration</th>
+            <th class="py-3 px-4 text-right">Requested / Staged</th>
+            <th class="py-3 px-4 text-right">Accuracy Rate</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let stage of stagingData" class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ stage.stageReference }}</td>
+            <td class="py-3 px-4">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200': stage.status === 'Completed',
+                'bg-amber-50 text-amber-700 border-amber-200': stage.status === 'Partial',
+                'bg-blue-50 text-blue-700 border-blue-200': stage.status === 'InProgress',
+                'bg-slate-50 text-slate-700 border-slate-200': stage.status === 'Pending',
+                'bg-rose-50 text-rose-700 border-rose-200': stage.status === 'Cancelled'
+              }" class="px-2 py-0.5 rounded-full text-[10px] font-semibold border">
+                {{ stage.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono text-slate-500">Pick #{{ stage.manualPickingId }}</td>
+            <td class="py-3 px-4 font-mono">Bin #{{ stage.stagingBinId || 'Floor Area' }}</td>
+            <td class="py-3 px-4">
+              <div>{{ stage.startedAt ? (stage.startedAt | date:'short') : 'Pending' }}</div>
+              <div class="text-[11px] text-slate-400">{{ stage.completedAt ? (stage.completedAt | date:'short') : 'Incomplete' }}</div>
+            </td>
+            <td class="py-3 px-4 text-right font-medium">
+              {{ stage.stagingDurationMinutes ? stage.stagingDurationMinutes + ' min' : '—' }}
+            </td>
+            <td class="py-3 px-4 text-right font-medium text-slate-800">
+              {{ stage.totalStaged }} / {{ stage.totalRequested }}
+            </td>
+            <td class="py-3 px-4 text-right">
+              <span class="font-bold" [class.text-emerald-600]="stage.stagingAccuracyRate === 100" [class.text-amber-600]="(stage.stagingAccuracyRate ?? 0) < 100">
+                {{ stage.stagingAccuracyRate | number:'1.0-1' }}%
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 4: Pallet Verifications (PalletVerificationReportSummaryDto)           -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'verifications' && verificationReport" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Scan ID</th>
+            <th class="py-3 px-4">Plan Ref</th>
+            <th class="py-3 px-4">Pallet Ref</th>
+            <th class="py-3 px-4">Verification Result</th>
+            <th class="py-3 px-4">Audit Severity</th>
+            <th class="py-3 px-4">Scan Timestamp</th>
+            <th class="py-3 px-4">Remarks</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let scan of verificationReport.verifications ?? []" class="hover:bg-slate-50" [class.bg-rose-50/25]="scan.isDiscrepancy">
+            <td class="py-3 px-4 font-mono text-slate-400">#{{ scan.id }}</td>
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ scan.loadingReference }}</td>
+            <td class="py-3 px-4 font-mono font-medium">PAL-{{ scan.palletId }}</td>
+            <td class="py-3 px-4">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200': scan.scanResult === 'Authorized',
+                'bg-rose-50 text-rose-700 border-rose-200': scan.scanResult === 'Unauthorized' || scan.scanResult === 'Rejected',
+                'bg-amber-50 text-amber-700 border-amber-200': scan.scanResult === 'Duplicate' || scan.scanResult === 'Missing',
+                'bg-orange-50 text-orange-700 border-orange-200': scan.scanResult === 'Damaged'
+              }" class="px-2 py-0.5 rounded-full text-[10px] font-semibold border">
+                {{ scan.scanResult }}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <span *ngIf="scan.isDiscrepancy" class="inline-flex items-center gap-1 text-rose-600 font-bold text-[11px]">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Discrepancy
+              </span>
+              <span *ngIf="!scan.isDiscrepancy" class="text-slate-400 text-[11px]">Passed</span>
+            </td>
+            <td class="py-3 px-4 font-mono">{{ scan.scanTime | date:'medium' }}</td>
+            <td class="py-3 px-4 text-slate-500 max-w-xs truncate">{{ scan.remarks || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 5: Exceptions Log (LoadingExceptionReportDto)                         -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'exceptions' && exceptionsData.length" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Exception ID</th>
+            <th class="py-3 px-4">Plan Ref</th>
+            <th class="py-3 px-4">Severity</th>
+            <th class="py-3 px-4">Exception Type</th>
+            <th class="py-3 px-4">Affected SKU / Description</th>
+            <th class="py-3 px-4">Pallet Ref</th>
+            <th class="py-3 px-4">Description</th>
+            <th class="py-3 px-4">Logged Time</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let exc of exceptionsData" class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-mono text-slate-400">#{{ exc.exceptionId }}</td>
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ exc.loadingReference }}</td>
+            <td class="py-3 px-4">
+              <span [ngClass]="{
+                'bg-rose-100 text-rose-800 border-rose-200 font-bold': exc.severity === 'Critical',
+                'bg-orange-100 text-orange-800 border-orange-200 font-semibold': exc.severity === 'High',
+                'bg-amber-100 text-amber-800 border-amber-200': exc.severity === 'Medium',
+                'bg-slate-100 text-slate-700 border-slate-200': exc.severity === 'Low'
+              }" class="px-2 py-0.5 rounded-full text-[10px] border">
+                {{ exc.severity }}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-medium text-slate-700">{{ exc.exceptionType }}</td>
+            <td class="py-3 px-4 font-medium">{{ exc.affectedProduct }}</td>
+            <td class="py-3 px-4 font-mono text-slate-500">{{ exc.palletId ? ('PAL-' + exc.palletId) : 'N/A' }}</td>
+            <td class="py-3 px-4 text-slate-600 max-w-sm">{{ exc.description }}</td>
+            <td class="py-3 px-4 font-mono">{{ exc.createdAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 6: Chain of Custody & Evidence Compliance (EvidenceComplianceSummary) -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'compliance' && complianceReport" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Plan Ref</th>
+            <th class="py-3 px-4">Vehicle & Seal #</th>
+            <th class="py-3 px-4 text-center">Vehicle Inspection</th>
+            <th class="py-3 px-4 text-center">Loading Start</th>
+            <th class="py-3 px-4 text-center">Seal Verification</th>
+            <th class="py-3 px-4 text-center">Final Dispatch</th>
+            <th class="py-3 px-4">Compliance Status</th>
+            <th class="py-3 px-4 text-right">Completed At</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let plan of complianceReport.plans ?? []" class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ plan.loadingReference }}</td>
+            <td class="py-3 px-4">
+              <div>{{ plan.vehiclePlateNumber || 'N/A' }}</div>
+              <div class="text-[11px] text-slate-400 font-mono">Seal: {{ plan.sealNumber || 'N/A' }}</div>
+            </td>
+            
+            <td class="py-3 px-4 text-center">
+              <span *ngIf="plan.hasVehicleInspection" class="text-emerald-600 font-bold">✓</span>
+              <span *ngIf="!plan.hasVehicleInspection" class="text-rose-500 font-bold">✕</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span *ngIf="plan.hasLoadingStart" class="text-emerald-600 font-bold">✓</span>
+              <span *ngIf="!plan.hasLoadingStart" class="text-rose-500 font-bold">✕</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span *ngIf="plan.hasSealCheck" class="text-emerald-600 font-bold">✓</span>
+              <span *ngIf="!plan.hasSealCheck" class="text-rose-500 font-bold">✕</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span *ngIf="plan.hasFinalDispatch" class="text-emerald-600 font-bold">✓</span>
+              <span *ngIf="!plan.hasFinalDispatch" class="text-rose-500 font-bold">✕</span>
+            </td>
+
+            <td class="py-3 px-4">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200': plan.isAuditCompliant,
+                'bg-amber-50 text-amber-700 border-amber-200': !plan.isAuditCompliant
+              }" class="px-2 py-0.5 rounded-full text-[10px] font-bold border">
+                {{ plan.isAuditCompliant ? 'Compliant' : 'Non-Compliant' }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono">{{ plan.completedAt ? (plan.completedAt | date:'short') : 'Pending' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 7: Cancellations & Returns (CancellationReturnReportDto)              -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'cancellations' && cancellationsData.length" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs text-slate-600">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="py-3 px-4">Cancellation Ref</th>
+            <th class="py-3 px-4">Stage Reference</th>
+            <th class="py-3 px-4">Status</th>
+            <th class="py-3 px-4">Reason</th>
+            <th class="py-3 px-4 text-right">Units Cancelled</th>
+            <th class="py-3 px-4 text-center">Returned / Pending / Exception</th>
+            <th class="py-3 px-4 text-right">Requested At</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let can of cancellationsData" class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-semibold text-slate-800">{{ can.cancellationReference }}</td>
+            <td class="py-3 px-4 text-slate-700 font-medium">{{ can.stageReference }}</td>
+            <td class="py-3 px-4">
+              <span [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border-emerald-200': can.status === 'Completed',
+                'bg-blue-50 text-blue-700 border-blue-200': can.status === 'Approved',
+                'bg-amber-50 text-amber-700 border-amber-200': can.status === 'Requested',
+                'bg-rose-50 text-rose-700 border-rose-200': can.status === 'Rejected'
+              }" class="px-2 py-0.5 rounded-full text-[10px] font-semibold border">
+                {{ can.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-slate-600">{{ can.reason || 'No reason provided' }}</td>
+            <td class="py-3 px-4 text-right font-bold text-slate-800">{{ can.totalUnitsCancelled }}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="text-emerald-700 font-medium">{{ can.totalLinesReturned }} ret</span> / 
+              <span class="text-amber-600 font-medium">{{ can.totalLinesPending }} pnd</span> / 
+              <span class="text-rose-600 font-medium">{{ can.totalLinesException }} exc</span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono">{{ can.requestedAt | date:'short' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- TAB 8: Workforce Labor Scorecard (WorkforceProductivityReportDto)         -->
+  <!-- ========================================================================= -->
+  <div *ngIf="!isLoading && activeTab === 'workforce' && workforceData" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- Loaders Performance -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Dock Loaders</h3>
+        <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-semibold">{{ workforceData?.loaders?.length ?? 0 }} Active</span>
+      </div>
+      <div class="divide-y divide-slate-100">
+        <div *ngFor="let l of workforceData?.loaders ?? []" class="py-2.5 flex justify-between items-center text-xs">
+          <div>
+            <div class="font-medium text-slate-800">Operator #{{ l.userId | slice:0:8 }}</div>
+            <div class="text-[11px] text-slate-400">{{ l.plansCompleted }} / {{ l.plansAssigned }} plans dispatched</div>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-blue-600">{{ l.totalUnitsLoaded | number }}</span>
+            <span class="text-[10px] text-slate-400 block">units loaded</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Staging Operators Performance -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Staging Operators</h3>
+        <span class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-semibold">{{ workforceData?.stagingOperators?.length ?? 0 }} Active</span>
+      </div>
+      <div class="divide-y divide-slate-100">
+        <div *ngFor="let s of workforceData?.stagingOperators ?? []" class="py-2.5 flex justify-between items-center text-xs">
+          <div>
+            <div class="font-medium text-slate-800">Operator #{{ s.userId | slice:0:8 }}</div>
+            <div class="text-[11px] text-slate-400">{{ s.linesStaged }} lines staged</div>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-emerald-600">{{ s.totalUnitsStaged | number }}</span>
+            <span class="text-[10px] text-slate-400 block">units handled</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pallet Scanning Verification Score -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Pallet Scanners</h3>
+        <span class="text-[11px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded font-semibold">{{ workforceData?.palletScanners?.length ?? 0 }} Active</span>
+      </div>
+      <div class="divide-y divide-slate-100">
+        <div *ngFor="let p of workforceData?.palletScanners ?? []" class="py-2.5 flex justify-between items-center text-xs">
+          <div>
+            <div class="font-medium text-slate-800">Scanner #{{ p.userId | slice:0:8 }}</div>
+            <div class="text-[11px] text-rose-500 font-medium">{{ p.mismatchesFlagged }} mismatches caught</div>
+          </div>
+          <div class="text-right">
+            <span class="font-bold text-purple-600">{{ p.authorizedScans | number }}</span>
+            <span class="text-[10px] text-slate-400 block">authorized scans</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Empty State View -->
+  <div *ngIf="!isLoading && totalCount === 0" class="bg-white rounded-xl border border-slate-200 p-12 text-center text-slate-400">
+    <svg class="w-12 h-12 mx-auto stroke-current mb-3 opacity-40" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    <div class="text-sm font-medium text-slate-600">No outbound records found</div>
+    <div class="text-xs text-slate-400 mt-1">Try broadening your date filter or clearing the warehouse restriction.</div>
+  </div>

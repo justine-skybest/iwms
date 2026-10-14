@@ -128,6 +128,8 @@ builder.Services.AddEndpointsApiExplorer();
 // Report Cleanup Hosted Service Registration
 builder.Services.AddHostedService<ReportCleanupService>();
 
+builder.Services.AddScoped<IOutboundReportExportService, OutboundReportExportService>();
+
 // 8. Configure Swagger
 builder.Services.AddSwaggerGen(options =>
 {
