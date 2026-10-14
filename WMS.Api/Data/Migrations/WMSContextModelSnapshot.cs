@@ -17,7 +17,7 @@ namespace WMS.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.31")
+                .HasAnnotation("ProductVersion", "8.0.32")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -4506,7 +4506,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7177),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6181),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2397),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2397),
+>>>>>>> Stashed changes
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Ube-Filled Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -4515,7 +4523,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7181),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6182),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2398),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2398),
+>>>>>>> Stashed changes
                             Measurement = "47 X 21 X 35",
                             Name = "Pillows Chocolate Crackers HA-24gX100",
                             TypeOfPackage = "Carton",
@@ -4524,7 +4540,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7182),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6183),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2399),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2399),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Toasted Garlic 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4533,7 +4557,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 4,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7184),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6184),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2400),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2400),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4542,7 +4574,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 5,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7185),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6185),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Cheese & Onion 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4551,7 +4591,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 6,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7186),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6186),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2401),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Bread Pan Buttered Toast 24gX100pcs",
                             TypeOfPackage = "Carton",
@@ -4560,7 +4608,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 7,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7187),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6186),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2402),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2402),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Miggos Sweet Corn Tortilla Chips L28g",
                             TypeOfPackage = "Carton",
@@ -4569,7 +4625,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 8,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7189),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6187),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2403),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2403),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Chocolate Cream Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4578,7 +4642,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 9,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7192),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6190),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Mango Filled OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4587,7 +4659,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 10,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7193),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6190),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2405),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "O-puff Ube Marshmallow OWA 3.5g x 24 x 30",
                             TypeOfPackage = "Carton",
@@ -4596,7 +4676,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 11,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7194),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6191),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2406),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2406),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Onion Rings L-16gx100",
                             TypeOfPackage = "Carton",
@@ -4605,7 +4693,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 12,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7196),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6192),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Prawn Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4614,7 +4710,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 13,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7197),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6192),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2438),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries BBQ LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4623,7 +4727,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 14,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7198),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6193),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2439),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2439),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Potato Fries Cheese LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4632,7 +4744,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 15,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7200),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6194),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Potato Fries Tomato Ketchup LB-21gx100",
                             TypeOfPackage = "Carton",
@@ -4641,7 +4761,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 16,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7201),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6195),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2440),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Fishda Fish Kropeck LF-22gx100",
                             TypeOfPackage = "Carton",
@@ -4650,7 +4778,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 17,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7202),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6195),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2441),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2441),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Fish Cracker L-24gx100",
                             TypeOfPackage = "Carton",
@@ -4659,7 +4795,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 18,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7204),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6196),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Mango Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4668,7 +4812,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 19,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7205),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6197),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2442),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange Juice 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4677,7 +4829,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 20,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7206),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6198),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2443),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2443),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "Oishi Sundays Orange-Mango Blends 35gx6x20",
                             TypeOfPackage = "Carton",
@@ -4686,7 +4846,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 21,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7208),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6198),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2444),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2444),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES BBQ 50gX50",
                             TypeOfPackage = "Carton",
@@ -4695,7 +4863,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 22,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7209),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6199),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2445),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2445),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES CHEESE 50gX50",
                             TypeOfPackage = "Carton",
@@ -4704,7 +4880,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 23,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7212),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6201),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2447),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2447),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "POTATO FRIES KETCHUP FLAVOR 50gX50",
                             TypeOfPackage = "Carton",
@@ -4713,7 +4897,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 24,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7213),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6202),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2448),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2448),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "OISHI PILLOWS CHOCOLATE CRACKERS 150gX20",
                             TypeOfPackage = "Carton",
@@ -4722,7 +4914,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 25,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7214),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6203),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2449),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2449),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "MIGGOS NACHO CHEESE TORTILLA CHIPS L28gX100",
                             TypeOfPackage = "Carton",
@@ -4731,7 +4931,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 26,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7215),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6204),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "SELECTA MOO MILK",
                             TypeOfPackage = "Carton",
@@ -4740,7 +4948,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 27,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7217),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6204),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2450),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "SKYFLAKES",
                             TypeOfPackage = "Carton",
@@ -4749,7 +4965,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 28,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7218),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6205),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2454),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2454),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "ISDALICIOUS FISH CRACKER",
                             TypeOfPackage = "Carton",
@@ -4758,7 +4982,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 29,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7219),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6206),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2455),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2455),
+>>>>>>> Stashed changes
                             Measurement = "56 X 24 X 40",
                             Name = "RICE & CORN CHEESE",
                             TypeOfPackage = "Carton",
@@ -4767,7 +4999,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 30,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7222),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6210),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2458),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2458),
+>>>>>>> Stashed changes
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE RING 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4776,7 +5016,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 31,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7223),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6210),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
                             Measurement = "71 X 42 X 13",
                             Name = "CHEESE BALL 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4785,7 +5033,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 32,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7224),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6211),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2459),
+>>>>>>> Stashed changes
                             Measurement = "71 X 42 X 13",
                             Name = "GOLDEN SWEET CORN 60gX25pcs",
                             TypeOfPackage = "Sack",
@@ -4794,7 +5050,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 33,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7225),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6212),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2460),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2460),
+>>>>>>> Stashed changes
                             Measurement = "60 X 46 X 46",
                             Name = "FAN MOTOR 24V 10' FAN BASE 10' FAN BLADE",
                             TypeOfPackage = "PCS",
@@ -4803,7 +5067,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 34,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7226),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6212),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
                             Measurement = "62 X 28 X 16",
                             Name = "CIRCUIT BOARD TS26F CONTROLLER NEW SENSORS CPR WITH O RING FUSE DETECTION BOARD",
                             TypeOfPackage = "PCS",
@@ -4812,7 +5084,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 35,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7227),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6213),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2461),
+>>>>>>> Stashed changes
                             Measurement = "39 X 32 X 21",
                             Name = "COPPER HOSE BENDABLE",
                             TypeOfPackage = "PCS",
@@ -4821,7 +5101,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 36,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7228),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6215),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2463),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2463),
+>>>>>>> Stashed changes
                             Measurement = "40 X 29 X 20",
                             Name = "RECEIVER DRIER 15NF RECEIVER DRIER 20NF",
                             TypeOfPackage = "PCS",
@@ -4830,7 +5118,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 37,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7230),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6216),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
                             Measurement = "100 X 6 X 4",
                             Name = "CURTAIN ROD",
                             TypeOfPackage = "PCS",
@@ -4839,7 +5135,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 38,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7230),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6216),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2464),
+>>>>>>> Stashed changes
                             Measurement = "38 X 38 X 23",
                             Name = "PLASTIC CURTAIN",
                             TypeOfPackage = "PCS",
@@ -4848,7 +5152,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 39,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7232),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6217),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2466),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2466),
+>>>>>>> Stashed changes
                             Measurement = "38 X 38 X 23",
                             Name = "ELIMINATOR FILTER DRIER",
                             TypeOfPackage = "PCS",
@@ -4857,7 +5169,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 40,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7233),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6218),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
                             Measurement = "40 X 29 X 20",
                             Name = "THERMOSTATIC EXPANSION VALVE 15NF THERMOSTATIC EXPANSION VALVE 20NF",
                             TypeOfPackage = "PCS",
@@ -4866,7 +5186,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 41,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7234),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6219),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2470),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE STRAWBERRY 144/19G",
                             TypeOfPackage = "Carton",
@@ -4875,7 +5203,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 42,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7235),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6219),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2471),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2471),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -4884,7 +5220,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 43,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7236),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6220),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE I.TEA LEMON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4893,7 +5237,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 44,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7237),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6221),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2472),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE GRAPE 144/19G",
                             TypeOfPackage = "Carton",
@@ -4902,7 +5254,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 45,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7238),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6221),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE 12/12/19G",
                             TypeOfPackage = "Carton",
@@ -4911,7 +5271,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 46,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7239),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6222),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2473),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4920,7 +5288,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 47,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7240),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6254),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2474),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2474),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE FOUR SEASON 144/19G",
                             TypeOfPackage = "Carton",
@@ -4929,7 +5305,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 48,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7241),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6255),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2475),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2475),
+>>>>>>> Stashed changes
                             Measurement = "27 X 40 X 63",
                             Name = "OISHI FISH CRACKERS UA 90gX30",
                             TypeOfPackage = "Sack",
@@ -4938,7 +5322,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 49,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7244),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6258),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
                             Measurement = "29 X 49 X 66",
                             Name = "Miggos Sweet Corn Tortilla Chips UA 105gX30",
                             TypeOfPackage = "Sack",
@@ -4947,7 +5339,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 50,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7245),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6258),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2477),
+>>>>>>> Stashed changes
                             Measurement = "60.5 X 43 X 17.5",
                             Name = "DL-2000A DC12V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4956,7 +5356,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 51,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7246),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6259),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2000F1 DC12V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4965,7 +5373,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 52,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7247),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6260),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2478),
+>>>>>>> Stashed changes
                             Measurement = "61 X 42 X 27",
                             Name = "DL-2600A1 DC24V WALL MOUNTED ELECTRIC AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4974,7 +5390,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 53,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7248),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6260),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
                             Measurement = "73.5 X 55 X 32.5",
                             Name = "DL-2600F DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4983,7 +5407,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 54,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7249),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6261),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2480),
+>>>>>>> Stashed changes
                             Measurement = "78 X 50 X 32",
                             Name = "DL-2600FT-BY DC24V WALL MOUNTED AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -4992,7 +5424,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 55,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7250),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6261),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2481),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2481),
+>>>>>>> Stashed changes
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800 DC12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -5001,7 +5441,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 56,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7251),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6262),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800BY DC24V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -5010,7 +5458,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 57,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7252),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6263),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2482),
+>>>>>>> Stashed changes
                             Measurement = "96 X 80 X 40",
                             Name = "DL-1800-12V ROOF AIR CONDITIONER",
                             TypeOfPackage = "Carton",
@@ -5019,7 +5475,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 58,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7253),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6264),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
                             Measurement = "41 X 23 X 17",
                             Name = "Zesto Big 250 Grapes",
                             TypeOfPackage = "Carton",
@@ -5028,7 +5492,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 59,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7254),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6264),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2483),
+>>>>>>> Stashed changes
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -5037,7 +5509,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 60,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7255),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6265),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2484),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2484),
+>>>>>>> Stashed changes
                             Measurement = "31 X 37 X 21",
                             Name = "KOPIKO BROWN COFFEE POUCH 24x1024x10x27.5G",
                             TypeOfPackage = "Carton",
@@ -5046,7 +5526,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 61,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7256),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6266),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
                             Measurement = "25 X 36 X 28",
                             Name = "KOPIKO BLANCA POUCH 24X10X30G",
                             TypeOfPackage = "Carton",
@@ -5055,7 +5543,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 62,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7284),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6266),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2485),
+>>>>>>> Stashed changes
                             Measurement = "24 X 43 X 28",
                             Name = "KOPIKO BLACK 3IN1 POUCH 24X1024X 10 X 30G",
                             TypeOfPackage = "Carton",
@@ -5064,7 +5560,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 63,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7288),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6269),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
                             Measurement = "30 X 50 X 20",
                             Name = "JUMBO PUSH POP 24 X 12 X 30G",
                             TypeOfPackage = "Carton",
@@ -5073,7 +5577,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 64,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7289),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6269),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2490),
+>>>>>>> Stashed changes
                             Measurement = "17 X 52 X 26",
                             Name = "PUSH POP LOLLIPOP 20 X 20 X 14G",
                             TypeOfPackage = "Carton",
@@ -5082,7 +5594,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 65,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7290),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6270),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
                             Measurement = "21 X 24 X 19",
                             Name = "KOJIE SL CLASSIC SOAP 135G X 24 X 20",
                             TypeOfPackage = "Carton",
@@ -5091,7 +5611,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 66,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7291),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6270),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2491),
+>>>>>>> Stashed changes
                             Measurement = "18 X 16 X 32",
                             Name = "AJI CRISPY FRY ORIG 24/238G",
                             TypeOfPackage = "Carton",
@@ -5100,7 +5628,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 67,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7292),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6271),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2492),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2492),
+>>>>>>> Stashed changes
                             Measurement = "18 X 16 X 32",
                             Name = "MODESS BODY ADAPT LONGS UT 24/4S",
                             TypeOfPackage = "Carton",
@@ -5109,7 +5645,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 68,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7293),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6272),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
                             Measurement = "38 X 18 X 37",
                             Name = "MODESS C.SFT LONG W 24/8'S",
                             TypeOfPackage = "Carton",
@@ -5118,7 +5662,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 69,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7294),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6272),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2493),
+>>>>>>> Stashed changes
                             Measurement = "35 X 18 X 27",
                             Name = "DM PINEAPPLE SLICES 24/432G",
                             TypeOfPackage = "Carton",
@@ -5127,7 +5679,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 70,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7296),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6273),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2494),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2494),
+>>>>>>> Stashed changes
                             Measurement = "24 X 18 X 29",
                             Name = "MODESS ALL NIGHT W 24/4'S",
                             TypeOfPackage = "Carton",
@@ -5136,7 +5696,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 71,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7296),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6274),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
                             Measurement = "48 X 31 X 24",
                             Name = "MODESS C.SFT REG MAXI W 12/32/1S",
                             TypeOfPackage = "Carton",
@@ -5145,7 +5713,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 72,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7298),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6274),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2495),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE LYCHEE 144/19G",
                             TypeOfPackage = "Carton",
@@ -5154,7 +5730,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 73,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7299),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6275),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
                             Measurement = "17 X 48 X 32",
                             Name = "FIESTA FRT COCKTL 6/3033G",
                             TypeOfPackage = "Carton",
@@ -5163,7 +5747,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 74,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7300),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6276),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2496),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE APPLE 144/19G",
                             TypeOfPackage = "Carton",
@@ -5172,7 +5764,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 75,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7301),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6276),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2497),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2497),
+>>>>>>> Stashed changes
                             Measurement = "27 X 22 X 19",
                             Name = "TANG PWD JCE ORANGE-MANGO 144/19G",
                             TypeOfPackage = "Carton",
@@ -5181,7 +5781,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 76,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7303),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6279),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2499),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2499),
+>>>>>>> Stashed changes
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH TSOKOLATE 30/10",
                             TypeOfPackage = "Carton",
@@ -5190,7 +5798,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 77,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7304),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6279),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
                             Measurement = "19 X 49 X 34",
                             Name = "SKYFLAKES CRCKR SWCH CONDENSADA 30/10",
                             TypeOfPackage = "Carton",
@@ -5199,7 +5815,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 78,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7305),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6280),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2500),
+>>>>>>> Stashed changes
                             Measurement = "33 X 13 X 17",
                             Name = "SELECTA MOO MILK CHOCO 24/245ML",
                             TypeOfPackage = "Carton",
@@ -5208,7 +5832,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 79,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7306),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6280),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2501),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2501),
+>>>>>>> Stashed changes
                             Measurement = "33 X 22 X 27",
                             Name = "SNOWTIME ICE POPS 15/8/90ML",
                             TypeOfPackage = "Carton",
@@ -5217,7 +5849,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 80,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7308),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6281),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
                             Measurement = "37 X 70 X 40",
                             Name = "PARTY PACK SUPER CRUNCH CHEESE RINGS 370G X 12S",
                             TypeOfPackage = "Carton",
@@ -5226,7 +5866,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 81,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7309),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6282),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2502),
+>>>>>>> Stashed changes
                             Measurement = "44 X 30 X 39",
                             Name = "MUNCHER KID'S CHOICE GREEN PEAS CHICKEN",
                             TypeOfPackage = "Carton",
@@ -5235,7 +5883,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 82,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7310),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6283),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
                             Measurement = "40 X 19 X 20",
                             Name = "Muncher G. Peas Orig 70gX10packsX10pcs",
                             TypeOfPackage = "Carton",
@@ -5244,7 +5900,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 83,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7311),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6283),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2503),
+>>>>>>> Stashed changes
                             Measurement = "72 X 40 X 17",
                             Name = "Super Q Golden Bihon 15x1KG",
                             TypeOfPackage = "Carton",
@@ -5253,7 +5917,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 84,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7312),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6284),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2504),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2504),
+>>>>>>> Stashed changes
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O ORANGE 10X200ML",
                             TypeOfPackage = "Carton",
@@ -5262,7 +5934,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 85,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7313),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6285),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
                             Measurement = "21 X 10 X 15",
                             Name = "ZEST-O MANGO 10X200ML",
                             TypeOfPackage = "Carton",
@@ -5271,7 +5951,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 86,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7314),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6285),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2505),
+>>>>>>> Stashed changes
                             Measurement = "84 X 36 X 13",
                             Name = "Cheese Ring Snack Cheese 25x60g",
                             TypeOfPackage = "Carton",
@@ -5280,7 +5968,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 87,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7315),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6286),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
                             Measurement = "78 X 33 X 13",
                             Name = "Snacku Vegetable Snack 30/50G",
                             TypeOfPackage = "Carton",
@@ -5289,7 +5985,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 88,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7316),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6287),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2506),
+>>>>>>> Stashed changes
                             Measurement = "37 X 34 X 21",
                             Name = "Maya Cornstarch 12x1kg",
                             TypeOfPackage = "Carton",
@@ -5298,7 +6002,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 89,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7317),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6287),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2507),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2507),
+>>>>>>> Stashed changes
                             Measurement = "44 X 30 X 21",
                             Name = "American Gumball 24x40",
                             TypeOfPackage = "Carton",
@@ -5307,7 +6019,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 90,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7320),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6290),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2509),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2509),
+>>>>>>> Stashed changes
                             Measurement = "86 X 51 X 39",
                             Name = "Ordinary Mattress 4x36x75",
                             TypeOfPackage = "Carton",
@@ -5316,7 +6036,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 91,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7322),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6290),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2510),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2510),
+>>>>>>> Stashed changes
                             Measurement = "164 X 61 X 33",
                             Name = "Ordinary Mattress 4x54x75",
                             TypeOfPackage = "Carton",
@@ -5325,7 +6053,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 92,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7323),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6291),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
                             Measurement = "54 X 98 X 77",
                             Name = "Jumbo Rack 4 layer",
                             TypeOfPackage = "Carton",
@@ -5334,7 +6070,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 93,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7324),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6292),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2511),
+>>>>>>> Stashed changes
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -5343,7 +6087,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 94,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7325),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6292),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2512),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2512),
+>>>>>>> Stashed changes
                             Measurement = "30 X 23 X 26",
                             Name = "1339 DM KTCHP TOM(ORG) 12/567G",
                             TypeOfPackage = "Carton",
@@ -5352,7 +6104,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 95,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7326),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6293),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY DALANDAN 40/50S",
                             TypeOfPackage = "Carton",
@@ -5361,7 +6121,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 96,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7327),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6294),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2513),
+>>>>>>> Stashed changes
                             Measurement = "41 X 32 X 26",
                             Name = "30308 MAXX CANDY CHERRY 40/50S",
                             TypeOfPackage = "Carton",
@@ -5370,7 +6138,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 97,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7328),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6294),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
                             Measurement = "48 X 31 X 17",
                             Name = "TODAY'S MIXED FRUIT 6/2.9L",
                             TypeOfPackage = "Carton",
@@ -5379,7 +6155,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 98,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7329),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6296),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2514),
+>>>>>>> Stashed changes
                             Measurement = "43 X 29 X 26",
                             Name = "965 COL.MONAMI STRAW CRM 40/50'S",
                             TypeOfPackage = "Carton",
@@ -5388,7 +6172,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 99,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7330),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6296),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2515),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2515),
+>>>>>>> Stashed changes
                             Measurement = "37 X 15 X 28",
                             Name = "ABSOLUTE DISTILLED WATER 3/5000ML",
                             TypeOfPackage = "Carton",
@@ -5397,7 +6189,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 100,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7331),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6297),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
                             Measurement = "44 X 13 X 33",
                             Name = "ABSOLUTE DISTILLED WATER 3/6000ML",
                             TypeOfPackage = "Carton",
@@ -5406,7 +6206,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 101,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7332),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6297),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2516),
+>>>>>>> Stashed changes
                             Measurement = "29 X 24 X 30",
                             Name = "ABSOLUTE DISTILLED WATER 4/4000ML",
                             TypeOfPackage = "Carton",
@@ -5415,7 +6223,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 102,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7333),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6298),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2517),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2517),
+>>>>>>> Stashed changes
                             Measurement = "30 X 22 X 17",
                             Name = "AJINAMOTO GINISA MIX 48/100G",
                             TypeOfPackage = "Carton",
@@ -5424,7 +6240,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 103,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7336),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6300),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
                             Measurement = "40 X 25 X 24",
                             Name = "AJINAMOTO GINISA MIX 54/16/8G",
                             TypeOfPackage = "Carton",
@@ -5433,7 +6257,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 104,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7337),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6301),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2519),
+>>>>>>> Stashed changes
                             Measurement = "39 X 28 X 15",
                             Name = "AJINAMOTO VETSIN BLUE 48/250G",
                             TypeOfPackage = "Carton",
@@ -5442,7 +6274,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 105,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7338),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6301),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2520),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2520),
+>>>>>>> Stashed changes
                             Measurement = "35 X 22 X 18",
                             Name = "AJINAMOTO VETSIN RED 8X12X100G",
                             TypeOfPackage = "Carton",
@@ -5451,7 +6291,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 106,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7339),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6302),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
                             Measurement = "77 X 31 X 13",
                             Name = "CHEESE RING SNACK CHEESE 30/25G",
                             TypeOfPackage = "Carton",
@@ -5460,7 +6308,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 107,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7340),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6303),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2521),
+>>>>>>> Stashed changes
                             Measurement = "29 X 30 X 32",
                             Name = "DATU PUTI VINEGAR PCON 4/1GAL",
                             TypeOfPackage = "Carton",
@@ -5469,7 +6325,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 108,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7341),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6303),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
                             Measurement = "44 X 24 X 31",
                             Name = "DATU PUTI VINEGAR 8/1.893",
                             TypeOfPackage = "Carton",
@@ -5478,7 +6342,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 109,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7342),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6304),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2522),
+>>>>>>> Stashed changes
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -5487,7 +6359,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 110,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7343),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6304),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
                             Measurement = "53 X 40 X 20",
                             Name = "FIBISCO COOKIES CHOCO CHIP 36/200G",
                             TypeOfPackage = "Carton",
@@ -5496,7 +6376,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 111,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7344),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6305),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2523),
+>>>>>>> Stashed changes
                             Measurement = "51 X 38 X 82",
                             Name = "FITA CRACKER SINGLES 20/15/30G",
                             TypeOfPackage = "Carton",
@@ -5505,7 +6393,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 112,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7345),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6305),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2524),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2524),
+>>>>>>> Stashed changes
                             Measurement = "48 X 24 X 31",
                             Name = "HAPPY TIME BISCUIT ASSORTMENT 4/1.5K",
                             TypeOfPackage = "Carton",
@@ -5514,7 +6410,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 113,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7346),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6306),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
                             Measurement = "25 X 25 X 20",
                             Name = "KNR MIX SNGNG ORIG 12/12/22G",
                             TypeOfPackage = "Carton",
@@ -5523,7 +6427,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 114,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7347),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6307),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2525),
+>>>>>>> Stashed changes
                             Measurement = "34 X 14 X 20",
                             Name = "KNR SOUP CRAB & CORN 72/37G",
                             TypeOfPackage = "Carton",
@@ -5532,7 +6444,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 115,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7348),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6308),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2526),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2526),
+>>>>>>> Stashed changes
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5541,7 +6461,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 116,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7350),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6308),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
                             Measurement = "29 X 30 X 35",
                             Name = "MAGGI MAGIC SARAP SEASONING 60/16/8G",
                             TypeOfPackage = "Carton",
@@ -5550,7 +6478,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 117,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7352),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6309),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2528),
+>>>>>>> Stashed changes
                             Measurement = "18 X 14 X 12",
                             Name = "MCCORMICK BLACK PEPPER GRND 12/35G",
                             TypeOfPackage = "Carton",
@@ -5559,7 +6495,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 118,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7352),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6310),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2529),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2529),
+>>>>>>> Stashed changes
                             Measurement = "55 X 41 X 19",
                             Name = "OISHI CHEESE CLUBS 100X23G",
                             TypeOfPackage = "Carton",
@@ -5568,7 +6512,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 119,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7353),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6310),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS CHOCO 100/38G",
                             TypeOfPackage = "Carton",
@@ -5577,7 +6529,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 120,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7354),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6311),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2530),
+>>>>>>> Stashed changes
                             Measurement = "57 X 24 X 38",
                             Name = "OISHI PILLOWS UBE 100/38G",
                             TypeOfPackage = "Carton",
@@ -5586,7 +6546,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 121,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7355),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6311),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
                             Measurement = "30 X 18 X 26",
                             Name = "OREO SND.CKIE CHOCO 12/9/27G",
                             TypeOfPackage = "Carton",
@@ -5595,7 +6563,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 122,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7357),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6312),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2531),
+>>>>>>> Stashed changes
                             Measurement = "41 X 14 X 17",
                             Name = "QUEEN BAKING SODA 48/125G",
                             TypeOfPackage = "Carton",
@@ -5604,7 +6580,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 123,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7358),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6313),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2532),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2532),
+>>>>>>> Stashed changes
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5613,7 +6597,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 124,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7359),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6313),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
                             Measurement = "41 X 31 X 22",
                             Name = "WHITE KING FIESTA ELBOW MAC 12/1KG",
                             TypeOfPackage = "Carton",
@@ -5622,7 +6614,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 125,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7360),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6314),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2533),
+>>>>>>> Stashed changes
                             Measurement = "40 X 26 X 19",
                             Name = "VIVA CARAMEL CANDY 20/100'S",
                             TypeOfPackage = "Carton",
@@ -5631,7 +6631,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 126,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7361),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6314),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2565),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2565),
+>>>>>>> Stashed changes
                             Measurement = "37 X 25 X 21",
                             Name = "UFC BANANA CATSUP 24/320G",
                             TypeOfPackage = "Carton",
@@ -5640,7 +6648,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 127,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7362),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6315),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2566),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2566),
+>>>>>>> Stashed changes
                             Measurement = "44 X 18 X 69",
                             Name = "SUPER Q GOLDEN BIHON 60/227G",
                             TypeOfPackage = "Carton",
@@ -5649,7 +6665,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 128,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7363),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6316),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
                             Measurement = "69 X 38 X 18",
                             Name = "SUPER Q GOLDEN BIHON 30/500 G",
                             TypeOfPackage = "Carton",
@@ -5658,7 +6682,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 129,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7364),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6316),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2567),
+>>>>>>> Stashed changes
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O STRAW WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5667,7 +6699,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 130,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7367),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6319),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O UBE WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5676,7 +6716,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 131,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7368),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6319),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2570),
+>>>>>>> Stashed changes
                             Measurement = "42 X 33 X 18",
                             Name = "STIK-O CHOCO WATER JR 12/380G",
                             TypeOfPackage = "Carton",
@@ -5685,7 +6733,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 132,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7368),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6320),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
                             Measurement = "27 X 26 X 29",
                             Name = "ROYAL SPAGHETTI 18/900G",
                             TypeOfPackage = "Carton",
@@ -5694,7 +6750,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 133,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7370),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6320),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2571),
+>>>>>>> Stashed changes
                             Measurement = "50 X 37 X 28",
                             Name = "SKYFLAKES REG 30/10/25G",
                             TypeOfPackage = "Carton",
@@ -5703,7 +6767,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 134,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7371),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6321),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
                             Measurement = "31 X 20 X 17",
                             Name = "STIK-O CHOCO WAFER MINI 30/60G",
                             TypeOfPackage = "Carton",
@@ -5712,7 +6784,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 135,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7372),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6321),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2572),
+>>>>>>> Stashed changes
                             Measurement = "43 X 18 X 54",
                             Name = "OISHI PRAWN CRACKER 100/24G",
                             TypeOfPackage = "Carton",
@@ -5721,7 +6801,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 136,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7373),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6322),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2573),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2573),
+>>>>>>> Stashed changes
                             Measurement = "68 X 37 X 28",
                             Name = "OISHI PRAWN CRACKER 30/95G",
                             TypeOfPackage = "Carton",
@@ -5730,7 +6818,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 137,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7374),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6323),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
                             Measurement = "56 X 35 X 40",
                             Name = "OISHI PRAWN CRACKER 50/60G",
                             TypeOfPackage = "Carton",
@@ -5739,7 +6835,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 138,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7375),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6323),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2574),
+>>>>>>> Stashed changes
                             Measurement = "31 X 20 X 17",
                             Name = "SNACKU VEGETABLE SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5748,7 +6852,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 139,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7376),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6324),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
                             Measurement = "73 X 33 X 13",
                             Name = "SWEET CORN SNACK 25/60G",
                             TypeOfPackage = "Carton",
@@ -5757,7 +6869,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 140,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7377),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6324),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2575),
+>>>>>>> Stashed changes
                             Measurement = "31 X 13 X 70",
                             Name = "SWEET CORN SNACK 30/25",
                             TypeOfPackage = "Carton",
@@ -5766,7 +6886,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 141,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7378),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6325),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FRSH SCNT 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5775,7 +6903,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 142,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7379),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6326),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2576),
+>>>>>>> Stashed changes
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH ORIGINAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5784,7 +6920,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 143,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7381),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6328),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH FLORAL 24/1000ML",
                             TypeOfPackage = "Carton",
@@ -5793,7 +6937,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 144,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7382),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6328),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2579),
+>>>>>>> Stashed changes
                             Measurement = "52 X 36 X 26",
                             Name = "ZONROX BLEACH COLORSAFE 24/900ML",
                             TypeOfPackage = "Carton",
@@ -5802,7 +6954,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 145,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7383),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6329),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
                             Measurement = "32 X 26 X 32",
                             Name = "MENTOS CANDY TROPICAL MIX 40/50",
                             TypeOfPackage = "Carton",
@@ -5811,7 +6971,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 146,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7384),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6330),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2580),
+>>>>>>> Stashed changes
                             Measurement = "29 X 15 X 23",
                             Name = "KJSN SOAP SKIN LGHTNNG 24/2/135G",
                             TypeOfPackage = "Carton",
@@ -5820,7 +6988,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 147,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7385),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6330),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2581),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2581),
+>>>>>>> Stashed changes
                             Measurement = "34 X 30 X 11",
                             Name = "TIDE BAR NAT FRSH 36/380G",
                             TypeOfPackage = "Carton",
@@ -5829,7 +7005,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 148,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7386),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6331),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
                             Measurement = "31 X 22 X 15",
                             Name = "SURF BAR W/FBCN BLOSFRSH",
                             TypeOfPackage = "Carton",
@@ -5838,7 +7022,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 149,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7387),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6331),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2582),
+>>>>>>> Stashed changes
                             Measurement = "22 X 19 X 24",
                             Name = "KJSN SOAP SKIN LGHTNNG 48/2/65G",
                             TypeOfPackage = "Carton",
@@ -5847,7 +7039,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 150,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7389),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6332),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2583),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2583),
+>>>>>>> Stashed changes
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET NW 36X8",
                             TypeOfPackage = "Carton",
@@ -5856,7 +7056,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 151,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7389),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6333),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
                             Measurement = "36 X 33 X 25",
                             Name = "CHARMEE S.NPKN A.FLW D.NET W 36X8",
                             TypeOfPackage = "Carton",
@@ -5865,7 +7073,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 152,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7390),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6333),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2584),
+>>>>>>> Stashed changes
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L PURE",
                             TypeOfPackage = "Carton",
@@ -5874,7 +7090,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 153,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7392),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6334),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2585),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2585),
+>>>>>>> Stashed changes
                             Measurement = "39 X 19 X 42",
                             Name = "NATURE SPRING 10L DISTILLED",
                             TypeOfPackage = "Carton",
@@ -5883,7 +7107,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 154,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7392),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6334),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
                             Measurement = "50 X 41 X 19",
                             Name = "KENDI MINT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5892,7 +7124,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 155,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7393),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6335),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2586),
+>>>>>>> Stashed changes
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY ORIGINAL 13/14/62",
                             TypeOfPackage = "Carton",
@@ -5901,7 +7141,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 156,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7394),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6335),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2587),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2587),
+>>>>>>> Stashed changes
                             Measurement = "32 X 22 X 34",
                             Name = "MIRINDA ORANGE PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5910,7 +7158,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 157,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7397),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6338),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2589),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2589),
+>>>>>>> Stashed changes
                             Measurement = "35 X 26 X 22",
                             Name = "108080 SPRITE REG PET BOT 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5919,7 +7175,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 158,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7398),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6339),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
                             Measurement = "46 X 30 X 15",
                             Name = "AJINAMOTO GINISA MIX 120/40G",
                             TypeOfPackage = "Carton",
@@ -5928,7 +7192,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 159,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7399),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6339),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2590),
+>>>>>>> Stashed changes
                             Measurement = "32 X 22 X 34",
                             Name = "PEPSI REG PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5937,7 +7209,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 160,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7400),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6340),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
                             Measurement = "38 X 30 X 24",
                             Name = "MENTOS CANDY MINT BAG 40/50",
                             TypeOfPackage = "Carton",
@@ -5946,7 +7226,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 161,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7401),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6362),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2591),
+>>>>>>> Stashed changes
                             Measurement = "50 X 41 X 19",
                             Name = "VIVA CARAMEL CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -5955,7 +7243,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 162,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7402),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6364),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2592),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2592),
+>>>>>>> Stashed changes
                             Measurement = "32 X 22 X 34",
                             Name = "MOUNTAIN DEW PET BOTTLE 12/1.5L",
                             TypeOfPackage = "Carton",
@@ -5964,7 +7260,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 163,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7403),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6364),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
                             Measurement = "33 X 16 X 21",
                             Name = "STING ENERGY DRINK STRAWBERRY 24/320",
                             TypeOfPackage = "Carton",
@@ -5973,7 +7277,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 164,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7404),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6365),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2593),
+>>>>>>> Stashed changes
                             Measurement = "40 X 23 X 22",
                             Name = "PEPSI REG PET BOT 24/500ML",
                             TypeOfPackage = "Carton",
@@ -5982,7 +7294,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 165,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7405),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6365),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2594),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2594),
+>>>>>>> Stashed changes
                             Measurement = "72 X 40 X 17",
                             Name = "SUPER Q PALABOK 12/500G",
                             TypeOfPackage = "Carton",
@@ -5991,7 +7311,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 166,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7406),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6366),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
                             Measurement = "33 X 27 X 29",
                             Name = "LORINS PATIS PLASTIC 12/1000ML",
                             TypeOfPackage = "Carton",
@@ -6000,7 +7328,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 167,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7407),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6367),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2595),
+>>>>>>> Stashed changes
                             Measurement = "37 X 26 X 19",
                             Name = "LORINS PATIS PLASTIC 24/350ML",
                             TypeOfPackage = "Carton",
@@ -6009,7 +7345,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 168,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7409),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6367),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
                             Measurement = "43 X 20 X 25",
                             Name = "AJI CRISPY FRY GARLIC 13/14/62G",
                             TypeOfPackage = "Carton",
@@ -6018,7 +7362,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 169,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7409),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6368),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2596),
+>>>>>>> Stashed changes
                             Measurement = "50 X 41 X 19",
                             Name = "WHITE RABBIT CANDY 60/50",
                             TypeOfPackage = "Carton",
@@ -6027,7 +7379,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 170,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7412),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6370),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2598),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2598),
+>>>>>>> Stashed changes
                             Measurement = "39 X 31 X 21",
                             Name = "RICOA FLAT TOPS 12/100",
                             TypeOfPackage = "Carton",
@@ -6036,7 +7396,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 171,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7413),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6371),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2599),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2599),
+>>>>>>> Stashed changes
                             Measurement = "30 X 22 X 17",
                             Name = "SURF BAR KALAMANSI 36/360G",
                             TypeOfPackage = "Carton",
@@ -6045,7 +7413,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 172,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7414),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6372),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2600),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2600),
+>>>>>>> Stashed changes
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 APPLE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -6054,7 +7430,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 173,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7415),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6372),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 GRAPE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -6063,7 +7447,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 174,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7416),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6373),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2601),
+>>>>>>> Stashed changes
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG 250 ORANGE 10/250ML",
                             TypeOfPackage = "Carton",
@@ -6072,7 +7464,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 175,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7418),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6374),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
                             Measurement = "32 X 10 X 17",
                             Name = "ZEST-O BIG MANGO 10/250ML",
                             TypeOfPackage = "Carton",
@@ -6081,7 +7481,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 176,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7444),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6374),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2602),
+>>>>>>> Stashed changes
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 1KG",
                             TypeOfPackage = "Carton",
@@ -6090,7 +7498,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 177,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7445),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6375),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2603),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2603),
+>>>>>>> Stashed changes
                             Measurement = "32 X 27 X 20",
                             Name = "IODIZED SALT 500G",
                             TypeOfPackage = "Carton",
@@ -6099,7 +7515,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 178,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7446),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6376),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP SINIGANG MIX 20G",
                             TypeOfPackage = "Carton",
@@ -6108,7 +7532,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 179,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7447),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6376),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2604),
+>>>>>>> Stashed changes
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -6117,7 +7549,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 180,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7448),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6377),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
                             Measurement = "28 X 28 X 19",
                             Name = "LASAP VETSIN 100G",
                             TypeOfPackage = "Carton",
@@ -6126,7 +7566,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 181,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7449),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6378),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2605),
+>>>>>>> Stashed changes
                             Measurement = "33 X 19 X 15",
                             Name = "LASAP SINIGANG MIX W/GABI 22G",
                             TypeOfPackage = "Carton",
@@ -6135,7 +7583,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 182,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7450),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6378),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2606),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2606),
+>>>>>>> Stashed changes
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP OYSTER SAUCE 170 G",
                             TypeOfPackage = "Carton",
@@ -6144,7 +7600,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 183,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7451),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6379),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2607),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2607),
+>>>>>>> Stashed changes
                             Measurement = "32 X 22 X 17",
                             Name = "LASAP KARE KARE MIX 75G",
                             TypeOfPackage = "Carton",
@@ -6153,7 +7617,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 184,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7454),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6381),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2608),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2608),
+>>>>>>> Stashed changes
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP TOCINO MIX",
                             TypeOfPackage = "Carton",
@@ -6162,7 +7634,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 185,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7455),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6382),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
                             Measurement = "30 X 14 X 13",
                             Name = "LASAP BBQ MIX 50G",
                             TypeOfPackage = "Carton",
@@ -6171,7 +7651,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 186,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7456),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6382),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2609),
+>>>>>>> Stashed changes
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT TEMPURA SHRIMP 25/100G",
                             TypeOfPackage = "Carton",
@@ -6180,7 +7668,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 187,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7457),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6383),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT LABSTER 25/100G",
                             TypeOfPackage = "Carton",
@@ -6189,7 +7685,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 188,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7458),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6384),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2610),
+>>>>>>> Stashed changes
                             Measurement = "59 X 36 X 40",
                             Name = "REGENT ISDALICIOUS 25/85G",
                             TypeOfPackage = "Carton",
@@ -6198,7 +7702,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 189,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7459),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6384),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2611),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2611),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT UBE CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -6207,7 +7719,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 190,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7460),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6385),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT SAND CAKE MELON 8/10S",
                             TypeOfPackage = "Carton",
@@ -6216,7 +7736,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 191,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7461),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6385),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2612),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT MOCHA CAKE 8/10'S",
                             TypeOfPackage = "Carton",
@@ -6225,7 +7753,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 192,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7462),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6386),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE UBE CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6234,7 +7770,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 193,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7463),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6388),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2613),
+>>>>>>> Stashed changes
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHOKORETO CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6243,7 +7787,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 194,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7464),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6389),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT JAPANESE CHEESECAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6252,7 +7804,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 195,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7465),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6390),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2614),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI MANGO 240G",
                             TypeOfPackage = "Carton",
@@ -6261,7 +7821,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 196,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7466),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6390),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2615),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2615),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI UBE 240 G",
                             TypeOfPackage = "Carton",
@@ -6270,7 +7838,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 197,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7469),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6391),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2617),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2617),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT BUKO PANDAN 240G",
                             TypeOfPackage = "Carton",
@@ -6279,7 +7855,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 198,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7470),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6391),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI ASSORTED",
                             TypeOfPackage = "Carton",
@@ -6288,7 +7872,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 199,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7471),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6392),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2618),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -6297,7 +7889,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 200,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7472),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6393),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
                             Measurement = "34 X 27 X 14",
                             Name = "REGENT MOCHI BLACK SESAME 240G",
                             TypeOfPackage = "Carton",
@@ -6306,7 +7906,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 201,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7472),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6393),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2619),
+>>>>>>> Stashed changes
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SEAWEED 60G",
                             TypeOfPackage = "Carton",
@@ -6315,7 +7923,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 202,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7473),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6394),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2620),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2620),
+>>>>>>> Stashed changes
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S SAL VINEGAR 60G",
                             TypeOfPackage = "Carton",
@@ -6324,7 +7940,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 203,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7475),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6394),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
                             Measurement = "50 X 38 X 26",
                             Name = "CRIS P'S CHEESE",
                             TypeOfPackage = "Carton",
@@ -6333,7 +7957,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 204,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7476),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6397),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2621),
+>>>>>>> Stashed changes
                             Measurement = "40 X 21 X 18",
                             Name = "POTATO CRACKERS",
                             TypeOfPackage = "Carton",
@@ -6342,7 +7974,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 205,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7477),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6397),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2622),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2622),
+>>>>>>> Stashed changes
                             Measurement = "61 X 39 X 41",
                             Name = "KING CRAB",
                             TypeOfPackage = "Carton",
@@ -6351,7 +7991,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 206,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7478),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6398),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
                             Measurement = "60 X 30 X 33",
                             Name = "GOLDEN SWEET CORN",
                             TypeOfPackage = "Carton",
@@ -6360,7 +8008,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 207,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7479),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6399),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2623),
+>>>>>>> Stashed changes
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING JALAPENO",
                             TypeOfPackage = "Carton",
@@ -6369,7 +8025,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 208,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7480),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6399),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
                             Measurement = "60 X 30 X 33",
                             Name = "CHEESE RING CHEESE",
                             TypeOfPackage = "Carton",
@@ -6378,7 +8042,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 209,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7481),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6400),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2624),
+>>>>>>> Stashed changes
                             Measurement = "61 X 39 X 41",
                             Name = "FRENCH FRIES",
                             TypeOfPackage = "Carton",
@@ -6387,7 +8059,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 210,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7483),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6401),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
                             Measurement = "61 X 39 X 41",
                             Name = "SHRIMP FRITTERS",
                             TypeOfPackage = "Carton",
@@ -6396,7 +8076,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 211,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7484),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6401),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2628),
+>>>>>>> Stashed changes
                             Measurement = "54 X 35 X 38",
                             Name = "MOBY CARAMEL 90G",
                             TypeOfPackage = "Carton",
@@ -6405,7 +8093,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 212,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7485),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6402),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2629),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2629),
+>>>>>>> Stashed changes
                             Measurement = "64 X 46 X 18",
                             Name = "CHEESE IT CHEESE 60G",
                             TypeOfPackage = "Carton",
@@ -6414,7 +8110,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 213,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7486),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6403),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE CHIPS 60G",
                             TypeOfPackage = "Carton",
@@ -6423,7 +8127,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 214,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7487),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6403),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2630),
+>>>>>>> Stashed changes
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL PUFFS 60G",
                             TypeOfPackage = "Carton",
@@ -6432,7 +8144,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 215,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7488),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6404),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2631),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2631),
+>>>>>>> Stashed changes
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCOLATE 25G",
                             TypeOfPackage = "Carton",
@@ -6441,7 +8161,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 216,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7489),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6405),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CARAMEL 25G",
                             TypeOfPackage = "Carton",
@@ -6450,7 +8178,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 217,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7490),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6405),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2632),
+>>>>>>> Stashed changes
                             Measurement = "63 X 46 X 18",
                             Name = "MOBY CHOCO CUM CHOC BU",
                             TypeOfPackage = "Carton",
@@ -6459,7 +8195,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 218,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7491),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6406),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED CHOCO FILLED 65G",
                             TypeOfPackage = "Carton",
@@ -6468,7 +8212,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 219,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7492),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6406),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2633),
+>>>>>>> Stashed changes
                             Measurement = "58 X 48 X 18",
                             Name = "LOADED WHITE CHOCO 65G",
                             TypeOfPackage = "Carton",
@@ -6477,7 +8229,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 220,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7493),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6407),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2634),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2634),
+>>>>>>> Stashed changes
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6486,7 +8246,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 221,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7494),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6409),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED WHITE CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6495,7 +8263,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 222,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7495),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6409),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2635),
+>>>>>>> Stashed changes
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6504,7 +8280,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 223,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7496),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6410),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2636),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2636),
+>>>>>>> Stashed changes
                             Measurement = "56 X 36 X 38",
                             Name = "LOADED CHOCO 32G",
                             TypeOfPackage = "Carton",
@@ -6513,7 +8297,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 224,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7498),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6411),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -6522,7 +8314,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 225,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7499),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6411),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2638),
+>>>>>>> Stashed changes
                             Measurement = "46 X 32 X 52",
                             Name = "TOMI SWEET CORN 110G",
                             TypeOfPackage = "Carton",
@@ -6531,7 +8331,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 226,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7500),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6412),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT STRAWBERRY CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6540,7 +8348,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 227,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7501),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6412),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2639),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT PANDAN CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6549,7 +8365,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 228,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7502),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6413),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2640),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2640),
+>>>>>>> Stashed changes
                             Measurement = "37 X 35 X 17",
                             Name = "REGENT ASSORTED CAKE 8/10S",
                             TypeOfPackage = "Carton",
@@ -6558,7 +8382,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 229,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7503),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6414),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
                             Measurement = "44 X 27 X 22",
                             Name = "REGENT BANANA CAKE 34G",
                             TypeOfPackage = "Carton",
@@ -6567,7 +8399,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 230,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7504),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6414),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2641),
+>>>>>>> Stashed changes
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN WAFFLE 30G",
                             TypeOfPackage = "Carton",
@@ -6576,7 +8416,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 231,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7505),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6415),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6585,7 +8433,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 232,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7506),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6415),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2642),
+>>>>>>> Stashed changes
                             Measurement = "46 X 30 X 15",
                             Name = "REGENT BELGIAN CHOCO",
                             TypeOfPackage = "Carton",
@@ -6594,7 +8450,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 233,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7508),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6416),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2643),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2643),
+>>>>>>> Stashed changes
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE MACAPUNO 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6603,7 +8467,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 234,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7509),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6417),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
                             Measurement = "38 X 30 X 18",
                             Name = "FLORENCE JACKFRUIT 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6612,7 +8484,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 235,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7510),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6417),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2644),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE KAONG RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6621,7 +8501,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 236,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7511),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6418),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2645),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2645),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO WHITE 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6630,7 +8518,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 237,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7514),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6420),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO GREEN 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6639,7 +8535,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 238,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7514),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6421),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2646),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE NATA DE COCO RED 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6648,7 +8552,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 240,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7515),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6421),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2647),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2647),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE JACKFRUIT 24X12OZ",
                             TypeOfPackage = "Carton",
@@ -6657,7 +8569,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 241,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7516),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6422),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6666,7 +8586,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 242,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7517),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6422),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2681),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE PURPLE YAM 24/12OZ",
                             TypeOfPackage = "Carton",
@@ -6675,7 +8603,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 243,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7518),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6423),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO WHITE 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6684,7 +8620,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 244,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7519),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6423),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2682),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO GREEN 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6693,7 +8637,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 245,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7520),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6424),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2683),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2683),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE NATA DE COCO RED 12/24OZ",
                             TypeOfPackage = "Carton",
@@ -6702,7 +8654,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 246,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7521),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6425),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
                             Measurement = "42 X 32 X 15",
                             Name = "FLORENCE SALTED SHRIMP 24/340G",
                             TypeOfPackage = "Carton",
@@ -6711,7 +8671,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 247,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7522),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6425),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2684),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SWEET",
                             TypeOfPackage = "Carton",
@@ -6720,7 +8688,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 248,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7523),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6426),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2685),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2685),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP REGULAR",
                             TypeOfPackage = "Carton",
@@ -6729,7 +8705,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 249,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7524),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6427),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
                             Measurement = "40 X 27 X 13",
                             Name = "FLORENCE SAU SHRIMP SPICY",
                             TypeOfPackage = "Carton",
@@ -6738,7 +8722,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 250,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7525),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6427),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2686),
+>>>>>>> Stashed changes
                             Measurement = "39 X 28 X 13",
                             Name = "FLORENCE BAGOONG BALAYAN",
                             TypeOfPackage = "Carton",
@@ -6747,7 +8739,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 251,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7526),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6428),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2687),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2687),
+>>>>>>> Stashed changes
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR CHOCO",
                             TypeOfPackage = "Carton",
@@ -6756,7 +8756,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 252,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7529),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6431),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2689),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2689),
+>>>>>>> Stashed changes
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR MATHCA",
                             TypeOfPackage = "Carton",
@@ -6765,7 +8773,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 253,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7530),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6431),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
                             Measurement = "58 X 34 X 38",
                             Name = "ADORABLE CREAM BAR STRAWBERRY",
                             TypeOfPackage = "Carton",
@@ -6774,7 +8790,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 254,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7531),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6432),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2690),
+>>>>>>> Stashed changes
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6783,7 +8807,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 255,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7532),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6433),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 150G",
                             TypeOfPackage = "Carton",
@@ -6792,7 +8824,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 256,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7533),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6433),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2691),
+>>>>>>> Stashed changes
                             Measurement = "36 X 44 X 23",
                             Name = "MONIEGOLD TAMARIND CHEWY 80G",
                             TypeOfPackage = "Carton",
@@ -6801,7 +8841,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 257,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7534),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6434),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2692),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2692),
+>>>>>>> Stashed changes
                             Measurement = "53 X 34 X 30",
                             Name = "COCONUT ENERGY BAR NUTS 24/400",
                             TypeOfPackage = "Carton",
@@ -6810,7 +8858,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 258,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7535),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6434),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6819,7 +8875,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 259,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7536),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6435),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2693),
+>>>>>>> Stashed changes
                             Measurement = "54 X 36 X 16",
                             Name = "COCONUT BLAST ICECREAM STRAWBERRY 24/300",
                             TypeOfPackage = "Carton",
@@ -6828,7 +8892,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 260,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7537),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6435),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2694),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2694),
+>>>>>>> Stashed changes
                             Measurement = "54 X 36 X 16",
                             Name = "COCO CREAM BAR CHOCO 24/300",
                             TypeOfPackage = "Carton",
@@ -6837,7 +8909,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 261,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7538),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6436),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2695),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2695),
+>>>>>>> Stashed changes
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 APPLE",
                             TypeOfPackage = "Carton",
@@ -6846,7 +8926,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 262,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7540),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6437),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 GRAPE",
                             TypeOfPackage = "Carton",
@@ -6855,7 +8943,15 @@ namespace WMS.Api.Data.Migrations
                         new
                         {
                             Id = 263,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(7541),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(6438),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(2696),
+>>>>>>> Stashed changes
                             Measurement = "41 X 24 X 17",
                             Name = "BIG 250 ORANGE",
                             TypeOfPackage = "Carton",
@@ -6905,7 +9001,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 1,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6644),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5697),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1936),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1936),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 3,
                             Name = "Metal Shelving 1",
@@ -6915,7 +9019,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 2,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6659),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5714),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1954),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1954),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 5,
                             Name = "Metal Shelving 2",
@@ -6925,7 +9037,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 3,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6660),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5715),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 1",
@@ -6935,7 +9055,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 4,
                             BayId = 6,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6662),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5716),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1956),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 2",
@@ -6945,7 +9073,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 5,
                             BayId = 3,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6663),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5717),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 4,
                             Name = "Pallet Racking 3",
@@ -6955,7 +9091,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 6,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6664),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5717),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1957),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 1",
@@ -6965,7 +9109,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 7,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6665),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5718),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 2",
@@ -6975,7 +9127,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 8,
                             BayId = 2,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6666),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5719),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1958),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 3",
@@ -6985,7 +9145,15 @@ namespace WMS.Api.Data.Migrations
                         {
                             Id = 9,
                             BayId = 1,
-                            DateAdded = new DateTime(2026, 10, 13, 11, 20, 42, 180, DateTimeKind.Local).AddTicks(6667),
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+                            DateAdded = new DateTime(2026, 10, 14, 10, 6, 17, 180, DateTimeKind.Local).AddTicks(5719),
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1959),
+>>>>>>> Stashed changes
+=======
+                            DateAdded = new DateTime(2026, 10, 14, 9, 52, 5, 488, DateTimeKind.Local).AddTicks(1959),
+>>>>>>> Stashed changes
                             IsFloorDocking = false,
                             LevelId = 7,
                             Name = "Crossdocking 4",
