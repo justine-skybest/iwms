@@ -9,6 +9,7 @@ using WMS.Api.Dtos.Receiving;
 using WMS.Api.Entities;
 using WMS.Api.Hubs;
 using WMS.Api.Mapping;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints;
 
@@ -387,7 +388,14 @@ public static class PalletEndpoint
         // -----------------------------------------------------------------------------
         // Mutation Endpoints
         // -----------------------------------------------------------------------------
-        group.MapPost("/", async (CreatePalletDto newPallet, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
+        // -----------------------------------------------------------------------------
+        // POST / - CREATE PALLET
+        // -----------------------------------------------------------------------------
+        group.MapPost("/", async (
+            CreatePalletDto newPallet,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService) =>
         {
             Pallet pallet = newPallet.ToEntity();
             dbContext.Pallets.Add(pallet);
@@ -398,6 +406,21 @@ public static class PalletEndpoint
 
             await hubContext.Clients.All.PalletCreated();
 
+            await auditLogService.LogAsync(
+                category: "Pallet",
+                action: "Created",
+                description: $"Created pallet #{pallet.PalletNumber} for Warehouse #{pallet.WarehouseId}.",
+                details: new
+                {
+                    PalletId = pallet.Id,
+                    PalletNumber = pallet.PalletNumber,
+                    WarehouseId = pallet.WarehouseId,
+                    PalletDimension = pallet.PalletDimension,
+                    CapacityInKG = pallet.CapacityInKG,
+                    CapacityInCBM = pallet.CapacityInCBM
+                }
+            );
+
             return Results.CreatedAtRoute(GetPalletEndpointName, new { id = pallet.Id }, pallet.ToSummaryDto());
         })
         .WithName("CreatePallet")
@@ -407,13 +430,20 @@ public static class PalletEndpoint
         .Produces<PalletSummaryDto>(StatusCodes.Status201Created)
         .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
-        group.MapPost("/autocreate/{WarehouseId:int}", async (WMSContext dbContext, int WarehouseId, IHubContext<NotificationHub, INotificationClient> hubContext) =>
+        // -----------------------------------------------------------------------------
+        // POST /autocreate/{WarehouseId:int} - AUTO-GENERATE PALLET
+        // -----------------------------------------------------------------------------
+        group.MapPost("/autocreate/{WarehouseId:int}", async (
+            int WarehouseId,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService) =>
         {
             var lastNumber = await dbContext.Pallets
-                                .OrderByDescending(pallet => pallet.PalletNumber)
-                                .Where(pallet => pallet.WarehouseId == WarehouseId)
-                                .Select(pallet => pallet.PalletNumber)
-                                .FirstOrDefaultAsync();
+                .OrderByDescending(pallet => pallet.PalletNumber)
+                .Where(pallet => pallet.WarehouseId == WarehouseId)
+                .Select(pallet => pallet.PalletNumber)
+                .FirstOrDefaultAsync();
 
             var newPalletNumber = lastNumber + 1;
 
@@ -437,10 +467,34 @@ public static class PalletEndpoint
 
             await hubContext.Clients.All.PalletCreated();
 
-            return pallet is null ? Results.NoContent() : Results.Ok(pallet.ToDetailDto());
-        });
+            await auditLogService.LogAsync(
+                category: "Pallet",
+                action: "AutoCreated",
+                description: $"Auto-created pallet #{pallet.PalletNumber} for Warehouse #{WarehouseId}.",
+                details: new
+                {
+                    PalletId = pallet.Id,
+                    PalletNumber = pallet.PalletNumber,
+                    WarehouseId = WarehouseId
+                }
+            );
 
-        group.MapPut("/{id}", async (int id, CreatePalletDto updatedPallet, WMSContext dbContext, IHubContext<NotificationHub, INotificationClient> hubContext) =>
+            return pallet is null ? Results.NoContent() : Results.Ok(pallet.ToDetailDto());
+        })
+        .WithName("AutoCreatePallet")
+        .WithSummary("Auto-generate next pallet for warehouse")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status204NoContent);
+
+        // -----------------------------------------------------------------------------
+        // PUT /{id:int} - UPDATE PALLET
+        // -----------------------------------------------------------------------------
+        group.MapPut("/{id:int}", async (
+            int id,
+            CreatePalletDto updatedPallet,
+            WMSContext dbContext,
+            IHubContext<NotificationHub, INotificationClient> hubContext,
+            IAuditLogService auditLogService) =>
         {
             var existingPallet = await dbContext.Pallets.FindAsync(id);
             if (existingPallet is null)
@@ -453,6 +507,21 @@ public static class PalletEndpoint
 
             await hubContext.Clients.All.PalletUpdated();
 
+            await auditLogService.LogAsync(
+                category: "Pallet",
+                action: "Updated",
+                description: $"Updated pallet #{updatedPallet.PalletNumber} (ID: {id}) in Warehouse #{updatedPallet.WarehouseId}.",
+                details: new
+                {
+                    PalletId = id,
+                    PalletNumber = updatedPallet.PalletNumber,
+                    WarehouseId = updatedPallet.WarehouseId,
+                    PalletDimension = updatedPallet.PalletDimension,
+                    CapacityInKG = updatedPallet.CapacityInKG,
+                    CapacityInCBM = updatedPallet.CapacityInCBM
+                }
+            );
+
             return Results.NoContent();
         })
         .WithName("UpdatePallet")
@@ -463,11 +532,44 @@ public static class PalletEndpoint
         .Produces(StatusCodes.Status404NotFound)
         .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
-        group.MapDelete("/{id}", async (int id, WMSContext dbContext) =>
+        // -----------------------------------------------------------------------------
+        // DELETE /{id:int} - DELETE PALLET
+        // -----------------------------------------------------------------------------
+        group.MapDelete("/{id:int}", async (
+            int id,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
-            await dbContext.Pallets.Where(pallet => pallet.Id == id).ExecuteDeleteAsync();
+            var existingPallet = await dbContext.Pallets.FirstOrDefaultAsync(pallet => pallet.Id == id);
+            if (existingPallet is null)
+            {
+                return Results.NotFound();
+            }
+
+            var snapshotPalletNumber = existingPallet.PalletNumber;
+            var snapshotWarehouseId = existingPallet.WarehouseId;
+
+            dbContext.Pallets.Remove(existingPallet);
+            await dbContext.SaveChangesAsync();
+
+            await auditLogService.LogAsync(
+                category: "Pallet",
+                action: "Deleted",
+                description: $"Deleted pallet #{snapshotPalletNumber} (ID: {id}) from Warehouse #{snapshotWarehouseId}.",
+                details: new
+                {
+                    DeletedId = id,
+                    PalletNumber = snapshotPalletNumber,
+                    WarehouseId = snapshotWarehouseId
+                }
+            );
+
             return Results.NoContent();
-        });
+        })
+        .WithName("DeletePallet")
+        .WithSummary("Delete a pallet")
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status404NotFound);
 
         return group;
     }

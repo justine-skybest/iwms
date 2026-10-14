@@ -123,14 +123,14 @@ export type { GetPallet$Params as GetPallet$Params } from './fn/pallet/get-palle
 export { getPallet as getPallet } from './fn/pallet/get-pallet';
 export type { UpdatePallet$Params as UpdatePallet$Params } from './fn/pallet/update-pallet';
 export { updatePallet as updatePallet } from './fn/pallet/update-pallet';
-export type { PalletIdDelete$Params as PalletIdDelete$Params } from './fn/pallet/pallet-id-delete';
-export { palletIdDelete as palletIdDelete } from './fn/pallet/pallet-id-delete';
+export type { DeletePallet$Params as DeletePallet$Params } from './fn/pallet/delete-pallet';
+export { deletePallet as deletePallet } from './fn/pallet/delete-pallet';
 export type { PalletQrCodePalletHashCodeWarehouseIdGet$Params as PalletQrCodePalletHashCodeWarehouseIdGet$Params } from './fn/pallet/pallet-qr-code-pallet-hash-code-warehouse-id-get';
 export { palletQrCodePalletHashCodeWarehouseIdGet as palletQrCodePalletHashCodeWarehouseIdGet } from './fn/pallet/pallet-qr-code-pallet-hash-code-warehouse-id-get';
 export type { PalletNumberWarehouseIdGet$Params as PalletNumberWarehouseIdGet$Params } from './fn/pallet/pallet-number-warehouse-id-get';
 export { palletNumberWarehouseIdGet as palletNumberWarehouseIdGet } from './fn/pallet/pallet-number-warehouse-id-get';
-export type { PalletAutocreateWarehouseIdPost$Params as PalletAutocreateWarehouseIdPost$Params } from './fn/pallet/pallet-autocreate-warehouse-id-post';
-export { palletAutocreateWarehouseIdPost as palletAutocreateWarehouseIdPost } from './fn/pallet/pallet-autocreate-warehouse-id-post';
+export type { AutoCreatePallet$Params as AutoCreatePallet$Params } from './fn/pallet/auto-create-pallet';
+export { autoCreatePallet as autoCreatePallet } from './fn/pallet/auto-create-pallet';
 export type { GetPalletsV2$Params as GetPalletsV2$Params } from './fn/pallets/get-pallets-v-2';
 export { getPalletsV2 as getPalletsV2 } from './fn/pallets/get-pallets-v-2';
 export type { GetRacks$Params as GetRacks$Params } from './fn/racks/get-racks';
