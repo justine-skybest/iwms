@@ -19,6 +19,7 @@ import {
 } from './outbound-workflow.models';
 import { OutboundWorkflowService } from './outbound-workflow.service';
 import { RouterLink } from '@angular/router';
+import { WarehouseService } from '../../lib/services/warehouse.service';
 
 @Component({
   selector: 'app-outbound-workflow',
@@ -31,6 +32,8 @@ export class OutboundWorkflowComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly cd = inject(ChangeDetectorRef);
   private hasLoadedData = false;
+
+  private warehouseService = inject(WarehouseService);
 
   // Workspace Navigation & Drawer States
   activeTab: 'stages' | 'loadingPlans' = 'stages';
@@ -450,7 +453,7 @@ async loadData(): Promise<void> {
 
   toggleStageSelection(stage: OutboundStage, checked: boolean): void {
     if (checked) {
-      const currentWarehouseId = this.selectedStageWarehouseId;
+      const currentWarehouseId = this.warehouseService.selectedWarehouseId();
       if (currentWarehouseId !== null && currentWarehouseId !== stage.warehouseId) {
         this.error = 'A loading plan can only include stages from the same warehouse.';
         this.cd.markForCheck();
@@ -462,11 +465,6 @@ async loadData(): Promise<void> {
       this.selectedStageIds.delete(stage.id);
       this.error = '';
     }
-  }
-
-  get selectedStageWarehouseId(): number | null {
-    const selected = this.stages.find((stage) => this.selectedStageIds.has(stage.id));
-    return selected?.warehouseId ?? null;
   }
 
   get selectedProductCount(): number {
@@ -570,7 +568,7 @@ async createStage(): Promise<void> {
       return;
     }
 
-    const warehouseId = this.selectedStageWarehouseId;
+    const warehouseId = this.warehouseService.selectedWarehouseId();
     if (warehouseId === null) {
       this.error = 'The selected stages do not have a warehouse.';
       return;
