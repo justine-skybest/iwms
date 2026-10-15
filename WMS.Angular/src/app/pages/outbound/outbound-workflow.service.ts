@@ -47,7 +47,7 @@ export class OutboundWorkflowService {
     return firstValueFrom(
       this.http.get<ManualPickingSummaryDtoPaginatedResponse>(
         `${this.apiUrl}/manualpicking/v2`,
-        { params: { page: 1, pageSize: 100, WarehouseId: Number(this.warehouseService.selectedWarehouseId)! } },
+        { params: { page: 1, pageSize: 100, WarehouseId: Number(this.warehouseService.selectedWarehouseId())! } },
       ),
     );
   }
