@@ -100,7 +100,7 @@ public static class TransferV2Endpoint
                     dbContext.TransferLogs.Add(new TransferLog
                     {
                         TransferType = "Pallet",
-                        WarehouseId = toBin.Rack!.WarehouseId,
+                        WarehouseId = (toBin.Rack?.WarehouseId ?? toBin.WarehouseId)!.Value,
                         PalletId = palletId,
                         FromBinId = request.FromBinId,
                         ToBinId = request.ToBinId,
