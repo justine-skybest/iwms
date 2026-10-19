@@ -236,8 +236,8 @@ public static class TransferEndpoint
                     : log.ReceivedProductId.HasValue && products.TryGetValue(log.ReceivedProductId.Value, out var productName)
                         ? productName
                         : "Unknown",
-                bins.TryGetValue(log.FromBinId, out var fromLocation) ? fromLocation : "Unknown",
-                bins.TryGetValue(log.ToBinId, out var toLocation) ? toLocation : "Unknown",
+                log.FromBinId.HasValue && bins.TryGetValue(log.FromBinId.Value, out var fromLoc) ? fromLoc : "Unknown",
+                log.ToBinId.HasValue && bins.TryGetValue(log.ToBinId.Value, out var toLoc) ? toLoc : "Unknown",
                 log.TransferDate,
                 log.Notes
             )).ToList();

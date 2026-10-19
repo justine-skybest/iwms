@@ -42,6 +42,7 @@ public static class PickingEndpoint
             WMSContext dbContext,
             string? search = null,
             int page = 1,
+            int? WarehouseId = null,
             int pageSize = 50,
             CancellationToken cancellationToken = default) =>
         {
@@ -57,6 +58,11 @@ public static class PickingEndpoint
                     .ThenInclude(pickedProduct => pickedProduct.ReceivedProduct)
                         .ThenInclude(receivedProduct => receivedProduct!.Product)
                 .AsNoTracking();
+
+            if(WarehouseId.HasValue)
+            {
+                query = query.Where(picking => picking.WarehouseId == WarehouseId.Value);
+            }
 
             if (!string.IsNullOrWhiteSpace(search))
             {

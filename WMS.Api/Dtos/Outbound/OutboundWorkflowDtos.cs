@@ -2,6 +2,41 @@ using WMS.Api.Entities;
 
 namespace WMS.Api.Dtos.Outbound;
 
+public record RequestStageCancellationDto(
+    string Reason,
+    Guid? RequestedByUserId,
+    List<StageCancellationLineItemDto>? Lines = null
+);
+
+public record StageCancellationLineItemDto(
+    int OutboundStageLineId,
+    int QuantityToCancel
+);
+
+public record ReviewStageCancellationDto(
+    bool Approve,
+    Guid? ReviewedByUserId,
+    string? Remarks
+);
+
+public record ProcessReturnToBinItemDto(
+    int CancellationLineId,
+    int ReturnBinId,
+    bool IsException = false,
+    string? ExceptionReason = null
+);
+
+public record ProcessReturnToBinDto(
+    List<ProcessReturnToBinItemDto> ReturnLines
+);
+
+public record RecordPalletVerificationDto(
+    int PalletId,
+    Guid? ScannedByUserId,
+    LoadingScanResult ScanResult,
+    string? Remarks
+);
+
 public record CreateOutboundStageLineDto(
     int PickedProductId,
     int ReceivedProductId,

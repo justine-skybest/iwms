@@ -71,6 +71,7 @@ namespace WMS.Api.Endpoints
             group.MapPickOrderReportEndpoints();
             group.MapOccupancyReportEndpoints();
             group.MapInventoryAgingReportEndpoints();
+            group.MapOutboundReportsEndpoints();
 
             return group;
         }

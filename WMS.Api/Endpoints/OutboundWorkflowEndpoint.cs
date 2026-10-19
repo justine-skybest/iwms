@@ -1091,6 +1091,319 @@ public static class OutboundWorkflowEndpoint
         .Produces(StatusCodes.Status400BadRequest)
         .Produces(StatusCodes.Status409Conflict);
 
+        // -----------------------------------------------------------------------------
+        // POST /stages/{id}/cancellations - Request cancellation of an outbound stage
+        // -----------------------------------------------------------------------------
+        group.MapPost("/stages/{id:int}/cancellations", async (
+            int id,
+            RequestStageCancellationDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(dto.Reason))
+            {
+                return Results.BadRequest(new { Message = "A valid cancellation reason is required." });
+            }
+
+            var stage = await dbContext.OutboundStages
+                .Include(s => s.Lines)
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+            if (stage is null)
+            {
+                return Results.NotFound(new { Message = $"Outbound stage #{id} was not found." });
+            }
+
+            if (stage.Status is OutboundStageStatus.Cancelled or OutboundStageStatus.CancellationRequested)
+            {
+                return Results.Conflict(new { Message = $"Stage #{id} is already in '{stage.Status}' status." });
+            }
+
+            // Guard: Ensure lines are not already committed to an active loading plan
+            var stageLineIds = stage.Lines.Select(l => l.Id).ToList();
+            var hasActiveLoading = await dbContext.LoadingPlanLines
+                .AnyAsync(lpl => lpl.OutboundStageLineId.HasValue
+                    && stageLineIds.Contains(lpl.OutboundStageLineId.Value)
+                    && lpl.LoadingPlan != null
+                    && lpl.LoadingPlan.Status != LoadingStatus.Cancelled
+                    && lpl.LoadingPlan.Status != LoadingStatus.Rejected, cancellationToken);
+
+            if (hasActiveLoading)
+            {
+                return Results.Conflict(new { Message = "Cannot cancel stage: items are assigned to an active loading plan. Remove from loading plan first." });
+            }
+
+            var cancellationRef = $"CAN-{stage.StageReference}-{DateTime.UtcNow:yyyyMMddHHmmss}";
+            var cancellation = new OutboundStageCancellation
+            {
+                OutboundStageId = stage.Id,
+                CancellationReference = cancellationRef,
+                Status = OutboundStageCancellationStatus.Requested,
+                RequestedByUserId = dto.RequestedByUserId,
+                Reason = dto.Reason.Trim(),
+                RequestedAt = DateTime.UtcNow
+            };
+
+            foreach (var line in stage.Lines)
+            {
+                var requestedLine = dto.Lines?.FirstOrDefault(l => l.OutboundStageLineId == line.Id);
+                var qtyToCancel = requestedLine?.QuantityToCancel ?? (line.QuantityStaged > 0 ? line.QuantityStaged : line.QuantityToStage);
+
+                if (qtyToCancel <= 0) continue;
+
+                cancellation.Lines.Add(new OutboundStageCancellationLine
+                {
+                    OutboundStageLineId = line.Id,
+                    QuantityCancelled = qtyToCancel,
+                    OriginalBinId = line.OriginalBinId,
+                    Status = "PendingReturn",
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+            if (cancellation.Lines.Count == 0)
+            {
+                return Results.BadRequest(new { Message = "No eligible stage lines found to cancel." });
+            }
+
+            stage.Status = OutboundStageStatus.CancellationRequested;
+            stage.UpdatedAt = DateTime.UtcNow;
+
+            dbContext.OutboundStageCancellations.Add(cancellation);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "CancellationRequested",
+                description: $"Cancellation requested for stage '{stage.StageReference}' (Ref: {cancellationRef}).",
+                details: new { StageId = stage.Id, CancellationReference = cancellationRef, dto.Reason }
+            );
+
+            return Results.Created($"/outbound/stages/{id}/cancellations/{cancellation.Id}", cancellation);
+        })
+        .WithSummary("Request outbound stage cancellation")
+        .Produces<OutboundStageCancellation>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict);
+
+        // -----------------------------------------------------------------------------
+        // POST /stages/{id}/cancellations/{cancellationId}/review - Approve or Reject Cancellation
+        // -----------------------------------------------------------------------------
+        group.MapPost("/stages/{id:int}/cancellations/{cancellationId:int}/review", async (
+            int id,
+            int cancellationId,
+            ReviewStageCancellationDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
+        {
+            var cancellation = await dbContext.OutboundStageCancellations
+                .Include(c => c.OutboundStage)
+                    .ThenInclude(s => s!.Lines)
+                .Include(c => c.Lines)
+                .FirstOrDefaultAsync(c => c.Id == cancellationId && c.OutboundStageId == id, cancellationToken);
+
+            if (cancellation is null || cancellation.OutboundStage is null)
+            {
+                return Results.NotFound(new { Message = $"Cancellation request #{cancellationId} for stage #{id} was not found." });
+            }
+
+            if (cancellation.Status != OutboundStageCancellationStatus.Requested)
+            {
+                return Results.Conflict(new { Message = $"Cancellation request is already '{cancellation.Status}'." });
+            }
+
+            var now = DateTime.UtcNow;
+            cancellation.ApprovedByUserId = dto.ReviewedByUserId;
+            cancellation.ApprovedAt = now;
+
+            if (dto.Approve)
+            {
+                cancellation.Status = OutboundStageCancellationStatus.Approved;
+                // Stage remains in CancellationRequested or moves to Cancelled once returned
+            }
+            else
+            {
+                cancellation.Status = OutboundStageCancellationStatus.Rejected;
+
+                // Revert stage status to its previous physical state
+                var allStaged = cancellation.OutboundStage.Lines.All(l => l.QuantityStaged >= l.QuantityToStage);
+                var anyStaged = cancellation.OutboundStage.Lines.Any(l => l.QuantityStaged > 0);
+                cancellation.OutboundStage.Status = allStaged
+                    ? OutboundStageStatus.Completed
+                    : anyStaged ? OutboundStageStatus.Partial : OutboundStageStatus.Pending;
+                cancellation.OutboundStage.UpdatedAt = now;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: dto.Approve ? "CancellationApproved" : "CancellationRejected",
+                description: $"Cancellation #{cancellationId} for stage #{id} was {(dto.Approve ? "approved" : "rejected")}.",
+                details: new { CancellationId = cancellation.Id, StageId = id, dto.Approve, dto.Remarks }
+            );
+
+            return Results.Ok(cancellation);
+        })
+        .WithSummary("Review (approve/reject) stage cancellation")
+        .Produces<OutboundStageCancellation>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict);
+
+        // -----------------------------------------------------------------------------
+        // PUT /stages/{id}/cancellations/{cancellationId}/return-to-bin - Putaway return
+        // -----------------------------------------------------------------------------
+        group.MapPut("/stages/{id:int}/cancellations/{cancellationId:int}/return-to-bin", async (
+            int id,
+            int cancellationId,
+            ProcessReturnToBinDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
+        {
+            if (dto.ReturnLines is null || dto.ReturnLines.Count == 0)
+            {
+                return Results.BadRequest(new { Message = "At least one return putaway item is required." });
+            }
+
+            var cancellation = await dbContext.OutboundStageCancellations
+                .Include(c => c.OutboundStage)
+                    .ThenInclude(s => s!.Lines)
+                .Include(c => c.Lines)
+                    .ThenInclude(cl => cl.OutboundStageLine)
+                .FirstOrDefaultAsync(c => c.Id == cancellationId && c.OutboundStageId == id, cancellationToken);
+
+            if (cancellation is null || cancellation.OutboundStage is null)
+            {
+                return Results.NotFound(new { Message = $"Cancellation request #{cancellationId} for stage #{id} was not found." });
+            }
+
+            if (cancellation.Status != OutboundStageCancellationStatus.Approved)
+            {
+                return Results.Conflict(new { Message = "Cancellation must be approved by a supervisor before returning items to bins." });
+            }
+
+            var targetBinIds = dto.ReturnLines.Select(r => r.ReturnBinId).Distinct().ToList();
+            var existingBins = await dbContext.Bins
+                .Where(b => targetBinIds.Contains(b.Id))
+                .Select(b => b.Id)
+                .ToListAsync(cancellationToken);
+
+            var linesById = cancellation.Lines.ToDictionary(l => l.Id);
+            var now = DateTime.UtcNow;
+
+            foreach (var returnItem in dto.ReturnLines)
+            {
+                if (!linesById.TryGetValue(returnItem.CancellationLineId, out var cancelLine))
+                {
+                    return Results.BadRequest(new { Message = $"Cancellation line #{returnItem.CancellationLineId} does not exist in this request." });
+                }
+
+                if (!existingBins.Contains(returnItem.ReturnBinId))
+                {
+                    return Results.BadRequest(new { Message = $"Target return bin #{returnItem.ReturnBinId} does not exist." });
+                }
+
+                cancelLine.ReturnBinId = returnItem.ReturnBinId;
+                if (returnItem.IsException)
+                {
+                    cancelLine.Status = "Exception";
+                    cancelLine.ExceptionReason = returnItem.ExceptionReason ?? "Damaged or unable to restock";
+                    if (cancelLine.OutboundStageLine is not null)
+                    {
+                        cancelLine.OutboundStageLine.Status = OutboundStageLineStatus.Exception;
+                    }
+                }
+                else
+                {
+                    cancelLine.Status = "Returned";
+                    if (cancelLine.OutboundStageLine is not null)
+                    {
+                        cancelLine.OutboundStageLine.Status = OutboundStageLineStatus.Cancelled;
+                        // Reduce the staged quantity by the quantity returned to bins
+                        cancelLine.OutboundStageLine.QuantityStaged = Math.Max(0, cancelLine.OutboundStageLine.QuantityStaged - cancelLine.QuantityCancelled);
+                        cancelLine.OutboundStageLine.UpdatedAt = now;
+                    }
+                }
+            }
+
+            // If all cancellation lines are finalized (Returned or Exception), finalize cancellation & stage
+            var allFinalized = cancellation.Lines.All(l => l.Status is "Returned" or "Exception");
+            if (allFinalized)
+            {
+                cancellation.Status = OutboundStageCancellationStatus.Completed;
+                cancellation.CompletedAt = now;
+
+                var stage = cancellation.OutboundStage;
+                var allStageLinesCancelled = stage.Lines.All(l => l.Status == OutboundStageLineStatus.Cancelled);
+                stage.Status = allStageLinesCancelled ? OutboundStageStatus.Cancelled : OutboundStageStatus.Partial;
+                stage.UpdatedAt = now;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await auditLogService.LogAsync(
+                category: "Outbound",
+                action: "RestockedToBin",
+                description: $"Processed return-to-bin for cancellation #{cancellationId} (Stage #{id}).",
+                details: new { CancellationId = cancellationId, Finalized = allFinalized }
+            );
+
+            return Results.Ok(cancellation);
+        })
+        .WithSummary("Process return of cancelled staged stock to warehouse bins")
+        .Produces<OutboundStageCancellation>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict);
+
+        // -----------------------------------------------------------------------------
+        // POST /loading-plans/{id}/verifications - Scan and verify pallets during loading
+        // -----------------------------------------------------------------------------
+        group.MapPost("/loading-plans/{id:int}/verifications", async (
+            int id,
+            RecordPalletVerificationDto dto,
+            WMSContext dbContext,
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
+        {
+            var plan = await dbContext.LoadingPlans
+                .Include(p => p.Lines)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+
+            if (plan is null)
+            {
+                return Results.NotFound(new { Message = $"Loading plan #{id} was not found." });
+            }
+
+            if (plan.Status is LoadingStatus.Completed or LoadingStatus.Cancelled or LoadingStatus.Rejected)
+            {
+                return Results.Conflict(new { Message = $"Cannot scan pallets for a loading plan with status '{plan.Status}'." });
+            }
+
+            var verification = new LoadingPalletVerification
+            {
+                LoadingPlanId = id,
+                PalletId = dto.PalletId,
+                ScannedByUserId = dto.ScannedByUserId,
+                ScanTime = DateTime.UtcNow,
+                ScanResult = dto.ScanResult,
+                Remarks = dto.Remarks
+            };
+
+            dbContext.LoadingPalletVerifications.Add(verification);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return Results.Created($"/outbound/loading-plans/{id}/verifications/{verification.Id}", verification);
+        })
+        .WithSummary("Record pallet barcode scan verification during vehicle loading")
+        .Produces<LoadingPalletVerification>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status409Conflict);
+
         return group;
     }
 }

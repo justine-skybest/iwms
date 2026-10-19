@@ -33,6 +33,7 @@ import {
   OutboundStage,
   UpdateOutboundStageQuantities,
 } from './outbound-workflow.models';
+import { WarehouseService } from '../../lib/services/warehouse.service';
 
 @Injectable({ providedIn: 'root' })
 export class OutboundWorkflowService {
@@ -40,12 +41,13 @@ export class OutboundWorkflowService {
   private readonly api = inject(Api);
   private readonly apiConfiguration = inject(ApiConfiguration);
   private readonly apiUrl = this.apiConfiguration.rootUrl.replace(/\/+$/, '');
+  private readonly warehouseService = inject(WarehouseService);
 
   async getPickOrders(): Promise<ManualPickingSummaryDtoPaginatedResponse> {
     return firstValueFrom(
       this.http.get<ManualPickingSummaryDtoPaginatedResponse>(
         `${this.apiUrl}/manualpicking/v2`,
-        { params: { page: 1, pageSize: 100 } },
+        { params: { page: 1, pageSize: 100, WarehouseId: Number(this.warehouseService.selectedWarehouseId())! } },
       ),
     );
   }

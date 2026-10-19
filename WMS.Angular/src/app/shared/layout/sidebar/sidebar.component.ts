@@ -17,7 +17,8 @@ import {
   Warehouse, 
   RotateCcwIcon, 
   PackageSearch,
-  BoxIcon
+  BoxIcon,
+  ArrowRight
 } from 'lucide-angular';
 import { SystemVersionResponseDto, UserResponseDto } from '../../../api/generated/models';
 import { Grid3x3, Users } from 'lucide-angular/src/icons';
@@ -67,7 +68,8 @@ export class SidebarComponent implements OnInit {
     { path: '/warehouse-occupancy', label: 'Warehouse Occupancy', icon: Warehouse },
     { path: '/receiving-reports', label: 'Receiving Reports', icon: FileCheck },
     { path: '/pickorder-reports', label: 'Pick Order Reports', icon: FileCheck },
-    { path: '/inventory-aging-reports', label: 'Inventory Aging Reports', icon: FileCheck }
+    { path: '/inventory-aging-reports', label: 'Inventory Aging Reports', icon: FileCheck },
+    { path: '/outbound-reports', label: 'Outbound Reports', icon: ArrowRight }
   ];
 
   isMasterDataOpen = false;

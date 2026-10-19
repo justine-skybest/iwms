@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos.Transfer;
 using WMS.Api.Entities;
+using WMS.Api.Services;
 
 namespace WMS.Api.Endpoints;
 
@@ -19,7 +20,10 @@ public static class TransferV2Endpoint
         // -----------------------------------------------------------------------------
         // Bin-to-Bin Bulk Transfer Endpoint (Primary Warehouse Operation)
         // -----------------------------------------------------------------------------
-        group.MapPost("/bin", async (TransferBinDto request, WMSContext dbContext) =>
+        group.MapPost("/bin", async (
+            TransferBinDto request,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
             if (request.FromBinId == request.ToBinId)
             {
@@ -89,14 +93,14 @@ public static class TransferV2Endpoint
 
                 dbContext.CheckIns.Add(newCheckIn);
 
-                // 3. Log Transfer Audit Entries
+                // 3. Log Transfer Domain Entries
                 if (palletId.HasValue)
                 {
                     palletsMoved++;
                     dbContext.TransferLogs.Add(new TransferLog
                     {
                         TransferType = "Pallet",
-                        WarehouseId = toBin.Rack!.WarehouseId,
+                        WarehouseId = (toBin.Rack?.WarehouseId ?? toBin.WarehouseId)!.Value,
                         PalletId = palletId,
                         FromBinId = request.FromBinId,
                         ToBinId = request.ToBinId,
@@ -132,6 +136,21 @@ public static class TransferV2Endpoint
                 _ => $"{itemsMoved} item(s) successfully transferred."
             };
 
+            await auditLogService.LogAsync(
+                category: "Transfer",
+                action: "BinTransfer",
+                description: $"Transferred contents from Bin #{request.FromBinId} to Bin #{request.ToBinId}. {summary}",
+                details: new
+                {
+                    FromBinId = request.FromBinId,
+                    ToBinId = request.ToBinId,
+                    WarehouseId = toBin.Rack?.WarehouseId,
+                    PalletsMoved = palletsMoved,
+                    ItemsMoved = itemsMoved,
+                    Notes = request.Notes
+                }
+            );
+
             return Results.Ok(new TransferResultDto(true, summary));
         })
         .WithName("TransferBinContents")
@@ -144,7 +163,10 @@ public static class TransferV2Endpoint
         // -----------------------------------------------------------------------------
         // Specific Pallet & Item Transfer Overrides
         // -----------------------------------------------------------------------------
-        group.MapPost("/pallet", async (TransferPalletDto request, WMSContext dbContext) =>
+        group.MapPost("/pallet", async (
+            TransferPalletDto request,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
             var checkIn = await dbContext.CheckIns
                 .Include(checkIn => checkIn.Bins)
@@ -216,6 +238,21 @@ public static class TransferV2Endpoint
 
             await dbContext.SaveChangesAsync();
 
+            await auditLogService.LogAsync(
+                category: "Transfer",
+                action: "PalletTransfer",
+                description: $"Transferred Pallet #{request.PalletId} from Bin #{fromBinId} to Bin #{toBin.Id}.",
+                details: new
+                {
+                    PalletId = request.PalletId,
+                    FromBinId = fromBinId,
+                    ToBinId = toBin.Id,
+                    WarehouseId = toBin.Rack?.WarehouseId,
+                    ItemsCount = productsToMove.Count,
+                    Notes = request.Notes
+                }
+            );
+
             return Results.Ok(new TransferResultDto(true, "Pallet successfully transferred."));
         })
         .WithName("TransferPalletV2")
@@ -225,7 +262,10 @@ public static class TransferV2Endpoint
         .Produces<TransferResultDto>(StatusCodes.Status200OK)
         .ProducesValidationProblem(StatusCodes.Status400BadRequest);
 
-        group.MapPost("/item", async (TransferItemDto request, WMSContext dbContext) =>
+        group.MapPost("/item", async (
+            TransferItemDto request,
+            WMSContext dbContext,
+            IAuditLogService auditLogService) =>
         {
             var checkIn = await dbContext.CheckIns
                 .Include(checkIn => checkIn.Bins)
@@ -286,6 +326,22 @@ public static class TransferV2Endpoint
 
             await dbContext.SaveChangesAsync();
 
+            await auditLogService.LogAsync(
+                category: "Transfer",
+                action: "ItemTransfer",
+                description: $"Transferred ReceivedProduct #{receivedProduct.Id} (Qty: {receivedProduct.Quantity}) from Bin #{fromBinId} to Bin #{toBin.Id}.",
+                details: new
+                {
+                    ReceivedProductId = receivedProduct.Id,
+                    Quantity = receivedProduct.Quantity,
+                    FromCheckInId = request.FromCheckInId,
+                    FromBinId = fromBinId,
+                    ToBinId = toBin.Id,
+                    WarehouseId = toBin.Rack?.WarehouseId,
+                    Notes = request.Notes
+                }
+            );
+
             return Results.Ok(new TransferResultDto(true, "Item successfully transferred."));
         })
         .WithName("TransferItemV2")
@@ -341,8 +397,8 @@ public static class TransferV2Endpoint
                     : log.ReceivedProductId.HasValue && products.TryGetValue(log.ReceivedProductId.Value, out var productName)
                         ? productName
                         : "Unknown",
-                bins.TryGetValue(log.FromBinId, out var fromLocation) ? fromLocation : "Unknown",
-                bins.TryGetValue(log.ToBinId, out var toLocation) ? toLocation : "Unknown",
+                log.FromBinId.HasValue && bins.TryGetValue(log.FromBinId.Value, out var fromLoc) ? fromLoc : "Unknown",
+                log.ToBinId.HasValue && bins.TryGetValue(log.ToBinId.Value, out var toLoc) ? toLoc : "Unknown",
                 log.TransferDate,
                 log.Notes
             )).ToList();

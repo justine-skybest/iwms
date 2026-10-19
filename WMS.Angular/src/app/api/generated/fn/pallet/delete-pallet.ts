@@ -8,12 +8,12 @@ import type { StrictHttpResponse } from '../../strict-http-response';
 import { RequestBuilder } from '../../request-builder';
 
 
-export interface PalletIdDelete$Params {
+export interface DeletePallet$Params {
   id: number;
 }
 
-export function palletIdDelete(http: HttpClient, rootUrl: string, params: PalletIdDelete$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
-  const rb = new RequestBuilder(rootUrl, palletIdDelete.PATH, 'delete');
+export function deletePallet(http: HttpClient, rootUrl: string, params: DeletePallet$Params, context?: HttpContext): Observable<StrictHttpResponse<void>> {
+  const rb = new RequestBuilder(rootUrl, deletePallet.PATH, 'delete');
   if (params) {
     rb.path('id', params.id, {});
   }
@@ -28,4 +28,4 @@ export function palletIdDelete(http: HttpClient, rootUrl: string, params: Pallet
   );
 }
 
-palletIdDelete.PATH = '/pallet/{id}';
+deletePallet.PATH = '/pallet/{id}';

@@ -1,4 +1,104 @@
 [
+    {
+    "version": "1.10.1",
+    "releaseDate": "2026-10-16",
+    "title": "Stand-alone bin transfer bug fix.",
+    "changes": [
+      {
+        "type": "FIX",
+        "decription": "Fixed stand-alone b in transfer bug. Fallback toBin.WarehouseId if toBin.Rack.WarehouseId is null."
+      }
+    ]
+  },
+  {
+    "version": "1.10.0",
+    "releaseDate": "2026-10-14",
+    "title": "Receiving Workflow for Unlisted Products & Revised Packing Lists",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added a new receiving workflow for physically received products that are not listed in the original incoming packing list."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Introduced a new ReceivedItemStatus lifecycle (Unlisted_PendingPL, RevisedPL_Received, Validated, ForClarification, Rejected) to track unlisted items and their resolution."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added an Unlisted Item / Exception modal in the receiving create form where users can search the master catalog, create a new master product on the fly, and stage an unlisted item with required approval and DR reference."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Unlisted items can be captured with exception photos/evidence (Cloudinary upload) and stored against a ReceivingException record with reason, approved-by, delivery receipt reference, and notes."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added a new ReceivingException and ExceptionPhoto entity, plus an IncomingProductId nullable link on ReceivedProduct to distinguish unlisted items from original packing-list line items."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Revised packing list Excel uploads now auto-validate previously unlisted items when the revised PL adds a matching line, linking them and moving their status to Validated."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Incoming shipment overall status now reflects pending revised packing lists (PENDING_REVISED_PL) when unlisted items are staged."
+      },
+      {
+        "type": "IMPROVEMENT",
+        "description": "Waterfall expected-quantity allocation and incoming status synchronization now handle unlisted items, partial receipts, and split pallet lines consistently."
+      }
+    ]
+  },
+  {
+    "version": "1.9.0",
+    "releaseDate": "2026-10-13",
+    "title": "Bins QR Page and Endpoint Improvements",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added a new angular page for managing bins with enhanced UI and functionality."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Updated the backend endpoint used by the bins page to support new features and improve performance."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added print functionality for bin QR codes, allowing users to print QR labels directly from the bins page."
+      }
+    ]
+  },
+  {
+    "version": "1.8.0",
+    "releaseDate": "2026-10-12",
+    "title": "Outbound Workflow, Loading Plans & Kanban Board",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added an outbound workflow for staging picked items, creating loading plans, tracking loaded quantities, and confirming dispatch."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Loading plans support photo and evidence uploads, exception recording, printable receipts, and pallet QR codes."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added both a stage-based workflow and a Kanban board, plus navigation to access them."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Manual-picking details now include picked-product information."
+      },
+      {
+        "type": "IMPROVEMENT",
+        "description": "Added desktop sidebar collapse and expand controls."
+      },
+      {
+        "type": "IMPROVEMENT",
+        "description": "Dispatch requires all planned quantities to be loaded and saved, followed by confirmation."
+      }
+    ]
+  },
   {
     "version": "1.7.4",
     "releaseDate": "2026-10-09",
@@ -131,23 +231,23 @@
     "changes": [
       {
         "type": "FEATURE",
-        "description": "Introduced Short Close feature for unfulfilled incoming shipments to permanently record lost balances and purge them from active picklists.[cite: 13]"
+        "description": "Introduced Short Close feature for unfulfilled incoming shipments to permanently record lost balances and purge them from active picklists."
       },
       {
         "type": "FEATURE",
-        "description": "Enabled partial receiving across multi-batch delivery arrivals under a single incoming shipment record.[cite: 13]"
+        "description": "Enabled partial receiving across multi-batch delivery arrivals under a single incoming shipment record."
       },
       {
         "type": "FEATURE",
-        "description": "Added Receiving Form draft autosaving, session draft restoration, and exit confirmation prompts.[cite: 13]"
+        "description": "Added Receiving Form draft autosaving, session draft restoration, and exit confirmation prompts."
       },
       {
         "type": "IMPROVEMENT",
-        "description": "Revised packing list import rules to support partial uploads, final re-uploads, and duplicate line entries.[cite: 13]"
+        "description": "Revised packing list import rules to support partial uploads, final re-uploads, and duplicate line entries."
       },
       {
         "type": "IMPROVEMENT",
-        "description": "Repositioned receiving module strictly as Proof of Delivery (POD) / Offload Slip workflows.[cite: 13]"
+        "description": "Repositioned receiving module strictly as Proof of Delivery (POD) / Offload Slip workflows."
       }
     ]
   },
@@ -158,19 +258,19 @@
     "changes": [
       {
         "type": "FEATURE",
-        "description": "Added 3D Interactive Warehouse Occupancy Report for real-time rack utilization tracking and individual bin item inspection.[cite: 13]"
+        "description": "Added 3D Interactive Warehouse Occupancy Report for real-time rack utilization tracking and individual bin item inspection."
       },
       {
         "type": "FEATURE",
-        "description": "Restricted authentication to Google Single Sign-On (SSO) for authorized @skybest.com.ph company domains.[cite: 13]"
+        "description": "Restricted authentication to Google Single Sign-On (SSO) for authorized @skybest.com.ph company domains."
       },
       {
         "type": "FEATURE",
-        "description": "Added system-wide Audit Trail with Activity Log Inspector displaying Trace IDs, IP addresses, HTTP status codes, and context parameters.[cite: 13]"
+        "description": "Added system-wide Audit Trail with Activity Log Inspector displaying Trace IDs, IP addresses, HTTP status codes, and context parameters."
       },
       {
         "type": "IMPROVEMENT",
-        "description": "Integrated pallet sticker barcode scanning and UTC-to-PST localized timestamp rendering utilities.[cite: 13]"
+        "description": "Integrated pallet sticker barcode scanning and UTC-to-PST localized timestamp rendering utilities."
       }
     ]
   },
@@ -181,19 +281,19 @@
     "changes": [
       {
         "type": "FEATURE",
-        "description": "Built real-time 5-dimension discrepancy detection engine comparing physical arrivals against expected baselines.[cite: 14]"
+        "description": "Built real-time 5-dimension discrepancy detection engine comparing physical arrivals against expected baselines."
       },
       {
         "type": "FEATURE",
-        "description": "Added deterministic server-side Lot Number Generator (LOT-YYYYMMDD-RCV...) with atomic EF Core two-phase commits.[cite: 14]"
+        "description": "Added deterministic server-side Lot Number Generator (LOT-YYYYMMDD-RCV...) with atomic EF Core two-phase commits."
       },
       {
         "type": "FEATURE",
-        "description": "Engineered multi-product License Plate Number (LPN) 1-to-many pallet mapping and scanner inspection API.[cite: 14]"
+        "description": "Engineered multi-product License Plate Number (LPN) 1-to-many pallet mapping and scanner inspection API."
       },
       {
         "type": "FEATURE",
-        "description": "Added 4\" x 6\" thermal label printing pipeline powered by an isolated iframe renderer.[cite: 14]"
+        "description": "Added 4\" x 6\" thermal label printing pipeline powered by an isolated iframe renderer."
       }
     ]
   },
@@ -204,19 +304,19 @@
     "changes": [
       {
         "type": "FEATURE",
-        "description": "Launched Incoming Transactions grid with real-time SignalR updates and slide-out details drawer.[cite: 14]"
+        "description": "Launched Incoming Transactions grid with real-time SignalR updates and slide-out details drawer."
       },
       {
         "type": "FEATURE",
-        "description": "Added atomic transactional CSV import pipeline for bulk client packing list uploads with automatic database rollback.[cite: 14]"
+        "description": "Added atomic transactional CSV import pipeline for bulk client packing list uploads with automatic database rollback."
       },
       {
         "type": "IMPROVEMENT",
-        "description": "Migrated WarehouseService to paginated warehouseV2Get endpoints.[cite: 14]"
+        "description": "Migrated WarehouseService to paginated warehouseV2Get endpoints."
       },
       {
         "type": "IMPROVEMENT",
-        "description": "Automated zero-downtime CI/CD deployment pipeline via GitHub Actions, SSH, Bun, and EF Core migrations.[cite: 14]"
+        "description": "Automated zero-downtime CI/CD deployment pipeline via GitHub Actions, SSH, Bun, and EF Core migrations."
       }
     ]
   },

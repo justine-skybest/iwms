@@ -12,6 +12,7 @@ import type { ManualPickingSummaryDtoPaginatedResponse } from '../../models/manu
 export interface ManualpickingV2Get$Params {
   search?: string;
   page?: number;
+  WarehouseId?: number;
   pageSize?: number;
 }
 
@@ -20,6 +21,7 @@ export function manualpickingV2Get(http: HttpClient, rootUrl: string, params?: M
   if (params) {
     rb.query('search', params.search, {});
     rb.query('page', params.page, {});
+    rb.query('WarehouseId', params.WarehouseId, {});
     rb.query('pageSize', params.pageSize, {});
   }
 
