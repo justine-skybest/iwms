@@ -18,11 +18,11 @@ public class TransferLog
 
     public ReceivedProduct? ReceivedProduct { get; set; }
 
-    public int FromBinId { get; set; }
+    public int? FromBinId { get; set; }
 
     public Bin? FromBin { get; set; }
 
-    public int ToBinId { get; set; }
+    public int? ToBinId { get; set; }
 
     public Bin? ToBin { get; set; }
 
