@@ -242,7 +242,7 @@ public static class ReceivingEndpoint
             // 5. UPDATE INCOMING PRODUCTS STATUS & INCOMING OVERALL STATUS
             await SyncIncomingStatusAsync(incoming, dbContext, cancellationToken);
 
-            await hubContext.Clients.All.ReceivingCreated();
+            //await hubContext.Clients.All.ReceivingCreated();
 
             var createdReceiving = await dbContext.Receivings
                 .Include(r => r.Warehouse)
@@ -394,7 +394,7 @@ public static class ReceivingEndpoint
                 await SyncIncomingStatusAsync(incoming, dbContext, cancellationToken);
             }
 
-            await hubContext.Clients.All.ReceivingUpdated();
+            //await hubContext.Clients.All.ReceivingUpdated();
             return Results.NoContent();
         })
         .WithName("UpdateReceiving")
