@@ -4134,7 +4134,6 @@
       "Receiving"
     ],
     "EndpointName": "DeleteReceiving",
-    "Description": "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.",
     "Summary": "Delete a receiving receipt"
   },
   {

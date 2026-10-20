@@ -4076,7 +4076,6 @@
           "Receiving"
         ],
         "summary": "Delete a receiving receipt",
-        "description": "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.",
         "operationId": "DeleteReceiving",
         "parameters": [
           {

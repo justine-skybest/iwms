@@ -426,8 +426,7 @@ public static class ReceivingEndpoint
                 });
             }
 
-            // Prevent deletion if any product under this Receiving
-            // has an associated Check-In record.
+            // Prevent deletion if any check-ins exist
             var hasCheckIns = await dbContext.ReceivedProducts
                 .Where(product => product.ReceivingId == id)
                 .AnyAsync(product => product.CheckIns!.Any(),
@@ -447,13 +446,78 @@ public static class ReceivingEndpoint
             var snapshotShipper = existingReceiving.Shipper;
             var snapshotProductsCount = existingReceiving.Products?.Count ?? 0;
 
+            // 1. Gather all IncomingProduct IDs linked to this receiving
+            var affectedIncomingProductIds = existingReceiving.Products?
+                .Where(p => p.IncomingProductId.HasValue)
+                .Select(p => p.IncomingProductId!.Value)
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            // 2. Remove the receiving and its received products
             if (existingReceiving.Products is not null)
             {
-                dbContext.ReceivedProducts.RemoveRange(
-                    existingReceiving.Products);
+                dbContext.ReceivedProducts.RemoveRange(existingReceiving.Products);
             }
-
             dbContext.Receivings.Remove(existingReceiving);
+
+            // 3. Find and reconcile the affected Incomings via dbContext.Incomings
+            if (affectedIncomingProductIds.Count > 0)
+            {
+                // Load parent incoming(s) that contain any of the affected products
+                var relatedIncomings = await dbContext.Incomings
+                    .Include(i => i.Products)
+                    .Where(i => i.Products.Any(p => affectedIncomingProductIds.Contains(p.Id)))
+                    .ToListAsync(cancellationToken);
+
+                // Fetch remaining received quantities from other receivings (if any)
+                var remainingReceived = await dbContext.ReceivedProducts
+                    .Where(rp => rp.ReceivingId != id &&
+                                 rp.IncomingProductId.HasValue &&
+                                 affectedIncomingProductIds.Contains(rp.IncomingProductId.Value))
+                    .ToListAsync(cancellationToken);
+
+                foreach (var incoming in relatedIncomings)
+                {
+                    foreach (var p in incoming.Products.Where(p => affectedIncomingProductIds.Contains(p.Id)))
+                    {
+                        int totalReceivedQty = remainingReceived
+                            .Where(rp => rp.IncomingProductId == p.Id)
+                            .Sum(rp => rp.Quantity);
+
+                        if (totalReceivedQty == 0)
+                        {
+                            p.Status = IncomingProductStatus.UNRECEIVED;
+                        }
+                        else if (totalReceivedQty < p.Quantity)
+                        {
+                            p.Status = IncomingProductStatus.PARTIAL;
+                        }
+                        else
+                        {
+                            p.Status = IncomingProductStatus.RECEIVED;
+                        }
+                    }
+
+                    // Recalculate parent Incoming overall status
+                    if (incoming.Status != IncomingStatus.CANCELLED &&
+                        incoming.Status != IncomingStatus.PENDING_REVISED_PL &&
+                        incoming.Status != IncomingStatus.CLOSED_SHORT)
+                    {
+                        if (incoming.Products.All(p => p.Status == IncomingProductStatus.UNRECEIVED))
+                        {
+                            incoming.Status = IncomingStatus.PENDING; // or your initial Incoming status enum
+                        }
+                        else if (incoming.Products.All(p => p.Status == IncomingProductStatus.RECEIVED))
+                        {
+                            incoming.Status = IncomingStatus.RECEIVED;
+                        }
+                        else
+                        {
+                            incoming.Status = IncomingStatus.PARTIAL;
+                        }
+                    }
+                }
+            }
 
             await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -473,8 +537,6 @@ public static class ReceivingEndpoint
         })
         .WithName("DeleteReceiving")
         .WithSummary("Delete a receiving receipt")
-        .WithDescription(
-            "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.")
         .Produces(StatusCodes.Status204NoContent)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .ProducesProblem(StatusCodes.Status409Conflict);

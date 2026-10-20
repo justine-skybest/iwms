@@ -510,7 +510,6 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
         id: this.toDeleteReceiving()?.id!
       })
 
-      this.toDeleteReceiving.set(null)
       this.isConfirmDeleteVisible.set(false);
       this.toastService.success(`Receiving ${this.toDeleteReceiving()?.series} successfully deleted`);
       this.loadReceivings()
@@ -519,6 +518,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
     }
     finally {
       this.isDeleting.set(false);
+      this.toDeleteReceiving.set(null)
     }
   }
 }

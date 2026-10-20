@@ -1,4 +1,26 @@
 [
+    {
+    "version": "1.10.2",
+    "releaseDate": "2026-10-20",
+    "title": "Receiving Delete Action.",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "decription": "Newly created receiving can now be deleted with confirm action dialog."
+      }
+    ]
+  },
+    {
+    "version": "1.10.1",
+    "releaseDate": "2026-10-16",
+    "title": "Stand-alone bin transfer bug fix.",
+    "changes": [
+      {
+        "type": "FIX",
+        "decription": "Fixed stand-alone b in transfer bug. Fallback toBin.WarehouseId if toBin.Rack.WarehouseId is null."
+      }
+    ]
+  },
   {
     "version": "1.10.0",
     "releaseDate": "2026-10-14",

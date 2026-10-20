@@ -107,10 +107,10 @@ namespace WMS.Api.Mapping
                     }
 
                     // Legacy fallback if marked RECEIVED without explicit received records
-                    if (allocatedToThisLine == 0 && p.Status == IncomingProductStatus.RECEIVED)
-                    {
-                        allocatedToThisLine = p.Quantity;
-                    }
+                    //if (allocatedToThisLine == 0 && p.Status == IncomingProductStatus.RECEIVED)
+                    //{
+                    //    allocatedToThisLine = p.Quantity;
+                    //}
 
                     int remaining = Math.Max(0, p.Quantity - allocatedToThisLine);
 
@@ -183,7 +183,10 @@ namespace WMS.Api.Mapping
             }
             else
             {
-                dynamicOverallStatus = entity.Status;
+                // If no items are received/partial, ensure it doesn't stay marked as RECEIVED or PARTIAL
+                dynamicOverallStatus = (entity.Status == IncomingStatus.RECEIVED || entity.Status == IncomingStatus.PARTIAL)
+                    ? IncomingStatus.PENDING // (or your initial incoming status enum, e.g., IncomingStatus.PENDING/NEW)
+                    : entity.Status;
             }
 
             return new IncomingResponseDto
