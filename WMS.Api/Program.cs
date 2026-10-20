@@ -130,6 +130,10 @@ builder.Services.AddHostedService<ReportCleanupService>();
 
 builder.Services.AddScoped<IOutboundReportExportService, OutboundReportExportService>();
 
+builder.Services.AddScoped<ICheckInCleanupService, CheckInCleanupService>();
+
+builder.Services.AddHostedService<CheckInCleanupBackgroundService>();
+
 // 8. Configure Swagger
 builder.Services.AddSwaggerGen(options =>
 {

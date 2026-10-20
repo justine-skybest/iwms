@@ -105,18 +105,29 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                             .Include(rp => rp.Receiving)
                                 .ThenInclude(r => r!.Warehouse)
                             .Include(rp => rp.Product)
-                            .Include(rp => rp.CheckIns)
+                            // FILTER TO ACTIVE DIRECT CHECK-INS ONLY
+                            .Include(rp => rp.CheckIns.Where(ci => ci.IsActive))
                                 .ThenInclude(ci => ci.Bins)
                                     .ThenInclude(b => b.Rack)
-                            .Include(rp => rp.CheckIns)
+                            .Include(rp => rp.CheckIns.Where(ci => ci.IsActive))
                                 .ThenInclude(ci => ci.Bins)
                                     .ThenInclude(b => b.Bay)
-                            .Include(rp => rp.CheckIns)
+                            .Include(rp => rp.CheckIns.Where(ci => ci.IsActive))
                                 .ThenInclude(ci => ci.Bins)
                                     .ThenInclude(b => b.Level)
-                            .Include(rp => rp.CheckIns)
+                            .Include(rp => rp.CheckIns.Where(ci => ci.IsActive))
                                 .ThenInclude(ci => ci.Bins)
                                     .ThenInclude(b => b.BinNames)
+                            // INCLUDE PALLET CHECK-INS & BINS
+                            .Include(rp => rp.Pallet)
+                                .ThenInclude(p => p!.CheckIns.Where(ci => ci.IsActive))
+                                    .ThenInclude(ci => ci.Bins)
+                                        .ThenInclude(b => b.Rack)
+                            .Include(rp => rp.Pallet)
+                                .ThenInclude(p => p!.CheckIns.Where(ci => ci.IsActive))
+                                    .ThenInclude(ci => ci.Bins)
+                                        .ThenInclude(b => b.BinNames)
+                            .AsSplitQuery() // Optimization for heavily nested collections
                             .AsNoTracking()
                             .AsQueryable();
 
@@ -169,7 +180,10 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                 _ => "180+ Days"
                             };
 
-                            var bin = rp.CheckIns.SelectMany(ci => ci.Bins).FirstOrDefault();
+                            // Look for current bin in either direct checkins or pallet checkins
+                            var activeCheckIn = rp.CheckIns.FirstOrDefault() ?? rp.Pallet?.CheckIns.FirstOrDefault();
+                            var bin = activeCheckIn?.Bins.FirstOrDefault();
+
                             string location = "UNASSIGNED";
                             if (bin != null)
                             {
@@ -193,7 +207,8 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                                 Unit: rp.TypeOfPackage ?? "PCS"
                             );
                         })
-                        .Where(x => x.RemainingQuantity > 0)
+                        // Exclude items that are fully picked OR have no active location assignment
+                        .Where(x => x.RemainingQuantity > 0 && x.Location != "UNASSIGNED")
                         .OrderByDescending(x => x.AgeInDays)
                         .ToList();
 

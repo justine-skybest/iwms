@@ -1,4 +1,51 @@
 [
+  {
+    "version": "1.11.0",
+    "releaseDate": "2026-10-20",
+    "title": "Check-In Status & Inventory Lifecycle Management.",
+    "changes": [
+      {
+        "type": "FEATURE",
+        "description": "Added IsActive status and CheckOutDate to CheckIn entity to track live pallet and bin occupancy lifecycles."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Introduced CheckInCleanupService and CheckInCleanupBackgroundService to periodically audit and deactivate empty or fully picked check-ins."
+      },
+      {
+        "type": "FEATURE",
+        "description": "Added manual check-out endpoint (POST /checkin/{id}/checkout) to release pallets and bin locations on demand."
+      },
+      {
+        "type": "FIX",
+        "description": "Resolved Pallet Locate bug by filtering exclusively for active check-ins ordered descending, eliminating legacy empty check-in lookups."
+      },
+      {
+        "type": "FIX",
+        "description": "Refactored IsBinOccupied to eliminate N+1 database queries, account for pallet-level products, and ignore inactive check-in history."
+      },
+      {
+        "type": "FIX",
+        "description": "Updated AvailableBin (v1/v2), QR Code scan, and Bin Stock endpoints to evaluate active check-ins only, allowing emptied bins to be reused."
+      },
+      {
+        "type": "FIX",
+        "description": "Updated Dashboard Summary statistics to accurately calculate occupied bins, pending check-ins, and on-shelf stock based on active check-in status."
+      },
+      {
+        "type": "FIX",
+        "description": "Corrected Inventory Aging and Warehouse Occupancy reports to exclude inactive check-ins and include standalone warehouse bins."
+      },
+      {
+        "type": "FIX",
+        "description": "Prevented duplicate active pallet allocations by automatically closing prior active check-ins when re-checking in a pallet."
+      },
+      {
+        "type": "FIX",
+        "description": "Added safety validation preventing deletion of bin locations that contain active check-in records."
+      }
+    ]
+  },
     {
     "version": "1.10.2",
     "releaseDate": "2026-10-20",
@@ -7,6 +54,10 @@
       {
         "type": "FEATURE",
         "decription": "Newly created receiving can now be deleted with confirm action dialog."
+      },
+      {
+        "type": "FIX",
+        "decription": "Properly updated parent incoming once its related receiving deleted."
       }
     ]
   },

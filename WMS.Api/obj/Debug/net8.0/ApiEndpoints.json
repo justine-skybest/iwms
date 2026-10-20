@@ -404,25 +404,17 @@
           "application/json"
         ],
         "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "application/problem\u002Bjson"
-        ],
-        "StatusCode": 500
       }
     ],
     "Tags": [
       "Bin"
     ],
     "EndpointName": "GetBinsGroupedByRack",
-    "Description": "Retrieves all bins grouped by rack. Standalone bins lacking a rack, bay, or level are aggregated under the \u0027Standalone\u0027 rack group.",
     "Summary": "Get all warehouse bins grouped by rack"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
     "RelativePath": "bin/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -457,7 +449,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -486,13 +478,11 @@
     "Tags": [
       "Bin"
     ],
-    "EndpointName": "GetBin",
-    "Description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
-    "Summary": "Get bin details by ID"
+    "EndpointName": "GetBin"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_16",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_14",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -524,7 +514,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_17",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
     "RelativePath": "bin/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -549,7 +539,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_15",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
     "RelativePath": "bin/{id:int}/location",
     "HttpMethod": "PATCH",
     "IsController": false,
@@ -578,9 +568,7 @@
     "Tags": [
       "Bin"
     ],
-    "EndpointName": "UpdateBin3DLocation",
-    "Description": "Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.",
-    "Summary": "Update 3D Spatial Position"
+    "EndpointName": "UpdateBin3DLocation"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
@@ -598,10 +586,8 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.Bin.BinDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "application/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 200
       }
     ],
@@ -641,12 +627,11 @@
       "Bin"
     ],
     "EndpointName": "GetCheckedInBinByQrCode",
-    "Description": "Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.",
     "Summary": "Locate Checked-In Bin by QR Code"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
     "RelativePath": "bin/hashcode/{hashCode:int}/{warehouseId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -682,14 +667,12 @@
     "Tags": [
       "Bin"
     ],
-    "EndpointName": "GetBinByHashCode",
-    "Description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
-    "Summary": "Get bin details by QR code hash"
+    "EndpointName": "GetBinByHashCode"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
-    "RelativePath": "bin/history/{BinId}",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_9",
+    "RelativePath": "bin/history/{BinId:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -745,7 +728,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_12",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
     "RelativePath": "bin/rack/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -772,7 +755,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_13",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_11",
     "RelativePath": "bin/rack/{rackId:int}/bay/{bayId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -804,7 +787,7 @@
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_10",
+    "Method": "\u003CMapBinEndpoints\u003Eb__1_8",
     "RelativePath": "bin/stock/id/{BinId:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -835,9 +818,7 @@
     "Tags": [
       "Bin"
     ],
-    "EndpointName": "GetBinStockById",
-    "Description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
-    "Summary": "Get available stock in a specific bin by ID"
+    "EndpointName": "GetBinStockById"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
@@ -903,85 +884,6 @@
     "ReturnTypes": [
       {
         "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinDetailsDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "application/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Bin"
-    ]
-  },
-  {
-    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_6",
-    "RelativePath": "bin/v2/rack/{id}",
-    "HttpMethod": "GET",
-    "IsController": false,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "page",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pageSize",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "application/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "Tags": [
-      "Bin"
-    ]
-  },
-  {
-    "ContainingType": "WMS.Api.Endpoints.BinEndpoint\u002B\u003C\u003Ec",
-    "Method": "\u003CMapBinEndpoints\u003Eb__1_7",
-    "RelativePath": "bin/v2/rack/{rackId}/bay/{bayId}",
-    "HttpMethod": "GET",
-    "IsController": false,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "rackId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "bayId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "page",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "pageSize",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "PaginatedResponse\u00601[[WMS.Api.Dtos.Bin.BinSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],
@@ -1234,7 +1136,13 @@
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "isActive",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.List\u00601[[WMS.Api.Dtos.CheckIn.CheckInSummaryDto, WMS.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
@@ -1261,19 +1169,57 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
         "MediaTypes": [
           "application/problem\u002Bjson"
         ],
         "StatusCode": 400
+      },
+      {
+        "Type": "WMS.Api.Dtos.CheckIn.CheckInDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
       }
-    ]
+    ],
+    "EndpointName": "CreateCheckIn"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapCheckInEndpoints\u003Eb__1_4",
-    "RelativePath": "checkin/{id}",
+    "RelativePath": "checkin/{id:int}",
     "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WMS.Api.Dtos.CheckIn.CheckInDetailsDto",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetCheckIn"
+  },
+  {
+    "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCheckInEndpoints\u003Eb__1_6",
+    "RelativePath": "checkin/{id:int}/checkout",
+    "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
     "Parameters": [
@@ -1288,14 +1234,27 @@
         "Type": "System.Void",
         "MediaTypes": [],
         "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
       }
     ],
-    "EndpointName": "GetCheckIn"
+    "EndpointName": "CheckoutCheckIn",
+    "Summary": "Manually deactivates a check-in to release its pallet/bins"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapCheckInEndpoints\u003Eb__1_2",
-    "RelativePath": "checkin/Bin/{id}",
+    "RelativePath": "checkin/Bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -1304,6 +1263,11 @@
         "Name": "id",
         "Type": "System.Int32",
         "IsRequired": true
+      },
+      {
+        "Name": "activeOnly",
+        "Type": "System.Boolean",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -1332,6 +1296,11 @@
       {
         "Name": "warehouseId",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "isActive",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
@@ -1365,7 +1334,7 @@
   {
     "ContainingType": "WMS.Api.Endpoints.CheckInEndPoint\u002B\u003C\u003Ec",
     "Method": "\u003CMapCheckInEndpoints\u003Eb__1_3",
-    "RelativePath": "checkin/v2/Bin/{id}",
+    "RelativePath": "checkin/v2/Bin/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -1378,6 +1347,11 @@
       {
         "Name": "search",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "activeOnly",
+        "Type": "System.Boolean",
         "IsRequired": false
       },
       {
@@ -1439,7 +1413,6 @@
       }
     ],
     "EndpointName": "GetDashboardSummary",
-    "Description": "Retrieves aggregated metrics, inventory health, activity trends, and warehouse breakdown for the dashboard.",
     "Summary": "Get dashboard summary statistics"
   },
   {

@@ -305,7 +305,6 @@
           "Bin"
         ],
         "summary": "Get all warehouse bins grouped by rack",
-        "description": "Retrieves all bins grouped by rack. Standalone bins lacking a rack, bay, or level are aggregated under the 'Standalone' rack group.",
         "operationId": "GetBinsGroupedByRack",
         "responses": {
           "200": {
@@ -317,16 +316,6 @@
                   "items": {
                     "$ref": "#/components/schemas/RackGroupDto"
                   }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -437,17 +426,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/BinDetailsDto"
-                  }
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -506,7 +485,6 @@
           "Bin"
         ],
         "summary": "Locate Checked-In Bin by QR Code",
-        "description": "Scans a bin QR HashCode and returns bin details if it currently contains unpicked stock.",
         "operationId": "GetCheckedInBinByQrCode",
         "parameters": [
           {
@@ -581,118 +559,11 @@
         }
       }
     },
-    "/bin/v2/rack/{id}": {
-      "get": {
-        "tags": [
-          "Bin"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/bin/v2/rack/{rackId}/bay/{bayId}": {
-      "get": {
-        "tags": [
-          "Bin"
-        ],
-        "parameters": [
-          {
-            "name": "rackId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "bayId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            }
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 50
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BinSummaryDtoPaginatedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/bin/{id}": {
       "get": {
         "tags": [
           "Bin"
         ],
-        "summary": "Get bin details by ID",
-        "description": "Retrieves the structural configuration and metadata of a specific bin location using its primary key ID.",
         "operationId": "GetBin",
         "parameters": [
           {
@@ -786,8 +657,6 @@
         "tags": [
           "Bin"
         ],
-        "summary": "Get bin details by QR code hash",
-        "description": "Retrieves the structural configuration and metadata of a specific bin location by filtering first on its QR code hash code and warehouse ID.",
         "operationId": "GetBinByHashCode",
         "parameters": [
           {
@@ -838,8 +707,6 @@
         "tags": [
           "Bin"
         ],
-        "summary": "Get available stock in a specific bin by ID",
-        "description": "Retrieves active check-ins for a given bin ID, prioritizing palletized received products and calculating net unpicked stock across transfers.",
         "operationId": "GetBinStockById",
         "parameters": [
           {
@@ -982,8 +849,6 @@
         "tags": [
           "Bin"
         ],
-        "summary": "Update 3D Spatial Position",
-        "description": "Fast update endpoint invoked when a user moves/drags a bin in the Three.js 3D viewport.",
         "operationId": "UpdateBin3DLocation",
         "parameters": [
           {
@@ -6177,6 +6042,15 @@
         "tags": [
           "WMS.Api"
         ],
+        "parameters": [
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -6197,6 +6071,7 @@
         "tags": [
           "WMS.Api"
         ],
+        "operationId": "CreateCheckIn",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6213,7 +6088,17 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInDetailsDto"
                 }
               }
             }
@@ -6240,6 +6125,13 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -6299,6 +6191,14 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          {
+            "name": "activeOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
           }
         ],
         "responses": {
@@ -6338,6 +6238,14 @@
             "in": "query",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "activeOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
             }
           },
           {
@@ -6402,7 +6310,55 @@
         ],
         "responses": {
           "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckInDetailsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/checkin/{id}/checkout": {
+      "post": {
+        "tags": [
+          "WMS.Api"
+        ],
+        "summary": "Manually deactivates a check-in to release its pallet/bins",
+        "operationId": "CheckoutCheckIn",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }
@@ -6594,7 +6550,6 @@
           "WMS.Api"
         ],
         "summary": "Get dashboard summary statistics",
-        "description": "Retrieves aggregated metrics, inventory health, activity trends, and warehouse breakdown for the dashboard.",
         "operationId": "GetDashboardSummary",
         "parameters": [
           {
@@ -7361,6 +7316,57 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReceivedProduct"
+            },
+            "nullable": true
+          },
+          "checkInDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "checkOutDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CheckInDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "checkInType": {
+            "type": "string",
+            "nullable": true
+          },
+          "binIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
+          },
+          "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "receivedProductIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
             },
             "nullable": true
           },

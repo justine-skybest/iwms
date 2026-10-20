@@ -16,5 +16,9 @@ public class CheckIn
 
     public DateTime CheckInDate { get; set; } = DateTime.UtcNow;
 
+    // --- Add active tracking ---
+    public bool IsActive { get; set; } = true;
+    public DateTime? CheckOutDate { get; set; }
+
     public string? Notes { get; set; }
 }

@@ -16,9 +16,12 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
             {
                 var query = dbContext.Bins.AsNoTracking();
 
+                // 1. Support both racked bins and standalone warehouse bins
                 if (warehouseId.HasValue)
                 {
-                    query = query.Where(bin => bin.Rack != null && bin.Rack.WarehouseId == warehouseId.Value);
+                    query = query.Where(bin =>
+                        bin.WarehouseId == warehouseId.Value ||
+                        (bin.Rack != null && bin.Rack.WarehouseId == warehouseId.Value));
                 }
 
                 if (rackId.HasValue)
@@ -26,47 +29,59 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                     query = query.Where(bin => bin.RackId == rackId.Value);
                 }
 
+                // 2. Project ONLY ACTIVE check-ins
                 var rawBinData = await query
                     .Select(bin => new
                     {
                         bin.Id,
                         BinName = bin.BinNames != null ? bin.BinNames.BinName : null,
                         bin.RackId,
-                        RackName = bin.Rack != null ? bin.Rack.Name : null,
+                        RackName = bin.Rack != null ? bin.Rack.Name : "Standalone",
                         BayNumber = bin.Bay != null ? (int?)bin.Bay.BayNumber : null,
                         LevelNumber = bin.Level != null ? (int?)bin.Level.LevelNumber : null,
-                        CheckIns = bin.CheckIns.Select(ci => new
-                        {
-                            ci.Id,
-                            ci.CheckInType,
-                            ci.CheckInDate,
-                            ci.PalletId,
-                            ci.Notes,
-                            DirectProducts = ci.ReceivedProducts.Select(rp => new
+                        // Filter directly at the database query level
+                        CheckIns = bin.CheckIns
+                            .Where(ci => ci.IsActive)
+                            .Select(ci => new
                             {
-                                rp.ReceivingId,
-                                ProductName = rp.ExpectedProductName,
-                                OriginalQuantity = rp.ExpectedQuantity > 0 ? rp.ExpectedQuantity : rp.Quantity,
-                                PickedQuantity = dbContext.PickedProducts
-                                    .Where(pp => pp.ReceivedProductId == rp.Id)
-                                    .Sum(pp => (int?)pp.QuantityPicked) ?? 0,
-                                rp.LotNumber,
-                                rp.ContainerName,
-                                rp.ExpectedExpirationDate
-                            }).ToList(),
-                            PalletProducts = ci.Pallet.ReceivedProducts.Select(rp => new
-                            {
-                                rp.ReceivingId,
-                                ProductName = rp.Product.Name,
-                                OriginalQuantity = rp.ExpectedQuantity > 0 ? rp.ExpectedQuantity : rp.Quantity,
-                                PickedQuantity = dbContext.PickedProducts
-                                    .Where(pp => pp.ReceivedProductId == rp.Id)
-                                    .Sum(pp => (int?)pp.QuantityPicked) ?? 0,
-                                rp.LotNumber,
-                                rp.ContainerName,
-                                rp.ExpectedExpirationDate
+                                ci.Id,
+                                ci.CheckInType,
+                                ci.CheckInDate,
+                                ci.PalletId,
+                                ci.Notes,
+                                DirectProducts = ci.ReceivedProducts.Select(rp => new
+                                {
+                                    rp.ReceivingId,
+                                    ProductName = rp.Product != null ? rp.Product.Name : rp.ExpectedProductName,
+                                    OriginalQuantity = rp.ExpectedQuantity > 0 ? rp.ExpectedQuantity.Value : rp.Quantity,
+                                    // Scope picked quantity to this specific check-in
+                                    PickedQuantity = dbContext.PickedProducts
+                                        .Where(pp => pp.ReceivedProductId == rp.Id &&
+                                                     pp.ManualPicking != null &&
+                                                     pp.ManualPicking.CheckInId == ci.Id)
+                                        .Sum(pp => (int?)pp.QuantityPicked) ?? 0,
+                                    rp.LotNumber,
+                                    rp.ContainerName,
+                                    rp.ExpectedExpirationDate
+                                }).ToList(),
+                                PalletProducts = ci.Pallet != null
+                                    ? ci.Pallet.ReceivedProducts.Select(rp => new
+                                    {
+                                        rp.ReceivingId,
+                                        ProductName = rp.Product != null ? rp.Product.Name : rp.ExpectedProductName,
+                                        OriginalQuantity = rp.ExpectedQuantity > 0 ? rp.ExpectedQuantity.Value : rp.Quantity,
+                                        // Scope picked quantity to this specific check-in
+                                        PickedQuantity = dbContext.PickedProducts
+                                            .Where(pp => pp.ReceivedProductId == rp.Id &&
+                                                         pp.ManualPicking != null &&
+                                                         pp.ManualPicking.CheckInId == ci.Id)
+                                            .Sum(pp => (int?)pp.QuantityPicked) ?? 0,
+                                        rp.LotNumber,
+                                        rp.ContainerName,
+                                        rp.ExpectedExpirationDate
+                                    }).ToList()
+                                    : null
                             }).ToList()
-                        }).ToList()
                     })
                     .ToListAsync(cancellationToken);
 
@@ -87,7 +102,7 @@ namespace WMS.Api.Endpoints.ReportsEndpoints
                             .Where(x => x.RemainingQuantity > 0)
                             .Select(x => new CheckInProductDto(
                                 x.Product.ReceivingId,
-                                x.Product.ProductName,
+                                x.Product.ProductName ?? "Unknown Product",
                                 x.RemainingQuantity,
                                 x.Product.LotNumber,
                                 x.Product.ContainerName,

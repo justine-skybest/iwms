@@ -280,15 +280,25 @@ public static class TransferEndpoint
         return group;
     }
 
-    private static async Task<IResult> LocatePallet(WMSContext dbContext, Expression<Func<Pallet, bool>> predicate)
+    private static async Task<IResult> LocatePallet(
+      WMSContext dbContext,
+      Expression<Func<Pallet, bool>> predicate,
+      CancellationToken cancellationToken = default)
     {
-        var pallet = await dbContext.Pallets.FirstOrDefaultAsync(predicate);
+        var pallet = await dbContext.Pallets
+            .AsNoTracking()
+            .FirstOrDefaultAsync(predicate, cancellationToken);
+
         if (pallet is null)
         {
             return Results.Ok(new PalletLocationDto(0, 0, 0, 0, null, null, null, "Pallet not found."));
         }
 
-        var checkIn = await dbContext.CheckIns
+        // Find the latest ACTIVE check-in
+        var activeCheckIn = await dbContext.CheckIns
+            .AsNoTracking()
+            .Where(checkIn => checkIn.PalletId == pallet.Id && checkIn.IsActive)
+            .OrderByDescending(checkIn => checkIn.CheckInDate)
             .Include(checkIn => checkIn.Bins)
                 .ThenInclude(bin => bin.Rack)
                     .ThenInclude(rack => rack!.Warehouse)
@@ -298,48 +308,102 @@ public static class TransferEndpoint
                 .ThenInclude(bin => bin.Level)
             .Include(checkIn => checkIn.Bins)
                 .ThenInclude(bin => bin.BinNames)
-            .FirstOrDefaultAsync(checkIn => checkIn.PalletId == pallet.Id);
+            .FirstOrDefaultAsync(cancellationToken);
 
-        if (checkIn is null || !checkIn.Bins.Any())
+        if (activeCheckIn is null || activeCheckIn.Bins.Count == 0)
         {
             return Results.Ok(new PalletLocationDto(
                 pallet.Id, pallet.WarehouseId, pallet.PalletNumber, pallet.PalletHashCode,
                 null, null, null,
-                "This pallet is not currently checked in to any bin location."
+                "This pallet is currently empty or not checked in to any bin location."
             ));
         }
 
-        var bin = checkIn.Bins.First();
+        var bin = activeCheckIn.Bins.First();
 
         return Results.Ok(new PalletLocationDto(
             pallet.Id, pallet.WarehouseId, pallet.PalletNumber, pallet.PalletHashCode,
-            checkIn.Id, bin.Id,
+            activeCheckIn.Id, bin.Id,
             $"{bin.Rack!.Warehouse!.Name} / {bin.Rack.Name} / Bay {bin.Bay!.BayNumber} / Level {bin.Level!.LevelNumber} / {bin.BinNames!.BinName}",
             null
         ));
     }
 
-    private static async Task<bool> IsBinOccupied(WMSContext dbContext, int binId, int? excludeCheckInId = null)
+    private static async Task<bool> IsBinOccupied(
+        WMSContext dbContext,
+        int binId,
+        int? excludeCheckInId = null,
+        CancellationToken cancellationToken = default)
     {
-        var checkIns = await dbContext.CheckIns
-            .Where(checkIn => checkIn.Bins.Any(bin => bin.Id == binId))
-            .Where(checkIn => excludeCheckInId == null || checkIn.Id != excludeCheckInId)
-            .Include(checkIn => checkIn.ReceivedProducts)
-            .ToListAsync();
+        // 1. Fetch only ACTIVE check-ins currently residing in this bin
+        var activeCheckIns = await dbContext.CheckIns
+            .AsNoTracking()
+            .Where(ci => ci.IsActive)
+            .Where(ci => ci.Bins.Any(bin => bin.Id == binId))
+            .Where(ci => excludeCheckInId == null || ci.Id != excludeCheckInId)
+            .Include(ci => ci.ReceivedProducts)
+            .Include(ci => ci.Pallet)
+                .ThenInclude(p => p!.ReceivedProducts)
+            .ToListAsync(cancellationToken);
 
-        foreach (var checkIn in checkIns)
+        if (activeCheckIns.Count == 0)
         {
-            foreach (var receivedProduct in checkIn.ReceivedProducts)
-            {
-                var picked = await dbContext.PickedProducts
-                    .Where(pickedProduct => pickedProduct.ReceivedProductId == receivedProduct.Id &&
-                        pickedProduct.ManualPicking != null &&
-                        pickedProduct.ManualPicking.CheckInId == checkIn.Id)
-                    .SumAsync(pickedProduct => (int?)pickedProduct.QuantityPicked) ?? 0;
+            return false;
+        }
 
-                if (picked < receivedProduct.Quantity)
+        // 2. Collect all distinct product IDs across active check-ins (both direct and via pallet)
+        var activeCheckInIds = activeCheckIns.Select(ci => ci.Id).ToList();
+
+        var allProductIds = activeCheckIns
+            .SelectMany(ci => ci.ReceivedProducts
+                .Concat(ci.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>()))
+            .Select(rp => rp.Id)
+            .Distinct()
+            .ToList();
+
+        // If an active pallet/check-in exists with no products assigned yet, the bin is physically reserved
+        if (allProductIds.Count == 0)
+        {
+            return true;
+        }
+
+        // 3. Batch query: Get all picked sums for these check-ins and products in a single database round-trip
+        var pickedTotals = await dbContext.PickedProducts
+                .AsNoTracking()
+                .Where(pp => pp.ManualPicking != null &&
+                             pp.ManualPicking.CheckInId.HasValue &&
+                             activeCheckInIds.Contains(pp.ManualPicking.CheckInId.Value) &&
+                             allProductIds.Contains(pp.ReceivedProductId))
+                .GroupBy(pp => new
                 {
-                    return true;
+                    CheckInId = pp.ManualPicking!.CheckInId!.Value,
+                    pp.ReceivedProductId
+                })
+                .Select(g => new
+                {
+                    g.Key.CheckInId,
+                    g.Key.ReceivedProductId,
+                    TotalPicked = g.Sum(pp => (int?)pp.QuantityPicked) ?? 0
+                })
+                .ToDictionaryAsync(
+                    x => (x.CheckInId, x.ReceivedProductId),
+                    x => x.TotalPicked,
+                    cancellationToken);
+
+        // 4. In-memory evaluation: check if any item in this bin has remaining unpicked stock
+        foreach (var checkIn in activeCheckIns)
+        {
+            var products = checkIn.ReceivedProducts
+                .Concat(checkIn.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>())
+                .DistinctBy(p => p.Id);
+
+            foreach (var product in products)
+            {
+                pickedTotals.TryGetValue((checkIn.Id, product.Id), out var totalPicked);
+
+                if (totalPicked < product.Quantity)
+                {
+                    return true; // Bin contains physical unpicked inventory
                 }
             }
         }
