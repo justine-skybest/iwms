@@ -64,7 +64,7 @@
               "RelativeDocumentMoniker": "Endpoints\\CheckInEndPoint.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\CheckInEndPoint.cs",
               "RelativeToolTip": "Endpoints\\CheckInEndPoint.cs",
-              "ViewState": "AgIAAGUBAAAAAAAAAADwv3UBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAGUBAAAAAAAAAADwv2wBAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-10-20T08:54:05.539Z",
               "EditorCaption": ""
@@ -79,8 +79,7 @@
               "RelativeToolTip": "Endpoints\\ReportsEndpoints\\OccupancyReportEndpoints.cs",
               "ViewState": "AgIAAJgAAAAAAAAAAADwv6EAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:52:52.202Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:52:52.202Z"
             },
             {
               "$type": "Document",
@@ -92,8 +91,7 @@
               "RelativeToolTip": "Endpoints\\ReportsEndpoints\\InventoryAgingReportEndpoints.cs",
               "ViewState": "AgIAANUBAAAAAAAAAAAmwNwBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:50:31.023Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:50:31.023Z"
             },
             {
               "$type": "Document",
@@ -105,8 +103,7 @@
               "RelativeToolTip": "Endpoints\\DashboardEndpoint.cs",
               "ViewState": "AgIAADUBAAAAAAAAAAAmwD8BAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:47:51.628Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:47:51.628Z"
             },
             {
               "$type": "Document",
@@ -118,8 +115,7 @@
               "RelativeToolTip": "Endpoints\\BinEndpoint.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:45:40.027Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:45:40.027Z"
             },
             {
               "$type": "Document",
@@ -131,8 +127,7 @@
               "RelativeToolTip": "Data\\WMSContext.cs",
               "ViewState": "AgIAAKEWAAAAAAAAAAAmwKsWAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:36:43.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:36:43.028Z"
             },
             {
               "$type": "Document",
@@ -144,8 +139,7 @@
               "RelativeToolTip": "Entities\\CheckIn.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:36:16.426Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:36:16.426Z"
             },
             {
               "$type": "Document",
@@ -157,8 +151,7 @@
               "RelativeToolTip": "Services\\CheckInCleanupBackgroundService.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAA3wA8AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-10-20T08:34:50.624Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:34:50.624Z"
             },
             {
               "$type": "Document",
@@ -170,8 +163,7 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABQAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-10-20T08:34:26.617Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-20T08:34:26.617Z"
             }
           ]
         }
