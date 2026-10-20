@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit, inject, effect, Output, EventEmitter, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, effect, Output, EventEmitter, OnDestroy, ViewChild, ElementRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api/generated/api';
-import { receivingV2Get, getReceiving } from '../../api/generated/functions';
+import { receivingV2Get, getReceiving, receivingIdDelete } from '../../api/generated/functions';
 import { ReceivedProductDetailsDto, ReceivingDetailsDtoPaginatedResponse, ReceivingDetailsDto } from '../../api/generated/models';
 import { WarehouseService } from '../../lib/services/warehouse.service';
 import { ReceivingCreateComponent } from './create/receiving-create.component';
-import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet, Clock, Printer, PencilIcon } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, EyeIcon, SearchIcon, PlusIcon, AlertTriangle, FileSpreadsheet, Clock, Printer, PencilIcon, TrashIcon, Trash2Icon } from 'lucide-angular';
 import { SignalRService } from '../../lib/services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
 import { PageHeaderComponent } from '../../shared/layout/page-header/page-header.component';
@@ -14,6 +14,8 @@ import { formatDate } from '../../lib/utils/format-date';
 import { formatTime } from '../../lib/utils/format-time';
 import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
 import { EditReceivingComponent } from './edit/edit-receiving.component';
+import { ToastService } from '../../lib/services/toast.service';
+import { ConfirmDeleteDialogComponent } from '../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component';
 
 export type DiscrepancyCategory = 'QUANTITY' | 'DESCRIPTION' | 'EXPIRY' | 'WEIGHT' | 'CBM' | 'DAMAGED' | 'OTHER';
 
@@ -36,7 +38,7 @@ export interface PalletLabelPrintData {
 @Component({
   selector: 'app-receiving-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent, EditReceivingComponent],
+  imports: [CommonModule, FormsModule, ReceivingCreateComponent, LucideAngularModule, PageHeaderComponent, EditReceivingComponent, ConfirmDeleteDialogComponent],
   templateUrl: './receiving-list.component.html',
 })
 export class ReceivingListComponent implements OnInit, OnDestroy {
@@ -54,8 +56,16 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
   readonly ClockIcon = Clock;
   readonly PrinterIcon = Printer;
   readonly pencilIcon = PencilIcon;
+  readonly trashIcon = Trash2Icon;
 
   readonly BASELINE_START_DATE = '2026-09-23';
+
+  protected readonly isConfirmDeleteVisible = signal(false);
+  protected readonly isDeleting = signal(false)
+  protected readonly toDeleteReceiving = signal<ReceivingDetailsDto | null>(null)
+
+  private toastService = inject(ToastService);
+
 
   public formatDate = formatDate;
   public formatTime = formatTime;
@@ -485,5 +495,30 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
       (p.lotNumber && p.lotNumber.toLowerCase().includes(query)) ||
       (p.remarks && p.remarks.toLowerCase().includes(query))
     );
+  }
+
+  protected promptDeleteteReceiving(receiving: ReceivingDetailsDto) : void {
+    this.toDeleteReceiving.set(receiving);
+    this.isConfirmDeleteVisible.set(true);
+  }
+
+  protected async confirmReceivingDeletion() : Promise<void> {
+    this.isDeleting.set(true)
+
+    try{
+      await this.api.invoke(receivingIdDelete, {
+        id: this.toDeleteReceiving()?.id!
+      })
+
+      this.toDeleteReceiving.set(null)
+      this.isConfirmDeleteVisible.set(false);
+      this.toastService.success(`Receiving ${this.toDeleteReceiving()?.series} successfully deleted`);
+      this.loadReceivings()
+    }catch(error: any){
+      this.toastService.error(error.error ?? "Failed to delete");
+    }
+    finally {
+      this.isDeleting.set(false);
+    }
   }
 }

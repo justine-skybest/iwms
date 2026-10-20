@@ -40,7 +40,7 @@ import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent } from '../../../shared/components/dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 export interface ReceivingFormDraft {
   newReceiving: CreateReceivingDto;
@@ -91,6 +91,7 @@ export type StagedProductItem = {
   lotNumber?: string;
   name?: string;
   palletId?: number;
+  palletNumber?: number;
   productId?: number;
   quantity?: number;
   weight?: number;
@@ -536,6 +537,7 @@ syncStagedItemsFromSelection(): void {
         typeOfPackage: p.typeOfPackage || 'CS GLASS',
         remarks: p.remarks || '',
         palletId: undefined,
+        palletNumber: undefined,
         containerName: '',
           status: 1 // Matched
       });
@@ -1052,6 +1054,7 @@ removeUnlistedPhoto(index: number): void {
     if (this.activeRowIndexForPallet === null || !this.scannedPallet?.palletId) return;
 
     this.stagedItems[this.activeRowIndexForPallet].palletId = this.scannedPallet.palletId;
+    this.stagedItems[this.activeRowIndexForPallet].palletNumber = this.scannedPallet.palletNumber;
     this.toastService.success(`Pallet #${this.scannedPallet.palletNumber || this.scannedPallet.palletId} assigned to line item.`);
     
     this.updatePalletGroups();

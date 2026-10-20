@@ -18,7 +18,7 @@ import { LucideAngularModule, Trash2, Search, ChevronDown, X, Loader2, Check, Qr
 import { ToastService } from '../../../lib/services/toast.service';
 import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
-import { ConfirmDialogComponent } from '../../../shared/components/dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { toDateOnly } from '../../../lib/utils/to-date-only';
 
 export type EditStagedProductItem = {
@@ -45,6 +45,7 @@ export type EditStagedProductItem = {
   typeOfPackage?: string;
   remarks?: string;
   palletId?: number;
+  palletNumber?: number;
   containerName?: string;
   lotNumber?: string;
 };
@@ -296,6 +297,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
           typeOfPackage: p.typeOfPackage!,
           remarks: p.remarks || '',
           palletId: p.palletId ?? undefined,
+          palletNumber: p.palletNumber!,
           containerName: p.containerName || '',
           lotNumber: p.lotNumber || undefined
         }));

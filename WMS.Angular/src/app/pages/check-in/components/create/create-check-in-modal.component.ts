@@ -34,7 +34,7 @@ import {
 } from '../../../../api/generated/functions';
 import { SearchableSelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
 import { ToastService } from '../../../../lib/services/toast.service';
-import { CreateBinDialogComponent } from '../../../../shared/components/dialog/create-bin-dialog.component';
+import { CreateBinDialogComponent } from '../../../../shared/components/confirm-dialog/create-bin-dialog.component';
 
 type CheckInType = 'Pallet' | 'Item';
 

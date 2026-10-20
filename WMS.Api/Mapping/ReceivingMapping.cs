@@ -129,7 +129,7 @@ public static class ReceivingMapping
             ContainerName = dto.ContainerName ?? string.Empty,
             TotalAmount = dto.TotalAmount,
             UnitPrice = dto.UnitPrice,
-            PalletId = dto.PalletId
+            PalletId = dto.PalletId,
         };
     }
 
@@ -252,7 +252,8 @@ public static class ReceivingMapping
             Supplier = product.Supplier,
             Remarks = product.Remarks,
             ContainerName = product.ContainerName,
-            PalletId = product.PalletId
+            PalletId = product.PalletId,
+            PalletNumber = product.Pallet?.PalletNumber,
         };
     }
 

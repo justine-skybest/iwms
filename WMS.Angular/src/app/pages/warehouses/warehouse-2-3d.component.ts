@@ -6,14 +6,14 @@ import { WarehouseService } from '../../lib/services/warehouse.service';
 import { CreateCheckInModalComponent } from '../check-in/components/create/create-check-in-modal.component';
 import { CreatePickOrderModalComponent } from '../pick-order/create-pick-order-modal.component';
 import { ReceivingCreateComponent } from '../receiving/create/receiving-create.component';
-import { CreateBinDialogComponent } from '../../shared/components/dialog/create-bin-dialog.component';
+import { CreateBinDialogComponent } from '../../shared/components/confirm-dialog/create-bin-dialog.component';
 import { Bin3D } from './warehouse-3d-viewer.service';
 import {
   BinWorldPosition,
   EmptySpotPointer,
   Warehouse3DViewerComponent,
 } from './warehouse-3d-viewer.component';
-import { CreateBinPosition } from '../../shared/components/dialog/create-bin-dialog.component';
+import { CreateBinPosition } from '../../shared/components/confirm-dialog/create-bin-dialog.component';
 import { updateBin3DLocation } from '../../api/generated/functions';
 
 @Component({

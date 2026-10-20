@@ -37,4 +37,5 @@ public record class ReceivedProductDetailsDto
     public string? LotNumber { get; set; }
     public string? TypeOfPackage { get; set; }
     public int? PalletId { get; init; }
+    public int? PalletNumber { get; init; }
 }

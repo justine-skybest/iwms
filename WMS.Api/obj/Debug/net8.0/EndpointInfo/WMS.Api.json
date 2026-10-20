@@ -4075,6 +4075,9 @@
         "tags": [
           "Receiving"
         ],
+        "summary": "Delete a receiving receipt",
+        "description": "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.",
+        "operationId": "DeleteReceiving",
         "parameters": [
           {
             "name": "id",
@@ -4087,8 +4090,28 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -12107,6 +12130,11 @@
             "nullable": true
           },
           "palletId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "palletNumber": {
             "type": "integer",
             "format": "int32",
             "nullable": true

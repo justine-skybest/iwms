@@ -27,7 +27,7 @@ import { deleteIncoming, downloadIncomingDocument, getIncomings, importIncomingF
 import { formatDate } from "../../lib/utils/format-date";
 import { formatTime } from "../../lib/utils/format-time";
 import { ToastService } from "../../lib/services/toast.service";
-import { ConfirmDialogComponent } from "../../shared/components/dialog/confirm-dialog.component";
+import { ConfirmDialogComponent } from "../../shared/components/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-incoming-list',

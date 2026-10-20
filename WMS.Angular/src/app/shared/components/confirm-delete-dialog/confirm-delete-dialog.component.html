@@ -1,0 +1,86 @@
+@if (open()) {
+  <!-- Backdrop -->
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-opacity"
+    (click)="onBackdropClick($event)"
+  >
+    <!-- Dialog Card -->
+    <div
+      class="relative flex w-full max-w-[28rem] flex-col rounded-xl bg-white p-6 shadow-xl dark:bg-neutral-900"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-3">
+        <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          Confirm {{ entityLabel() }} Deletion
+        </h3>
+        @if (!deleting()) {
+          <button
+            type="button"
+            class="rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
+            (click)="onCancel()"
+          >
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        }
+      </div>
+
+      <!-- Body -->
+      <div class="flex flex-col gap-4 py-2">
+        <p class="text-sm text-neutral-600 dark:text-neutral-300">
+          This will permanently delete the {{ entityLabel() | lowercase }}
+          <strong class="font-semibold text-neutral-900 dark:text-neutral-100">{{ entityName() }}</strong>
+          and all its data. This action cannot be undone.
+        </p>
+
+        <p class="text-xs text-neutral-500">
+          Type
+          <strong class="font-medium text-neutral-700 dark:text-neutral-300">{{ entityName() }}</strong>
+          to confirm:
+        </p>
+
+        <input
+          type="text"
+          class="block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-500/20 disabled:cursor-not-allowed disabled:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:disabled:bg-neutral-800/50"
+          [placeholder]="'Enter ' + (entityLabel() | lowercase) + ' name'"
+          [value]="confirmInput()"
+          (input)="confirmInput.set($any($event.target).value)"
+          [disabled]="deleting()"
+        />
+      </div>
+
+      <!-- Footer -->
+      <div class="mt-6 flex justify-end gap-3">
+        <button
+          type="button"
+          class="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
+          (click)="onCancel()"
+          [disabled]="deleting()"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+          [disabled]="!isConfirmValid() || deleting()"
+          (click)="onConfirm()"
+        >
+          @if (deleting()) {
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          } @else {
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          }
+          Delete {{ entityLabel() }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

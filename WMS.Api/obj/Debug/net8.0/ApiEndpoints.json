@@ -4113,12 +4113,29 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 204
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "application/problem\u002Bjson"
+        ],
+        "StatusCode": 409
       }
     ],
     "Tags": [
       "Receiving"
-    ]
+    ],
+    "EndpointName": "DeleteReceiving",
+    "Description": "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.",
+    "Summary": "Delete a receiving receipt"
   },
   {
     "ContainingType": "WMS.Api.Endpoints.ReceivingEndpoint\u002B\u003C\u003Ec",

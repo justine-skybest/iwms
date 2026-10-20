@@ -117,6 +117,13 @@
                   title="Print Pallet Labels">
                   <lucide-icon [img]="PrinterIcon" [size]="15"></lucide-icon>
                 </button>
+                <button 
+                  (click)="promptDeleteteReceiving(r)" 
+                  [disabled]="isDeleting()"
+                  class="p-1.5 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50" 
+                  title="Delete Receiving">
+                  <lucide-icon [img]="trashIcon" [size]="15"></lucide-icon>
+                </button>
               </div>
             </td>
           </tr>
@@ -424,3 +431,11 @@
   (close)="closeEdit()"
   (updated)="loadReceivings()">
 </app-edit-receiving>
+
+<app-confirm-delete-dialog
+  entityLabel="Receiving"
+  [entityName]="toDeleteReceiving()?.series ?? ''"
+  [(open)]="isConfirmDeleteVisible"
+  [deleting]="isDeleting()"
+  (confirmed)="confirmReceivingDeletion()"
+/>

@@ -404,32 +404,58 @@ public static class ReceivingEndpoint
         .ProducesProblem(StatusCodes.Status404NotFound);
 
         // -----------------------------------------------------------------------------
-        // DELETE /{id:int}
+        // DELETE /{id:int} - Delete Receiving if no Check-Ins exist
         // -----------------------------------------------------------------------------
         group.MapDelete("/{id:int}", async (
             int id,
             WMSContext dbContext,
-            IAuditLogService auditLogService) =>
+            IAuditLogService auditLogService,
+            CancellationToken cancellationToken) =>
         {
             var existingReceiving = await dbContext.Receivings
                 .Include(receiving => receiving.Products)
-                .FirstOrDefaultAsync(receiving => receiving.Id == id);
+                .FirstOrDefaultAsync(
+                    receiving => receiving.Id == id,
+                    cancellationToken);
 
             if (existingReceiving is null)
             {
-                return Results.NotFound();
+                return Results.NotFound(new
+                {
+                    Message = $"Receiving receipt #{id} was not found."
+                });
+            }
+
+            // Prevent deletion if any product under this Receiving
+            // has an associated Check-In record.
+            var hasCheckIns = await dbContext.ReceivedProducts
+                .Where(product => product.ReceivingId == id)
+                .AnyAsync(product => product.CheckIns!.Any(),
+                    cancellationToken);
+
+            if (hasCheckIns)
+            {
+                return Results.Conflict(new
+                {
+                    Message = $"Receiving receipt #{id} cannot be deleted because one or more Check-In records exist.",
+                    ReceivingId = id,
+                    Reason = "CHECKINS_EXIST"
+                });
             }
 
             var snapshotSeries = existingReceiving.Series;
+            var snapshotShipper = existingReceiving.Shipper;
             var snapshotProductsCount = existingReceiving.Products?.Count ?? 0;
 
-            if (existingReceiving.Products != null)
+            if (existingReceiving.Products is not null)
             {
-                dbContext.ReceivedProducts.RemoveRange(existingReceiving.Products);
+                dbContext.ReceivedProducts.RemoveRange(
+                    existingReceiving.Products);
             }
+
             dbContext.Receivings.Remove(existingReceiving);
 
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(cancellationToken);
 
             await auditLogService.LogAsync(
                 category: "Receiving",
@@ -439,13 +465,19 @@ public static class ReceivingEndpoint
                 {
                     DeletedId = id,
                     Series = snapshotSeries,
-                    Shipper = existingReceiving.Shipper,
+                    Shipper = snapshotShipper,
                     TotalProductsRemoved = snapshotProductsCount
-                }
-            );
+                });
 
             return Results.NoContent();
-        });
+        })
+        .WithName("DeleteReceiving")
+        .WithSummary("Delete a receiving receipt")
+        .WithDescription(
+            "Deletes a receiving receipt and its product records only if none of its products have associated Check-In records.")
+        .Produces(StatusCodes.Status204NoContent)
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .ProducesProblem(StatusCodes.Status409Conflict);
 
         return group;
     }

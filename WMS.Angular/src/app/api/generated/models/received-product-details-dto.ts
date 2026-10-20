@@ -17,6 +17,7 @@ export interface ReceivedProductDetailsDto {
   lotNumber?: string | null;
   name?: string | null;
   palletId?: number | null;
+  palletNumber?: number | null;
   productId?: number;
   quantity?: number;
   remarks?: string | null;
