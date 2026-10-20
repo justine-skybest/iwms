@@ -18,8 +18,8 @@
     <app-stat-card label="Total Pallets" [value]="summary()?.totalPallets ?? 0" sub="In selected location" color="#22c55e" icon="pallets"></app-stat-card>
     <app-stat-card label="Bin Utilization" [value]="binUtilization() + '%'" sub="{{summary()?.occupiedBins ?? 0}} / {{summary()?.totalBins ?? 0}} bins" color="#3b82f6" icon="warehouses"></app-stat-card>
     <app-stat-card label="Pending Check-ins" [value]="totalPendingCheckIns()" sub="{{summary()?.pendingCheckInPallets ?? 0}} pallets · {{summary()?.pendingCheckInItems ?? 0}} items" color="#f59e0b" icon="truck"></app-stat-card>
-    <app-stat-card label="Expiring Soon (30d)" [value]="summary()?.expiringSoonCount ?? 0" sub="Requires attention" color="#f97316" icon="alert-circle"></app-stat-card>
-    <app-stat-card label="Expired" [value]="summary()?.expiredCount ?? 0" sub="Stock past expiry" color="#ef4444" icon="x"></app-stat-card>
+    <app-stat-card label="Expiring Soon (30d)" [value]="summary()?.expiringSoonCount ?? 0" sub="Requires attention" color="#f97316" icon="alertCircle"></app-stat-card>
+    <app-stat-card label="Expired" [value]="summary()?.expiredCount ?? 0" sub="Stock past expiry" color="#ef4444" icon="xIcon"></app-stat-card>
     <app-stat-card label="Received Today" [value]="summary()?.todayReceivingCount ?? 0" sub="{{summary()?.todayReceivingCBM ?? 0 | number:'1.1-2'}} m³ total volume" color="#06b6d4" icon="check"></app-stat-card>
   </div>
 

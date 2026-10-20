@@ -25,4 +25,6 @@ export const Icons: Record<string, string> = {
   incoming: "M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2",
   checkIns: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2 M9 5a2 2 0 002 2h2a2 2 0 002-2 M9 5a2 2 0 012-2h2a2 2 0 012 2 M9 13l2 2 4-4",
   pickOrders: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z M3 6h18 M16 10a4 4 0 01-8 0",
+  alertCircle: "M12 8v4 M12 16h.01 M22 12a10 10 0 11-20 0 10 10 0 0120 0",
+  xIcon: "M18 6L6 18 M6 6l12 12",
 };
