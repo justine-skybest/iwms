@@ -279,24 +279,27 @@ public static class PalletEndpoint
             page = Math.Max(page, 1);
             pageSize = Math.Clamp(pageSize, 1, maxPageSize);
 
-            var query = dbContext.Pallets
-                .Include(pallet => pallet.ReceivedProducts!)
-                    .ThenInclude(product => product.Product)
-                .Include(pallet => pallet.ReceivedProducts!)
-                    .ThenInclude(product => product.Receiving)
-                .Include(pallet => pallet.Warehouse!)
-                .Where(pallet => pallet.ReceivedProducts != null && pallet.ReceivedProducts.Any())
-                .Where(p => !dbContext.CheckIns.Any(c => c.PalletId == p.Id))
+            // Explicitly typed as IQueryable<Pallet> so it can be reassigned with .Where()
+            IQueryable<Pallet> query = dbContext.Pallets
+                .AsNoTracking()
                 .Where(pallet => pallet.WarehouseId == WarehouseId)
-                .AsNoTracking();
+                .Where(p => !dbContext.CheckIns.Any(c => c.IsActive && c.PalletId == p.Id))
+                .Where(p => p.ReceivedProducts != null &&
+                            p.ReceivedProducts.Any(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
+                .Include(pallet => pallet.ReceivedProducts!.Where(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
+                    .ThenInclude(product => product.Product)
+                .Include(pallet => pallet.ReceivedProducts!.Where(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
+                    .ThenInclude(product => product.Receiving)
+                .Include(pallet => pallet.Warehouse!);
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                // NOTE: matches pallet number or any received product's name.
-                // Adjust to whatever field(s) make sense for this view.
                 query = query.Where(pallet =>
                     pallet.PalletNumber.ToString().Contains(search) ||
-                    pallet.ReceivedProducts!.Any(rp => rp.Product != null && rp.Product.Name.Contains(search)));
+                    pallet.ReceivedProducts!.Any(rp =>
+                        !rp.CheckIns.Any(ci => ci.IsActive) &&
+                        rp.Product != null &&
+                        rp.Product.Name.Contains(search)));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);

@@ -150,7 +150,7 @@ async onPalletQrScanned(decodedText: string): Promise<void> {
       this.selectedPallet = [
         {
           id: pallet.palletId,
-          label: `Pallet #${pallet.palletNumber ?? pallet.palletId}`,
+          label: `Pallet #${pallet.palletNumber}`,
           sublabel: pallet.currentBinLocation ? `Location: ${pallet.currentBinLocation}` : undefined,
           raw: {
             id: pallet.palletId,
@@ -246,7 +246,7 @@ private async fetchPalletByHashCode(hashCode: number, warehouseId: number): Prom
       WarehouseId: this.warehouseService.selectedWarehouseId()!,
       search: term,
       page: 1,
-      pageSize: 20,
+      pageSize: 50,
     });
     return (res?.items ?? [])
       .filter((p): p is PalletToBeCheckInDto & { id: number } => p.id != null)
