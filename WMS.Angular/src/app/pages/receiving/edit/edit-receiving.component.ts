@@ -851,7 +851,7 @@ removeProductItem(index: number): void {
       driverName: this.newReceiving.driverName?.trim() ?? '',
       checkerName: this.newReceiving.checkerName?.trim() || undefined,
       clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
-      dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived!),
+      dateReceived: this.newReceiving.dateReceived,
       dateAdded: this.newReceiving.dateAdded || new Date().toISOString(),
       dateTime: new Date().toISOString(),
       timeStart: this.toIsoDateTime(this.newReceiving.dateReceived!, this.newReceiving.timeStart!),
