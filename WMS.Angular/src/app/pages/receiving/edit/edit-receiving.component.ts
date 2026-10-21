@@ -216,21 +216,35 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
     this.newReceiving.timeEnd = philippineTimeToUtc(phTime, this.newReceiving.timeEnd);
   }
 
-  private getInitialForm(): CreateReceivingDto {
+private getInitialForm(): CreateReceivingDto {
     const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentUtcTime = now.toISOString().substring(11, 16);
+
+    // Philippine Date: "YYYY-MM-DD"
+    const todayPh = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Manila',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(now);
+
+    // Philippine Time: "HH:mm" (24-hour)
+    const currentPhTime = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Manila',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
+    }).format(now);
 
     return {
       series: '',
       driverName: '',
       plateNumber: '',
       warehouseId: this.warehouseService.selectedWarehouseId() ?? undefined,
-      dateReceived: today,
+      dateReceived: todayPh,
       dateAdded: now.toISOString(),
       dateTime: now.toISOString(),
-      timeStart: currentUtcTime,
-      timeEnd: currentUtcTime,
+      timeStart: currentPhTime, // e.g. "14:30"
+      timeEnd: currentPhTime,   // e.g. "14:30"
       transportCompany: '',
       shipper: '',
       consignee: '',
@@ -751,13 +765,39 @@ removeProductItem(index: number): void {
     return null;
   }
 
-  private toIsoDateTime(dateStr?: string, timeStr?: string): string {
-    const baseDate = dateStr || new Date().toISOString().split('T')[0];
-    if (!timeStr) return new Date(baseDate).toISOString();
-    const formattedTime = timeStr.length === 5 ? `${timeStr}:00` : timeStr;
-    return new Date(`${baseDate}T${formattedTime}`).toISOString();
+  toIsoDateTime(dateStr: string, phTime?: string): string {
+      if (!dateStr || !phTime) return '';
+      const time = phTime.length === 5 ? `${phTime}:00` : phTime;
+      
+      // Explicitly declare Philippine offset (+08:00) so JS converts correctly to UTC
+      const phDateWithOffset = `${dateStr}T${time}+08:00`;
+      const dateObj = new Date(phDateWithOffset);
+
+      return !isNaN(dateObj.getTime()) ? dateObj.toISOString() : '';
   }
 
+  utcToPhTime(utcValue: string | Date | null | undefined): string {
+    if (!utcValue) return '';
+
+    let dateObj: Date;
+    if (typeof utcValue === 'string') {
+      const trimmed = utcValue.trim();
+      const hasTz = trimmed.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(trimmed);
+      dateObj = new Date(hasTz ? trimmed : `${trimmed}Z`);
+    } else {
+      dateObj = new Date(utcValue);
+    }
+
+    if (isNaN(dateObj.getTime())) return '';
+
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Manila',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
+    }).format(dateObj);
+  }
+  
   async saveReceiving(): Promise<void> {
     if (!this.selectedReceiving?.id) return;
 
@@ -811,11 +851,11 @@ removeProductItem(index: number): void {
       driverName: this.newReceiving.driverName?.trim() ?? '',
       checkerName: this.newReceiving.checkerName?.trim() || undefined,
       clientRepresentative: this.newReceiving.clientRepresentative?.trim() || undefined,
-      dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
+      dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived!),
       dateAdded: this.newReceiving.dateAdded || new Date().toISOString(),
       dateTime: new Date().toISOString(),
-      timeStart: this.newReceiving.timeStart,
-      timeEnd: this.newReceiving.timeEnd,
+      timeStart: this.toIsoDateTime(this.newReceiving.dateReceived!, this.newReceiving.timeStart!),
+      timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived!, this.newReceiving.timeEnd!),
       products: processedProducts
     };
 
