@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using WMS.Api.Data;
 using WMS.Api.Dtos;
 using WMS.Api.Dtos.CheckIn;
@@ -241,14 +242,28 @@ public static class CheckInEndPoint
         // -----------------------------------------------------------------------------
         // POST / - Check-In Creation with Pallet Placement Synchronization
         // -----------------------------------------------------------------------------
+        // using System.Linq.Expressions;
+
         group.MapPost("/", async (
             CreateCheckInDto newCheckIn,
             WMSContext dbContext,
             IAuditLogService auditLogService,
             CancellationToken ct) =>
         {
+            // --- Input validation ---
+            var binIds = newCheckIn.BinIds?.Distinct().ToList() ?? [];
+            if (binIds.Count == 0)
+                return Results.BadRequest("At least one BinId is required.");
+
+            var palletId = newCheckIn.PalletId;
+            var requestedProductIds = newCheckIn.ReceivedProductIds?.Distinct().ToList() ?? [];
+
+            if (palletId is null && requestedProductIds.Count == 0)
+                return Results.BadRequest("Provide a PalletId or at least one ReceivedProductId.");
+
+            // --- Bins ---
             var bins = await dbContext.Bins
-                .Where(b => newCheckIn.BinIds.Contains(b.Id))
+                .Where(b => binIds.Contains(b.Id))
                 .Include(b => b.BinNames)
                 .Include(b => b.Level)
                 .Include(b => b.Bay)
@@ -257,39 +272,101 @@ public static class CheckInEndPoint
                 .Include(b => b.Warehouse)
                 .ToListAsync(ct);
 
-            if (bins.Count != newCheckIn.BinIds.Count)
-            {
+            if (bins.Count != binIds.Count)
                 return Results.BadRequest("One or more BinIds are invalid.");
+
+            // --- Validate explicitly requested received products ---
+            // Rules:
+            //  - Whole-pallet relocation (PalletId supplied): products with no check-ins (new stock)
+            //    or an active check-in (still physically there) are allowed.
+            //  - Individual items (no PalletId): products must never have been checked in.
+            //  - Products with only inactive check-ins were checked out and are never allowed.
+            if (requestedProductIds.Count > 0)
+            {
+                var requested = await dbContext.ReceivedProducts
+                    .Where(rp => requestedProductIds.Contains(rp.Id))
+                    .Select(rp => new
+                    {
+                        rp.Id,
+                        rp.PalletId,
+                        HasAnyCheckIn = rp.CheckIns.Any(),
+                        HasActiveCheckIn = rp.CheckIns.Any(ci => ci.IsActive)
+                    })
+                    .ToListAsync(ct);
+
+                var notFound = requestedProductIds
+                    .Except(requested.Select(r => r.Id))
+                    .ToList();
+                if (notFound.Count > 0)
+                    return Results.BadRequest(
+                        $"ReceivedProductIds not found: [{string.Join(", ", notFound)}].");
+
+                if (palletId != null)
+                {
+                    var wrongPallet = requested
+                        .Where(r => r.PalletId != palletId)
+                        .Select(r => r.Id)
+                        .ToList();
+                    if (wrongPallet.Count > 0)
+                        return Results.BadRequest(
+                            $"ReceivedProductIds do not belong to pallet {palletId}: [{string.Join(", ", wrongPallet)}].");
+
+                    var checkedOut = requested
+                        .Where(r => r.HasAnyCheckIn && !r.HasActiveCheckIn)
+                        .Select(r => r.Id)
+                        .ToList();
+                    if (checkedOut.Count > 0)
+                        return Results.BadRequest(
+                            $"ReceivedProductIds were already checked out: [{string.Join(", ", checkedOut)}].");
+                }
+                else
+                {
+                    var alreadyCheckedIn = requested
+                        .Where(r => r.HasAnyCheckIn)
+                        .Select(r => r.Id)
+                        .ToList();
+                    if (alreadyCheckedIn.Count > 0)
+                        return Results.BadRequest(
+                            $"ReceivedProductIds were already checked in: [{string.Join(", ", alreadyCheckedIn)}].");
+                }
             }
+
+            // --- Load eligible received products ---
+            Expression<Func<ReceivedProduct, bool>> isEligible;
+            if (palletId != null)
+                isEligible = rp => !rp.CheckIns.Any() || rp.CheckIns.Any(ci => ci.IsActive);
+            else
+                isEligible = rp => !rp.CheckIns.Any();
 
             var receivedProducts = await dbContext.ReceivedProducts
                 .Include(rp => rp.Product)
-                .Where(rp => (newCheckIn.ReceivedProductIds != null && newCheckIn.ReceivedProductIds.Contains(rp.Id)) ||
-                             (newCheckIn.PalletId != null && rp.PalletId == newCheckIn.PalletId))
+                .Where(isEligible)
+                .Where(rp => requestedProductIds.Contains(rp.Id) ||
+                             (palletId != null && rp.PalletId == palletId))
                 .ToListAsync(ct);
 
-            if (newCheckIn.PalletId is null && receivedProducts.Count != (newCheckIn.ReceivedProductIds?.Count ?? 0))
-            {
-                return Results.BadRequest("One or more ReceivedProductIds are invalid.");
-            }
+            if (receivedProducts.Count == 0)
+                return Results.BadRequest("There are no eligible received products to check in.");
 
-            // If this pallet is currently active in another bin, deactivate the previous placement
-            if (newCheckIn.PalletId.HasValue)
+            // --- Deactivate previous placement of this pallet (relocation) ---
+            if (palletId.HasValue)
             {
                 var previousActiveCheckIns = await dbContext.CheckIns
-                    .Where(ci => ci.PalletId == newCheckIn.PalletId.Value && ci.IsActive)
+                    .Where(ci => ci.PalletId == palletId.Value && ci.IsActive)
                     .ToListAsync(ct);
 
+                var now = DateTime.UtcNow;
                 foreach (var prev in previousActiveCheckIns)
                 {
                     prev.IsActive = false;
-                    prev.CheckOutDate = DateTime.UtcNow;
+                    prev.CheckOutDate = now;
                     prev.Notes = string.IsNullOrWhiteSpace(prev.Notes)
                         ? "Deactivated: Pallet relocated to new bin placement."
                         : $"{prev.Notes} | Deactivated: Pallet relocated.";
                 }
             }
 
+            // --- Create ---
             CheckIn checkIn = newCheckIn.ToEntity(bins, receivedProducts);
             checkIn.IsActive = true;
             checkIn.CheckInDate = DateTime.UtcNow;
@@ -297,9 +374,11 @@ public static class CheckInEndPoint
             dbContext.CheckIns.Add(checkIn);
             await dbContext.SaveChangesAsync(ct);
 
-            // Audit logging
+            // --- Audit logging ---
             string binList = string.Join(", ", bins.Select(b => b.Id));
-            string typeDesc = newCheckIn.PalletId.HasValue ? $"Pallet ID {newCheckIn.PalletId}" : $"{receivedProducts.Count} individual item(s)";
+            string typeDesc = palletId.HasValue
+                ? $"Pallet ID {palletId}"
+                : $"{receivedProducts.Count} individual item(s)";
 
             await auditLogService.LogAsync(
                 category: nameof(CheckIn),
@@ -309,7 +388,7 @@ public static class CheckInEndPoint
                 {
                     CheckInId = checkIn.Id,
                     newCheckIn.CheckInType,
-                    PalletId = newCheckIn.PalletId ?? 0,
+                    PalletId = palletId ?? 0,
                     checkIn.IsActive,
                     TargetBins = bins.Select(b => new
                     {
@@ -327,8 +406,7 @@ public static class CheckInEndPoint
                         rp.Quantity,
                         rp.LotNumber
                     })
-                }
-            );
+                });
 
             return Results.CreatedAtRoute(GetCheckInEndpoint, new { id = checkIn.Id }, checkIn.ToCheckInDetailsDto());
         })

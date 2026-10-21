@@ -279,37 +279,42 @@ public static class PalletEndpoint
             page = Math.Max(page, 1);
             pageSize = Math.Clamp(pageSize, 1, maxPageSize);
 
-            // Explicitly typed as IQueryable<Pallet> so it can be reassigned with .Where()
+            // "Pending" = a received product that has never been part of any check-in
+            // (active or inactive). Anything with a CheckIn row has already been through
+            // check-in, and any pick history (ManualPicking.CheckInId) implies a check-in,
+            // so this one predicate also excludes products with pick history.
+            // Keep this predicate identical in the filters and the Includes below.
             IQueryable<Pallet> query = dbContext.Pallets
                 .AsNoTracking()
-                .Where(pallet => pallet.WarehouseId == WarehouseId)
-                .Where(p => !dbContext.CheckIns.Any(c => c.IsActive && c.PalletId == p.Id))
-                .Where(p => p.ReceivedProducts != null &&
-                            p.ReceivedProducts.Any(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
-                .Include(pallet => pallet.ReceivedProducts!.Where(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
-                    .ThenInclude(product => product.Product)
-                .Include(pallet => pallet.ReceivedProducts!.Where(rp => !rp.CheckIns.Any(ci => ci.IsActive)))
-                    .ThenInclude(product => product.Receiving)
-                .Include(pallet => pallet.Warehouse!);
+                .Where(p => p.WarehouseId == WarehouseId)
+                .Where(p => p.ReceivedProducts.Any(rp => !rp.CheckIns.Any()));
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(pallet =>
-                    pallet.PalletNumber.ToString().Contains(search) ||
-                    pallet.ReceivedProducts!.Any(rp =>
-                        !rp.CheckIns.Any(ci => ci.IsActive) &&
+                query = query.Where(p =>
+                    p.PalletNumber.ToString().Contains(search) ||
+                    p.ReceivedProducts.Any(rp =>
+                        !rp.CheckIns.Any() &&
                         rp.Product != null &&
                         rp.Product.Name.Contains(search)));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);
 
-            var items = await query
-                .OrderBy(pallet => pallet.Id)
+            // Materialize entities first so the filtered Includes are what the mapper sees.
+            var pallets = await query
+                .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(p => p.ToBeCheckInDto())
+                .Include(p => p.ReceivedProducts.Where(rp => !rp.CheckIns.Any()))
+                    .ThenInclude(rp => rp.Product)
+                .Include(p => p.ReceivedProducts.Where(rp => !rp.CheckIns.Any()))
+                    .ThenInclude(rp => rp.Receiving)
+                .Include(p => p.Warehouse)
+                .AsSplitQuery()
                 .ToListAsync(cancellationToken);
+
+            var items = pallets.Select(p => p.ToBeCheckInDto()).ToList();
 
             var response = new PaginatedResponse<PalletToBeCheckInDto>
             {
