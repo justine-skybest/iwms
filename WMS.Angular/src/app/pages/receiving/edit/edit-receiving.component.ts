@@ -765,15 +765,15 @@ removeProductItem(index: number): void {
     return null;
   }
 
-  toIsoDateTime(dateStr: string, phTime?: string): string {
-      if (!dateStr || !phTime) return '';
-      const time = phTime.length === 5 ? `${phTime}:00` : phTime;
-      
-      // Explicitly declare Philippine offset (+08:00) so JS converts correctly to UTC
-      const phDateWithOffset = `${dateStr}T${time}+08:00`;
-      const dateObj = new Date(phDateWithOffset);
+  toIsoDateTime(dateStr: string, phTime: string = '00:00'): string {
+    if (!dateStr) return '';
+    const time = phTime.length === 5 ? `${phTime}:00` : phTime;
+    
+    // Combines date and time in Philippine offset (+08:00)
+    const phDateWithOffset = `${dateStr}T${time}+08:00`;
+    const dateObj = new Date(phDateWithOffset);
 
-      return !isNaN(dateObj.getTime()) ? dateObj.toISOString() : '';
+    return !isNaN(dateObj.getTime()) ? dateObj.toISOString() : '';
   }
 
   utcToPhTime(utcValue: string | Date | null | undefined): string {
