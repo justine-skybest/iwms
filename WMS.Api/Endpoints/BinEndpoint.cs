@@ -365,9 +365,6 @@ public static class BinEndpoint
         .Produces<BinSummaryDto>(StatusCodes.Status200OK)
         .Produces<string>(StatusCodes.Status404NotFound);
 
-        // -----------------------------------------------------------------------------
-        // Stock Query - FILTERED TO ACTIVE CHECK-INS ONLY
-        // -----------------------------------------------------------------------------
         group.MapGet("/stock/id/{BinId:int}", async (
             int BinId,
             WMSContext dbContext,
@@ -380,7 +377,8 @@ public static class BinEndpoint
             if (!binExists)
                 return Results.NotFound($"Bin with ID#{BinId} not found.");
 
-            // Only inspect ACTIVE check-ins
+            // Only ACTIVE check-ins. Products come from the check-in itself
+            // (ci.ReceivedProducts), never from the pallet's full history.
             var checkIns = await dbContext.CheckIns
                 .Where(ci => ci.IsActive && ci.Bins.Any(b => b.Id == BinId))
                 .Include(ci => ci.ReceivedProducts)
@@ -388,50 +386,34 @@ public static class BinEndpoint
                 .Include(ci => ci.ReceivedProducts)
                     .ThenInclude(rp => rp.Receiving)
                 .Include(ci => ci.Pallet)
-                    .ThenInclude(p => p!.ReceivedProducts!)
-                        .ThenInclude(rp => rp.Product)
-                .Include(ci => ci.Pallet)
-                    .ThenInclude(p => p!.ReceivedProducts!)
-                        .ThenInclude(rp => rp.Receiving)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .ToListAsync(cancellationToken);
 
             if (checkIns.Count == 0)
                 return Results.Ok(new List<DisplayCheckInProductsDto>());
 
-            var checkInIds = checkIns.Select(ci => ci.Id).ToList();
-
             var receivedProductIds = checkIns
-                .SelectMany(ci => (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Count > 0)
-                    ? ci.Pallet.ReceivedProducts
-                    : ci.ReceivedProducts)
+                .SelectMany(ci => ci.ReceivedProducts)
                 .Select(rp => rp.Id)
                 .Distinct()
                 .ToList();
 
-            // Total picked per product in these specific check-ins
+            // Total picked per received product across ALL check-ins/relocations
             var pickedMap = await dbContext.PickedProducts
                 .AsNoTracking()
-                .Where(pp => pp.ManualPicking != null &&
-                             pp.ManualPicking.CheckInId.HasValue &&
-                             checkInIds.Contains(pp.ManualPicking.CheckInId.Value) &&
-                             receivedProductIds.Contains(pp.ReceivedProductId))
-                .GroupBy(pp => new { CheckInId = pp.ManualPicking!.CheckInId!.Value, pp.ReceivedProductId })
-                .Select(g => new { g.Key.CheckInId, g.Key.ReceivedProductId, PickedQty = g.Sum(pp => pp.QuantityPicked) })
-                .ToDictionaryAsync(x => (x.CheckInId, x.ReceivedProductId), x => x.PickedQty, cancellationToken);
+                .Where(pp => receivedProductIds.Contains(pp.ReceivedProductId))
+                .GroupBy(pp => pp.ReceivedProductId)
+                .Select(g => new { ReceivedProductId = g.Key, PickedQty = g.Sum(pp => pp.QuantityPicked) })
+                .ToDictionaryAsync(x => x.ReceivedProductId, x => x.PickedQty, cancellationToken);
 
             var result = checkIns.Select(ci =>
             {
-                var targetProducts = (ci.Pallet?.ReceivedProducts != null && ci.Pallet.ReceivedProducts.Count > 0)
-                    ? ci.Pallet.ReceivedProducts
-                    : ci.ReceivedProducts;
-
-                var mappedProducts = targetProducts
+                var mappedProducts = ci.ReceivedProducts
                     .Select(rp =>
                     {
-                        var baseQty = rp.Quantity;
-                        pickedMap.TryGetValue((ci.Id, rp.Id), out var pickedQty);
-                        var availableQty = baseQty - pickedQty;
+                        pickedMap.TryGetValue(rp.Id, out var pickedQty);
+                        var availableQty = rp.Quantity - pickedQty;
 
                         return new CheckedInProductSumamryDto(
                             id: rp.Id,
