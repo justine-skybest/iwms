@@ -219,7 +219,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   private getInitialForm(): CreateReceivingDto {
     const now = new Date();
     const today = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0].substring(0, 5);
+    const currentUtcTime = now.toISOString().substring(11, 16);
 
     return {
       series: '',
@@ -229,8 +229,8 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
       dateReceived: today,
       dateAdded: now.toISOString(),
       dateTime: now.toISOString(),
-      timeStart: currentTime,
-      timeEnd: currentTime,
+      timeStart: currentUtcTime,
+      timeEnd: currentUtcTime,
       transportCompany: '',
       shipper: '',
       consignee: '',
@@ -814,8 +814,8 @@ removeProductItem(index: number): void {
       dateReceived: this.toIsoDateTime(this.newReceiving.dateReceived),
       dateAdded: this.newReceiving.dateAdded || new Date().toISOString(),
       dateTime: new Date().toISOString(),
-      timeStart: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeStart),
-      timeEnd: this.toIsoDateTime(this.newReceiving.dateReceived, this.newReceiving.timeEnd),
+      timeStart: this.newReceiving.timeStart,
+      timeEnd: this.newReceiving.timeEnd,
       products: processedProducts
     };
 
