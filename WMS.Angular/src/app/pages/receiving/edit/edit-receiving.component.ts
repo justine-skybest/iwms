@@ -21,6 +21,7 @@ import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { toDateOnly } from '../../../lib/utils/to-date-only';
 import { formatPhilippineTime } from '../../../lib/utils/format-ph-time';
+import { formatPhilippineTimeToInput } from '../../../lib/utils/format-philippine-time-to-input';
 
 export type EditStagedProductItem = {
   id?: number;
@@ -125,7 +126,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   private formatToDateOnly = toDateOnly;
 
   public formatDate = formatDate;
-  public formatTime = formatPhilippineTime;
+  public formatTime = formatPhilippineTimeToInput;
 
   @Input() isOpen = false;
   @Input() selectedReceiving: ReceivingDetailsDto | null = null;
@@ -207,18 +208,13 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
     return timeStr.substring(0, 5);
   }
 
-  get formattedTimeStart(): string {
-    return this.formatTime(this.newReceiving.timeStart);
-  }
-  set formattedTimeStart(val: string) {
-    this.newReceiving.timeStart = val; // Apply parsing logic if required
+  onTimeStartChange(timeString: string) {
+    // Update newReceiving.timeStart with the new value (e.g., "14:30")
+    this.newReceiving.timeStart = timeString; 
   }
 
-  get formattedTimeEnd(): string {
-    return this.formatTime(this.newReceiving.timeEnd);
-  }
-  set formattedTimeEnd(val: string) {
-    this.newReceiving.timeEnd = val;
+  onTimeEndChange(timeString: string) {
+    this.newReceiving.timeEnd = timeString;
   }
 
   private getInitialForm(): CreateReceivingDto {
