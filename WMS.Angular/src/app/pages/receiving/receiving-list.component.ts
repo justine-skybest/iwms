@@ -16,6 +16,7 @@ import { generateQrCodeDataUrl } from '../../lib/utils/qr-code.util';
 import { EditReceivingComponent } from './edit/edit-receiving.component';
 import { ToastService } from '../../lib/services/toast.service';
 import { ConfirmDeleteDialogComponent } from '../../shared/components/confirm-delete-dialog/confirm-delete-dialog.component';
+import { formatPhilippineTime } from '../../lib/utils/format-ph-time';
 
 export type DiscrepancyCategory = 'QUANTITY' | 'DESCRIPTION' | 'EXPIRY' | 'WEIGHT' | 'CBM' | 'DAMAGED' | 'OTHER';
 
@@ -68,7 +69,7 @@ export class ReceivingListComponent implements OnInit, OnDestroy {
 
 
   public formatDate = formatDate;
-  public formatTime = formatTime;
+  public formatTime = formatPhilippineTime;
 
   private api = inject(Api);
   private cd = inject(ChangeDetectorRef);

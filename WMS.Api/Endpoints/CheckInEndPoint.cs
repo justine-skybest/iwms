@@ -369,7 +369,7 @@ public static class CheckInEndPoint
             // --- Create ---
             CheckIn checkIn = newCheckIn.ToEntity(bins, receivedProducts);
             checkIn.IsActive = true;
-            checkIn.CheckInDate = DateTime.UtcNow;
+            //checkIn.CheckInDate = DateTime.UtcNow;
 
             dbContext.CheckIns.Add(checkIn);
             await dbContext.SaveChangesAsync(ct);

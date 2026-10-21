@@ -20,6 +20,7 @@ import { formatDate } from '../../../lib/utils/format-date';
 import { generateQrCodeDataUrl } from '../../../lib/utils/qr-code.util';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { toDateOnly } from '../../../lib/utils/to-date-only';
+import { formatPhilippineTime } from '../../../lib/utils/format-ph-time';
 
 export type EditStagedProductItem = {
   id?: number;
@@ -124,6 +125,7 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
   private formatToDateOnly = toDateOnly;
 
   public formatDate = formatDate;
+  public formatTime = formatPhilippineTime;
 
   @Input() isOpen = false;
   @Input() selectedReceiving: ReceivingDetailsDto | null = null;
@@ -203,6 +205,20 @@ export class EditReceivingComponent implements OnChanges, OnInit, OnDestroy {
       return timePart.substring(0, 5);
     }
     return timeStr.substring(0, 5);
+  }
+
+  get formattedTimeStart(): string {
+    return this.formatTime(this.newReceiving.timeStart);
+  }
+  set formattedTimeStart(val: string) {
+    this.newReceiving.timeStart = val; // Apply parsing logic if required
+  }
+
+  get formattedTimeEnd(): string {
+    return this.formatTime(this.newReceiving.timeEnd);
+  }
+  set formattedTimeEnd(val: string) {
+    this.newReceiving.timeEnd = val;
   }
 
   private getInitialForm(): CreateReceivingDto {
