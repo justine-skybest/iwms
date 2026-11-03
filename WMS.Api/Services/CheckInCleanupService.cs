@@ -79,7 +79,9 @@ public class CheckInCleanupService : ICheckInCleanupService
             // Products can be attached directly to a CheckIn or indirectly through its pallet.
             var productsByCheckIn = checkIns.ToDictionary(
                 ci => ci.Id,
-                ci => ci.Pallet?.ReceivedProducts?
+                ci => ci.ReceivedProducts
+                    .Concat(ci.Pallet?.ReceivedProducts
+                        ?? Enumerable.Empty<ReceivedProduct>())
                     .DistinctBy(product => product.Id)
                     .ToList());
 
