@@ -311,19 +311,19 @@ public static class BinEndpoint
                 ));
             }
 
-            // Direct check: is there an active check-in tying to this bin?
-            bool binIsInUse = await dbContext.CheckIns
-                .AsNoTracking()
-                .AnyAsync(checkIn => checkIn.IsActive && checkIn.Bins.Any(b => b.Id == bin.Id), cancellationToken);
+            //// Direct check: is there an active check-in tying to this bin?
+            //bool binIsInUse = await dbContext.CheckIns
+            //    .AsNoTracking()
+            //    .AnyAsync(checkIn => checkIn.IsActive && checkIn.Bins.Any(b => b.Id == bin.Id), cancellationToken);
 
-            if (binIsInUse)
-            {
-                return Results.Ok(new BinSummaryDto(
-                    0,
-                    "This QR code is from a bin location that is currently in use.",
-                    "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.UtcNow
-                ));
-            }
+            //if (binIsInUse)
+            //{
+            //    return Results.Ok(new BinSummaryDto(
+            //        0,
+            //        "This QR code is from a bin location that is currently in use.",
+            //        "Empty", "Empty", "Empty", "Empty", "Empty", DateTime.UtcNow
+            //    ));
+            //}
 
             return Results.Ok(bin.ToSummaryDto());
         })
