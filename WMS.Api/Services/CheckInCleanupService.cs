@@ -79,9 +79,7 @@ public class CheckInCleanupService : ICheckInCleanupService
             // Products can be attached directly to a CheckIn or indirectly through its pallet.
             var productsByCheckIn = checkIns.ToDictionary(
                 ci => ci.Id,
-                ci => ci.ReceivedProducts
-                    .Concat(ci.Pallet?.ReceivedProducts
-                        ?? Enumerable.Empty<ReceivedProduct>())
+                ci => ci.Pallet?.ReceivedProducts?
                     .DistinctBy(product => product.Id)
                     .ToList());
 
@@ -122,15 +120,14 @@ public class CheckInCleanupService : ICheckInCleanupService
                 var products = productsByCheckIn[checkIn.Id];
 
 
-                if (!checkIn.ReceivedProducts.Any() &&
-                    !checkIn.PalletId.HasValue)
+                if (products.Count == 0)
                 {
+                    DeactivateCheckIn(
+                        checkIn,
+                        "Cleanup: Deactivated because no products remain assigned.");
+
                     deactivatedNoProducts++;
-                    checkIn.IsActive = false;
-                    checkIn.CheckOutDate = DateTime.UtcNow;
-                    checkIn.Notes = AppendNote(
-                        checkIn.Notes,
-                        "Cleanup: Deactivated because no items present in this checked in.");
+                    continue;
                 }
 
                 // Case 2: Every product currently assigned to this CheckIn is fully picked.

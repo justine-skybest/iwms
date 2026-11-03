@@ -7,12 +7,16 @@
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:services\\checkincleanupservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\transferendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\transferendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\transferv2endpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\transferv2endpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\transferendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:endpoints\\transferendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\entities\\checkin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|solutionrelative:entities\\checkin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1FB1AE79-D178-41DE-BED5-A61545740107}|WMS.Api.csproj|c:\\users\\justi\\documents\\wms\\wms.api\\endpoints\\binendpoint.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,7 +34,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,20 +46,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
+              "Title": "CheckIn.cs",
+              "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Entities\\CheckIn.cs",
+              "RelativeDocumentMoniker": "Entities\\CheckIn.cs",
+              "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Entities\\CheckIn.cs",
+              "RelativeToolTip": "Entities\\CheckIn.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAxwAwAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-11-03T07:59:30.646Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "TransferV2Endpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\TransferV2Endpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\TransferV2Endpoint.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\TransferV2Endpoint.cs",
               "RelativeToolTip": "Endpoints\\TransferV2Endpoint.cs",
-              "ViewState": "AgIAANoAAAAAAAAAAAAcwOQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADIAAAAAAAAAAAAcwLsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-03T07:01:11.545Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "TransferEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\TransferEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\TransferEndpoint.cs",
@@ -74,14 +91,14 @@
               "RelativeDocumentMoniker": "Services\\CheckInCleanupService.cs",
               "ToolTip": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Services\\CheckInCleanupService.cs",
               "RelativeToolTip": "Services\\CheckInCleanupService.cs",
-              "ViewState": "AgIAAHIAAAAAAAAAAAAswHcAAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAewFsAAABJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-11-03T06:42:12.477Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "BinEndpoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\BinEndpoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\BinEndpoint.cs",
@@ -93,7 +110,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "CheckInEndPoint.cs",
               "DocumentMoniker": "C:\\Users\\justi\\Documents\\WMS\\WMS.Api\\Endpoints\\CheckInEndPoint.cs",
               "RelativeDocumentMoniker": "Endpoints\\CheckInEndPoint.cs",
