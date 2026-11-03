@@ -121,16 +121,16 @@ public class CheckInCleanupService : ICheckInCleanupService
             {
                 var products = productsByCheckIn[checkIn.Id];
 
-                // Case 1: No products remain attached to this CheckIn.
-                // This includes source CheckIns emptied by a transfer.
-                if (products.Count == 0)
-                {
-                    DeactivateCheckIn(
-                        checkIn,
-                        "Cleanup: Deactivated because no products remain assigned.");
 
+                if (!checkIn.ReceivedProducts.Any() &&
+                    !checkIn.PalletId.HasValue)
+                {
                     deactivatedNoProducts++;
-                    continue;
+                    checkIn.IsActive = false;
+                    checkIn.CheckOutDate = DateTime.UtcNow;
+                    checkIn.Notes = AppendNote(
+                        checkIn.Notes,
+                        "Cleanup: Deactivated because no items present in this checked in.");
                 }
 
                 // Case 2: Every product currently assigned to this CheckIn is fully picked.
