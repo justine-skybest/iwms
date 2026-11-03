@@ -4,7 +4,6 @@ using WMS.Api.Entities;
 
 namespace WMS.Api.Services;
 
-
 public record CheckInCleanupReport(
     int TotalScanned,
     int DeactivatedWithNoProducts,
@@ -24,7 +23,9 @@ public class CheckInCleanupService : ICheckInCleanupService
     private readonly WMSContext _dbContext;
     private readonly ILogger<CheckInCleanupService> _logger;
 
-    public CheckInCleanupService(WMSContext dbContext, ILogger<CheckInCleanupService> logger)
+    public CheckInCleanupService(
+        WMSContext dbContext,
+        ILogger<CheckInCleanupService> logger)
     {
         _dbContext = dbContext;
         _logger = logger;
@@ -34,115 +35,156 @@ public class CheckInCleanupService : ICheckInCleanupService
         int batchSize = 100,
         CancellationToken cancellationToken = default)
     {
-        int totalScanned = 0;
-        int deactivatedNoProducts = 0;
-        int deactivatedFullyPicked = 0;
-        int stillActiveCount = 0;
+        if (batchSize <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(batchSize),
+                "Batch size must be greater than zero.");
+        }
 
-        // Fetch candidate active check-ins IDs
+        var deactivatedNoProducts = 0;
+        var deactivatedFullyPicked = 0;
+        var stillActiveCount = 0;
+
+        // Snapshot the active CheckIn IDs so processing is performed in batches.
         var activeCheckInIds = await _dbContext.CheckIns
+            .AsNoTracking()
             .Where(ci => ci.IsActive)
             .OrderBy(ci => ci.Id)
             .Select(ci => ci.Id)
             .ToListAsync(cancellationToken);
 
-        totalScanned = activeCheckInIds.Count;
-        _logger.LogInformation("Beginning check-in cleanup audit for {Count} active check-ins.", totalScanned);
+        var totalScanned = activeCheckInIds.Count;
 
-        for (int i = 0; i < activeCheckInIds.Count; i += batchSize)
+        _logger.LogInformation(
+            "Beginning CheckIn cleanup audit for {Count} active CheckIns.",
+            totalScanned);
+
+        for (var i = 0; i < activeCheckInIds.Count; i += batchSize)
         {
-            var currentBatchIds = activeCheckInIds.Skip(i).Take(batchSize).ToList();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var currentBatchIds = activeCheckInIds
+                .Skip(i)
+                .Take(batchSize)
+                .ToList();
 
             var checkIns = await _dbContext.CheckIns
                 .Include(ci => ci.ReceivedProducts)
                 .Include(ci => ci.Pallet)
-                    .ThenInclude(p => p!.ReceivedProducts)
-                .Where(ci => currentBatchIds.Contains(ci.Id))
+                    .ThenInclude(pallet => pallet!.ReceivedProducts)
+                .Where(ci => currentBatchIds.Contains(ci.Id) && ci.IsActive)
                 .ToListAsync(cancellationToken);
 
-            // Fetch distinct product IDs in this batch
-            var batchProductIds = checkIns
-                .SelectMany(ci => ci.ReceivedProducts
-                    .Concat(ci.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>()))
-                .Select(p => p.Id)
+            // Products can be attached directly to a CheckIn or indirectly through its pallet.
+            var productsByCheckIn = checkIns.ToDictionary(
+                ci => ci.Id,
+                ci => ci.ReceivedProducts
+                    .Concat(ci.Pallet?.ReceivedProducts
+                        ?? Enumerable.Empty<ReceivedProduct>())
+                    .DistinctBy(product => product.Id)
+                    .ToList());
+
+            var batchProductIds = productsByCheckIn.Values
+                .SelectMany(products => products)
+                .Select(product => product.Id)
                 .Distinct()
                 .ToList();
 
-            // Fetch all picked products for this batch in one round-trip
-            var pickedDictionary = await _dbContext.PickedProducts
-                .AsNoTracking()
-                .Where(pp => pp.ManualPicking != null &&
-                             pp.ManualPicking.CheckInId.HasValue &&
-                             currentBatchIds.Contains(pp.ManualPicking.CheckInId.Value) &&
-                             batchProductIds.Contains(pp.ReceivedProductId))
-                .GroupBy(pp => new
-                {
-                    CheckInId = pp.ManualPicking!.CheckInId!.Value,
-                    pp.ReceivedProductId
-                })
-                .Select(g => new
-                {
-                    g.Key.CheckInId,
-                    g.Key.ReceivedProductId,
-                    TotalPicked = g.Sum(pp => (int?)pp.QuantityPicked) ?? 0
-                })
-                .ToDictionaryAsync(
-                    x => (x.CheckInId, x.ReceivedProductId),
-                    x => x.TotalPicked,
-                    cancellationToken);
+            // Pick quantities are scoped to the CheckIn that was picked.
+            var pickedDictionary = batchProductIds.Count == 0
+                ? new Dictionary<(int CheckInId, int ReceivedProductId), int>()
+                : await _dbContext.PickedProducts
+                    .AsNoTracking()
+                    .Where(pp =>
+                        pp.ManualPicking != null &&
+                        pp.ManualPicking.CheckInId.HasValue &&
+                        currentBatchIds.Contains(pp.ManualPicking.CheckInId.Value) &&
+                        batchProductIds.Contains(pp.ReceivedProductId))
+                    .GroupBy(pp => new
+                    {
+                        CheckInId = pp.ManualPicking!.CheckInId!.Value,
+                        pp.ReceivedProductId
+                    })
+                    .Select(group => new
+                    {
+                        group.Key.CheckInId,
+                        group.Key.ReceivedProductId,
+                        TotalPicked = group.Sum(pp => (int?)pp.QuantityPicked) ?? 0
+                    })
+                    .ToDictionaryAsync(
+                        item => (item.CheckInId, item.ReceivedProductId),
+                        item => item.TotalPicked,
+                        cancellationToken);
 
             foreach (var checkIn in checkIns)
             {
-                var products = checkIn.ReceivedProducts
-                    .Concat(checkIn.Pallet?.ReceivedProducts ?? Enumerable.Empty<ReceivedProduct>())
-                    .DistinctBy(p => p.Id)
-                    .ToList();
+                var products = productsByCheckIn[checkIn.Id];
 
-                // Case 1: Check-in has no products
+                // Case 1: No products remain attached to this CheckIn.
+                // This includes source CheckIns emptied by a transfer.
                 if (products.Count == 0)
                 {
-                    checkIn.IsActive = false;
-                    checkIn.CheckOutDate = checkIn.CheckInDate; // Use original check-in date as checkout timestamp
-                    checkIn.Notes = AppendNote(checkIn.Notes, "Cleanup: Deactivated due to 0 products assigned.");
+                    DeactivateCheckIn(
+                        checkIn,
+                        "Cleanup: Deactivated because no products remain assigned.");
+
                     deactivatedNoProducts++;
                     continue;
                 }
 
-                // Case 2: Check if every product is fully picked
-                bool allDepleted = products.All(p =>
+                // Case 2: Every product currently assigned to this CheckIn is fully picked.
+                var allProductsFullyPicked = products.All(product =>
                 {
-                    pickedDictionary.TryGetValue((checkIn.Id, p.Id), out var picked);
-                    return picked >= p.Quantity;
+                    pickedDictionary.TryGetValue(
+                        (checkIn.Id, product.Id),
+                        out var totalPicked);
+
+                    return totalPicked >= product.Quantity;
                 });
 
-                if (allDepleted)
+                if (allProductsFullyPicked)
                 {
-                    checkIn.IsActive = false;
-                    checkIn.CheckOutDate = DateTime.UtcNow;
-                    checkIn.Notes = AppendNote(checkIn.Notes, "Cleanup: Deactivated as all items were picked.");
+                    DeactivateCheckIn(
+                        checkIn,
+                        "Cleanup: Deactivated because all assigned items were fully picked.");
+
                     deactivatedFullyPicked++;
+                    continue;
                 }
-                else
-                {
-                    stillActiveCount++;
-                }
+
+                // Case 3: At least one product still has available quantity.
+                stillActiveCount++;
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         _logger.LogInformation(
-            "Cleanup complete. No Products: {NoProducts}, Fully Picked: {Picked}, Still Active: {Active}",
-            deactivatedNoProducts, deactivatedFullyPicked, stillActiveCount);
+            "CheckIn cleanup complete. Scanned: {Scanned}, No products: {NoProducts}, Fully picked: {FullyPicked}, Still active: {Active}.",
+            totalScanned,
+            deactivatedNoProducts,
+            deactivatedFullyPicked,
+            stillActiveCount);
 
         return new CheckInCleanupReport(
             totalScanned,
             deactivatedNoProducts,
             deactivatedFullyPicked,
-            stillActiveCount
-        );
+            stillActiveCount);
     }
 
-    private static string AppendNote(string? existingNotes, string newNote) =>
-        string.IsNullOrWhiteSpace(existingNotes) ? newNote : $"{existingNotes} | {newNote}";
+    private static void DeactivateCheckIn(CheckIn checkIn, string reason)
+    {
+        checkIn.IsActive = false;
+        checkIn.CheckOutDate = DateTime.UtcNow;
+        checkIn.Notes = AppendNote(checkIn.Notes, reason);
+    }
+
+    private static string AppendNote(string? existingNotes, string newNote)
+    {
+        return string.IsNullOrWhiteSpace(existingNotes)
+            ? newNote
+            : $"{existingNotes} | {newNote}";
+    }
 }

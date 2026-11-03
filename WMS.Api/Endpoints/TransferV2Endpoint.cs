@@ -72,10 +72,23 @@ public static class TransferV2Endpoint
                     checkIn.ReceivedProducts.Remove(product);
                 }
 
+                checkIn.PalletId = null;
+
                 var fromBin = checkIn.Bins.FirstOrDefault(bin => bin.Id == request.FromBinId);
                 if (fromBin is not null)
                 {
                     checkIn.Bins.Remove(fromBin);
+                }
+
+                // The source CheckIn no longer owns inventory.
+                if (!checkIn.ReceivedProducts.Any() &&
+                    !checkIn.PalletId.HasValue)
+                {
+                    checkIn.IsActive = false;
+                    checkIn.CheckOutDate = DateTime.UtcNow;
+                    checkIn.Notes = AppendTransferNote(
+                        checkIn.Notes,
+                        "Source CheckIn closed after inventory transfer.");
                 }
 
                 // 2. Create a new CheckIn entry at the destination Bin
@@ -210,6 +223,17 @@ public static class TransferV2Endpoint
             if (fromBin is not null)
             {
                 checkIn.Bins.Remove(fromBin);
+            }
+
+            // The source CheckIn no longer owns inventory.
+            if (!checkIn.ReceivedProducts.Any() &&
+                !checkIn.PalletId.HasValue)
+            {
+                checkIn.IsActive = false;
+                checkIn.CheckOutDate = DateTime.UtcNow;
+                checkIn.Notes = AppendTransferNote(
+                    checkIn.Notes,
+                    "Source CheckIn closed after inventory transfer.");
             }
 
             // Create a new CheckIn entry at the destination Bin
